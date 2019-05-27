@@ -1,0 +1,33 @@
+{
+  "name": "tvfbot",
+  "description": "The Venting Forest's Discord bot!",
+  "version": "0.0.1",
+  "private": true,
+  "main": "build/index.js",
+  "repository": "https://github.com/tvfdiscord/bot",
+  "author": "Jacob Smith",
+  "license": "MIT",
+  "scripts": {
+    "dev": "gulp && node build",
+    "start": "node build",
+    "build": "gulp",
+    "update": "ncu",
+    "clean": "del yarn.lock && rimraf node_modules && yarn"
+  },
+  "dependencies": {
+    "discord.js": "^11.5.0",
+    "dotenv": "^8.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "del": "^4.1.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-cli": "^2.2.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-uglify": "^3.0.2",
+    "npm-check-updates": "^3.1.9",
+    "rimraf": "^2.6.3"
+  }
+}
