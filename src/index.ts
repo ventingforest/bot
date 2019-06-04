@@ -29,7 +29,13 @@ client.config = {
 client.login(client.config.token);
 
 // events
-client.on('ready', () => console.log('I\'m ready!'));
+client.on('ready', () => {
+    client.user.setActivity('over you cuties <3', {
+        type: 'WATCHING'
+    });
+
+    return console.log('I am ready.');
+});
 
 client.on('message', msg => {
     // ignore messages from other bots
