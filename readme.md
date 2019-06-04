@@ -3,4 +3,4 @@
 
 ## Note
 
-The bot is highly customized, and therefore no support shall be given to outsiders trying to run it for themselves as it is maintained solely for The Venting Forest and it's members.
+No support shall be given to outsiders trying to run it for themselves as it is maintained solely for The Venting Forest and it's members.

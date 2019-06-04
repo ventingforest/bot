@@ -1,19 +1,16 @@
 // require
 const gulp = require('gulp');
 const del = require('del');
-
-// plugins
+const ts = require('gulp-typescript');
+const tsProject = ts.createProject('tsconfig.json');
 const plumber = require('gulp-plumber');
-const babel = require('gulp-babel');
-const uglify = require('gulp-uglify');
 
 // tasks
 gulp.task('default', async () => {
     del('build');
 
-    return gulp.src('src/**/*.js')
+    return tsProject.src()
         .pipe(plumber())
-        .pipe(babel())
-        .pipe(uglify())
+        .pipe(tsProject())
         .pipe(gulp.dest('build'));
 });
