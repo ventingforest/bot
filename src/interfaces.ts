@@ -12,6 +12,7 @@ import { Client } from "discord.js";
 interface BotConfig {
     // config
     prefix: string;
+    admins: Array<string>;
 
     // authentication
     token: string;
