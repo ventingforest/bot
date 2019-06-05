@@ -1,22 +1,11 @@
 // imports
-import { Client, RichEmbed } from 'discord.js';
+import { Client, RichEmbed, Collection } from 'discord.js';
 import { config as dotenv } from 'dotenv';
-import { BotClient } from './interfaces';
-import * as util from 'util';
+import { BotClient, CommandConfig } from './interfaces';
+import * as fs from 'fs';
 
 // dotenv
 dotenv();
-
-/*
-.......##.......##....########.##.....##.##....##..######..########.####..#######..##....##..######.
-......##.......##.....##.......##.....##.###...##.##....##....##.....##..##.....##.###...##.##....##
-.....##.......##......##.......##.....##.####..##.##..........##.....##..##.....##.####..##.##......
-....##.......##.......######...##.....##.##.##.##.##..........##.....##..##.....##.##.##.##..######.
-...##.......##........##.......##.....##.##..####.##..........##.....##..##.....##.##..####.......##
-..##.......##.........##.......##.....##.##...###.##....##....##.....##..##.....##.##...###.##....##
-.##.......##..........##........#######..##....##..######.....##....####..#######..##....##..######.
-*/
-const clean = txt => typeof txt === 'string' ? txt.replace(/`/g, '`' + String.fromCharCode(8203)) : txt;
 
 /*
 .......##.......##.....######..########.########.##.....##.########.
@@ -42,7 +31,7 @@ client.config = {
     token: process.env.DISCORD
 };
 
-client.login(client.config.token);
+client.commands = new Collection();
 
 /*
 .......##.......##....########.##.....##.########.##....##.########..######.
@@ -66,6 +55,32 @@ client.on('message', msg => {
     if (msg.author.bot) return undefined;
 
     /*
+        .......##.......##....########.########..####..######....######...########.########...######.
+        ......##.......##........##....##.....##..##..##....##..##....##..##.......##.....##.##....##
+        .....##.......##.........##....##.....##..##..##........##........##.......##.....##.##......
+        ....##.......##..........##....########...##..##...####.##...####.######...########...######.
+        ...##.......##...........##....##...##....##..##....##..##....##..##.......##...##.........##
+        ..##.......##............##....##....##...##..##....##..##....##..##.......##....##..##....##
+        .##.......##.............##....##.....##.####..######....######...########.##.....##..######.
+        */
+       if (msg.mentions.roles.first() && msg.mentions.roles.first().id === '481130628344184832') {
+        msg.reply('stay put, a helper will arive shortly.');
+
+        const helperChannel = client.channels.find(c => c.id === '471799568015818762');
+        const embed = new RichEmbed();
+        
+        embed
+            .setTitle('Help Requested!')
+            .setDescription(`${msg.author} needs help!`)
+            .setColor('RANDOM')
+            .addField('Where?', msg.channel, true)
+            .addField('Message:', msg.content.replace(`<@&${msg.mentions.roles.first().id}>`, ''), true);
+
+        // @ts-ignore
+        return helperChannel.send(embed);
+    }
+
+    /*
     .......##.......##.....######...#######..##.....##.##.....##....###....##....##.########...######.
     ......##.......##.....##....##.##.....##.###...###.###...###...##.##...###...##.##.....##.##....##
     .....##.......##......##.......##.....##.####.####.####.####..##...##..####..##.##.....##.##......
@@ -79,71 +94,42 @@ client.on('message', msg => {
         const args = msg.content.slice(client.config.prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
 
-        if (commandName === 'ping') {
-            return msg.reply('pong!');
+        // find the command
+        const command = client.commands.get(commandName);
+        if (!command) return undefined;
+
+        // extract the config
+        const config: CommandConfig = command.config;
+
+        // checks
+        if (config.admin && !client.config.admins.includes(msg.author.id)) {
+            return msg.reply('you do not have permission to run that command 😢');
         }
 
-        if (commandName === 'eval') {
-            if (client.config.admins.includes(msg.author.id)) {
-                try {
-                    // get the code
-                    const code = args.join(' ');
-            
-                    // allow the usage of the client
-                    if (code.includes('client')) {
-                        // @ts-ignore
-                        code.replace('client', client);
-                    }
-            
-                    // allow the usage of the guild
-                    if (code.includes('guild')) {
-                        // @ts-ignore
-                        code.replace('guild', msg.guild);
-                    }
-            
-                    // evaluate the code
-                    let evaled = eval(code);
-            
-                    // make sure the evaluated code is in a string
-                    if (typeof evaled === 'string') {
-                        evaled = util.inspect(evaled);
-                    }
-            
-                    // reply with a cleaned version fo the evaluated code
-                    return msg.reply(clean(evaled), { code: 'x1' });
-                } catch (error) {
-                    console.error(error);
-                    return msg.reply(`\`ERROR\` \`\`\`xl\n${clean(error)}\n\`\`\``);
-                }
-            } else {
-                return msg.reply('you do not have permission to run this command!');
-            }
-        }
-
-        /*
-        .......##.......##....########.########..####..######....######...########.########...######.
-        ......##.......##........##....##.....##..##..##....##..##....##..##.......##.....##.##....##
-        .....##.......##.........##....##.....##..##..##........##........##.......##.....##.##......
-        ....##.......##..........##....########...##..##...####.##...####.######...########...######.
-        ...##.......##...........##....##...##....##..##....##..##....##..##.......##...##.........##
-        ..##.......##............##....##....##...##..##....##..##....##..##.......##....##..##....##
-        .##.......##.............##....##.....##.####..######....######...########.##.....##..######.
-        */
-        if (msg.mentions.roles.first() && msg.mentions.roles.first().id === '481130628344184832') {
-            msg.reply('stay put, a helper will arive shortly.');
-
-            const helperChannel = client.channels.find(c => c.id === '471799568015818762');
-            const embed = new RichEmbed();
-            
-            embed
-                .setTitle('Help Requested!')
-                .setDescription(`${msg.author} needs help!`)
-                .setColor('RANDOM')
-                .addField('Where?', msg.channel, true)
-                .addField('Message:', msg.content.replace(`<@&${msg.mentions.roles.first().id}>`, ''), true);
-
-            // @ts-ignore
-            return helperChannel.send(embed);
+        // attempt to execute the command
+        try {
+            return command.run(client, msg, args);
+        } catch (error) {
+            console.error(error);
+            return msg.reply('there was an error trying to execute that command.');
         }
     }
 });
+
+/*
+.......##.......##....##........#######...######...####.##....##
+......##.......##.....##.......##.....##.##....##...##..###...##
+.....##.......##......##.......##.....##.##.........##..####..##
+....##.......##.......##.......##.....##.##...####..##..##.##.##
+...##.......##........##.......##.....##.##....##...##..##..####
+..##.......##.........##.......##.....##.##....##...##..##...###
+.##.......##..........########..#######...######...####.##....##
+*/
+const cmdFiles = fs.readdirSync(`${__dirname}/commands`).filter(f => f.endsWith('.js'));
+for (const file of cmdFiles) {
+    const { command } = require(`./commands/${file}`);
+    client.commands.set(command.config.name, command);
+}
+
+
+client.login(client.config.token);
