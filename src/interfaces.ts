@@ -12,7 +12,6 @@ import { Client, Collection, Message } from "discord.js";
 interface BotConfig {
     // config
     prefix: string;
-    admins: Array<string>;
 
     // authentication
     token: string;
@@ -36,6 +35,7 @@ export interface CommandConfig {
     name: string;
     description?: string;
     admin?: boolean;
+    mod?: boolean;
 }
 
 export interface Command {

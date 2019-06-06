@@ -1,5 +1,5 @@
 // imports
-import { Client, RichEmbed, Collection } from 'discord.js';
+import { Client, RichEmbed, Collection, Channel } from 'discord.js';
 import { config as dotenv } from 'dotenv';
 import { BotClient, CommandConfig } from './interfaces';
 import * as fs from 'fs';
@@ -22,10 +22,6 @@ const client: BotClient = new Client();
 client.config = {
     // config
     prefix: 'tvf ',
-    admins: [
-        '326767126406889473', // newt
-        '498846454828367872' // ethan
-    ],
 
     // authentication
     token: process.env.DISCORD
@@ -53,6 +49,9 @@ client.on('ready', () => {
 client.on('message', msg => {
     // ignore messages from other bots
     if (msg.author.bot) return undefined;
+
+    // get the author as a guild member
+    const authorMember = msg.guild.member(msg.author);
 
     /*
         .......##.......##....########.########..####..######....######...########.########...######.
@@ -102,7 +101,7 @@ client.on('message', msg => {
         const config: CommandConfig = command.config;
 
         // checks
-        if (config.admin && !client.config.admins.includes(msg.author.id)) {
+        if ((config.admin && !authorMember.roles.find(r => r.id === '452553630105468957' || r.id === '462606587404615700')) || (config.mod && !authorMember.roles.find(r => r.id === '435897654682320925'))) {
             return msg.reply('you do not have permission to run that command 😢');
         }
 
@@ -113,6 +112,15 @@ client.on('message', msg => {
             console.error(error);
             return msg.reply('there was an error trying to execute that command.');
         }
+    }
+});
+
+client.on('guildMemberAdd', member => {
+    // anti-advertising
+    const invite = /discord.gg|discord,gg|discord.me|discord,me/g;
+
+    if (invite.exec(member.user.username) != null) {
+        return member.ban('Advertising.');
     }
 });
 
