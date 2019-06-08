@@ -9,7 +9,7 @@ import { Client, Collection, Message } from "discord.js";
 ..##.......##.........##....##.##........##..##.......##...###....##...
 .##.......##...........######..########.####.########.##....##....##...
 */
-interface BotConfig {
+type BotConfig = {
     // config
     prefix: string;
 
@@ -31,7 +31,7 @@ export interface BotClient extends Client {
 ..##.......##.........##....##.##.....##.##.....##.##.....##.##.....##.##...###.##.....##
 .##.......##...........######...#######..##.....##.##.....##.##.....##.##....##.########.
 */
-export interface CommandConfig {
+export type CommandConfig = {
     name: string;
     description?: string;
     admin?: boolean;

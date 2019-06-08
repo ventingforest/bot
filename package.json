@@ -23,6 +23,7 @@
     "gulp-cli": "^2.2.0",
     "gulp-plumber": "^1.2.1",
     "gulp-typescript": "^5.0.1",
+    "gulp-uglify": "^3.0.2",
     "rimraf": "^2.6.3",
     "typescript": "^3.5.1"
   }
