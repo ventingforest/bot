@@ -93,7 +93,7 @@ client.on('message', msg => {
     .##.......##..........##.....##..#######.....##.....#######..##.....##..#######..########.
     */
     // banned urls
-    const urls = /discord.gg|discord,gg|discord.me|discord,me|nakedphotos.club|nakedphotos,club/g;
+    const urls = /discord.gg|discord,gg|discord.me|discord,me|nakedphotos.club|nakedphotos,club|privatepage.vip|privatepage,vip/g;
 
     if (urls.exec(msg.content) != null) {
         msg.delete();
