@@ -12,6 +12,7 @@ import { Client, Collection, Message } from "discord.js";
 type BotConfig = {
     // config
     prefix: string;
+    restricted: RegExp;
 
     // authentication
     token: string;

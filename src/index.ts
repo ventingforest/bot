@@ -26,6 +26,7 @@ const client: BotClient = new Client();
 client.config = {
     // config
     prefix: 'tvf ',
+    restricted: /discord.gg|discord,gg|discord.me|discord,me|nakedphotos.club|nakedphotos,club|privatepage.vip|privatepage,vip|redtube.com|redtube,com/g,
 
     // authentication
     token: process.env.DISCORD
@@ -50,7 +51,7 @@ client.on('ready', () => {
     return console.log('I am ready.');
 });
 
-client.on('message', msg => {
+client.on('message', async msg => {
     // ignore messages from other bots
     if (msg.author.bot) return undefined;
 
@@ -92,12 +93,10 @@ client.on('message', msg => {
     ..##.......##.........##.....##.##.....##....##....##.....##.##.....##.##.....##.##.....##
     .##.......##..........##.....##..#######.....##.....#######..##.....##..#######..########.
     */
-    // banned urls
-    const urls = /discord.gg|discord,gg|discord.me|discord,me|nakedphotos.club|nakedphotos,club|privatepage.vip|privatepage,vip/g;
-
-    if (urls.exec(msg.content) != null) {
-        msg.delete();
-        return msg.member.ban('Restricted URL.');
+    // restricted urls
+    if (client.config.restricted.exec(msg.content) != null) {
+        await msg.delete();
+        return msg.member.ban('Restricted URL sent.');
     }
 
     /*
@@ -137,11 +136,9 @@ client.on('message', msg => {
 });
 
 client.on('guildMemberAdd', member => {
-    // anti-advertising
-    const invite = /discord.gg|discord,gg|discord.me|discord,me/g;
-
-    if (invite.exec(member.user.username) != null) {
-        return member.ban('Advertising.');
+    // restricted urls
+    if (client.config.restricted.exec(member.user.username) != null) {
+        return member.ban('Restricted URL in username.');
     }
 });
 
