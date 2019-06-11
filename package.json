@@ -8,7 +8,8 @@
   "author": "Jacob Smith",
   "license": "MIT",
   "scripts": {
-    "run": "gulp && node build",
+    "dev": "gulp && cross-env NODE_ENV=development node build",
+    "heroku": "gulp && cross-env NODE_ENV=production node build",
     "start": "node build",
     "build": "gulp",
     "clean": "del yarn.lock && rimraf node_modules && yarn"
@@ -18,6 +19,7 @@
     "dotenv": "^8.0.0"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "del": "^4.1.1",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.2.0",

@@ -4,8 +4,12 @@ import { config as dotenv } from 'dotenv';
 import { BotClient, CommandConfig } from './interfaces';
 import * as fs from 'fs';
 
-// dotenv
-dotenv();
+// production
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (!isProduction) {
+    dotenv();
+}
 
 /*
 .......##.......##.....######..########.########.##.....##.########.
