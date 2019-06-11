@@ -96,7 +96,7 @@ client.on('message', async msg => {
     // restricted urls
     if (client.config.restricted.exec(msg.content) != null) {
         await msg.delete();
-        return msg.member.ban('Restricted URL sent.');
+        return await msg.member.ban('Restricted URL sent.');
     }
 
     /*
@@ -135,12 +135,20 @@ client.on('message', async msg => {
     }
 });
 
-client.on('guildMemberAdd', member => {
+client.on('guildMemberAdd', async member => {
     // restricted urls
     if (client.config.restricted.exec(member.user.username) != null) {
-        return member.ban('Restricted URL in username.');
+        return await member.ban('Restricted URL in username.');
     }
 });
+
+client.on('guildBanAdd', (guild, user) => {
+    return guild.fetchBan(user)
+        .then(({ user: banned, reason }) => console.log(`${banned.tag} was banned for ${reason}.`))
+        .catch(console.error);
+});
+
+client.on('guildBanRemove', (_guild, user) => console.log(`${user.tag} was unbanned`));
 
 /*
 .......##.......##....##........#######...######...####.##....##
