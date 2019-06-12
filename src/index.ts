@@ -26,7 +26,7 @@ const client: BotClient = new Client();
 client.config = {
     // config
     prefix: 'tvf ',
-    restricted: /discord.gg|discord,gg|discord.me|discord,me|nakedphotos.club|nakedphotos,club|privatepage.vip|privatepage,vip|redtube.com|redtube,com/g,
+    restricted: /discord\.gg\/|discord,gg\/|discord\.me\/|discord,me\/|nakedphotos\.club\/|nakedphotos,club\/|privatepage\.vip\/|privatepage,vip\/|redtube\.com\/|redtube,com\//g,
 
     // authentication
     token: process.env.DISCORD
