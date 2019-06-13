@@ -16,6 +16,7 @@ type BotConfig = {
 
     // authentication
     token: string;
+    clarifai: string;
 }
 
 export interface BotClient extends Client {

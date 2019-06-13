@@ -4,7 +4,7 @@ import { config as dotenv } from 'dotenv';
 import { BotClient, CommandConfig } from './interfaces';
 import * as fs from 'fs';
 import * as dayjs from 'dayjs';
-import { create } from 'domain';
+import * as NSFAI from 'nsfai';
 
 // production
 const isProduction = process.env.NODE_ENV === 'production';
@@ -31,10 +31,14 @@ client.config = {
     restricted: /discord\.gg\/|discord,gg\/|discord\.me\/|discord,me\/|nakedphotos\.club\/|nakedphotos,club\/|privatepage\.vip\/|privatepage,vip\/|redtube\.com\/|redtube,com\//g,
 
     // authentication
-    token: process.env.DISCORD
+    token: process.env.DISCORD,
+    clarifai: process.env.CLARIFAI
 };
 
 client.commands = new Collection();
+
+// create nsfai instance
+const nsfai = new NSFAI(client.config.clarifai);
 
 /*
 .......##.......##....########.##.....##.########.##....##.########..######.
@@ -102,6 +106,18 @@ client.on('message', async msg => {
 
         await msg.delete();
         return await msg.member.ban('Restricted URL sent.');
+    }
+    
+    // nsfw check
+    if (msg.attachments.first()) {
+        nsfai.predict(msg.attachments.first().url)
+            .then(async res => {
+                if (res.sfw) return;
+
+                await msg.delete();
+                return await msg.member.ban('NSFW image sent.');
+            })
+            .catch(error => console.error(error));
     }
 
     /*
