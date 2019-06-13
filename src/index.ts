@@ -160,7 +160,7 @@ client.on('guildMemberAdd', async member => {
     const now = dayjs(new Date());
     const createdAt = dayjs(member.user.createdAt);
 
-    if (botRegex.exec(member.user.username) !== null && now.diff(createdAt, 'day') > 2) {
+    if (botRegex.exec(member.user.username) !== null && now.diff(createdAt, 'day') <= 2) {
         return await member.ban('Bot detected.');
     }
 });
