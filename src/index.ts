@@ -131,7 +131,7 @@ client.on('message', async msg => {
         }
 
         if (config.dm && msg.channel.type == 'text') {
-            return msg.reply('check your DMs.');
+            msg.reply('check your DMs.');
         }
 
         // attempt to execute the command
