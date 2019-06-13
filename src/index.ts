@@ -115,7 +115,7 @@ client.on('message', async msg => {
                 if (res.sfw) return;
 
                 await msg.delete();
-                return await msg.member.ban('NSFW image sent.');
+                return await msg.member.ban(`NSFW image sent. Confidence: ${res.confidence}`);
             })
             .catch(error => console.error(error));
     }
@@ -183,6 +183,14 @@ client.on('guildMemberAdd', async member => {
     if (botRegex.exec(member.user.username) !== null && now.diff(createdAt, 'day') <= 2) {
         return await member.ban('Bot detected.');
     }
+
+    // nsfw check
+    nsfai.predict(member.user.displayAvatarURL)
+        .then(async res => {
+            if (res.sfw) return;
+            else return await member.ban(`NSFW profile picture. Confidence: ${res.confidence}`);
+        })
+        .catch(error => console.error(error));
 });
 
 client.on('guildBanAdd', (guild, user) => {
