@@ -1,10 +1,9 @@
 // imports
-import { Client, RichEmbed, Collection, Channel } from 'discord.js';
+import { Client, RichEmbed, Collection } from 'discord.js';
 import { config as dotenv } from 'dotenv';
 import { BotClient, CommandConfig } from './interfaces';
 import * as fs from 'fs';
 import * as dayjs from 'dayjs';
-import { create } from 'domain';
 
 // production
 const isProduction = process.env.NODE_ENV === 'production';
@@ -171,11 +170,9 @@ client.on('guildMemberAdd', async member => {
 
 client.on('guildBanAdd', (guild, user) => {
     return guild.fetchBan(user)
-        .then(({ user: banned, reason }) => console.log(`${banned.tag} was banned for ${reason}.`))
+        .then(({ user: banned, reason }) => console.log(`${banned.tag} was banned for ${reason}`))
         .catch(console.error);
 });
-
-client.on('guildBanRemove', (_guild, user) => console.log(`${user.tag} was unbanned`));
 
 /*
 .......##.......##....##........#######...######...####.##....##
