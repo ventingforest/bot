@@ -126,8 +126,12 @@ client.on('message', async msg => {
         const config: CommandConfig = command.config;
 
         // checks
-        if ((config.admin && !authorMember.roles.find(r => r.id === '452553630105468957' || r.id === '462606587404615700')) || (config.mod && !authorMember.roles.find(r => r.id === '435897654682320925'))) {
+        if ((config.admin && !authorMember.roles.find(r => r.id === '452553630105468957' || r.id === '462606587404615700'))) {
             return msg.reply('you do not have permission to run that command 😢');
+        }
+
+        if (config.dm && msg.channel.type == 'text') {
+            return msg.reply('check your DMs.');
         }
 
         // attempt to execute the command

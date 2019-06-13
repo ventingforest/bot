@@ -20,7 +20,7 @@ type BotConfig = {
 
 export interface BotClient extends Client {
     config: BotConfig;
-    commands: Collection<any, any>;
+    commands: Collection<string, Command>;
 }
 
 /*
@@ -36,7 +36,7 @@ export type CommandConfig = {
     name: string;
     description?: string;
     admin?: boolean;
-    mod?: boolean;
+    dm?: boolean;
 }
 
 export interface Command {
