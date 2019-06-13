@@ -3,6 +3,8 @@ import { Client, RichEmbed, Collection, Channel } from 'discord.js';
 import { config as dotenv } from 'dotenv';
 import { BotClient, CommandConfig } from './interfaces';
 import * as fs from 'fs';
+import * as dayjs from 'dayjs';
+import { create } from 'domain';
 
 // production
 const isProduction = process.env.NODE_ENV === 'production';
@@ -139,9 +141,27 @@ client.on('message', async msg => {
 });
 
 client.on('guildMemberAdd', async member => {
-    // restricted urls
+    /*
+    .......##.......##....##.....##..#######..########..########.......###....##.....##.########..#######..##.....##..#######..########.
+    ......##.......##.....###...###.##.....##.##.....##.##............##.##...##.....##....##....##.....##.###...###.##.....##.##.....##
+    .....##.......##......####.####.##.....##.##.....##.##...........##...##..##.....##....##....##.....##.####.####.##.....##.##.....##
+    ....##.......##.......##.###.##.##.....##.########..######......##.....##.##.....##....##....##.....##.##.###.##.##.....##.##.....##
+    ...##.......##........##.....##.##.....##.##...##...##..........#########.##.....##....##....##.....##.##.....##.##.....##.##.....##
+    ..##.......##.........##.....##.##.....##.##....##..##..........##.....##.##.....##....##....##.....##.##.....##.##.....##.##.....##
+    .##.......##..........##.....##..#######..##.....##.########....##.....##..#######.....##.....#######..##.....##..#######..########.
+    */
+    // restricted URLs
     if (client.config.restricted.exec(member.user.username) != null) {
         return await member.ban('Restricted URL in username.');
+    }
+
+    // bot detection
+    const botRegex = /[A-Z][a-z]+[1-9]+/g;
+    const now = dayjs(new Date());
+    const createdAt = dayjs(member.user.createdAt);
+
+    if (botRegex.exec(member.user.username) !== null && now.diff(createdAt, 'day') > 2) {
+        return await member.ban('Bot detected.');
     }
 });
 

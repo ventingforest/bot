@@ -15,6 +15,7 @@
     "clean": "del yarn.lock && rimraf node_modules && yarn"
   },
   "dependencies": {
+    "dayjs": "^1.8.14",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0"
   },
