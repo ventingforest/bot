@@ -99,8 +99,8 @@ client.on('message', async msg => {
         // protect people from whois bans
         if (/\?whois/g.exec(msg.content) !== null) return;
 
-        await msg.delete();
-        return await msg.member.ban('Restricted URL sent.');
+        msg.delete();
+        return msg.member.ban('Restricted URL sent.');
     }
 
     /*
@@ -143,7 +143,7 @@ client.on('message', async msg => {
     }
 });
 
-client.on('guildMemberAdd', async member => {
+client.on('guildMemberAdd', member => {
     /*
     .......##.......##....##.....##..#######..########..########.......###....##.....##.########..#######..##.....##..#######..########.
     ......##.......##.....###...###.##.....##.##.....##.##............##.##...##.....##....##....##.....##.###...###.##.....##.##.....##
@@ -155,7 +155,7 @@ client.on('guildMemberAdd', async member => {
     */
     // restricted URLs
     if (client.config.restricted.exec(member.user.username) != null) {
-        return await member.ban('Restricted URL in username.');
+        return member.ban('Restricted URL in username.');
     }
 
     // bot detection
@@ -164,7 +164,12 @@ client.on('guildMemberAdd', async member => {
     const createdAt = dayjs(member.user.createdAt);
 
     if (botRegex.exec(member.user.username) !== null && now.diff(createdAt, 'day') <= 2) {
-        return await member.ban('Bot detected.');
+        return member.ban('Bot detected.');
+    }
+
+    // if the member is a bot, give it the bot squad role
+    if (member.user.bot) {
+        return member.addRole(member.guild.roles.find(r => r.id === '451344230023954442'));
     }
 });
 
