@@ -95,6 +95,9 @@ client.on('message', async msg => {
     */
     // restricted urls
     if (client.config.restricted.exec(msg.content) != null) {
+        // protect people from whois bans
+        if (/\?whois/g.exec(msg.content) !== null) return;
+
         await msg.delete();
         return await msg.member.ban('Restricted URL sent.');
     }
