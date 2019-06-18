@@ -70,7 +70,7 @@ client.on('message', async msg => {
         .##.......##.............##....##.....##.####..######....######...########.##.....##..######.
         */
        if (msg.mentions.roles.first() && msg.mentions.roles.first().id === '481130628344184832') {
-        msg.reply('stay put, a helper will arive shortly.');
+        msg.reply('Please wait, a helper will arrive shortly. If it\'s an emergency, call the number in <#435923980336234516>. You can also request a one-on-one private session with a staff by typing `?private` in any channel.');
 
         const helperChannel = client.channels.find(c => c.id === '471799568015818762');
         const embed = new RichEmbed();
