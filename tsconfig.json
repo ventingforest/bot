@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "watch": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
     }
 }

@@ -69,9 +69,6 @@ client.on('message', async msg => {
     // ignore messages from other bots
     if (msg.author.bot) return undefined;
 
-    // get the author as a guild member
-    const authorMember = msg.guild.member(msg.author);
-
     /*
         .......##.......##....########.########..####..######....######...########.########...######.
         ......##.......##........##....##.....##..##..##....##..##....##..##.......##.....##.##....##
@@ -138,7 +135,7 @@ client.on('message', async msg => {
         const config: CommandConfig = command.config;
 
         // checks
-        if ((config.admin && !authorMember.roles.find(r => r.id === '452553630105468957' || r.id === '462606587404615700')) || (config.mod && !authorMember.roles.find(r => r.id === '435897654682320925'))) {
+        if ((config.admin && !msg.member.roles.find(r => r.id === '452553630105468957' || r.id === '462606587404615700')) || (config.mod && !msg.member.roles.find(r => r.id === '435897654682320925'))) {
             return msg.reply('you do not have permission to run that command 😢');
         }
 
