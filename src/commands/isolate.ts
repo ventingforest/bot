@@ -36,7 +36,7 @@ export const command: Command = {
             member.addRole(client.config.isolatedRole, 'Isolated.');
 
             // update and save the document
-            doc.isolation.isolatedRoles = roles;
+            doc.isolation.roles = roles;
             doc.isolation.isolated = true;
 
             doc.save().catch(error => console.error(error));
@@ -61,7 +61,7 @@ export const command: Command = {
                 .send(`Hey there, ${member.user}. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`)
         } else if (!doc.isolation.isolated) {
             // get the roles from the database
-            const roles = doc.isolation.isolatedRoles;
+            const roles = doc.isolation.roles;
 
             // add all of the roles to the member
             roles.forEach(role => member.addRole(role, 'Un-isolated.'));
@@ -70,7 +70,7 @@ export const command: Command = {
             member.removeRole(client.config.isolatedRole, 'Un-isolated.');
 
             // update and save the document
-            doc.isolation.isolatedRoles = [];
+            doc.isolation.roles = [];
             doc.isolation.isolated = false;
 
             return doc.save().catch(error => console.error(error));

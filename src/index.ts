@@ -195,7 +195,10 @@ client.on('guildMemberAdd', member => {
    const newUser = new client.dbUser({
        tag: member.user.tag,
        id: member.user.id,
-       isolatedRoles: []
+       isolation: {
+           isolated: false,
+           roles: []
+       }
    });
 
    return newUser.save().then(console.log(`Added ${member.user.tag} to the database.`)).catch(error => console.error(error));

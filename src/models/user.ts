@@ -10,7 +10,7 @@ class User extends Typegoose {
     @prop()
     isolation: {
         isolated: boolean;
-        isolatedRoles: Array<string>;
+        roles: Array<string>;
     }
 }
 
