@@ -13,6 +13,7 @@ type BotConfig = {
     // config
     prefix: string;
     restricted: RegExp;
+    isolatedRole: string;
 
     // authentication
     token: string;
@@ -36,6 +37,7 @@ export type CommandConfig = {
     name: string;
     description?: string;
     admin?: boolean;
+    mod?: boolean;
     dm?: boolean;
 }
 

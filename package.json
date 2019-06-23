@@ -15,10 +15,14 @@
     "clean": "del yarn.lock && rimraf node_modules && yarn"
   },
   "dependencies": {
+    "@discordjs/uws": "^11.149.1",
+    "@types/mongoose": "^5.5.6",
     "dayjs": "^1.8.14",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
-    "nsfai": "^2.0.0"
+    "mongoose": "^5.6.0",
+    "nsfai": "^2.0.0",
+    "typegoose": "^5.7.2"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",

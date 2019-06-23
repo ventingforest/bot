@@ -4,6 +4,8 @@ import { config as dotenv } from 'dotenv';
 import { BotClient, CommandConfig } from './interfaces';
 import * as fs from 'fs';
 import * as dayjs from 'dayjs';
+import * as mongoose from 'mongoose';
+import User from './models/user';
 
 // production
 const isProduction = process.env.NODE_ENV === 'production';
@@ -11,6 +13,15 @@ const isProduction = process.env.NODE_ENV === 'production';
 if (!isProduction) {
     dotenv();
 }
+
+// connect to database
+mongoose.connect(process.env.MONGO, {
+    useNewUrlParser: true
+});
+
+mongoose.connection.on('connected', () => console.log('Connected to database'));
+mongoose.connection.on('error', error => console.error(error));
+mongoose.connection.on('disconnect', () => console.log('Disconnected from database.'));
 
 /*
 .......##.......##.....######..########.########.##.....##.########.
@@ -26,8 +37,9 @@ const client: BotClient = new Client();
 
 client.config = {
     // config
-    prefix: 'tvf ',
+    prefix: isProduction ? 'tvf ' : 'tvfbeta ',
     restricted: /discord\.gg\/|discord,gg\/|discord\.me\/|discord,me\/|nakedphotos\.club\/|nakedphotos,club\/|privatepage\.vip\/|privatepage,vip\/|redtube\.com\/|redtube,com\//g,
+    isolatedRole: '452662935035052032',
 
     // authentication
     token: process.env.DISCORD
@@ -69,7 +81,7 @@ client.on('message', async msg => {
         ..##.......##............##....##....##...##..##....##..##....##..##.......##....##..##....##
         .##.......##.............##....##.....##.####..######....######...########.##.....##..######.
         */
-       if (msg.mentions.roles.first() && msg.mentions.roles.first().id === '481130628344184832') {
+       if (msg.mentions.roles.first() && msg.mentions.roles.first().id === '481130628344184832' && msg.channel.id != '471799568015818762') {
         msg.reply('Please wait, a helper will arrive shortly. If it\'s an emergency, call the number in <#435923980336234516>. You can also request a one-on-one private session with a staff by typing `?private` in any channel.');
 
         const helperChannel = client.channels.find(c => c.id === '471799568015818762');
@@ -126,7 +138,7 @@ client.on('message', async msg => {
         const config: CommandConfig = command.config;
 
         // checks
-        if ((config.admin && !authorMember.roles.find(r => r.id === '452553630105468957' || r.id === '462606587404615700'))) {
+        if ((config.admin && !authorMember.roles.find(r => r.id === '452553630105468957' || r.id === '462606587404615700')) || (config.mod && !authorMember.roles.find(r => r.id === '435897654682320925'))) {
             return msg.reply('you do not have permission to run that command 😢');
         }
 
@@ -172,6 +184,22 @@ client.on('guildMemberAdd', member => {
     if (member.user.bot) {
         return member.addRole(member.guild.roles.find(r => r.id === '451344230023954442'));
     }
+
+    /*
+    .......##.......##....########.....###....########....###....########.....###.....######..########
+    ......##.......##.....##.....##...##.##......##......##.##...##.....##...##.##...##....##.##......
+    .....##.......##......##.....##..##...##.....##.....##...##..##.....##..##...##..##.......##......
+    ....##.......##.......##.....##.##.....##....##....##.....##.########..##.....##..######..######..
+    ...##.......##........##.....##.#########....##....#########.##.....##.#########.......##.##......
+    ..##.......##.........##.....##.##.....##....##....##.....##.##.....##.##.....##.##....##.##......
+    .##.......##..........########..##.....##....##....##.....##.########..##.....##..######..########
+    */
+   const newUser = new User({
+       tag: member.user.tag,
+       id: member.user.id,
+       isolatedRoles: []
+   });
+   newUser.save().catch(error => console.error(error));
 });
 
 client.on('guildBanAdd', (guild, user) => {
