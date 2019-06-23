@@ -46,6 +46,7 @@ client.config = {
 };
 
 client.commands = new Collection();
+client.dbUser = User;
 
 
 /*
@@ -191,18 +192,23 @@ client.on('guildMemberAdd', member => {
     ..##.......##.........##.....##.##.....##....##....##.....##.##.....##.##.....##.##....##.##......
     .##.......##..........########..##.....##....##....##.....##.########..##.....##..######..########
     */
-   const newUser = new User({
+   const newUser = new client.dbUser({
        tag: member.user.tag,
        id: member.user.id,
        isolatedRoles: []
    });
-   newUser.save().catch(error => console.error(error));
+
+   return newUser.save().then(console.log(`Added ${member.user.tag} to the database.`)).catch(error => console.error(error));
 });
 
 client.on('guildBanAdd', (guild, user) => {
     return guild.fetchBan(user)
         .then(({ user: banned, reason }) => console.log(`${banned.tag} was banned for ${reason}`))
         .catch(console.error);
+});
+
+client.on('guildMemberRemove', member => {
+    return client.dbUser.findOneAndDelete({ id: member.user.id }).then(() => console.log(`Removed ${member.user.tag} from the database.`));
 });
 
 /*

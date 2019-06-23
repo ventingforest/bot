@@ -1,5 +1,4 @@
 import { Command } from '../interfaces';
-import User from '../models/user';
 import { RichEmbed } from 'discord.js';
 
 /*
@@ -20,7 +19,7 @@ export const command: Command = {
         if (!member) return msg.author.send('you had to mention a user in order to isolate them.');
 
         // get the member's document from the database
-        const doc = await User.findOne({ id: member.user.id }, (err, res) => {
+        const doc = await client.dbUser.findOne({ id: member.user.id }, (err, res) => {
             if (err) return console.error(err);
 
             return res;

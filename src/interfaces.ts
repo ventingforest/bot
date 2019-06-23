@@ -1,4 +1,5 @@
 import { Client, Collection, Message } from "discord.js";
+import { Model } from "mongoose";
 
 /*
 .......##.......##.....######..##.......####.########.##....##.########
@@ -22,6 +23,7 @@ type BotConfig = {
 export interface BotClient extends Client {
     config: BotConfig;
     commands: Collection<string, Command>;
+    dbUser: Model<any>
 }
 
 /*
