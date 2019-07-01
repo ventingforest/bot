@@ -86,8 +86,8 @@ client.on('message', async msg => {
         const embed = new RichEmbed();
         
         embed
-            .setTitle('Help Requested!')
-            .setDescription(`${msg.author} needs help!`)
+            .setTitle(`${msg.author} needs help!`)
+            .setDescription(`[Link to message.](${msg.url})`)
             .setColor('RANDOM')
             .addField('Where?', msg.channel, true)
             .addField('Message:', msg.content.replace(`<@&${msg.mentions.roles.first().id}>`, ''), true);
