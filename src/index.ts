@@ -1,7 +1,7 @@
 // imports
 import { Client, RichEmbed, Collection } from 'discord.js';
 import { config as dotenv } from 'dotenv';
-import { BotClient, CommandConfig } from './interfaces';
+import { BotClient } from './interfaces';
 import * as fs from 'fs';
 import * as dayjs from 'dayjs';
 import * as mongoose from 'mongoose';
@@ -86,7 +86,7 @@ client.on('message', async msg => {
         const embed = new RichEmbed();
         
         embed
-            .setTitle(`${msg.author} needs help!`)
+            .setTitle(`${msg.author.tag} needs help!`)
             .setDescription(`[Link to message.](${msg.url})`)
             .setColor('RANDOM')
             .addField('Where?', msg.channel, true)
@@ -133,7 +133,7 @@ client.on('message', async msg => {
         if (!command) return undefined;
 
         // extract the config
-        const config: CommandConfig = command.config;
+        const config = command.config;
 
         // checks
         if ((config.admin && !msg.member.roles.find(r => r.id === '452553630105468957' || r.id === '462606587404615700')) || (config.mod && !msg.member.roles.find(r => r.id === '435897654682320925'))) {
