@@ -1,4 +1,3 @@
-import { Command } from '../interfaces';
 import { RichEmbed } from 'discord.js';
 
 /*

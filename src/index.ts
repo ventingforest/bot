@@ -1,7 +1,6 @@
 // imports
 import { Client, RichEmbed, Collection } from 'discord.js';
 import { config as dotenv } from 'dotenv';
-import { BotClient } from './interfaces';
 import * as fs from 'fs';
 import * as dayjs from 'dayjs';
 import * as mongoose from 'mongoose';
@@ -42,12 +41,11 @@ client.config = {
     isolatedRole: '452662935035052032',
 
     // authentication
-    token: process.env.DISCORD
+    token: isProduction ? process.env.DISCORD : process.env.DISCORDBETA
 };
 
 client.commands = new Collection();
-client.dbUser = User;
-
+client.userDoc = User;
 
 /*
 .......##.......##....########.##.....##.########.##....##.########..######.
@@ -144,6 +142,16 @@ client.on('message', async msg => {
             msg.reply('check your DMs.');
         }
 
+        if (config.args && args.length === 0) {
+            let reply = 'you did not provide any arguments!';
+
+            if (config.usage) {
+                reply += `\nThe correct usage would be: \`${client.config.prefix}${config.name} ${config.usage}\``;
+            }
+
+            return msg.reply(reply);
+        }
+
         // attempt to execute the command
         try {
             return command.run(client, msg, args);
@@ -192,7 +200,7 @@ client.on('guildMemberAdd', member => {
     ..##.......##.........##.....##.##.....##....##....##.....##.##.....##.##.....##.##....##.##......
     .##.......##..........########..##.....##....##....##.....##.########..##.....##..######..########
     */
-   const newUser = new client.dbUser({
+   return User.create({
        tag: member.user.tag,
        id: member.user.id,
        isolation: {
@@ -200,8 +208,6 @@ client.on('guildMemberAdd', member => {
            roles: []
        }
    });
-
-   return newUser.save().then(console.log(`Added ${member.user.tag} to the database.`)).catch(error => console.error(error));
 });
 
 client.on('guildBanAdd', (guild, user) => {
@@ -211,7 +217,7 @@ client.on('guildBanAdd', (guild, user) => {
 });
 
 client.on('guildMemberRemove', member => {
-    return client.dbUser.findOneAndDelete({ id: member.user.id }).then(() => console.log(`Removed ${member.user.tag} from the database.`));
+    return User.findOneAndDelete({ id: member.user.id }).then(() => console.log(`Removed ${member.user.tag} from the database.`));
 });
 
 /*
