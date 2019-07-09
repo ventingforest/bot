@@ -36,7 +36,7 @@ const client: BotClient = new Client();
 
 client.config = {
     // config
-    prefix: isProduction ? 'tvf ' : 'tvfbeta ',
+    prefix: isProduction ? /tvf\s|<@!581144700547760128>\s/gi : /tvfbeta\s|beta\s|<@!597190196383055894>\s/gi,
     restricted: /discord\.gg\/|discord,gg\/|discord\.me\/|discord,me\/|nakedphotos\.club\/|nakedphotos,club\/|privatepage\.vip\/|privatepage,vip\/|redtube\.com\/|redtube,com\//g,
     isolatedRole: '452662935035052032',
 
@@ -77,7 +77,7 @@ client.on('message', async msg => {
         ..##.......##............##....##....##...##..##....##..##....##..##.......##....##..##....##
         .##.......##.............##....##.....##.####..######....######...########.##.....##..######.
         */
-       if (msg.mentions.roles.first() && msg.mentions.roles.first().id === '481130628344184832' && msg.channel.id != '471799568015818762') {
+       if (isProduction && msg.mentions.roles.first() && msg.mentions.roles.first().id === '481130628344184832' && msg.channel.id != '471799568015818762') {
         msg.reply('Please wait, a helper will arrive shortly. If it\'s an emergency, call the number in <#435923980336234516>. You can also request a one-on-one private session with a staff by typing `?private` in any channel.');
 
         const helperChannel = client.channels.find(c => c.id === '471799568015818762');
@@ -121,9 +121,13 @@ client.on('message', async msg => {
     ..##.......##.........##....##.##.....##.##.....##.##.....##.##.....##.##...###.##.....##.##....##
     .##.......##...........######...#######..##.....##.##.....##.##.....##.##....##.########...######.
     */
-    if (msg.content.startsWith(client.config.prefix)) {
+   let prefix: RegExpMatchArray | string = msg.content.match(client.config.prefix);
+   prefix = prefix === null ? prefix : prefix.join('');
+
+    if (prefix != null) {
+
         // get the args and command name
-        const args = msg.content.slice(client.config.prefix.length).split(/ +/);
+        const args = msg.content.slice(prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
 
         // find the command

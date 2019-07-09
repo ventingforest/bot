@@ -5,7 +5,7 @@ import { Model } from "mongoose";
 declare global {
     type BotConfig = {
         // config
-        prefix: string;
+        prefix: RegExp;
         restricted: RegExp;
         isolatedRole: string;
     
