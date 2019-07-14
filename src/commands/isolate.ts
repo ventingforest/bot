@@ -25,7 +25,9 @@ export const command: Command = {
             return res;
         });
 
-        if (doc.isolation.isolated) {
+        console.log(doc);
+
+        if (!doc.isolation.isolated) {
             // get an array of the member's roles
             const roles = member.roles.map(r => r.id);
 
@@ -52,14 +54,14 @@ export const command: Command = {
             client.channels
                 .find(c => c.id === '453195365211176960')
                 // @ts-ignore
-                .send(msg.guild.roles.find(r => r.id === '453195365211176960'), embed);
+                .send(embed);
 
             // post a message in the isolated channel
             return client.channels
                 .find(c => c.id === '586251824563224576')
                 // @ts-ignore
                 .send(`Hey there, ${member.user}. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`)
-        } else if (!doc.isolation.isolated) {
+        } else if (doc.isolation.isolated) {
             // get the roles from the database
             const roles = doc.isolation.roles;
 
