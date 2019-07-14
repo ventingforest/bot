@@ -25,14 +25,12 @@ export const command: Command = {
             return res;
         });
 
-        console.log(doc);
-
         if (!doc.isolation.isolated) {
             // get an array of the member's roles
             const roles = member.roles.map(r => r.id);
 
             // remove the roles from the member
-            roles.forEach(role => member.removeRole(role, 'Isolated.'));
+            roles.forEach(async role => member.removeRole(role, 'Isolated.').catch(() => console.error('Rate limited.')));
 
             // give the member the isolated role
             member.addRole(client.config.isolatedRole, 'Isolated.');
@@ -74,6 +72,18 @@ export const command: Command = {
             // update and save the document
             doc.isolation.roles = [];
             doc.isolation.isolated = false;
+
+            // alert the staff
+            const embed = new RichEmbed()
+                .setColor('GREEN')
+                .setTitle('Unisolated')
+                .setDescription(`${member.user.tag} has been unisolated.`)
+                .addField('Unisolated by', msg.author, true)
+
+            client.channels
+                .find(c => c.id === '453195365211176960')
+                // @ts-ignore
+                .send(embed);
 
             return doc.save().catch(error => console.error(error));
         }

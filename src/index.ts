@@ -38,7 +38,7 @@ client.config = {
     // config
     prefix: isProduction ? /tvf\s|<@!581144700547760128>\s/gi : /tvfbeta\s|beta\s|<@!597190196383055894>\s/gi,
     restricted: /discord\.gg\/|discord,gg\/|discord\.me\/|discord,me\/|nakedphotos\.club\/|nakedphotos,club\/|privatepage\.vip\/|privatepage,vip\/|redtube\.com\/|redtube,com\//g,
-    isolatedRole: '452662935035052032',
+    isolatedRole: '586251637539209216',
 
     // authentication
     token: isProduction ? process.env.DISCORD : process.env.DISCORDBETA
