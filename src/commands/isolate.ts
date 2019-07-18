@@ -77,8 +77,7 @@ export const command: Command = {
             const embed = new RichEmbed()
                 .setColor('GREEN')
                 .setTitle('Unisolated')
-                .setDescription(`${member.user.tag} has been unisolated.`)
-                .addField('Unisolated by', msg.author, true)
+                .setDescription(`${member.user.tag} has been unisolated by ${msg.author}`);
 
             client.channels
                 .find(c => c.id === '453195365211176960')

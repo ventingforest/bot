@@ -150,7 +150,7 @@ client.on('message', async msg => {
             let reply = 'you did not provide any arguments!';
 
             if (config.usage) {
-                reply += `\nThe correct usage would be: \`${client.config.prefix}${config.name} ${config.usage}\``;
+                reply += `\nThe correct usage would be: \`${isProduction ? 'tvf ' : 'tvfbeta '}${config.name} ${config.usage}\``;
             }
 
             return msg.reply(reply);
