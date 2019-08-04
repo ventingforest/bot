@@ -16,9 +16,11 @@
   },
   "dependencies": {
     "dayjs": "^1.8.14",
-    "discord.js": "^11.5.1",
+    "discord.js": "discordjs/discord.js",
     "dotenv": "^8.0.0",
-    "mongoose": "^5.6.3"
+    "mongoose": "^5.6.3",
+    "winston": "3.2.0",
+    "winston-error": "^1.0.1"
   },
   "devDependencies": {
     "@types/mongoose": "^5.5.7",
@@ -30,7 +32,15 @@
     "gulp-plumber": "^1.2.1",
     "gulp-typescript": "^5.0.1",
     "gulp-uglify": "^3.0.2",
+    "husky": "^3.0.2",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
     "rimraf": "^2.6.3",
     "typescript": "^3.5.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

@@ -1,95 +1,115 @@
-import { RichEmbed } from 'discord.js';
-import User from '../models/user';
+import User from "../models/user";
 
-/*
-.......##.......##....####..######...#######..##..........###....########.########
-......##.......##......##..##....##.##.....##.##.........##.##......##....##......
-.....##.......##.......##..##.......##.....##.##........##...##.....##....##......
-....##.......##........##...######..##.....##.##.......##.....##....##....######..
-...##.......##.........##........##.##.....##.##.......#########....##....##......
-..##.......##..........##..##....##.##.....##.##.......##.....##....##....##......
-.##.......##..........####..######...#######..########.##.....##....##....########
-*/
-export const command: Command = {
-    run: async (client, msg) => {
-        await msg.delete();
+export const isolate: Command = {
+  run: async (client, msg, args) => {
+    await msg.delete();
+    args.shift();
 
-        // get the tagged member
-        const member = msg.mentions.members.first();
-        if (!member) return msg.author.send('you had to mention a user in order to isolate them.');
+    // get the tagged member
+    const member = msg.mentions.members.first();
+    if (!member)
+      return msg.author.send(
+        "you had to mention a user in order to isolate them."
+      );
 
-        // get the member's document from the database
-        const doc = await User.findOne({ id: member.user.id }, (err, res) => {
-            if (err) return console.error(err);
+    // prepare the reason
+    let reason = args.join(" ");
+    if (!reason) reason = "No reason specified.";
 
-            return res;
-        });
+    // get the member's document from the database
+    const doc = await User.findOne({ id: member.user.id }, (err, res) => {
+      if (err) return console.error(err);
 
-        if (!doc.isolation.isolated) {
-            // get an array of the member's roles
-            const roles = member.roles.map(r => r.id);
+      return res;
+    });
 
-            // remove the roles from the member
-            await roles.forEach(role => role !== client.config.isolatedRole ? member.removeRole(role, 'Isolated.').catch(() => console.error('Rate limited.')) : null);
+    if (!doc.isolation.isolated) {
+      // get an array of the member's roles
+      const roles = member.roles.map(r => r.id);
 
-            // give the member the isolated role
-            member.addRole(client.config.isolatedRole, 'Isolated.');
+      // remove the roles from the member
+      await roles.forEach(role =>
+        role !== client.config.roles.isolation
+          ? member.roles
+              .remove(role, "Isolated.")
+              .catch(() => console.error("Rate limited."))
+          : null
+      );
 
-            // update and save the document
-            doc.isolation.roles = roles;
-            doc.isolation.isolated = true;
+      // give the member the isolated role
+      member.roles.add(client.config.roles.isolation, "Isolated.");
 
-            doc.save().catch(error => console.error(error));
+      // update and save the document
+      doc.isolation.roles = roles;
+      doc.isolation.isolated = true;
 
-            // alert the staff
-            const embed = new RichEmbed()
-                .setColor('RED')
-                .setTitle('Isolated')
-                .setDescription(`${member.user.tag} has been isolated.`)
-                .addField('Target', member.user, true)
-                .addField('Isolated by', msg.author, true)
+      doc.save().catch(error => console.error(error));
 
-            client.channels
-                .find(c => c.id === '453195365211176960')
-                // @ts-ignore
-                .send(embed);
+      // alert the staff
+      const embed = client
+        .createEmbed("red")
+        .setTitle("Isolated")
+        .setDescription(`${member.user.tag} has been isolated.`)
+        .addField("Target", member.user, true)
+        .addField("Isolated by", msg.author, true)
+        .addField("Reason", reason);
 
-            // post a message in the isolated channel
-            return client.channels
-                .find(c => c.id === '586251824563224576')
-                // @ts-ignore
-                .send(`Hey there, ${member.user}. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`)
-        } else {
-            // get the roles from the database
-            const roles = doc.isolation.roles;
+      client.bot.channels
+        .find(c => c.id === client.config.channels.fk)
+        // @ts-ignore
+        .send(embed);
 
-            // add all of the roles to the member
-            roles.forEach(role => member.addRole(role, 'Un-isolated.').catch(() => console.error('Rate limited.')));
+      // post a message in the isolated channel
+      return (
+        client.bot.channels
+          .find(c => c.id === client.config.channels.isolation)
+          // @ts-ignore
+          .send(
+            `Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`
+          )
+      );
+    } else {
+      // get the roles from the database
+      const roles = doc.isolation.roles;
 
-            // remove the isolated role from the member
-            member.removeRole(client.config.isolatedRole, 'Un-isolated.');
+      // add all of the roles to the member
+      roles.forEach(role =>
+        member.roles
+          .add(role, "Un-isolated.")
+          .catch(() => console.error("Rate limited."))
+      );
 
-            // update and save the document
-            doc.isolation.roles = [];
-            doc.isolation.isolated = false;
+      // remove the isolated role from the member
+      member.roles.remove(client.config.roles.isolation, "Un-isolated.");
 
-            // alert the staff
-            const embed = new RichEmbed()
-                .setColor('GREEN')
-                .setTitle('Unisolated')
-                .setDescription(`${member.user.tag} has been unisolated by ${msg.author}`);
+      // update and save the document
+      doc.isolation.roles = [];
+      doc.isolation.isolated = false;
 
-            client.channels
-                .find(c => c.id === '453195365211176960')
-                // @ts-ignore
-                .send(embed);
+      // alert the staff
+      const embed = client
+        .createEmbed("green")
+        .setTitle("Un-isolated")
+        .setDescription(
+          `${member.user.tag} has been un-isolated by <@!${msg.author.id}>`
+        )
+        .addField("Reason", reason);
 
-            return doc.save().catch(error => console.error(error));
-        }
-    },
-    config: {
-        name: 'isolate',
-        description: 'Isolates a user!',
-        mod: true
+      client.bot.channels
+        .find(c => c.id === client.config.channels.fk)
+        // @ts-ignore
+        .send(embed);
+
+      return doc.save().catch(error => console.error(error));
     }
-}
+  },
+  config: {
+    name: "isolate",
+    module: "Mod",
+    description: "Isolates a user!",
+    args: true,
+    usage: "<@user> *reason*"
+  }
+};
+
+export default isolate;
