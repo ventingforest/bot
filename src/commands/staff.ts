@@ -7,8 +7,15 @@ const staff: Command = {
             .members.concat(
                 msg.guild.roles.get(client.config.roles.techAdmin).members
             );
-        const mods = msg.guild.roles.get(client.config.roles.mod).members;
-        const fks = msg.guild.roles.get(client.config.roles.fk).members;
+        const mods = msg.guild.roles
+            .get(client.config.roles.mod)
+            .members.filter((m) => !m.roles.has(client.config.roles.admin))
+            .filter((m) => !m.roles.has(client.config.roles.techAdmin));
+        const fks = msg.guild.roles
+            .get(client.config.roles.fk)
+            .members.filter((m) => !m.roles.has(client.config.roles.mod))
+            .filter((m) => !m.roles.has(client.config.roles.admin))
+            .filter((m) => !m.roles.has(client.config.roles.techAdmin));
 
         if (
             role === 'forest keeper' ||
@@ -74,7 +81,7 @@ const staff: Command = {
             return msg.channel.send(embed);
         } else {
             const embed = client
-                .createEmbed('purple')
+                .createEmbed('orange')
                 .setTitle('Staff')
                 .setDescription(
                     `Total: **${admins.size + mods.size + fks.size}**`

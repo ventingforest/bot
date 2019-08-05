@@ -5,8 +5,6 @@ const message = async (client: Client, msg: Message) => {
     // ignore messages from other bots
     if (msg.author.bot) return undefined;
 
-    console.log(client.config.compliments);
-
     // random compliments
     if (
         Math.floor(Math.random() * 50) === 1 &&
