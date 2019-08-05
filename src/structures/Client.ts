@@ -48,6 +48,7 @@ export default class Client {
             isolation: '586251824563224576',
             fk: '453195365211176960',
             helper: '471799568015818762',
+            main: '435894444584075265',
         },
         auth: {
             discord: this.isProduction
