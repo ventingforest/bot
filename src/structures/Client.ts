@@ -216,6 +216,22 @@ export default class Client {
      */
     public readLines(input: fs.ReadStream, func: Function) {}
 
+    /**
+     * Checks for a member in a message.
+     *
+     * @param {Discord.Message} msg - the message to check.
+     * @param {string[]} args - the arguments to the command.
+     * @returns a GuildMember object
+     */
+    public checkForMember(
+        msg: Discord.Message,
+        args: string[]
+    ): Discord.GuildMember {
+        return msg.mentions.members.first() === undefined
+            ? msg.guild.members.find(({ user }) => user.tag === args.join(' '))
+            : msg.mentions.members.first();
+    }
+
     // private methods
     private loadEvents() {
         const eventFiles = fs

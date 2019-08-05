@@ -7,7 +7,10 @@ export const isolate: Command = {
         args.shift();
 
         // get the tagged member
-        const member = msg.mentions.members.first();
+        const member =
+            msg.mentions.members.first() === undefined
+                ? msg.guild.members.find(({ user }) => user.tag === args[0])
+                : msg.mentions.members.first();
         if (!member)
             return msg.author.send(
                 'you had to mention a user in order to isolate them.'
