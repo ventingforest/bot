@@ -82,6 +82,7 @@ export default class Client {
             'I was told to get some sunshine, I think they meant you ☀',
             "when you stand in a garden, I can't tell the difference between you and the flowers 💐",
             'cutie, I choose you! You used Adorableness, it was super effective 🎮',
+            'I love you a latte ☕',
         ],
     };
 
