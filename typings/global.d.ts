@@ -8,8 +8,6 @@ declare global {
         name: string;
         description?: string;
         module: Module;
-        aliases?: string[];
-        permissions?: Discord.PermissionResolvable[];
         args?: boolean;
         usage?: string;
         dm?: boolean;

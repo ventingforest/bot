@@ -70,14 +70,7 @@ export const help: Command = {
             if (!cmd) return msg.reply('that command does not exist.');
 
             // setup the embed accordingly
-            const {
-                name,
-                description,
-                module,
-                aliases,
-                permissions,
-                usage,
-            } = cmd.config;
+            const { name, description, module, usage } = cmd.config;
 
             embed
                 .setTitle(`${name} Command Help`)
@@ -86,18 +79,6 @@ export const help: Command = {
                 )
                 .addField('Module ⚙', module);
 
-            if (aliases)
-                embed.addField(
-                    'Aliases 🕵️‍♂️',
-                    aliases.map((a) => `\`${a}\``).join(' '),
-                    true
-                );
-            if (permissions)
-                embed.addField(
-                    'Required Permissions 🛠',
-                    permissions.map((p) => `\`${p}\``).join(' '),
-                    true
-                );
             if (usage)
                 embed.addField(
                     'Usage 🤓',
