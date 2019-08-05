@@ -1,46 +1,48 @@
 {
-  "name": "tvfbot",
-  "description": "The Venting Forest's Discord bot!",
-  "version": "1.0.0",
-  "private": true,
-  "main": "build/index.js",
-  "repository": "https://github.com/tvfdiscord/bot",
-  "author": "Jacob Smith",
-  "license": "MIT",
-  "scripts": {
-    "dev": "gulp && cross-env NODE_ENV=development node build",
-    "heroku": "gulp && cross-env NODE_ENV=production node build",
-    "start": "node build",
-    "build": "gulp",
-    "clean": "del yarn.lock && rimraf node_modules && yarn"
-  },
-  "dependencies": {
-    "dayjs": "^1.8.14",
-    "discord.js": "discordjs/discord.js",
-    "dotenv": "^8.0.0",
-    "mongoose": "^5.6.3",
-    "winston": "3.2.0",
-    "winston-error": "^1.0.1"
-  },
-  "devDependencies": {
-    "@types/mongoose": "^5.5.7",
-    "@types/node": "^12.0.12",
-    "cross-env": "^5.2.0",
-    "del": "^5.0.0",
-    "gulp": "^4.0.2",
-    "gulp-cli": "^2.2.0",
-    "gulp-plumber": "^1.2.1",
-    "gulp-typescript": "^5.0.1",
-    "gulp-uglify": "^3.0.2",
-    "husky": "^3.0.2",
-    "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1",
-    "rimraf": "^2.6.3",
-    "typescript": "^3.5.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
+    "name": "tvfbot",
+    "description": "The Venting Forest's Discord bot!",
+    "version": "1.0.0",
+    "private": true,
+    "main": "build/index.js",
+    "repository": "https://github.com/tvfdiscord/bot",
+    "author": "Jacob Smith",
+    "license": "MIT",
+    "scripts": {
+        "dev": "gulp && cross-env NODE_ENV=development node build",
+        "heroku": "gulp && cross-env NODE_ENV=production node build",
+        "start": "node build",
+        "build": "gulp",
+        "clean": "del yarn.lock && rimraf node_modules && yarn"
+    },
+    "dependencies": {
+        "axios": "^0.19.0",
+        "dayjs": "^1.8.14",
+        "discord.js": "discordjs/discord.js",
+        "dotenv": "^8.0.0",
+        "mongoose": "^5.6.3",
+        "winston": "3.2.0",
+        "winston-error": "^1.0.1"
+    },
+    "devDependencies": {
+        "@types/axios": "^0.14.0",
+        "@types/mongoose": "^5.5.7",
+        "@types/node": "^12.0.12",
+        "cross-env": "^5.2.0",
+        "del": "^5.0.0",
+        "gulp": "^4.0.2",
+        "gulp-cli": "^2.2.0",
+        "gulp-plumber": "^1.2.1",
+        "gulp-typescript": "^5.0.1",
+        "gulp-uglify": "^3.0.2",
+        "husky": "^3.0.2",
+        "prettier": "^1.18.2",
+        "pretty-quick": "^1.11.1",
+        "rimraf": "^2.6.3",
+        "typescript": "^3.5.2"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged"
+        }
     }
-  }
 }
