@@ -83,6 +83,7 @@ export default class Client {
             "when you stand in a garden, I can't tell the difference between you and the flowers 💐",
             'cutie, I choose you! You used Adorableness, it was super effective 🎮',
             'I love you a latte ☕',
+            'you warm my heart like a cup of hot cocoa! ☕',
         ],
     };
 
