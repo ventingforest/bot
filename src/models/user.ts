@@ -5,25 +5,28 @@ export interface IUser extends mongoose.Document {
     id: string;
     isolation: {
         isolated: boolean;
-        roles: Array<string>
-    }
+        roles: Array<string>;
+    };
 }
 
-const userSchema = new mongoose.Schema({
-    tag: {
-        type: String,
-        required: true,
+const userSchema = new mongoose.Schema(
+    {
+        tag: {
+            type: String,
+            required: true,
+        },
+        id: {
+            type: String,
+            required: true,
+        },
+        isolation: {
+            isolated: Boolean,
+            roles: Array,
+        },
     },
-    id: {
-        type: String,
-        required: true,
-    },
-    isolation: {
-        isolated: Boolean,
-        roles: Array
+    {
+        versionKey: false,
     }
-}, {
-    versionKey: false
-});
+);
 
 export default mongoose.model<IUser>('users', userSchema);

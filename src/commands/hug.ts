@@ -1,5 +1,5 @@
 export const hug: Command = {
-    run: async (client, msg, args) => {
+    run: async (_client, msg, args) => {
         const member =
             msg.mentions.members.first() === undefined
                 ? msg.guild.members.find(({ user }) => user.tag === args[0])
@@ -7,9 +7,7 @@ export const hug: Command = {
         if (!member) return msg.reply('you need to specify who to hug 🤗');
 
         if (member.user === msg.author) {
-            return msg.channel.send(
-                `Aw, are you lonely? Don't worry! I'll give you a hug 😇\n<@!${client.bot.user.id}> hugged <@!${member.id}> 🤗💞`
-            );
+            return msg.channel.send('👀');
         }
 
         await msg.delete();
