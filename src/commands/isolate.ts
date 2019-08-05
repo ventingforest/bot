@@ -50,14 +50,14 @@ export const isolate: Command = {
                 .addField('Reason', reason);
 
             client.bot.channels
-                .find((c) => c.id === client.config.channels.fk)
+                .get(client.config.channels.fk)
                 // @ts-ignore
                 .send(embed);
 
             // post a message in the isolated channel
             return (
                 client.bot.channels
-                    .find((c) => c.id === client.config.channels.isolation)
+                    .get(client.config.channels.isolation)
                     // @ts-ignore
                     .send(
                         `Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`
@@ -97,7 +97,7 @@ export const isolate: Command = {
                 );
 
             client.bot.channels
-                .find((c) => c.id === client.config.channels.fk)
+                .get(client.config.channels.fk)
                 // @ts-ignore
                 .send(embed);
 

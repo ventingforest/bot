@@ -28,7 +28,7 @@ const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
     // if the member is a bot, give it the bot squad role
     if (member.user.bot) {
         return member.roles.add(
-            member.guild.roles.find((r) => r.id === '451344230023954442')
+            member.guild.roles.get(client.config.roles.bot)
         );
     }
 

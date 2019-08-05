@@ -3,17 +3,12 @@ const staff: Command = {
         const role = args.join(' ').toLowerCase();
 
         const admins = msg.guild.roles
-            .find((r) => r.id === client.config.roles.admin)
+            .get(client.config.roles.admin)
             .members.concat(
-                msg.guild.roles.find(
-                    (r) => r.id === client.config.roles.techAdmin
-                ).members
+                msg.guild.roles.get(client.config.roles.techAdmin).members
             );
-        const mods = msg.guild.roles.find(
-            (r) => r.id === client.config.roles.mod
-        ).members;
-        const fks = msg.guild.roles.find((r) => r.id === client.config.roles.fk)
-            .members;
+        const mods = msg.guild.roles.get(client.config.roles.mod).members;
+        const fks = msg.guild.roles.get(client.config.roles.fk).members;
 
         if (
             role === 'forest keeper' ||

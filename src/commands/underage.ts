@@ -14,14 +14,16 @@ const underage: Command = {
 
         // send the user the message
         member.user.send(
-            "You are suspected to be underage. This is against Discord's TOS and we cannot allow it. You are welcome back as soon as you are thirteen, but until then please do not return. As it stands underage members put the entire server at risk. Rejoining after this message has been sent to you will result in an immediate and permenant ban.\n\nUntil then, stay safe ♥\n- The staff of TVF"
+            "You are suspected to be underage. This is against Discord's TOS and we cannot allow it. You are welcome back as soon as you are thirteen, but until then please do not return. As it stands underage members put the entire server at risk. Re-joining after this message has been sent to you will result in an immediate and permanent ban.\n\nUntil then, stay safe ♥\n- The staff of TVF"
         );
 
         // alert the server
-        // @ts-ignore
-        return client.bot.channels
-            .get(client.config.channels.main)
-            .send(`**${member.user.tag}** was kicked for being underage.`);
+        return (
+            client.bot.channels
+                .get(client.config.channels.main)
+                // @ts-ignore
+                .send(`**${member.user.tag}** was kicked for being underage.`)
+        );
     },
     config: {
         name: 'underage',

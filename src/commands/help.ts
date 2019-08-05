@@ -23,6 +23,11 @@ export const help: Command = {
             .map((c) => c.config.name)
             .join(', ');
 
+        const fkCommands = client.commands
+            .filter((c) => c.config.module === 'FK')
+            .map((c) => c.config.name)
+            .join(', ');
+
         // if there are no arguments
         if (args.length === 0) {
             // update the embed accordingly
@@ -30,18 +35,17 @@ export const help: Command = {
                 .setTitle('Help 👋')
                 .addField('Commands 🎉', `\`\`\`${commands}\`\`\``);
 
-            if (
-                msg.member.roles.find((r) => r.id === client.config.roles.mod)
-            ) {
+            if (msg.member.roles.get(client.config.roles.fk)) {
+                embed.addField('FK ♥', `\`\`\`${fkCommands}\`\`\``);
+            }
+
+            if (msg.member.roles.get(client.config.roles.mod)) {
                 embed.addField('Mod 🔨', `\`\`\`${modCommands}\`\`\``);
             }
 
             if (
-                msg.member.roles.find(
-                    (r) =>
-                        r.id === client.config.roles.admin ||
-                        r.id === client.config.roles.techAdmin
-                )
+                msg.member.roles.get(client.config.roles.admin) ||
+                msg.member.roles.get(client.config.roles.techAdmin)
             ) {
                 embed.addField('Admin ⚙', `\`\`\`${adminCommands}\`\`\``);
             }

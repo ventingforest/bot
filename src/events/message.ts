@@ -8,8 +8,8 @@ const message = async (client: Client, msg: Message) => {
     if (
         client.isProduction &&
         msg.mentions.roles.first() &&
-        msg.mentions.roles.first().id === '481130628344184832' &&
-        msg.channel.id != '471799568015818762'
+        msg.mentions.roles.first().id === client.config.channels.helper &&
+        msg.channel.id != client.config.channels.helper
     ) {
         msg.reply(
             "Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#435923980336234516>. You can also request a one-on-one private session with a staff by typing `?private` in any channel."
@@ -26,7 +26,7 @@ const message = async (client: Client, msg: Message) => {
             .addField('Where?', msg.channel, true)
             .addField(
                 'Message:',
-                msg.content.replace(`<@&${msg.mentions.roles.first().id}>`, ''),
+                msg.content.replace(`<@&${client.config.roles.helper}>`, ''),
                 true
             );
 
@@ -65,13 +65,10 @@ const message = async (client: Client, msg: Message) => {
         // checks
         if (
             (config.module === 'Admin' &&
-                !msg.member.roles.find(
-                    (r) =>
-                        r.id === '452553630105468957' ||
-                        r.id === '462606587404615700'
-                )) ||
+                !msg.member.roles.get(client.config.roles.admin)) ||
+            !msg.member.roles.get(client.config.roles.techAdmin) ||
             (config.module === 'Mod' &&
-                !msg.member.roles.find((r) => r.id === '435897654682320925'))
+                !msg.member.roles.get(client.config.roles.mod))
         ) {
             return msg.reply(
                 'you do not have permission to run that command 😢'
