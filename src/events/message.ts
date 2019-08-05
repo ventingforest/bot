@@ -77,10 +77,10 @@ const message = async (client: Client, msg: Message) => {
         // checks
         if (
             (config.module === 'Admin' &&
-                !msg.member.roles.get(client.config.roles.admin)) ||
-            !msg.member.roles.get(client.config.roles.techAdmin) ||
+                (msg.member.roles.has(client.config.roles.admin) ||
+                    msg.member.roles.has(client.config.roles.techAdmin))) ||
             (config.module === 'Mod' &&
-                !msg.member.roles.get(client.config.roles.mod))
+                msg.member.roles.has(client.config.roles.mod))
         ) {
             return msg.reply(
                 'you do not have permission to run that command 😢'

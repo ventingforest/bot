@@ -209,6 +209,13 @@ export default class Client {
             .join(' ');
     }
 
+    /**
+     * Reads a text file and puts each line into an array.
+     *
+     * @param {fs.Read}
+     */
+    public readLines(input: fs.ReadStream, func: Function) {}
+
     // private methods
     private loadEvents() {
         const eventFiles = fs
