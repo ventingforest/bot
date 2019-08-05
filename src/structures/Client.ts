@@ -59,32 +59,7 @@ export default class Client {
                 : process.env.DISCORDBETA,
             mongo: process.env.MONGO,
         },
-        compliments: [
-            'good morning, sunshine ☀',
-            'who needs coffee when you have your smile ☕',
-            "go get 'em, Tiger 🐯",
-            'take on the day you beautiful land mermaid you 🧜‍♀️',
-            'you are making a difference 💖',
-            "you're more fun than bubble wrap 🎉",
-            'you made someone smile today, I know it 😇',
-            'if I could high five you... I would 🤗',
-            "on a scale from 1 to 10, you're a 15 💖",
-            'you are the fairest of them all 💖',
-            "you're beautiful and amazing 💖",
-            "you're sweet like bubble tea~ 🍵",
-            "if you were a pie, you'd be a cutie pie 🥧",
-            'you’re stronger than you think 😤',
-            "are you made of Copper and Tellirium? Because you're CuTe 💖",
-            "if no one has told you today, you're beautiful 💖",
-            "you're a star ⭐",
-            "you're stellar ✨",
-            'I need a map because I think I just got lost in your eyes... 🗺',
-            'I was told to get some sunshine, I think they meant you ☀',
-            "when you stand in a garden, I can't tell the difference between you and the flowers 💐",
-            'cutie, I choose you! You used Adorableness, it was super effective 🎮',
-            'I love you a latte ☕',
-            'you warm my heart like a cup of hot cocoa! ☕',
-        ],
+        compliments: this.readLines('src/compliments.txt'),
     };
 
     /**
@@ -197,7 +172,7 @@ export default class Client {
      *
      * @param {Discord.Collection<string, Command>} commands - the collection of commands.
      * @param {Module} module - the name of a module.
-     * @returns all of the commands from the specified module.
+     * @returns {string} all of the commands from the specified module.
      */
     public filterCommands(
         commands: Discord.Collection<string, Command>,
@@ -212,9 +187,15 @@ export default class Client {
     /**
      * Reads a text file and puts each line into an array.
      *
-     * @param {fs.Read}
+     * @param {fs.PathLike} input - the text file.
+     * @returns {string[]} an array with every line of the text file.
      */
-    public readLines(input: fs.ReadStream, func: Function) {}
+    public readLines(input: fs.PathLike): string[] {
+        return fs
+            .readFileSync(input)
+            .toString()
+            .split('\n');
+    }
 
     /**
      * Checks for a member in a message.

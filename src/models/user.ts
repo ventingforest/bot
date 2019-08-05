@@ -5,7 +5,7 @@ export interface IUser extends mongoose.Document {
     id: string;
     isolation: {
         isolated: boolean;
-        roles: Array<string>;
+        roles: string[];
     };
 }
 
