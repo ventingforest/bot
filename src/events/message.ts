@@ -36,11 +36,7 @@ const message = async (client: Client, msg: Message) => {
             .setTitle(`${msg.author.tag} needs help!`)
             .setDescription(`[Link to message.](${msg.url})`)
             .addField('Where?', msg.channel, true)
-            .addField(
-                'Message:',
-                msg.content.replace(`<@&${client.config.roles.helper}>`, ''),
-                true
-            );
+            .addField('Message:', msg.content, true);
 
         // @ts-ignore
         return helperChannel.send(embed);
