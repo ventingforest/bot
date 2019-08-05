@@ -32,6 +32,13 @@ const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
         );
     }
 
+    // welcome the user
+    const main = client.bot.channels.get(client.config.channels.main);
+    const hai = client.bot.emojis.find((e) => e.name === 'hai');
+
+    // @ts-ignore
+    main.send(`Welcome ${hai.toString()}`);
+
     /*
     .......##.......##....########.....###....########....###....########.....###.....######..########
     ......##.......##.....##.....##...##.##......##......##.##...##.....##...##.##...##....##.##......
@@ -40,7 +47,7 @@ const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
     ...##.......##........##.....##.#########....##....#########.##.....##.#########.......##.##......
     ..##.......##.........##.....##.##.....##....##....##.....##.##.....##.##.....##.##....##.##......
     .##.......##..........########..##.....##....##....##.....##.########..##.....##..######..########
-    */
+    *
     return User.create({
         tag: member.user.tag,
         id: member.user.id,
@@ -49,6 +56,7 @@ const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
             roles: [],
         },
     });
+    */
 };
 
 export default guildMemberAdd;

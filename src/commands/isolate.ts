@@ -22,7 +22,7 @@ export const isolate: Command = {
 
         // get the member's document from the database
         const doc = await User.findOne({ id: member.user.id }, (err, res) => {
-            if (err) return console.error(err);
+            if (err) return client.logger.error(err);
 
             return res;
         });
@@ -41,7 +41,7 @@ export const isolate: Command = {
             doc.isolation.roles = roles;
             doc.isolation.isolated = true;
 
-            doc.save().catch((error) => console.error(error));
+            doc.save().catch((error) => client.logger.error(error));
 
             // alert the staff
             const embed = client
@@ -104,7 +104,7 @@ export const isolate: Command = {
                 // @ts-ignore
                 .send(embed);
 
-            return doc.save().catch((error) => console.error(error));
+            return doc.save().catch((error) => client.logger.error(error));
         }
     },
     config: {

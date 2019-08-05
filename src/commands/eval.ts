@@ -34,7 +34,7 @@ const evalCommand: Command = {
             // reply with a cleaned version fo the evaluated code
             return msg.reply(clean(evaled), { code: 'x1' });
         } catch (error) {
-            console.error(error);
+            client.logger.error(error);
             return msg.reply(`\`ERROR\` \`\`\`xl\n${clean(error)}\n\`\`\``);
         }
     },
