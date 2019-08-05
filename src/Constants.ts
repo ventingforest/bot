@@ -6,3 +6,6 @@ export const ORANGE = '#E64A19';
 export const GREEN = '#77DD77';
 export const BLACK = '#000000';
 export const WHITE = '#ffffff';
+
+// other
+export const isProduction = process.env.NODE_ENV === 'production';

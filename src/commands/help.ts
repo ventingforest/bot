@@ -1,3 +1,5 @@
+import { isProduction } from './../Constants';
+
 export const help: Command = {
     run: (client, msg, args) => {
         // embed
@@ -82,7 +84,7 @@ export const help: Command = {
             if (usage)
                 embed.addField(
                     'Usage 🤓',
-                    `${client.config.prefix}${name} ${usage}`
+                    `${isProduction ? 'tvf ' : 'beta '}${name} ${usage}`
                 );
         }
 
