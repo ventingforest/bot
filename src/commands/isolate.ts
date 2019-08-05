@@ -52,10 +52,13 @@ export const isolate: Command = {
                 .addField('Isolated by', msg.author, true)
                 .addField('Reason', reason);
 
-            client.bot.channels
-                .get(client.config.channels.fk)
-                // @ts-ignore
-                .send(embed);
+            (client.bot.channels.get(
+                client.config.channels.fk
+            ) as Discord.TextChannel).send(embed);
+
+            (client.bot.channels.get(
+                client.config.channels.modlog
+            ) as Discord.TextChannel).send(embed);
 
             // post a message in the isolated channel
             return (
@@ -99,10 +102,13 @@ export const isolate: Command = {
                     `${member.user.tag} has been un-isolated by <@!${msg.author.id}>`
                 );
 
-            client.bot.channels
-                .get(client.config.channels.fk)
-                // @ts-ignore
-                .send(embed);
+            (client.bot.channels.get(
+                client.config.channels.fk
+            ) as Discord.TextChannel).send(embed);
+
+            (client.bot.channels.get(
+                client.config.channels.modlog
+            ) as Discord.TextChannel).send(embed);
 
             return doc.save().catch((error) => client.logger.error(error));
         }
