@@ -63,6 +63,7 @@ export default class Client {
                 ? process.env.DISCORD
                 : process.env.DISCORDBETA,
             mongo: process.env.MONGO,
+            timezone: process.env.TZDB,
         },
         compliments: this.readLines('src/compliments.txt'),
     };
