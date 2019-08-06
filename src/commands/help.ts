@@ -12,6 +12,7 @@ export const help: Command = {
         const commands = client.commands
             .filter((c) => c.config.module !== 'Admin')
             .filter((c) => c.config.module !== 'Mod')
+            .filter((c) => c.config.module !== 'FK')
             .map((c) => c.config.name)
             .join(', ');
 
