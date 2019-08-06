@@ -54,6 +54,10 @@ export default class Client {
             main: '435894444584075265',
             modlog: '499652797638115348',
         },
+        emoji: {
+            pat: '608220203876089886',
+            hai: '607900592769204224',
+        },
         auth: {
             discord: this.isProduction
                 ? process.env.DISCORD

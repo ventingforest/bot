@@ -34,10 +34,10 @@ const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
 
     // welcome the user
     const main = client.bot.channels.get(client.config.channels.main);
-    const hai = client.bot.emojis.find((e) => e.name === 'hai');
+    const emoji = client.bot.emojis.get(client.config.emoji.hai).toString();
 
     // @ts-ignore
-    main.send(`Welcome ${hai.toString()}`);
+    main.send(`Welcome ${emoji}`);
 
     /*
     .......##.......##....########.....###....########....###....########.....###.....######..########
