@@ -7,6 +7,17 @@ export const hug: Command = {
             return msg.channel.send('👀');
         }
 
+        if (member.user === client.bot.user) {
+            return msg.reply("a kiss? For me? Aww, that' so sweet! 😘");
+        }
+
+        if (
+            member.user.id === '155149108183695360' ||
+            member.user.id === '168274283414421504'
+        ) {
+            return msg.reply("HEY DON'T KISS DYNO HE'S MINE!!! 😤");
+        }
+
         await msg.delete();
         return msg.channel.send(
             `<@!${msg.author.id}> kissed <@!${member.id}> 😘💞`
