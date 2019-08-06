@@ -1,8 +1,9 @@
 import * as Discord from 'discord.js';
 import axios from 'axios';
+import { BIN } from '../Constants';
 
 const docs: Command = {
-    run: async (client, msg, args) => {
+    run: async (_client, msg, args) => {
         const SOURCES = ['stable', 'master'];
         const source = SOURCES.includes(args.slice(-1)[0])
             ? args.pop()
@@ -30,14 +31,14 @@ const docs: Command = {
         }
 
         const msg2 = (await msg.channel.send({ embed })) as Discord.Message;
-        msg2.react('🗑');
+        msg2.react(BIN);
 
         let react: Discord.Collection<string, Discord.MessageReaction>;
 
         try {
             react = await msg2.awaitReactions(
                 (reaction, user): boolean =>
-                    reaction.emoji.name === '🗑' && user.id === msg.author.id,
+                    reaction.emoji.name === BIN && user.id === msg.author.id,
                 { max: 1, time: 5000, errors: ['time'] }
             );
         } catch (error) {

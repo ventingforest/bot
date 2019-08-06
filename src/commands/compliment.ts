@@ -9,7 +9,10 @@ export const hug: Command = {
                 Math.floor(Math.random() * client.config.compliments.length)
             ];
 
-        return msg.channel.send(`<@!${member.id}>, ${compliment}`);
+        await msg.delete();
+        return msg.channel.send(
+            `<@!${member.id}>, ${compliment}\n*Requested by ${msg.author.tag}*`
+        );
     },
     config: {
         name: 'compliment',

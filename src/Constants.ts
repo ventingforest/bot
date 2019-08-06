@@ -7,5 +7,8 @@ export const GREEN = '#77DD77';
 export const BLACK = '#000000';
 export const WHITE = '#ffffff';
 
+// emojis
+export const BIN = '🗑';
+
 // other
 export const isProduction = process.env.NODE_ENV === 'production';

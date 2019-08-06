@@ -207,7 +207,7 @@ export default class Client {
      *
      * @param {Discord.Message} msg - the message to check.
      * @param {string[]} args - the arguments to the command.
-     * @returns a GuildMember object
+     * @returns {Discord.GuildMember} a member mentioned in the message.
      */
     public checkForMember(
         msg: Discord.Message,

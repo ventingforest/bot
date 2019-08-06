@@ -7,7 +7,7 @@ const message = async (client: Client, msg: Message) => {
 
     // random compliments
     if (
-        Math.floor(Math.random() * 100) === 1 &&
+        Math.floor(Math.random() * 150) === 1 &&
         msg.channel.id === client.config.channels.main
     ) {
         const compliment =
