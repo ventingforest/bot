@@ -109,7 +109,7 @@ const staff: Command = {
         name: 'staff',
         description:
             'Allows you to view statistics about the staff like how many are in each position and how many are online, or just view the staff.',
-        module: 'FK',
+        module: 'Core',
         usage: '*position*',
     },
 };
