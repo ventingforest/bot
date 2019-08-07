@@ -60,9 +60,7 @@ export default class Client {
             hai: '607900592769204224',
         },
         auth: {
-            discord: this.isProduction
-                ? process.env.DISCORD
-                : process.env.DISCORDBETA,
+            discord: this.isProduction ? process.env.STABLE : process.env.BETA,
             mongo: process.env.MONGO,
             timezone: process.env.TZDB,
             sentry: process.env.SENTRY,

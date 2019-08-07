@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import User from '../models/user';
 import Client from '../structures/Client';
-import * as dayjs from 'dayjs';
+import * as moment from 'moment';
 
 const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
     // restricted URLs
@@ -13,8 +13,8 @@ const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
 
     // bot detection
     const botRegex = /[A-Z][a-z]+[1-9]+/g;
-    const now = dayjs(new Date());
-    const createdAt = dayjs(member.user.createdAt);
+    const now = moment(Date.now());
+    const createdAt = moment(member.user.createdAt);
 
     if (
         botRegex.exec(member.user.username) !== null &&
@@ -33,21 +33,14 @@ const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
     }
 
     // welcome the user
-    const main = client.bot.channels.get(client.config.channels.main);
+    const main = client.bot.channels.get(
+        client.config.channels.main
+    ) as Discord.TextChannel;
     const emoji = client.bot.emojis.get(client.config.emoji.hai).toString();
 
-    // @ts-ignore
     main.send(`Welcome ${emoji}`);
 
-    /*
-    .......##.......##....########.....###....########....###....########.....###.....######..########
-    ......##.......##.....##.....##...##.##......##......##.##...##.....##...##.##...##....##.##......
-    .....##.......##......##.....##..##...##.....##.....##...##..##.....##..##...##..##.......##......
-    ....##.......##.......##.....##.##.....##....##....##.....##.########..##.....##..######..######..
-    ...##.......##........##.....##.#########....##....#########.##.....##.#########.......##.##......
-    ..##.......##.........##.....##.##.....##....##....##.....##.##.....##.##.....##.##....##.##......
-    .##.......##..........########..##.....##....##....##.....##.########..##.....##..######..########
-    *
+    // database
     return User.create({
         tag: member.user.tag,
         id: member.user.id,
@@ -56,7 +49,6 @@ const guildMemberAdd = async (client: Client, member: Discord.GuildMember) => {
             roles: [],
         },
     });
-    */
 };
 
 export default guildMemberAdd;
