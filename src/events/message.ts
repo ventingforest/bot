@@ -23,23 +23,9 @@ const message = async (client: Client, msg: Message) => {
         msg.mentions.roles.first().id === client.config.channels.helper &&
         msg.channel.id != client.config.channels.helper
     ) {
-        msg.reply(
+        return msg.reply(
             "Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#435923980336234516>. You can also request a one-on-one private session with a staff by typing `?private` in any channel."
         );
-
-        const helperChannel = client.bot.channels.get(
-            client.config.channels.helper
-        );
-        const embed = client.createEmbed('random');
-
-        embed
-            .setTitle(`${msg.author.tag} needs help!`)
-            .setDescription(`[Link to message.](${msg.url})`)
-            .addField('Where?', msg.channel, true)
-            .addField('Message:', msg.content, true);
-
-        // @ts-ignore
-        return helperChannel.send(embed);
     }
 
     // restricted urls
