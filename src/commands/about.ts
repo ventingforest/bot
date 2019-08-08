@@ -18,11 +18,7 @@ const about: Command = {
                     'CPU',
                     `${cpu.manufacturer} ${cpu.brand} @ ${cpu.speed}GHz`
                 )
-                .addField(
-                    'Memory Usage',
-                    `${prettyBytes(ram.used)}/${prettyBytes(ram.total)}`,
-                    true
-                )
+                .addField('Total RAM', prettyBytes(ram.total), true)
                 .addField('Uptime', ms(client.bot.uptime, { long: true }), true)
                 .setFooter(
                     'Made with ❤ and discord.js',
