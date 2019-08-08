@@ -38,6 +38,7 @@ export default class Client {
             ? /tvf\s|<@!581144700547760128>\s/gi
             : /tvfbeta\s|beta\s|<@!597190196383055894>\s/gi,
         restricted: /discord\.gg\/|discord,gg\/|discord\.me\/|discord,me\/|nakedphotos\.club\/|nakedphotos,club\/|privatepage\.vip\/|privatepage,vip\/|redtube\.com\/|redtube,com\//g,
+        devID: '326767126406889473',
         roles: {
             isolation: '586251637539209216',
             fk: '452662935035052032',

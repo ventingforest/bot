@@ -47,7 +47,6 @@ export const isolate: Command = {
             const embed = client
                 .createEmbed('red')
                 .setTitle('Isolated')
-                .setDescription(`${member.user.tag} has been isolated.`)
                 .addField('Target', member.user, true)
                 .addField('Isolated by', msg.author, true)
                 .addField('Reason', reason);
@@ -61,13 +60,10 @@ export const isolate: Command = {
             ) as Discord.TextChannel).send(embed);
 
             // post a message in the isolated channel
-            return (
-                client.bot.channels
-                    .get(client.config.channels.isolation)
-                    // @ts-ignore
-                    .send(
-                        `Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`
-                    )
+            return (client.bot.channels.get(
+                client.config.channels.isolation
+            ) as Discord.TextChannel).send(
+                `Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`
             );
         } else if (doc.isolation.isolated) {
             // get the roles from the database
@@ -99,7 +95,7 @@ export const isolate: Command = {
                 .createEmbed('green')
                 .setTitle('Un-isolated')
                 .setDescription(
-                    `${member.user.tag} has been un-isolated by <@!${msg.author.id}>`
+                    `<@!${member.user.id}> has been un-isolated by <@!${msg.author.id}>`
                 );
 
             (client.bot.channels.get(
@@ -109,6 +105,13 @@ export const isolate: Command = {
             (client.bot.channels.get(
                 client.config.channels.modlog
             ) as Discord.TextChannel).send(embed);
+
+            // post a message in the isolated channel
+            (client.bot.channels.get(
+                client.config.channels.isolation
+            ) as Discord.TextChannel).send(
+                `${member.user.tag} has been un-isolated.`
+            );
 
             return doc.save().catch((error) => client.logger.error(error));
         }
