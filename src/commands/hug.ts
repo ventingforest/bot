@@ -6,7 +6,9 @@ export const hug: Command = {
         await msg.delete();
 
         if (member.user === msg.author) {
-            return msg.channel.send(`<@!${msg.author.id} hugged themselves 👀`);
+            return msg.channel.send(
+                `<@!${msg.author.id}> hugged themselves 👀`
+            );
         }
 
         return msg.channel.send(

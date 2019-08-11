@@ -9,7 +9,7 @@
     "license": "MIT",
     "scripts": {
         "dev": "gulp && cross-env NODE_ENV=development node build",
-        "production": "gulp && cross-env NODE_ENV=production node build",
+        "prod": "gulp && cross-env NODE_ENV=production node build",
         "start": "node build",
         "build": "gulp",
         "clean": "del yarn.lock && rimraf node_modules && yarn"
