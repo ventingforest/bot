@@ -3,11 +3,12 @@ export const hug: Command = {
         const member = client.checkForMember(msg, args);
         if (!member) return msg.reply('you need to specify who to hug 🤗');
 
+        await msg.delete();
+
         if (member.user === msg.author) {
-            return msg.channel.send('👀');
+            return msg.channel.send(`<@!${msg.author.id} hugged themselves 👀`);
         }
 
-        await msg.delete();
         return msg.channel.send(
             `<@!${msg.author.id}> hugged <@!${member.id}> 🤗💞`
         );

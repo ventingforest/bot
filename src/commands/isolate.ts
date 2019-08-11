@@ -110,7 +110,7 @@ export const isolate: Command = {
             (client.bot.channels.get(
                 client.config.channels.isolation
             ) as Discord.TextChannel).send(
-                `${member.user.tag} has been un-isolated.`
+                `<@!${member.user.id}> has been un-isolated.`
             );
 
             return doc.save().catch((error) => client.logger.error(error));
