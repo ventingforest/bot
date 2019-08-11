@@ -6,13 +6,14 @@ const pat: Command = {
         if (!member)
             return msg.reply(`you need to specify who to pat ${emoji}`);
 
+        await msg.delete();
+
         if (member.user === msg.author) {
             return msg.channel.send(
                 `<@!${msg.author.id}> patted their own head ${emoji}`
             );
         }
 
-        await msg.delete();
         return msg.channel.send(
             `<@!${msg.author.id}> patted <@!${member.id}>'s head ${emoji}`
         );
