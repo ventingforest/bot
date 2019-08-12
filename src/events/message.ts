@@ -5,18 +5,6 @@ const message = async (client: Client, msg: Message) => {
     // ignore messages from other bots
     if (msg.author.bot) return undefined;
 
-    // random compliments
-    if (
-        Math.floor(Math.random() * 150) === 1 &&
-        msg.channel.id === client.config.channels.main
-    ) {
-        const compliment =
-            client.config.compliments[
-                Math.floor(Math.random() * client.config.compliments.length)
-            ];
-        return msg.reply(compliment);
-    }
-
     if (
         client.isProduction &&
         msg.mentions.roles.first() &&
@@ -98,6 +86,18 @@ const message = async (client: Client, msg: Message) => {
                 'there was an error trying to execute that command.'
             );
         }
+    }
+
+    // random compliments
+    if (
+        Math.floor(Math.random() * 150) === 1 &&
+        msg.channel.id === client.config.channels.main
+    ) {
+        const compliment =
+            client.config.compliments[
+                Math.floor(Math.random() * client.config.compliments.length)
+            ];
+        return msg.reply(compliment);
     }
 };
 
