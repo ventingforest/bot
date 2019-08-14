@@ -41,6 +41,10 @@ const message = async (client: Client, msg: Message) => {
         const command = client.commands.get(commandName);
         if (!command) return undefined;
 
+        // if the command was executed in general
+        if (msg.channel.id === client.config.channels.main)
+            return await msg.delete();
+
         // extract the config
         const config = command.config;
 
