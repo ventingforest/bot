@@ -24,8 +24,7 @@
         "pretty-bytes": "^5.3.0",
         "systeminformation": "^4.14.4",
         "winston": "3.2.0",
-        "winston-error": "^1.0.1",
-        "winston-raven-sentry": "^2.0.0"
+        "winston-error": "^1.0.1"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",

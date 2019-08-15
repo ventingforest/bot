@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as winston from 'winston';
 import * as winstonError from 'winston-error';
-import * as winstonSentry from 'winston-raven-sentry';
 import User from '../models/user';
 import * as fs from 'fs';
 import * as mongoose from 'mongoose';
@@ -63,8 +62,6 @@ export default class Client {
         auth: {
             discord: this.isProduction ? process.env.STABLE : process.env.BETA,
             mongo: process.env.MONGO,
-            timezone: process.env.TZDB,
-            sentry: process.env.SENTRY,
         },
         compliments: this.readLines('src/compliments.txt'),
     };
@@ -107,10 +104,6 @@ export default class Client {
                                       )
                               )
                     ),
-                }),
-                new winstonSentry({
-                    dsn: this.config.auth.sentry,
-                    level: 'error',
                 }),
             ],
         });
