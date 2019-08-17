@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 
 const poll: Command = {
-    run: async (kaida, msg, args) => {
+    run: async (client, msg, args) => {
         // get the topic and ensure it ends with a question mark
         let topic = args.join(' ');
         if (!topic.endsWith('?')) topic = `${topic}?`;
