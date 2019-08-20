@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import Client from '../structures/Client';
 
 const message = async (client: Client, msg: Message) => {
@@ -6,13 +6,24 @@ const message = async (client: Client, msg: Message) => {
     if (msg.author.bot) return undefined;
 
     if (
-        client.isProduction &&
         msg.mentions.roles.first() &&
-        msg.mentions.roles.first().id === client.config.channels.helper &&
+        msg.mentions.roles.first().id === client.config.roles.helper &&
         msg.channel.id != client.config.channels.helper
     ) {
+        const channel = client.bot.channels.get(
+            client.config.channels.helper
+        ) as TextChannel;
+
+        const embed = client
+            .createEmbed('random')
+            .setTitle(`${msg.author.username} needs help!`)
+            .addField('Where?', `<#${msg.channel.id}>`)
+            .addField('Message:', client.truncate(msg.content, 2048));
+
+        channel.send(embed);
+
         return msg.reply(
-            "Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#435923980336234516>. You can also request a one-on-one private session with a staff by typing `?private` in any channel."
+            `Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${client.config.channels.resources}>. You can also request a one-on-one private session with a staff by typing \`?private\` in any channel.`
         );
     }
 

@@ -8,7 +8,7 @@ export const hug: Command = {
         }
 
         if (member.user === client.bot.user) {
-            return msg.reply("a kiss? For me? Aww, that' so sweet! 😘");
+            return msg.reply("a kiss? For me? Aww, that's so sweet! 😘");
         }
 
         if (

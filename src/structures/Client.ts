@@ -54,6 +54,7 @@ export default class Client {
             helper: '471799568015818762',
             main: '435894444584075265',
             modlog: '499652797638115348',
+            resources: '435923980336234516',
         },
         emoji: {
             pat: '608220203876089886',
@@ -169,6 +170,18 @@ export default class Client {
 
         // return the embed
         return embed;
+    }
+
+    /**
+     * Shortens a string
+     * @param {string} str The string to shorten
+     * @param {number} n The max length the string may be
+     * @returns {string} The shortened string
+     */
+    public truncate(str: string, n: number): string {
+        if (str.length > n) {
+            return `${str.slice(0, n)}...`;
+        } else return str;
     }
 
     /**
