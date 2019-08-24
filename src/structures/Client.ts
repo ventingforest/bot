@@ -55,6 +55,7 @@ export default class Client {
             main: '435894444584075265',
             modlog: '499652797638115348',
             resources: '435923980336234516',
+            announcements: '435910303864061962',
         },
         emoji: {
             pat: '608220203876089886',

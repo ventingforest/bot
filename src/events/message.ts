@@ -43,6 +43,16 @@ const message = async (client: Client, msg: Message) => {
     );
     prefix = prefix === null ? prefix : prefix.join('');
 
+    // pluralkit check
+    if (
+        msg.content.toLowerCase().includes('what is pluralkit') ||
+        msg.content.toLowerCase().includes('what is pk')
+    ) {
+        return msg.reply(
+            `check the pins in <#${client.config.channels.announcements}> 📍`
+        );
+    }
+
     if (prefix != null) {
         // get the args and command name
         const args = msg.content.slice(prefix.length).split(/ +/);
