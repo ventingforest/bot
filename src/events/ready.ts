@@ -1,11 +1,11 @@
-import Client from '../structures/Client';
+import Client from '../structures/TVFClient';
 
-const ready = (client: Client) => {
-    client.bot.user.setActivity('over you cuties <3', {
-        type: 'WATCHING',
-    });
+const ready = (tvf: Client) => {
+	tvf.bot.user.setActivity('over you cuties <3', {
+		type: 'WATCHING',
+	});
 
-    return client.logger.info('TVF Bot is ready.');
+	return tvf.logger.info('TVF Bot is ready.');
 };
 
 export default ready;

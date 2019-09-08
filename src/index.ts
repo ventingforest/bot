@@ -1,10 +1,10 @@
 import { config as dotenv } from 'dotenv';
-import Client from './structures/Client';
+import Client from './structures/TVFClient';
 
 // load environmental variables
 dotenv();
 
 // create the client and start the bot
 new Client({
-    disabledEvents: ['TYPING_START'],
+	disabledEvents: ['TYPING_START'],
 }).start();

@@ -4,48 +4,65 @@
     "version": "1.0.0",
     "private": true,
     "main": "build/index.js",
-    "repository": "https://github.com/tvfdiscord/bot",
+    "repository": "https://github.com/ventingforest/bot",
     "author": "Jacob Smith",
-    "license": "MIT",
+    "license": "GLP-3.0",
     "scripts": {
         "dev": "gulp && cross-env NODE_ENV=development node build",
         "prod": "gulp && cross-env NODE_ENV=production node build",
-        "start": "node build",
-        "build": "gulp",
-        "clean": "del yarn.lock && rimraf node_modules && yarn"
+        "discordjs": "rimraf node_modules/discord.js && yarn add discordjs/discord.js",
+        "lint": "eslint src/**/*.ts",
+        "commit": "git-cz && git push"
     },
     "dependencies": {
+        "@octokit/rest": "^16.28.9",
         "axios": "^0.19.0",
         "discord.js": "discordjs/discord.js",
-        "dotenv": "^8.0.0",
+        "dotenv": "^8.1.0",
         "moment": "^2.24.0",
-        "mongoose": "^5.6.9",
+        "mongoose": "^5.6.13",
         "ms": "^2.1.2",
         "pretty-bytes": "^5.3.0",
-        "systeminformation": "^4.14.4",
-        "winston": "3.2.0",
-        "winston-error": "^1.0.1"
+        "systeminformation": "^4.14.8",
+        "winston": "3.2.1"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",
-        "@types/mongoose": "^5.5.12",
-        "@types/node": "^12.7.1",
-        "cross-env": "^5.2.0",
-        "del": "^5.0.0",
+        "@types/mongoose": "^5.5.17",
+        "@types/node": "^12.7.4",
+        "@typescript-eslint/eslint-plugin": "^2.1.0",
+        "@typescript-eslint/parser": "^2.1.0",
+        "commitizen": "^4.0.3",
+        "cross-env": "^5.2.1",
+        "cz-conventional-changelog": "^3.0.2",
+        "del": "^5.1.0",
+        "eslint": "^6.3.0",
+        "eslint-config-prettier": "^6.2.0",
+        "eslint-plugin-prettier": "^3.1.0",
         "gulp": "^4.0.2",
         "gulp-cli": "^2.2.0",
-        "gulp-plumber": "^1.2.1",
         "gulp-typescript": "^5.0.1",
         "gulp-uglify": "^3.0.2",
-        "husky": "^3.0.3",
+        "husky": "^3.0.5",
+        "lint-staged": "^9.2.5",
         "prettier": "^1.18.2",
-        "pretty-quick": "^1.11.1",
-        "rimraf": "^2.6.3",
-        "typescript": "^3.5.3"
+        "rimraf": "^3.0.0",
+        "typescript": "^3.6.2"
     },
     "husky": {
         "hooks": {
-            "pre-commit": "pretty-quick --staged"
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "src/**/*.ts": [
+            "yarn lint --fix",
+            "git add ."
+        ]
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
         }
     }
 }
