@@ -12,7 +12,7 @@
         "prod": "gulp && cross-env NODE_ENV=production node build",
         "discordjs": "rimraf node_modules/discord.js && yarn add discordjs/discord.js",
         "lint": "eslint src/**/*.ts",
-        "commit": "git-cz && git push"
+        "commit": "git add . && git-cz && git push"
     },
     "dependencies": {
         "@octokit/rest": "^16.28.9",
