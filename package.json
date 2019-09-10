@@ -22,8 +22,6 @@
         "moment": "^2.24.0",
         "mongoose": "^5.6.13",
         "ms": "^2.1.2",
-        "pretty-bytes": "^5.3.0",
-        "systeminformation": "^4.14.8",
         "winston": "3.2.1"
     },
     "devDependencies": {
