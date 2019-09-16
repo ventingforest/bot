@@ -3,7 +3,11 @@ import Client from '../structures/TVFClient';
 
 const message = async (tvf: Client, msg: Message) => {
 	// ignore messages from other bots
-	if (msg.author.bot) return undefined;
+	if (msg.author.bot && msg.author.id !== tvf.users.DYNO) return undefined;
+
+	if (msg.author.id === tvf.users.DYNO && msg.content.startsWith('**Welcome to TVF')) {
+		return await msg.react(tvf.emojis.WAVE);
+	}
 
 	if (
 		msg.mentions.roles.first() &&

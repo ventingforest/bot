@@ -1,5 +1,6 @@
 export default {
 	BIN: '🗑',
+	WAVE: '👋',
 
 	// custom
 	PAT: '608220203876089886',

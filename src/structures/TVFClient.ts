@@ -3,12 +3,14 @@ import * as winston from 'winston';
 import User from '../models/user';
 import * as fs from 'fs';
 import * as mongoose from 'mongoose';
+import * as Octokit from '@octokit/rest';
+
 import TVFEmojis from '../constants/Emojis';
 import TVFChannels from '../constants/Channels';
 import TVFRoles from '../constants/Roles';
 import TVFColours from '../constants/Colours';
+import TVFUsers from '../constants/Users';
 import TVFOther from '../constants/Other';
-import * as Octokit from '@octokit/rest';
 
 type Colour =
     | 'green'
@@ -47,7 +49,8 @@ export default class TVFClient {
     emojis = TVFEmojis;
     channels = TVFChannels;
     roles = TVFRoles;
-    colours = TVFColours;
+	colours = TVFColours;
+	users = TVFUsers;
     other = TVFOther;
 
     // config
