@@ -4,13 +4,13 @@
 # TVF Bot
 > The Venting Forest's Discord bot!
 
-[![Open Issues](https://img.shields.io/github/issues-raw/ventingforest/bot?label=Open%20Issues&logo=github&style=flat-square)](https://github.com/jsmiith/kaida/issues)
-[![Repo Size](https://img.shields.io/github/repo-size/ventingforest/bot?label=Repo%20Size&logo=github&style=flat-square)](https://github.com/jsmiith/kaida)
+[![Open Issues](https://img.shields.io/github/issues-raw/ventingforest/bot?label=Open%20Issues&logo=github&style=flat-square)](https://github.com/ventingforest/bot/issues)
+[![Repo Size](https://img.shields.io/github/repo-size/ventingforest/bot?label=Repo%20Size&logo=github&style=flat-square)](https://github.com/ventingforest/bot)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square&label=Commitizen&logo=github)](http://commitizen.github.io/cz-cli/)
 
 ## About 🤔
 
-TVF Bot has been heavily inspired by the code of [Kaida](https://github.com/jsmiith/kaida) (newt's bot). 
+TVF Bot has been heavily inspired by the code of [Taiga](https://github.com/jsmiith/taiga) (newt's bot). 
 
 **Note:** No support shall be given to outsiders trying to run it for themselves as it is maintained solely for The Venting Forest and it's members.
 
