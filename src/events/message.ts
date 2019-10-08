@@ -95,7 +95,7 @@ const message = async (tvf: Client, msg: Message) => {
 
 	// random compliments
 	if (
-		Math.floor(Math.random() * 150) === 1 &&
+		Math.floor(Math.random() * 300) === 1 &&
         (msg.channel.id === tvf.channels.GENERAL || msg.channel.id === tvf.channels.GENERAL2)
 	) {
 		const compliment =
