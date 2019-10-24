@@ -42,5 +42,8 @@ export default {
 		'you\'re even more beautiful on the inside than out 💖',
 		'you\'re more helpful than you realise 🤗',
 		'you are so special and amazing ✨',
+		'you make my earf quake 🌍',
+		'you\'re the uwu of my life ❤',
+		'you uwu my tears away 😇',
 	],
 };
