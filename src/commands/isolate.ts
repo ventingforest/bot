@@ -53,9 +53,9 @@ const isolate: Command = {
 				.addField('Isolated by', msg.author, true)
 				.addField('Reason', reason);
 
-			(tvf.bot.channels.get(
-				tvf.channels.FK,
-			) as Discord.TextChannel).send(embed);
+			(tvf.bot.channels.get(tvf.channels.FK) as Discord.TextChannel).send(
+				embed,
+			);
 
 			(tvf.bot.channels.get(
 				tvf.channels.MODLOG,
@@ -84,10 +84,7 @@ const isolate: Command = {
 			await member.roles
 				.add(roles, 'Un-isolated')
 				.catch((err) => tvf.logger.error(err));
-			await member.roles.remove(
-				tvf.roles.ISOLATION,
-				'Un-isolated',
-			);
+			await member.roles.remove(tvf.roles.ISOLATION, 'Un-isolated');
 
 			// update and save the document
 			doc.isolation.roles = [];
@@ -101,9 +98,9 @@ const isolate: Command = {
 					`<@!${member.user.id}> has been un-isolated by <@!${msg.author.id}>`,
 				);
 
-			(tvf.bot.channels.get(
-				tvf.channels.FK,
-			) as Discord.TextChannel).send(embed);
+			(tvf.bot.channels.get(tvf.channels.FK) as Discord.TextChannel).send(
+				embed,
+			);
 
 			(tvf.bot.channels.get(
 				tvf.channels.MODLOG,
@@ -125,6 +122,7 @@ const isolate: Command = {
 		description: 'Isolates a user!',
 		args: true,
 		usage: '<@user> *reason*',
+		allowGeneral: true,
 	},
 };
 

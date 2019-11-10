@@ -2,12 +2,15 @@ import { Message, TextChannel } from 'discord.js';
 import Client from '../structures/TVFClient';
 
 const message = async (tvf: Client, msg: Message) => {
-	// ignore messages from other bots
-	if (msg.author.bot && msg.author.id !== tvf.users.DYNO) return undefined;
-
-	if (msg.author.id === tvf.users.DYNO && msg.content.startsWith('**Welcome to TVF')) {
+	if (
+		msg.author.id === tvf.users.CARL &&
+        msg.content.startsWith('**Welcome to TVF')
+	) {
 		return await msg.react(tvf.emojis.WAVE);
 	}
+
+	// ignore messages from other bots
+	if (msg.author.bot) return undefined;
 
 	if (
 		msg.mentions.roles.first() &&
@@ -32,8 +35,12 @@ const message = async (tvf: Client, msg: Message) => {
 	}
 
 	// prefix matching
-	const prefixRegex = new RegExp(`^(<@!?${tvf.bot.user.id}> |${tvf.escapeRegex(tvf.prefix)})\\s*`);
-	const prefix = msg.content.match(prefixRegex) ? msg.content.match(prefixRegex)[0] : null;
+	const prefixRegex = new RegExp(
+		`^(<@!?${tvf.bot.user.id}> |${tvf.escapeRegex(tvf.prefix)})\\s*`,
+	);
+	const prefix = msg.content.match(prefixRegex)
+		? msg.content.match(prefixRegex)[0]
+		: null;
 
 	if (prefix) {
 		// get the args and command name
@@ -43,9 +50,6 @@ const message = async (tvf: Client, msg: Message) => {
 		// find the command
 		const command = tvf.commands.get(commandName);
 		if (!command) return undefined;
-
-		// if the command was executed in general
-		if (msg.channel.id === tvf.channels.GENERAL || msg.channel.id === tvf.channels.GENERAL2) {return await msg.delete();}
 
 		// extract the config
 		const config = command.config;
@@ -59,8 +63,7 @@ const message = async (tvf: Client, msg: Message) => {
                 )) ||
             ((config.module === 'Mod' &&
                 !msg.member.roles.has(tvf.roles.MOD)) ||
-                (config.module === 'FK' &&
-                    !msg.member.roles.has(tvf.roles.FK)))
+                (config.module === 'FK' && !msg.member.roles.has(tvf.roles.FK)))
 		) {
 			return msg.reply(
 				'you do not have permission to run that command 😢',
@@ -81,6 +84,14 @@ const message = async (tvf: Client, msg: Message) => {
 			return msg.reply(reply);
 		}
 
+		if (
+			!config.allowGeneral &&
+            (msg.channel.id === tvf.channels.GENERAL ||
+                msg.channel.id === tvf.channels.GENERAL2)
+		) {
+			return await msg.delete();
+		}
+
 		// attempt to execute the command
 		try {
 			return command.run(tvf, msg, args);
@@ -96,7 +107,8 @@ const message = async (tvf: Client, msg: Message) => {
 	// random compliments
 	if (
 		Math.floor(Math.random() * 300) === 1 &&
-        (msg.channel.id === tvf.channels.GENERAL || msg.channel.id === tvf.channels.GENERAL2)
+        (msg.channel.id === tvf.channels.GENERAL ||
+            msg.channel.id === tvf.channels.GENERAL2)
 	) {
 		const compliment =
             tvf.other.COMPLIMENTS[

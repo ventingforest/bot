@@ -8,6 +8,7 @@ const say: Command = {
 	config: {
 		name: 'say',
 		module: 'Admin',
+		allowGeneral: true,
 	},
 };
 

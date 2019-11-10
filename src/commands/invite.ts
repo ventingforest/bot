@@ -4,6 +4,7 @@ const invite: Command = {
 		name: 'invite',
 		module: 'Core',
 		description: 'Get an invite to the server.',
+		allowGeneral: true,
 	},
 };
 

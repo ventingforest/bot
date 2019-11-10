@@ -43,6 +43,7 @@ const evalCommand: Command = {
 		name: 'eval',
 		description: 'Allows administrators to run snippets of JavaScript.',
 		module: 'Admin',
+		allowGeneral: true,
 	},
 };
 

@@ -25,6 +25,7 @@ const dbupdate: Command = {
 	config: {
 		name: 'dbupdate',
 		module: 'Admin',
+		allowGeneral: true,
 	},
 };
 
