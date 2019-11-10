@@ -7,12 +7,12 @@ export const hug: Command = {
 
 		if (member.user === msg.author) {
 			return msg.channel.send(
-				`<@!${msg.author.id}> hugged themselves 👀`
+				`<@!${msg.author.id}> hugged themselves 👀`,
 			);
 		}
 
 		return msg.channel.send(
-			`<@!${msg.author.id}> hugged <@!${member.id}> 🤗💞`
+			`<@!${msg.author.id}> hugged <@!${member.id}> 🤗💞`,
 		);
 	},
 	config: {

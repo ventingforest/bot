@@ -14,7 +14,7 @@ const isolate: Command = {
 
 		if (!member) {
 			return msg.author.send(
-				'you had to mention a user in order to isolate them.'
+				'you had to mention a user in order to isolate them.',
 			);
 		}
 
@@ -54,18 +54,18 @@ const isolate: Command = {
 				.addField('Reason', reason);
 
 			(tvf.bot.channels.get(
-				tvf.channels.FK
+				tvf.channels.FK,
 			) as Discord.TextChannel).send(embed);
 
 			(tvf.bot.channels.get(
-				tvf.channels.MODLOG
+				tvf.channels.MODLOG,
 			) as Discord.TextChannel).send(embed);
 
 			// post a message in the isolated channel
 			return (tvf.bot.channels.get(
-				tvf.channels.ISOLATION
+				tvf.channels.ISOLATION,
 			) as Discord.TextChannel).send(
-				`Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`
+				`Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`,
 			);
 		}
 		else if (doc.isolation.isolated) {
@@ -86,7 +86,7 @@ const isolate: Command = {
 				.catch((err) => tvf.logger.error(err));
 			await member.roles.remove(
 				tvf.roles.ISOLATION,
-				'Un-isolated'
+				'Un-isolated',
 			);
 
 			// update and save the document
@@ -98,22 +98,22 @@ const isolate: Command = {
 				.createEmbed('green')
 				.setTitle('Un-isolated')
 				.setDescription(
-					`<@!${member.user.id}> has been un-isolated by <@!${msg.author.id}>`
+					`<@!${member.user.id}> has been un-isolated by <@!${msg.author.id}>`,
 				);
 
 			(tvf.bot.channels.get(
-				tvf.channels.FK
+				tvf.channels.FK,
 			) as Discord.TextChannel).send(embed);
 
 			(tvf.bot.channels.get(
-				tvf.channels.MODLOG
+				tvf.channels.MODLOG,
 			) as Discord.TextChannel).send(embed);
 
 			// post a message in the isolated channel
 			(tvf.bot.channels.get(
-				tvf.channels.ISOLATION
+				tvf.channels.ISOLATION,
 			) as Discord.TextChannel).send(
-				`<@!${member.user.id}> has been un-isolated.`
+				`<@!${member.user.id}> has been un-isolated.`,
 			);
 
 			return doc.save().catch((error) => tvf.logger.error(error));

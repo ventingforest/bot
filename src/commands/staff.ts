@@ -5,7 +5,7 @@ const staff: Command = {
 		const admins = msg.guild.roles
 			.get(tvf.roles.ADMIN)
 			.members.concat(
-				msg.guild.roles.get(tvf.roles.TECHADMIN).members
+				msg.guild.roles.get(tvf.roles.TECHADMIN).members,
 			);
 		const mods = msg.guild.roles
 			.get(tvf.roles.MOD)
@@ -32,7 +32,7 @@ const staff: Command = {
 					'Online',
 					fks.filter((fk) => fk.user.presence.status !== 'offline')
 						.size,
-					true
+					true,
 				);
 
 			return msg.channel.send(embed);
@@ -53,7 +53,7 @@ const staff: Command = {
 					'Online',
 					mods.filter((mod) => mod.user.presence.status !== 'offline')
 						.size,
-					true
+					true,
 				);
 
 			return msg.channel.send(embed);
@@ -73,9 +73,9 @@ const staff: Command = {
 				.addField(
 					'Online',
 					admins.filter(
-						(admin) => admin.user.presence.status !== 'offline'
+						(admin) => admin.user.presence.status !== 'offline',
 					).size,
-					true
+					true,
 				);
 
 			return msg.channel.send(embed);
@@ -85,22 +85,22 @@ const staff: Command = {
 				.createEmbed('orange')
 				.setTitle('Staff')
 				.setDescription(
-					`Total: **${admins.size + mods.size + fks.size}**`
+					`Total: **${admins.size + mods.size + fks.size}**`,
 				)
 				.addField(
 					`Administrators (${admins.size})`,
 					admins.map((admin) => `<@!${admin.user.id}>`),
-					true
+					true,
 				)
 				.addField(
 					`Moderators (${mods.size})`,
 					mods.map((mod) => `<@!${mod.user.id}>`),
-					true
+					true,
 				)
 				.addField(
 					`Forest Keepers (${fks.size})`,
 					fks.map((fk) => `<@!${fk.user.id}>`),
-					true
+					true,
 				);
 
 			return msg.channel.send(embed);

@@ -9,14 +9,14 @@ const docs: Command = {
 			: 'master';
 		const res = await axios.get(
 			`https://djsdocs.sorta.moe/v2/embed?src=${source}&q=${args.join(
-				' '
-			)}`
+				' ',
+			)}`,
 		);
 		const embed = res.data;
 
 		if (!embed) {
 			return msg.reply(
-				'I couldn\'t find the requested information. Maybe look for something that actually exists the next time!'
+				'I couldn\'t find the requested information. Maybe look for something that actually exists the next time!',
 			);
 		}
 
@@ -38,7 +38,7 @@ const docs: Command = {
 			react = await msg2.awaitReactions(
 				(reaction, user): boolean =>
 					reaction.emoji.name === tvf.emojis.BIN && user.id === msg.author.id,
-				{ max: 1, time: 5000, errors: ['time'] }
+				{ max: 1, time: 5000, errors: ['time'] },
 			);
 		}
 		catch (error) {

@@ -10,7 +10,7 @@ export const hug: Command = {
 
 		await msg.delete();
 		return msg.channel.send(
-			`<@!${member.id}>, ${compliment}\n*Requested by ${msg.author.tag}*`
+			`<@!${member.id}>, ${compliment}\n*Requested by ${msg.author.tag}*`,
 		);
 	},
 	config: {

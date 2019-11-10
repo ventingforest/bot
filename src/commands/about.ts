@@ -19,7 +19,7 @@ const about: Command = {
 				.addField('Voice Channels', msg.guild.channels.filter(c => c.type === 'voice').size, true)
 				.setFooter(
 					'Made with ❤ and discord.js',
-					'https://miro.medium.com/max/1200/1*mn6bOs7s6Qbao15PMNRyOA.png'
+					'https://miro.medium.com/max/1200/1*mn6bOs7s6Qbao15PMNRyOA.png',
 				);
 
 			return msg.channel.send(embed);
@@ -27,7 +27,7 @@ const about: Command = {
 		catch (error) {
 			tvf.logger.error(error);
 			return msg.reply(
-				'there was an issue whilst executing that command '
+				'there was an issue whilst executing that command ',
 			);
 		}
 	},

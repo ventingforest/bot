@@ -54,13 +54,13 @@ export const help: Command = {
 			embed
 				.addField(
 					'Support 🤗',
-					'If you ever spot a bug, please contact the Tech Admin and explain what is wrong so that they can get to fixing it.'
+					'If you ever spot a bug, please contact the Tech Admin and explain what is wrong so that they can get to fixing it.',
 				)
 				.setFooter(
 					`Current Tech Admin: ${msg.guild.roles
 						.get(tvf.roles.TECHADMIN)
 						.members.map((m) => m.user.tag)
-						.join(', ')}`
+						.join(', ')}`,
 				);
 		}
 		else {
@@ -77,14 +77,14 @@ export const help: Command = {
 			embed
 				.setTitle(`${name} Command Help`)
 				.setDescription(
-					description ? description : 'No description given.'
+					description ? description : 'No description given.',
 				)
 				.addField('Module ⚙', module);
 
 			if (usage) {
 				embed.addField(
 					'Usage 🤓',
-					`${tvf.isProduction ? 'tvf ' : 'beta '}${name} ${usage}`
+					`${tvf.isProduction ? 'tvf ' : 'beta '}${name} ${usage}`,
 				);
 			}
 		}

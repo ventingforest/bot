@@ -1,6 +1,5 @@
 export default {
 	INVITE: 'https://discord.gg/RS69ssj',
-	GITHUB: 'https://github.com/ventingforest/bot',
 	MOMENT_FORMAT: 'ddd, MMM Do, YYYY h:mm A',
 
 	COMPLIMENTS: [

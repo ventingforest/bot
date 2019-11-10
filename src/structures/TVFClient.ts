@@ -3,7 +3,6 @@ import * as winston from 'winston';
 import User from '../models/user';
 import * as fs from 'fs';
 import * as mongoose from 'mongoose';
-import * as Octokit from '@octokit/rest';
 
 import TVFEmojis from '../constants/Emojis';
 import TVFChannels from '../constants/Channels';
@@ -38,8 +37,6 @@ export default class TVFClient {
     logger: winston.Logger;
     commands: Discord.Collection<string, Command> = new Discord.Collection();
 	events: Discord.Collection<string, any> = new Discord.Collection();
-
-	octokit = new Octokit();
 
     db = {
     	users: User,
@@ -86,16 +83,16 @@ export default class TVFClient {
     					this.isProduction
     						? winston.format.printf(
     							(log) =>
-    								`${log.timestamp} - ${log.level}: ${log.message}`
+    								`${log.timestamp} - ${log.level}: ${log.message}`,
     						)
     						: winston.format.printf((log) =>
     							winston.format
     								.colorize()
     								.colorize(
     									log.level,
-    									`${log.timestamp} - ${log.level}: ${log.message}`
-    								)
-    						)
+    									`${log.timestamp} - ${log.level}: ${log.message}`,
+    								),
+    						),
     				),
     			}),
     		],
@@ -146,16 +143,16 @@ export default class TVFClient {
     	mongoose.connection
     		.on('connected', () =>
     			this.logger.info(
-    				`Mongoose default connection is open to ${this.auth.mongo}`
-    			)
+    				`Mongoose default connection is open to ${this.auth.mongo}`,
+    			),
     		)
     		.on('error', (error) =>
     			this.logger.error(
-    				`Mongoose default connection has occurred "${error}" error.`
-    			)
+    				`Mongoose default connection has occurred "${error}" error.`,
+    			),
     		)
     		.on('disconnect', () =>
-    			this.logger.info('Mongoose default connection is disconnected.')
+    			this.logger.info('Mongoose default connection is disconnected.'),
     		);
 
     	const eventFiles = fs
@@ -201,7 +198,7 @@ export default class TVFClient {
      */
     createEmbed(
     	colour: Colour = 'orange',
-    	timestamp: boolean = true
+    	timestamp: boolean = true,
     ): Discord.MessageEmbed {
     	// create an embed and set the default options
     	const embed = new Discord.MessageEmbed();
@@ -262,7 +259,7 @@ export default class TVFClient {
      */
     filterCommands(
     	commands: Discord.Collection<string, Command>,
-    	module: Module
+    	module: Module,
     ): string {
     	return commands
     		.filter((c) => c.config.module === module)
@@ -278,7 +275,7 @@ export default class TVFClient {
      */
     checkForMember(
     	msg: Discord.Message,
-    	args: string[]
+    	args: string[],
     ): Discord.GuildMember {
     	return msg.mentions.members.first() === undefined
     		? msg.guild.members.find(({ user }) => user.tag === args.join(' '))

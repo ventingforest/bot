@@ -15,7 +15,7 @@ const message = async (tvf: Client, msg: Message) => {
         msg.channel.id != tvf.channels.HELPER
 	) {
 		const channel = tvf.bot.channels.get(
-			tvf.channels.HELPER
+			tvf.channels.HELPER,
 		) as TextChannel;
 
 		const embed = tvf
@@ -27,7 +27,7 @@ const message = async (tvf: Client, msg: Message) => {
 		channel.send(embed);
 
 		return msg.reply(
-			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.RESOURCES}>. You can also request a one-on-one private session with a staff by typing \`?private\` in any channel.`
+			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.RESOURCES}>. You can also request a one-on-one private session with a staff by typing \`?private\` in any channel.`,
 		);
 	}
 
@@ -63,7 +63,7 @@ const message = async (tvf: Client, msg: Message) => {
                     !msg.member.roles.has(tvf.roles.FK)))
 		) {
 			return msg.reply(
-				'you do not have permission to run that command 😢'
+				'you do not have permission to run that command 😢',
 			);
 		}
 
@@ -88,7 +88,7 @@ const message = async (tvf: Client, msg: Message) => {
 		catch (error) {
 			tvf.logger.error(error);
 			return msg.reply(
-				'there was an error trying to execute that command.'
+				'there was an error trying to execute that command.',
 			);
 		}
 	}

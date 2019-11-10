@@ -9,12 +9,12 @@ const pat: Command = {
 
 		if (member.user === msg.author) {
 			return msg.channel.send(
-				`<@!${msg.author.id}> patted their own head ${emoji}`
+				`<@!${msg.author.id}> patted their own head ${emoji}`,
 			);
 		}
 
 		return msg.channel.send(
-			`<@!${msg.author.id}> patted <@!${member.id}>'s head ${emoji}`
+			`<@!${msg.author.id}> patted <@!${member.id}>'s head ${emoji}`,
 		);
 	},
 	config: {

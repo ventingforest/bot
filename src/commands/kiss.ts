@@ -20,7 +20,7 @@ const hug: Command = {
 
 		await msg.delete();
 		return msg.channel.send(
-			`<@!${msg.author.id}> kissed <@!${member.id}> 😘💞`
+			`<@!${msg.author.id}> kissed <@!${member.id}> 😘💞`,
 		);
 	},
 	config: {

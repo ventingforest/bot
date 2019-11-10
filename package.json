@@ -15,7 +15,6 @@
         "commit": "git add . && git-cz && git push"
     },
     "dependencies": {
-        "@octokit/rest": "^16.34.1",
         "axios": "^0.19.0",
         "discord.js": "discordjs/discord.js",
         "dotenv": "^8.2.0",
