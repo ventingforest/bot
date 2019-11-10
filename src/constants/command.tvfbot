@@ -1,0 +1,16 @@
+const commandName: Command = {
+	run: async (tvf, msg, args) => {
+
+	},
+	config: {
+		name: '',
+        description: '',
+		module: '',
+        args: false,
+        usage: '',
+        dm: false,
+		allowGeneral: false,
+	},
+};
+
+export default commandName;
