@@ -10,7 +10,7 @@
 
 ## About 🤔
 
-TVF Bot has been heavily inspired by the code of [Taiga](https://github.com/jsmiith/taiga) (newt's bot). 
+TVF Bot has been heavily inspired by the code of [Taiga](https://github.com/jsmiith/taiga) (newt's bot).
 
 **Note:** No support shall be given to outsiders trying to run it for themselves as it is maintained solely for The Venting Forest and it's members.
 
