@@ -6,7 +6,6 @@
 
 [![Open Issues](https://img.shields.io/github/issues-raw/ventingforest/bot?label=Open%20Issues&logo=github&style=flat-square)](https://github.com/ventingforest/bot/issues)
 [![Repo Size](https://img.shields.io/github/repo-size/ventingforest/bot?label=Repo%20Size&logo=github&style=flat-square)](https://github.com/ventingforest/bot)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square&label=Commitizen&logo=github)](http://commitizen.github.io/cz-cli/)
 
 ## About 🤔
 

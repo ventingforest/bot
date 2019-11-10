@@ -11,8 +11,7 @@
         "dev": "gulp && cross-env NODE_ENV=development node build",
         "prod": "gulp && cross-env NODE_ENV=production node build",
         "discordjs": "rimraf node_modules/discord.js && yarn add discordjs/discord.js",
-        "lint": "eslint src/**/*.ts",
-        "commit": "git add . && git-cz && git push"
+        "lint": "eslint src/**/*.ts"
     },
     "dependencies": {
         "axios": "^0.19.0",
@@ -29,9 +28,7 @@
         "@types/node": "^12.12.7",
         "@typescript-eslint/eslint-plugin": "^2.6.1",
         "@typescript-eslint/parser": "^2.6.1",
-        "commitizen": "^4.0.3",
         "cross-env": "^6.0.3",
-        "cz-conventional-changelog": "^3.0.2",
         "del": "^5.1.0",
         "eslint": "^6.6.0",
         "eslint-config-prettier": "^6.2.0",
@@ -56,10 +53,5 @@
             "yarn lint --fix",
             "git add ."
         ]
-    },
-    "config": {
-        "commitizen": {
-            "path": "./node_modules/cz-conventional-changelog"
-        }
     }
 }
