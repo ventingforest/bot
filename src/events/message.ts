@@ -2,12 +2,15 @@ import { Message, TextChannel } from 'discord.js';
 import Client from '../structures/TVFClient';
 
 const message = async (tvf: Client, msg: Message) => {
+	// reactions
 	if (
 		msg.author.id === tvf.users.CARL &&
         msg.content.startsWith('**Welcome to TVF')
 	) {
 		return await msg.react(tvf.emojis.WAVE);
 	}
+
+	if (msg.channel.id === tvf.channels.STARBOARD) return await msg.react(tvf.emojis.STAR);
 
 	// ignore messages from other bots
 	if (msg.author.bot) return undefined;
