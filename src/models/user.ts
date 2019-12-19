@@ -3,9 +3,11 @@ import * as mongoose from 'mongoose';
 export interface IUser extends mongoose.Document {
     tag: string;
     id: string;
-    isolation: {
-        isolated: boolean;
-        roles: string[];
+    isolated: boolean;
+    roles: string[];
+    private: {
+        requested: boolean;
+        id: string;
     };
 }
 
@@ -19,9 +21,11 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		isolation: {
-			isolated: Boolean,
-			roles: Array,
+		isolated: Boolean,
+		roles: Array,
+		private: {
+			requested: Boolean,
+			id: String,
 		},
 	},
 	{

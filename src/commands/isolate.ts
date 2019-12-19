@@ -29,7 +29,7 @@ const isolate: Command = {
 			return res;
 		});
 
-		if (!doc.isolation.isolated) {
+		if (!doc.isolated) {
 			// get an array of the member's roles
 			const roles = member.roles.map((r) => r.id);
 
@@ -40,8 +40,8 @@ const isolate: Command = {
 			await member.roles.add(tvf.roles.ISOLATION, 'Isolated');
 
 			// update and save the document
-			doc.isolation.roles = roles;
-			doc.isolation.isolated = true;
+			doc.roles = roles;
+			doc.isolated = true;
 
 			doc.save().catch((error) => tvf.logger.error(error));
 
@@ -68,15 +68,15 @@ const isolate: Command = {
 				`Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`,
 			);
 		}
-		else if (doc.isolation.isolated) {
+		else if (doc.isolated) {
 			// get the roles from the database
 			const roles: Discord.Collection<
                 string,
                 Discord.Role
             > = new Discord.Collection();
 
-			for (let i = 0; i < doc.isolation.roles.length; i++) {
-				const id = doc.isolation.roles[i];
+			for (let i = 0; i < doc.roles.length; i++) {
+				const id = doc.roles[i];
 				const role = msg.guild.roles.get(id);
 				roles.set(id, role);
 			}
@@ -87,8 +87,8 @@ const isolate: Command = {
 			await member.roles.remove(tvf.roles.ISOLATION, 'Un-isolated');
 
 			// update and save the document
-			doc.isolation.roles = [];
-			doc.isolation.isolated = false;
+			doc.roles = [];
+			doc.isolated = false;
 
 			// alert the staff
 			const embed = tvf

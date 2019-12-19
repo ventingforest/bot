@@ -36,7 +36,7 @@ export default class TVFClient {
     bot: Discord.Client;
     logger: winston.Logger;
     commands: Discord.Collection<string, Command> = new Discord.Collection();
-	events: Discord.Collection<string, any> = new Discord.Collection();
+    events: Discord.Collection<string, any> = new Discord.Collection();
 
     db = {
     	users: User,
@@ -46,8 +46,8 @@ export default class TVFClient {
     emojis = TVFEmojis;
     channels = TVFChannels;
     roles = TVFRoles;
-	colours = TVFColours;
-	users = TVFUsers;
+    colours = TVFColours;
+    users = TVFUsers;
     other = TVFOther;
 
     // config
@@ -55,7 +55,7 @@ export default class TVFClient {
     auth = {
     	discord: this.isProduction ? process.env.STABLE : process.env.BETA,
     	mongo: process.env.MONGO,
-    }
+    };
 
     /**
      * Constructs the Client class.
@@ -103,8 +103,8 @@ export default class TVFClient {
     			if (
     				argumentsList.length >= 2 ||
                     argumentsList.length <= 0 ||
-                    (typeof argumentsList[0] === 'string' ||
-                        argumentsList[0] instanceof String)
+                    typeof argumentsList[0] === 'string' ||
+                    argumentsList[0] instanceof String
     			) {
     				target.apply(logger, argumentsList);
     			}
@@ -130,7 +130,6 @@ export default class TVFClient {
     //                    ##      ##  #####    ##    ##   ##   #####   ####    ####
     //
     // ==============================================================================================================================================================================================================================================================================================================================================
-
 
     /**
      * Log the bot into Discord and the database.
@@ -248,7 +247,9 @@ export default class TVFClient {
     	if (str.length > n) {
     		return `${str.slice(0, n)}...`;
     	}
-    	else {return str;}
+    	else {
+    		return str;
+    	}
     }
 
     /**
@@ -273,20 +274,17 @@ export default class TVFClient {
      * @param {string[]} args - the arguments to the command.
      * @returns {Discord.GuildMember} a member mentioned in the message.
      */
-    checkForMember(
-    	msg: Discord.Message,
-    	args: string[],
-    ): Discord.GuildMember {
+    checkForMember(msg: Discord.Message, args: string[]): Discord.GuildMember {
     	return msg.mentions.members.first() === undefined
     		? msg.guild.members.find(({ user }) => user.tag === args.join(' '))
     		: msg.mentions.members.first();
     }
 
     /**
-	 * Escapes all regex from a string
-	 * @param {string} str The string to escape
-	 * @returns {string} The string, without any regex in it
-	 */
+     * Escapes all regex from a string
+     * @param {string} str The string to escape
+     * @returns {string} The string, without any regex in it
+     */
     escapeRegex(str: string): string {
     	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
