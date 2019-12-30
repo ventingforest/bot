@@ -10,7 +10,6 @@ const privateV: Command = {
 			await msg.delete();
 
 			// get the reason from the command
-			args.shift();
 			const reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
 
 			// get the author of the message from the database
@@ -165,7 +164,6 @@ const privateV: Command = {
 			`);
 
 			// get the reason from the command
-			args.shift();
 			const reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
 
 			// get the author of the message from the database
@@ -200,14 +198,14 @@ const privateV: Command = {
 					`Private venting session requested by ${msg.author.tag}`,
 				)
 				.setDescription(
-					`Start the session now by typing \`tvf private start ${id}\` in <!#${tvf.channels.PRIVATE}>`,
+					`Start the session now by typing \`tvf private start ${id}\` in <#!${tvf.channels.PRIVATE}>`,
 				)
 				.addField('User', msg.author.tag, true)
 				.addField('Session ID', id, true)
 				.addField('User ID', msg.author.id, true)
 				.addField('Reason', reason);
 
-			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
+			tvf.sendToChannel(tvf.channels.PRIVATE, `<@&${tvf.roles.FK}>`, embed);
 		}
 	},
 	config: {

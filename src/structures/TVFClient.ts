@@ -241,9 +241,10 @@ export default class TVFClient {
 	 * Send to a specific channel
 	 * @param {string} id The ID of the channel to send the message to
 	 * @param {any} content The content of the message
+	 * @param {any} params Any other parameters to be passed into the send function
 	 */
-    sendToChannel(id: string, content: any) {
-    	((this.bot.channels.get(id)) as Discord.TextChannel).send(content);
+    sendToChannel(id: string, content: any, ...params) {
+    	((this.bot.channels.get(id)) as Discord.TextChannel).send(content, ...params);
     }
 
     /**
