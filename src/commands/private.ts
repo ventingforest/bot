@@ -159,6 +159,18 @@ const privateV: Command = {
 		}
 		else {
 			await msg.delete();
+			msg.author.send(`
+				Your private venting request has been queued! Your session may begin quickly, or it may take a while, depending on how busy we are and how many staff are available - please stay online until your session begins, and you will receive a ping from The Venting Forest server when we're ready for you. **Do not send another request or spam the command; doing this may result in a ban from using private venting.**
+			
+				*If you think you've made a mistake and want to cancel your session, please DM an online Admin or Moderator ASAP.*
+				
+				__A few things to note before you start...__
+				
+				• Private sessions typically last only fifteen minutes, as such, the staff are not obliged to continue after this point. However, you can request more time.
+				• Our staff are *not* counsellors or medical professionals. They cannot offer you medical or deep life advice. 
+				• Your sessions can be viewed by all staff members, but no-one else, and staff are not allowed to share the contents elsewhere, **unless** you disclose that you or another are at serious risk, or you disclose something illegal.
+				• Staff reserve the right to transfer your session over to another for any given reason during your session.
+			`);
 
 			// get the reason from the command
 			args.shift();
