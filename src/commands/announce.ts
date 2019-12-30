@@ -10,7 +10,7 @@ const announce: Command = {
 			.setThumbnail(msg.guild.iconURL())
 			.setDescription(content);
 
-		return (msg.guild.channels.get(tvf.channels.ANNOUNCEMENTS) as TextChannel).send(embed);
+		return tvf.sendToChannel(tvf.channels.ANNOUNCEMENTS, embed);
 	},
 	config: {
 		name: 'announce',

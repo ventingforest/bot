@@ -53,20 +53,9 @@ const isolate: Command = {
 				.addField('Isolated by', msg.author, true)
 				.addField('Reason', reason);
 
-			(tvf.bot.channels.get(tvf.channels.FK) as Discord.TextChannel).send(
-				embed,
-			);
-
-			(tvf.bot.channels.get(
-				tvf.channels.MODLOG,
-			) as Discord.TextChannel).send(embed);
-
-			// post a message in the isolated channel
-			return (tvf.bot.channels.get(
-				tvf.channels.ISOLATION,
-			) as Discord.TextChannel).send(
-				`Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`,
-			);
+			tvf.sendToChannel(tvf.channels.FK, embed);
+			tvf.sendToChannel(tvf.channels.MODLOG, embed);
+			tvf.sendToChannel(tvf.channels.ISOLATION, `Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`);
 		}
 		else if (doc.isolated) {
 			// get the roles from the database
@@ -98,20 +87,9 @@ const isolate: Command = {
 					`<@!${member.user.id}> has been un-isolated by <@!${msg.author.id}>`,
 				);
 
-			(tvf.bot.channels.get(tvf.channels.FK) as Discord.TextChannel).send(
-				embed,
-			);
-
-			(tvf.bot.channels.get(
-				tvf.channels.MODLOG,
-			) as Discord.TextChannel).send(embed);
-
-			// post a message in the isolated channel
-			(tvf.bot.channels.get(
-				tvf.channels.ISOLATION,
-			) as Discord.TextChannel).send(
-				`<@!${member.user.id}> has been un-isolated.`,
-			);
+			tvf.sendToChannel(tvf.channels.FK, embed);
+			tvf.sendToChannel(tvf.channels.MODLOG, embed);
+			tvf.sendToChannel(tvf.channels.ISOLATION, `<@!${member.user.id}> has been un-isolated.`);
 
 			return doc.save().catch((error) => tvf.logger.error(error));
 		}

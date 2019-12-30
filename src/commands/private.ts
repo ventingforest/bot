@@ -10,7 +10,6 @@ const privateV: Command = {
 			await msg.delete();
 
 			// get the reason from the command
-			args.shift();
 			const reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
 
 			// get the author of the message from the database
@@ -20,8 +19,7 @@ const privateV: Command = {
 				},
 				(err, res) => {
 					if (err) return tvf.logger.error(err);
-
-					return res;
+					else return res;
 				},
 			);
 
@@ -43,9 +41,7 @@ const privateV: Command = {
 				.addField('User ID', msg.author.id, true)
 				.addField('Reason', reason);
 
-			(tvf.bot.channels.get(tvf.channels.FK) as Discord.TextChannel).send(
-				embed,
-			);
+			tvf.sendToChannel(tvf.channels.FK, embed);
 
 			doc.private.requested = false;
 			doc.private.id = null;
@@ -62,8 +58,7 @@ const privateV: Command = {
 				{ 'private.requested': true, 'private.id': id },
 				(err, res) => {
 					if (err) return tvf.logger.error(err);
-
-					return res;
+					else return res;
 				},
 			);
 
@@ -94,9 +89,7 @@ const privateV: Command = {
 				)
 				.addField('ID', doc.private.id, true);
 
-			(tvf.bot.channels.get(
-				tvf.channels.PRIVATE,
-			) as Discord.TextChannel).send(embed);
+			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
 
 			// update the document
 			doc.private.requested = false;
@@ -148,9 +141,7 @@ const privateV: Command = {
 				.addField('Recipient', member.user.tag, true)
 				.addField('Taken by', msg.author.tag, true);
 
-			(tvf.bot.channels.get(
-				tvf.channels.PRIVATE,
-			) as Discord.TextChannel).send(embed);
+			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
 
 			// update the document
 			doc.private.id = null;
@@ -160,20 +151,18 @@ const privateV: Command = {
 		else {
 			await msg.delete();
 			msg.author.send(`
-				Your private venting request has been queued! Your session may begin quickly, or it may take a while, depending on how busy we are and how many staff are available - please stay online until your session begins, and you will receive a ping from The Venting Forest server when we're ready for you. **Do not send another request or spam the command; doing this may result in a ban from using private venting.**
-			
-				*If you think you've made a mistake and want to cancel your session, please DM an online Admin or Moderator ASAP.*
-				
-				__A few things to note before you start...__
-				
-				• Private sessions typically last only fifteen minutes, as such, the staff are not obliged to continue after this point. However, you can request more time.
-				• Our staff are *not* counsellors or medical professionals. They cannot offer you medical or deep life advice. 
-				• Your sessions can be viewed by all staff members, but no-one else, and staff are not allowed to share the contents elsewhere, **unless** you disclose that you or another are at serious risk, or you disclose something illegal.
-				• Staff reserve the right to transfer your session over to another for any given reason during your session.
+Your private venting request has been queued! Your session may begin quickly, or it may take a while, depending on how busy we are and how many staff are available - please stay online until your session begins, and you will receive a ping from The Venting Forest server when we're ready for you. **Do not send another request or spam the command; doing this may result in a ban from using private venting.**
+*If you think you've made a mistake and want to cancel your session, please DM an online Admin or Moderator ASAP.*
+
+__A few things to note before you start...__
+
+• Private sessions typically last only fifteen minutes, as such, the staff are not obliged to continue after this point. However, you can request more time.
+• Our staff are *not* counsellors or medical professionals. They cannot offer you medical or deep life advice. 
+• Your sessions can be viewed by all staff members, but no-one else, and staff are not allowed to share the contents elsewhere, **unless** you disclose that you or another are at serious risk, or you disclose something illegal.
+• Staff reserve the right to transfer your session over to another for any given reason during your session.
 			`);
 
 			// get the reason from the command
-			args.shift();
 			const reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
 
 			// get the author of the message from the database
@@ -208,16 +197,14 @@ const privateV: Command = {
 					`Private venting session requested by ${msg.author.tag}`,
 				)
 				.setDescription(
-					`Start the session now by typing \`tvf private start ${id}\` in <!#${tvf.channels.PRIVATE}>`,
+					`Start the session now by typing \`tvf private start ${id}\` in the private venting channel.`,
 				)
 				.addField('User', msg.author.tag, true)
 				.addField('Session ID', id, true)
 				.addField('User ID', msg.author.id, true)
 				.addField('Reason', reason);
 
-			(tvf.bot.channels.get(tvf.channels.FK) as Discord.TextChannel).send(
-				embed,
-			);
+			tvf.sendToChannel(tvf.channels.FK, `<@&${tvf.roles.FK}>`, embed);
 		}
 	},
 	config: {
