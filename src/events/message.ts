@@ -20,17 +20,13 @@ const message = async (tvf: Client, msg: Message) => {
         msg.mentions.roles.first().id === tvf.roles.HELPER &&
         msg.channel.id != tvf.channels.HELPER
 	) {
-		const channel = tvf.bot.channels.get(
-			tvf.channels.HELPER,
-		) as TextChannel;
-
 		const embed = tvf
 			.createEmbed('random')
 			.setTitle(`${msg.author.username} needs help!`)
 			.addField('Where?', `<#${msg.channel.id}>`)
 			.addField('Message:', tvf.truncate(msg.content, 2048));
 
-		channel.send(embed);
+		tvf.sendToChannel(tvf.channels.HELPER, embed);
 
 		return msg.reply(
 			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.RESOURCES}>. You can also request a one-on-one private session with a staff by typing \`?private\` in any channel.`,

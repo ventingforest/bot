@@ -238,6 +238,15 @@ export default class TVFClient {
     }
 
     /**
+	 * Send to a specific channel
+	 * @param {string} id The ID of the channel to send the message to
+	 * @param {any} content The content of the message
+	 */
+    sendToChannel(id: string, content: any) {
+    	((this.bot.channels.get(id)) as Discord.TextChannel).send(content);
+    }
+
+    /**
      * Shortens a string
      * @param {string} str The string to shorten
      * @param {number} n The max length the string may be

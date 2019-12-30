@@ -20,8 +20,7 @@ const privateV: Command = {
 				},
 				(err, res) => {
 					if (err) return tvf.logger.error(err);
-
-					return res;
+					else return res;
 				},
 			);
 
@@ -43,9 +42,7 @@ const privateV: Command = {
 				.addField('User ID', msg.author.id, true)
 				.addField('Reason', reason);
 
-			(tvf.bot.channels.get(tvf.channels.FK) as Discord.TextChannel).send(
-				embed,
-			);
+			tvf.sendToChannel(tvf.channels.FK, embed);
 
 			doc.private.requested = false;
 			doc.private.id = null;
@@ -62,8 +59,7 @@ const privateV: Command = {
 				{ 'private.requested': true, 'private.id': id },
 				(err, res) => {
 					if (err) return tvf.logger.error(err);
-
-					return res;
+					else return res;
 				},
 			);
 
@@ -94,9 +90,7 @@ const privateV: Command = {
 				)
 				.addField('ID', doc.private.id, true);
 
-			(tvf.bot.channels.get(
-				tvf.channels.PRIVATE,
-			) as Discord.TextChannel).send(embed);
+			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
 
 			// update the document
 			doc.private.requested = false;
@@ -148,9 +142,7 @@ const privateV: Command = {
 				.addField('Recipient', member.user.tag, true)
 				.addField('Taken by', msg.author.tag, true);
 
-			(tvf.bot.channels.get(
-				tvf.channels.PRIVATE,
-			) as Discord.TextChannel).send(embed);
+			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
 
 			// update the document
 			doc.private.id = null;
@@ -215,9 +207,7 @@ const privateV: Command = {
 				.addField('User ID', msg.author.id, true)
 				.addField('Reason', reason);
 
-			(tvf.bot.channels.get(tvf.channels.FK) as Discord.TextChannel).send(
-				embed,
-			);
+			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
 		}
 	},
 	config: {
