@@ -2,7 +2,7 @@ import User from '../models/user';
 import * as Discord from 'discord.js';
 import * as uniqid from 'uniqid';
 
-const privateV: Command = {
+const privateVenting: Command = {
 	run: async (tvf, msg, args) => {
 		const subcommand = args[0];
 
@@ -10,6 +10,7 @@ const privateV: Command = {
 			await msg.delete();
 
 			// get the reason from the command
+			args.shift();
 			const reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
 
 			// get the author of the message from the database
@@ -204,7 +205,7 @@ __A few things to note before you start...__
 				.addField('User ID', msg.author.id, true)
 				.addField('Reason', reason);
 
-			tvf.sendToChannel(tvf.channels.FK, `<@&${tvf.roles.FK}>`, embed);
+			tvf.sendToChannel(tvf.channels.FK, tvf.isProduction ? `<@&${tvf.roles.FK}>` : '', embed);
 		}
 	},
 	config: {
@@ -216,4 +217,4 @@ __A few things to note before you start...__
 	},
 };
 
-export default privateV;
+export default privateVenting;
