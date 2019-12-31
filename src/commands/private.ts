@@ -1,6 +1,7 @@
 import User from '../models/user';
 import * as Discord from 'discord.js';
 import * as uniqid from 'uniqid';
+import * as moment from 'moment';
 
 const privateVenting: Command = {
 	run: async (tvf, msg, args) => {
@@ -32,6 +33,8 @@ const privateVenting: Command = {
 			}
 
 			// post a message in the forest keeper channel
+			const cancelledAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
+
 			const embed = tvf
 				.createEmbed('red')
 				.setTitle(
@@ -40,7 +43,8 @@ const privateVenting: Command = {
 				.addField('User', msg.author.tag, true)
 				.addField('Session ID', doc.private.id, true)
 				.addField('User ID', msg.author.id, true)
-				.addField('Reason', reason);
+				.addField('Reason', reason)
+				.setFooter(`Cancelled at ${cancelledAt}`);
 
 			tvf.sendToChannel(tvf.channels.FK, embed);
 
@@ -80,6 +84,8 @@ const privateVenting: Command = {
 			await member.roles.add(tvf.roles.PRIVATE, 'Private venting');
 
 			// post a message in the private venting
+			const startedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
+
 			const embed = tvf
 				.createEmbed('green')
 				.setTitle(`Welcome to private venting, ${member.user.tag}`)
@@ -88,9 +94,18 @@ const privateVenting: Command = {
 					msg.author.tag,
 					true,
 				)
-				.addField('ID', doc.private.id, true);
+				.addField('ID', doc.private.id, true)
+				.setFooter(`Started at ${startedAt}`);
+
+			const takenEmbed = tvf
+				.createEmbed('green')
+				.setTitle(`${member.user.tag}'s private venting session is currently being taken`)
+				.addField('Taken by', msg.author.tag, true)
+				.addField('Session ID', doc.private.id, true)
+				.setFooter(`Started at ${startedAt}`);
 
 			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
+			tvf.sendToChannel(tvf.channels.FK, takenEmbed);
 
 			// update the document
 			doc.private.requested = false;
@@ -140,15 +155,26 @@ const privateVenting: Command = {
 			await member.roles.remove(tvf.roles.PRIVATE, 'End private venting');
 
 			// post a message in the private venting
+			const endedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
+
 			const embed = tvf
 				.createEmbed('red')
 				.setTitle('Session over.')
-				.addField('ID', doc.private.id, true)
+				.addField('Session ID', doc.private.id, true)
 				.addField('Recipient', member.user.tag, true)
 				.addField('Taken by', msg.author.tag, true)
-				.addField('Notes', notes);
+				.addField('Notes', notes)
+				.setFooter(`Ended at ${endedAt}`);
+
+			const finishedEmbed = tvf
+				.createEmbed('red')
+				.setTitle(`${msg.author.tag} has finished taking ${member.user.tag}'s session`)
+				.addField('Session ID', doc.private.id, true)
+				.addField('Notes', notes)
+				.setFooter(`Ended at ${endedAt}`);
 
 			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
+			tvf.sendToChannel(tvf.channels.FK, finishedEmbed);
 
 			// update the document
 			doc.private.id = null;
@@ -198,6 +224,8 @@ __A few things to note before you start...__
 			doc.save().catch((error) => tvf.logger.error(error));
 
 			// post a message in the forest keeper channel
+			const requestedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
+
 			const embed = tvf
 				.createEmbed('green')
 				.setTitle(
@@ -209,7 +237,8 @@ __A few things to note before you start...__
 				.addField('User', msg.author.tag, true)
 				.addField('Session ID', id, true)
 				.addField('User ID', msg.author.id, true)
-				.addField('Reason', reason);
+				.addField('Reason', reason)
+				.setFooter(`Requested at ${requestedAt}`);
 
 			tvf.sendToChannel(tvf.channels.FK, tvf.isProduction ? `<@&${tvf.roles.FK}>` : '', embed);
 		}
