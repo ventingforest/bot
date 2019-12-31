@@ -103,6 +103,11 @@ const privateVenting: Command = {
 		) {
 			const id = args[1];
 
+			// get end notes from the command
+			args.shift();
+			args.shift();
+			const notes = args.join(' ') ? args.join(' ') : '*No notes provided.*';
+
 			// try and find a user with that id in their document
 			const doc = await User.findOne(
 				{ 'private.requested': false, 'private.id': id },
@@ -140,7 +145,8 @@ const privateVenting: Command = {
 				.setTitle('Session over.')
 				.addField('ID', doc.private.id, true)
 				.addField('Recipient', member.user.tag, true)
-				.addField('Taken by', msg.author.tag, true);
+				.addField('Taken by', msg.author.tag, true)
+				.addField('Notes', notes);
 
 			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
 
