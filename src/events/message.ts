@@ -55,14 +55,7 @@ const message = async (tvf: Client, msg: Message) => {
 
 		// checks
 		if (
-			(config.module === 'Admin' &&
-                !(
-                	msg.member.roles.has(tvf.roles.ADMIN) ||
-                    msg.member.roles.has(tvf.roles.TECHADMIN)
-                )) ||
-            ((config.module === 'Mod' &&
-                !msg.member.roles.has(tvf.roles.MOD)) ||
-                (config.module === 'FK' && !msg.member.roles.has(tvf.roles.FK)))
+			(config.module === 'Admin' && !tvf.isAdmin(msg.author) || (config.module === 'Mod' && !tvf.isMod(msg.author)) || (config.module === 'FK' && !tvf.isFK(msg.author)))
 		) {
 			return msg.reply(
 				'you do not have permission to run that command 😢',

@@ -36,7 +36,8 @@ export default class TVFClient {
     bot: Discord.Client;
     logger: winston.Logger;
     commands: Discord.Collection<string, Command> = new Discord.Collection();
-    events: Discord.Collection<string, any> = new Discord.Collection();
+	events: Discord.Collection<string, any> = new Discord.Collection();
+	server: Discord.Guild;
 
     db = {
     	users: User,
@@ -134,9 +135,10 @@ export default class TVFClient {
     /**
      * Log the bot into Discord and the database.
      */
-    start() {
+    async start() {
     	mongoose.connect(this.auth.mongo, {
     		useNewUrlParser: true,
+    		useUnifiedTopology: true,
     	});
 
     	mongoose.connection
@@ -186,7 +188,11 @@ export default class TVFClient {
     		this.logger.info(`${command.config.name} loaded.`);
     	}
 
-    	return this.bot.login(this.auth.discord);
+    	await this.bot.login(this.auth.discord);
+
+    	// save the guild to the server property
+    	this.server = this.bot.guilds.get('435894444101861408');
+    	return console.log(this.server.id);
     }
 
     /**
@@ -245,6 +251,33 @@ export default class TVFClient {
 	 */
     sendToChannel(id: string, content: any, ...params) {
     	((this.bot.channels.get(id)) as Discord.TextChannel).send(content, ...params);
+    }
+
+    /**
+	 * Checks if a user is a Forest Keeper
+	 * @param {Discord.User} user The user to run the check on
+	 * @returns a boolean specifying whether the user is a forest keeper or not
+	 */
+    isFK(user: Discord.User): boolean {
+    	return this.server.member(user).roles.has(this.roles.FK);
+    }
+
+    /**
+	 * Checks if a user is a Moderator
+	 * @param {Discord.User} user The user to run the check on
+	 * @returns a boolean specifying whether the user is a moderator or not
+	 */
+    isMod(user: Discord.User): boolean {
+    	return this.server.member(user).roles.has(this.roles.MOD);
+    }
+
+    /**
+	 * Checks if a user is an Administrator/Tech Admin
+	 * @param {Discord.User} user The user to run the check on
+	 * @returns a boolean specifying whether the user is an administrator or not
+	 */
+    isAdmin(user: Discord.User): boolean {
+    	return this.server.member(user).roles.has(this.roles.ADMIN) || this.server.member(user).roles.has(this.roles.TECHADMIN);
     }
 
     /**

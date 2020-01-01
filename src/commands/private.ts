@@ -52,10 +52,8 @@ const privateVenting: Command = {
 			doc.private.id = null;
 			doc.save().catch((error) => tvf.logger.error(error));
 		}
-		else if (
-			subcommand === 'start' &&
-            msg.guild.member(msg.author).roles.has(tvf.roles.FK)
-		) {
+		else if (subcommand === 'start' && tvf.isFK(msg.author)) {
+			await msg.delete();
 			const id = args[1];
 
 			// try and find a user with that id in their document
@@ -112,10 +110,7 @@ const privateVenting: Command = {
 			doc.roles = roles;
 			doc.save().catch((error) => tvf.logger.error(error));
 		}
-		else if (
-			subcommand === 'end' &&
-            msg.guild.member(msg.author).roles.has(tvf.roles.FK)
-		) {
+		else if ((subcommand === 'end' || subcommand === 'stop') && tvf.isFK(msg.author)) {
 			const id = args[1];
 
 			// get end notes from the command
