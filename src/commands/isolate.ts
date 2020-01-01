@@ -1,5 +1,6 @@
 import User from '../models/user';
 import * as Discord from 'discord.js';
+import * as moment from 'moment';
 
 const isolate: Command = {
 	run: async (tvf, msg, args) => {
@@ -46,12 +47,15 @@ const isolate: Command = {
 			doc.save().catch((error) => tvf.logger.error(error));
 
 			// alert the staff
+			const isolatedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
+
 			const embed = tvf
 				.createEmbed('red')
 				.setTitle('Isolated')
 				.addField('Target', member.user, true)
 				.addField('Isolated by', msg.author, true)
-				.addField('Reason', reason);
+				.addField('Reason', reason)
+				.setFooter(`Isolated at ${isolatedAt}`);
 
 			tvf.sendToChannel(tvf.channels.FK, embed);
 			tvf.sendToChannel(tvf.channels.MODLOG, embed);
@@ -80,16 +84,19 @@ const isolate: Command = {
 			doc.isolated = false;
 
 			// alert the staff
+			const unisolatedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
+
 			const embed = tvf
 				.createEmbed('green')
 				.setTitle('Un-isolated')
-				.setDescription(
-					`<@!${member.user.id}> has been un-isolated by <@!${msg.author.id}>`,
-				);
+				.addField('Target', member.user, true)
+				.addField('Un-isolated by', msg.author, true)
+				.addField('Notes', reason)
+				.setFooter(`Un-isolated at ${unisolatedAt}`);
 
 			tvf.sendToChannel(tvf.channels.FK, embed);
 			tvf.sendToChannel(tvf.channels.MODLOG, embed);
-			tvf.sendToChannel(tvf.channels.ISOLATION, `<@!${member.user.id}> has been un-isolated.`);
+			tvf.sendToChannel(tvf.channels.ISOLATION, embed);
 
 			return doc.save().catch((error) => tvf.logger.error(error));
 		}
