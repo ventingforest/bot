@@ -11,17 +11,25 @@
         "dev": "gulp && cross-env NODE_ENV=development node build",
         "prod": "gulp && cross-env NODE_ENV=production node build",
         "discordjs": "rimraf node_modules/discord.js && yarn add discordjs/discord.js",
-        "lint": "eslint src/**/*.ts"
+        "lint": "eslint src/**/*.ts",
+        "start": "npm run prod"
     },
     "dependencies": {
         "axios": "^0.19.0",
+        "cross-env": "^6.0.3",
+        "del": "^5.1.0",
         "discord.js": "discordjs/discord.js",
         "dotenv": "^8.2.0",
+        "gulp": "^4.0.2",
+        "gulp-cli": "^2.2.0",
+        "gulp-typescript": "^6.0.0-alpha.1",
+        "gulp-uglify": "^3.0.2",
         "moment": "^2.24.0",
         "mongoose": "^5.8.1",
         "ms": "^2.1.2",
         "uniqid": "^5.2.0",
-        "winston": "3.2.1"
+        "winston": "3.2.1",
+        "typescript": "^3.7.3"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",
@@ -29,20 +37,13 @@
         "@types/node": "^12.12.20",
         "@typescript-eslint/eslint-plugin": "^2.12.0",
         "@typescript-eslint/parser": "^2.12.0",
-        "cross-env": "^6.0.3",
-        "del": "^5.1.0",
         "eslint": "^6.7.2",
         "eslint-config-prettier": "^6.7.0",
         "eslint-plugin-prettier": "^3.1.2",
-        "gulp": "^4.0.2",
-        "gulp-cli": "^2.2.0",
-        "gulp-typescript": "^6.0.0-alpha.1",
-        "gulp-uglify": "^3.0.2",
         "husky": "^3.1.0",
         "lint-staged": "^9.4.2",
         "prettier": "^1.19.1",
-        "rimraf": "^3.0.0",
-        "typescript": "^3.7.3"
+        "rimraf": "^3.0.0"
     },
     "husky": {
         "hooks": {
