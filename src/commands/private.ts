@@ -1,6 +1,6 @@
 import User from '../models/user';
 import * as Discord from 'discord.js';
-import * as uniqid from 'uniqid';
+import * as shortid from 'shortid';
 import * as moment from 'moment';
 
 const privateVenting: Command = {
@@ -10,9 +10,51 @@ const privateVenting: Command = {
 		if (subcommand === 'cancel') {
 			await msg.delete();
 
-			// get the reason from the command
+			// get the reason and any mentioned ID from the command
+			const id = args[1];
 			args.shift();
-			const reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
+			let reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
+
+			// calculate the cancelled at time
+			const cancelledAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
+
+			// check if a staff member run this command, and it has an ID after it
+			if (id && tvf.isFK(msg.author)) {
+				// get the requester's document frsom the database
+				const doc = await User.findOne({ 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
+
+				// update the reason
+				args.shift();
+				reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
+
+				// post an announcement in the forest keeper channel
+				const embed = tvf
+					.createEmbed('red')
+					.setTitle(`${msg.author.tag} has cancelled ${doc.tag}'s session`)
+					.addField('Session ID', doc.private.id, true)
+					.addField('Requester ID', doc.id, true)
+					.addField('Canceller ID', msg.author.id, true)
+					.addField('Reason', reason)
+					.setFooter(`Cancelled at ${cancelledAt}`);
+
+				tvf.sendToChannel(tvf.channels.FK, embed);
+
+				// inform the requester that their session has been cancelled
+				const requester = msg.guild.member(doc.id);
+				const requesterEmbed = tvf
+					.createEmbed('red')
+					.setTitle('A member of staff has cancelled your private venting session!')
+					.setDescription('If you believe this has been done in error, don\'t hesitate to contact a member of staff.')
+					.addField('Reason', reason)
+					.setFooter(`Cancelled at ${cancelledAt}`);
+
+				requester.send(requesterEmbed);
+
+				// update the document
+				doc.private.requested = false;
+				doc.private.id = undefined;
+				return doc.save().catch(err => tvf.logger.error(err));
+			}
 
 			// get the author of the message from the database
 			const doc = await User.findOne(
@@ -33,14 +75,11 @@ const privateVenting: Command = {
 			}
 
 			// post a message in the forest keeper channel
-			const cancelledAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
-
 			const embed = tvf
 				.createEmbed('red')
 				.setTitle(
-					`Private venting session cancelled by ${msg.author.tag}`,
+					`${msg.author.tag} has cancelled their private venting session.`,
 				)
-				.addField('User', msg.author.tag, true)
 				.addField('Session ID', doc.private.id, true)
 				.addField('User ID', msg.author.id, true)
 				.addField('Reason', reason)
@@ -66,8 +105,8 @@ const privateVenting: Command = {
 			);
 
 			if (!doc) {
-				return msg.channel.send(
-					'That is an invalid ID, or the session has already been started!',
+				return msg.reply(
+					`\`${id}\` is an invalid ID, or the session associated with the ID has already been started!`,
 				);
 			}
 			const member = msg.guild.member(doc.id);
@@ -128,7 +167,7 @@ const privateVenting: Command = {
 				},
 			);
 
-			if (!doc) return msg.channel.send('That is an invalid ID!');
+			if (!doc) return msg.reply(`\`${id}\` is an invalid ID!`);
 			const member = msg.guild.member(doc.id);
 
 			// get the roles from the database
@@ -213,7 +252,7 @@ __A few things to note before you start...__
 			}
 
 			// create an ID for the session, and update the database
-			const id = uniqid();
+			const id = shortid.generate();
 			doc.private.requested = true;
 			doc.private.id = id;
 			doc.save().catch((error) => tvf.logger.error(error));

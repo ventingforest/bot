@@ -192,7 +192,6 @@ export default class TVFClient {
 
     	// save the guild to the server property
     	this.server = this.bot.guilds.get('435894444101861408');
-    	return console.log(this.server.id);
     }
 
     /**

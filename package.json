@@ -27,9 +27,9 @@
         "moment": "^2.24.0",
         "mongoose": "^5.8.1",
         "ms": "^2.1.2",
-        "uniqid": "^5.2.0",
-        "winston": "3.2.1",
-        "typescript": "^3.7.3"
+        "shortid": "^2.2.15",
+        "typescript": "^3.7.3",
+        "winston": "3.2.1"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",
