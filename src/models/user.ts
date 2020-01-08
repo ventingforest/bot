@@ -7,7 +7,8 @@ export interface IUser extends mongoose.Document {
     roles: string[];
     private: {
         requested: boolean;
-        id: string;
+		id: string;
+		reason: string;
     };
 }
 
@@ -26,6 +27,7 @@ const userSchema = new mongoose.Schema(
 		private: {
 			requested: Boolean,
 			id: String,
+			reason: String,
 		},
 	},
 	{

@@ -52,7 +52,8 @@ const privateVenting: Command = {
 
 				// update the document
 				doc.private.requested = false;
-				doc.private.id = undefined;
+				doc.private.id = null;
+				doc.private.reason = null;
 				return doc.save().catch(err => tvf.logger.error(err));
 			}
 
@@ -89,7 +90,35 @@ const privateVenting: Command = {
 
 			doc.private.requested = false;
 			doc.private.id = null;
+			doc.private.reason = null;
 			doc.save().catch((error) => tvf.logger.error(error));
+		}
+		else if (subcommand === 'list' && tvf.isFK(msg.author)) {
+			// collect the documents of all users that have a pending session
+			const docs = await User.find({ 'private.requested': true }, (err, res) => err ? tvf.logger.error(err) : res);
+
+			// prepare an embed
+			const embed = tvf
+				.createEmbed('green')
+				.setTitle('Pending private venting sessions...')
+				.setFooter(`${docs.length} sessions pending.`);
+
+			// loop through all of the documents and add fields
+			docs.map((doc, i) => {
+				++i;
+
+				// seperate embeds every 25 fields
+				if (i % 25 === 0) {
+					msg.channel.send(embed);
+					embed.fields = [];
+				}
+
+				// add details to the embed
+				embed.addField(`${i}. ${doc.tag}`, `Reason: ${doc.private.reason}\nSession ID: ${doc.private.id}`);
+			});
+
+			// send the embed
+			return msg.channel.send(embed);
 		}
 		else if (subcommand === 'start' && tvf.isFK(msg.author)) {
 			await msg.delete();
@@ -255,6 +284,7 @@ __A few things to note before you start...__
 			const id = shortid.generate();
 			doc.private.requested = true;
 			doc.private.id = id;
+			doc.private.reason = reason;
 			doc.save().catch((error) => tvf.logger.error(error));
 
 			// post a message in the forest keeper channel
