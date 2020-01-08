@@ -44,6 +44,7 @@ const privateVenting: Command = {
 				const requesterEmbed = tvf
 					.createEmbed('red')
 					.setTitle('A member of staff has cancelled your private venting session!')
+					.setThumbnail('https://i.imgur.com/bUVYqq9.png')
 					.setDescription('If you believe this has been done in error, don\'t hesitate to contact a member of staff.')
 					.addField('Reason', reason)
 					.setFooter(`Cancelled at ${cancelledAt}`);
@@ -170,7 +171,7 @@ const privateVenting: Command = {
 				.addField('Session ID', doc.private.id, true)
 				.setFooter(`Started at ${startedAt}`);
 
-			tvf.sendToChannel(tvf.channels.PRIVATE, embed);
+			tvf.sendToChannel(tvf.channels.PRIVATE, `<@!${doc.id}>`, embed);
 			tvf.sendToChannel(tvf.channels.FK, takenEmbed);
 
 			// update the document
@@ -246,17 +247,6 @@ const privateVenting: Command = {
 		}
 		else {
 			await msg.delete();
-			msg.author.send(`
-Your private venting request has been queued! Your session may begin quickly, or it may take a while, depending on how busy we are and how many staff are available - please stay online until your session begins, and you will receive a ping from The Venting Forest server when we're ready for you. **Do not send another request or spam the command; doing this may result in a ban from using private venting.**
-*If you think you've made a mistake and want to cancel your session, please DM an online Admin or Moderator ASAP.*
-
-__A few things to note before you start...__
-
-• Private sessions typically last only fifteen minutes, as such, the staff are not obliged to continue after this point. However, you can request more time.
-• Our staff are *not* counsellors or medical professionals. They cannot offer you medical or deep life advice. 
-• Your sessions can be viewed by all staff members, but no-one else, and staff are not allowed to share the contents elsewhere, **unless** you disclose that you or another are at serious risk, or you disclose something illegal.
-• Staff reserve the right to transfer your session over to another for any given reason during your session.
-			`);
 
 			// get the reason from the command
 			const reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
@@ -305,6 +295,19 @@ __A few things to note before you start...__
 				.setFooter(`Requested at ${requestedAt}`);
 
 			tvf.sendToChannel(tvf.channels.FK, tvf.isProduction ? `<@&${tvf.roles.FK}>` : '', embed);
+
+			// send a message to the requester
+			const requesterEmbed = tvf
+				.createEmbed('green')
+				.setTitle('Your private venting session has been requested.')
+				.setDescription('Your session may begin quickly, or it may take some time - it depends on how busy we are, how many staff are available, and whether any staff are comfortable with taking it. Please remain online until your session begins. You\'ll recieve a ping from the server when we\'re ready for you. A few things to note before we start...')
+				.setThumbnail('https://i.imgur.com/bUVYqq9.png')
+				.addField('The 15 minute rule', 'Private venting sessions typically only last fifteen minutes. As such, staff are not obliged to continue after this point. However, you can request more time.')
+				.addField('Our staff are not counsellors or medical professionals', 'They can not offer you medical or deep life advice.')
+				.addField('Who can view your session', 'Your sessions can be viewed by all staff members, but no-one else and staff are not allowed to share the contents elsewhere, **unless** you disclose that you or another are at serious risk, or you disclose something illegal.')
+				.addField('The right to transfer', 'Staff reserve the right to transfer your session over to another for any given reason during your session.');
+
+			return msg.author.send(requesterEmbed);
 		}
 	},
 	config: {
