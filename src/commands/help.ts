@@ -36,7 +36,7 @@ export const help: Command = {
 				.setTitle('Help 👋')
 				.addField('Commands 🎉', `\`\`\`${commands}\`\`\``);
 
-			if (msg.member.roles.get(tvf.roles.FK)) {
+			if (msg.member.roles.get(tvf.roles.FK) && tvf.commands.filter(c => c.config.module == 'FK').size > 0) {
 				embed.addField('FK ♥', `\`\`\`${fkCommands}\`\`\``);
 			}
 
