@@ -1,6 +1,7 @@
 export default {
 	INVITE: 'https://discord.gg/RS69ssj',
 	MOMENT_FORMAT: 'ddd, MMM Do, YYYY h:mm A',
+	BAN_APPEAL: 'https://forms.gle/EoUp6hxmNvuAJXJfA',
 
 	COMPLIMENTS: [
 		'good morning, sunshine ☀',
