@@ -2,6 +2,7 @@ export default {
 	BIN: '🗑',
 	WAVE: '👋',
 	STAR: '⭐',
+	TICK: '✅',
 
 	// custom
 	PAT: '608220203876089886',

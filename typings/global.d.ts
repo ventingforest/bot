@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import Client from '../src/structures/TVFClient';
 
 declare global {
-    type Module = 'Core' | 'Fun' | 'Admin' | 'Mod' | 'FK';
+    type Module = 'Core' | 'Fun' | 'Music' | 'Admin' | 'Mod' | 'FK';
 
     type CommandConfig = {
         name: string; // the name of the command

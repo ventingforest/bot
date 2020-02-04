@@ -84,7 +84,7 @@ export const help: Command = {
 			if (usage) {
 				embed.addField(
 					'Usage 🤓',
-					`${tvf.isProduction ? 'tvf ' : 'beta '}${name} ${usage}`,
+					`${tvf.isProduction ? 'tvf ' : 'tvf beta '}${name} ${usage}`,
 				);
 			}
 		}
