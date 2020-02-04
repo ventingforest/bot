@@ -52,7 +52,7 @@ export default class TVFClient {
     other = TVFOther;
 
     // config
-    prefix = this.isProduction ? 'tvf ' : 'tvfbeta ';
+    prefix = this.isProduction ? 'tvf ' : 'tvf beta ';
     auth = {
     	discord: this.isProduction ? process.env.STABLE : process.env.BETA,
     	mongo: process.env.MONGO,
@@ -276,7 +276,7 @@ export default class TVFClient {
 	 * @returns a boolean specifying whether the user is an administrator or not
 	 */
     isAdmin(user: Discord.User): boolean {
-    	return this.server.member(user).roles.has(this.roles.ADMIN) || this.server.member(user).roles.has(this.roles.TECHADMIN);
+    	return this.server.member(user).roles.has(this.roles.ADMIN) || this.server.member(user).roles.has(this.roles.TECHADMIN) || this.server.member(user).roles.has(this.roles.NEWT2);
     }
 
     /**
