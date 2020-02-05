@@ -13,12 +13,6 @@ const isolate: Command = {
             	? msg.guild.members.find(({ user }) => user.tag === args[0])
             	: msg.mentions.members.first();
 
-		if (!member) {
-			return msg.author.send(
-				'you had to mention a user in order to isolate them.',
-			);
-		}
-
 		// prepare the reason
 		let reason = args.join(' ');
 		if (!reason) reason = 'No reason specified.';
@@ -53,13 +47,21 @@ const isolate: Command = {
 				.createEmbed('red')
 				.setTitle('Isolated')
 				.addField('Target', member.user, true)
-				.addField('Isolated by', msg.author, true)
 				.addField('Reason', reason)
-				.setFooter(`Isolated at ${isolatedAt}`);
+				.setThumbnail(tvf.server.iconURL())
+				.setFooter(`Isolated by ${msg.author.tag} at ${isolatedAt}`, msg.author.avatarURL());
 
 			tvf.sendToChannel(tvf.channels.FK, embed);
 			tvf.sendToChannel(tvf.channels.MODLOG, embed);
-			tvf.sendToChannel(tvf.channels.ISOLATION, `Hey there, <@!${member.user.id}>. You have been isolated. Don't worry - this doesn't necessarily mean that you have done anything wrong. We have put you here in order to help you calm down if you're feeling bad, or if you are bringing harm to other members of the server. Within this channel there is only you and the staff - feel free to talk to them.`);
+
+			// welcome the user to isolation
+			const welcomeEmbed = tvf
+				.createEmbed('green')
+				.setTitle(`Welcome to isolation, ${member.user.username}!`)
+				.setDescription(`Hey there, ${member.user.username}! Welcome to isolation! You have been put here by a member of staff - but don't worry, this doesn't necessarily mean you have done something wrong. Staff put people here in order to help people calm down if you're feeling bad, or if you are harming other members of the server. Only you and the staff can see this channel, and it is completely private - feel free to talk to them.`)
+				.setThumbnail(tvf.server.iconURL());
+
+			tvf.sendToChannel(tvf.channels.ISOLATION, welcomeEmbed);
 		}
 		else if (doc.isolated) {
 			// get the roles from the database
@@ -90,9 +92,9 @@ const isolate: Command = {
 				.createEmbed('green')
 				.setTitle('Un-isolated')
 				.addField('Target', member.user, true)
-				.addField('Un-isolated by', msg.author, true)
 				.addField('Notes', reason)
-				.setFooter(`Un-isolated at ${unisolatedAt}`);
+				.setThumbnail(tvf.server.iconURL())
+				.setFooter(`Un-isolated by ${msg.author.tag} at ${unisolatedAt}`, msg.author.avatarURL());
 
 			tvf.sendToChannel(tvf.channels.FK, embed);
 			tvf.sendToChannel(tvf.channels.MODLOG, embed);

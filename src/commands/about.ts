@@ -36,6 +36,7 @@ const about: Command = {
 		description:
             'Information about the bot and the machine it is running on!',
 		module: 'Core',
+		allowGeneral: false,
 	},
 };
 
