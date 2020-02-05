@@ -1,21 +1,26 @@
+import axios from 'axios';
+
 const pat: Command = {
 	run: async (tvf, msg, args) => {
-		const emoji = tvf.bot.emojis.get(tvf.emojis.PAT).toString();
-
-		const member = tvf.checkForMember(msg, args);
-		if (!member) {return msg.reply(`you need to specify who to pat ${emoji}`);}
+		// find the mentioned member
+		const member = tvf.checkForMember(msg, args).user;
 
 		await msg.delete();
 
-		if (member.user === msg.author) {
-			return msg.channel.send(
-				`<@!${msg.author.id}> patted their own head ${emoji}`,
-			);
+		// make a request for a gif
+		const gif = (await axios.get('https://nekos.life/api/pat')).data.url;
+		const embed = tvf.createEmbed().setImage(gif).setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
+
+		// check if the mentioned user was the author of the message
+		if (member === msg.author) {
+			return msg.channel.send(embed.setTitle(`${msg.author.username}... patted their own head? 🤔`).setImage('https://i.imgur.com/PYD7b5A.gif'));
 		}
 
-		return msg.channel.send(
-			`<@!${msg.author.id}> patted <@!${member.id}>'s head ${emoji}`,
-		);
+		if (member === tvf.bot.user) {
+			return msg.channel.send(embed.setTitle(`${msg.author.username} patted my head 😇`));
+		}
+
+		return msg.channel.send(embed.setTitle(`${msg.author.username} patted ${member.username}'s head 😇`));
 	},
 	config: {
 		name: 'pat',
