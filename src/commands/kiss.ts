@@ -5,8 +5,6 @@ const kiss: Command = {
 		// find the mentioned member
 		const member = tvf.checkForMember(msg, args).user;
 
-		await msg.delete();
-
 		// make a request for a gif
 		const gif = (await axios.get('https://nekos.life/api/kiss')).data.url;
 		const embed = tvf.createEmbed().setImage(gif).setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());

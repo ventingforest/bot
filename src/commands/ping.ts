@@ -6,7 +6,7 @@ const pingCommand: Command = {
 		const msg2 = (await msg.channel.send(embed)) as Message;
 		const ping = Math.round(msg2.createdTimestamp - msg.createdTimestamp);
 
-		return msg2.edit(embed.setDescription(`${ping}ms`));
+		return msg2.edit(embed.setTitle(`Pong! - ${ping}ms`));
 	},
 	config: {
 		name: 'ping',

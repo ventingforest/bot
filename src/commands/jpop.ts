@@ -25,7 +25,7 @@ const jpop: Command = {
 		}
 
 		// join the voice channel and stream the music
-		return await voice
+		await voice
 			.join()
 			.then((connection) =>
 				connection
@@ -39,6 +39,8 @@ const jpop: Command = {
 					),
 					),
 			);
+
+		return msg.channel.send(`To disconnect me from the voice channel, please run \`${tvf.prefix} disconnect\``);
 	},
 	config: {
 		name: 'jpop',

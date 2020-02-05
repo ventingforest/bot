@@ -5,8 +5,6 @@ export const hug: Command = {
 		// find the mentioned member
 		const member = tvf.checkForMember(msg, args).user;
 
-		await msg.delete();
-
 		// make a request for a gif
 		const gif = (await axios.get('https://nekos.life/api/pat')).data.url;
 		const compliment = tvf.other.COMPLIMENTS[Math.floor(Math.random() * tvf.other.COMPLIMENTS.length)];
