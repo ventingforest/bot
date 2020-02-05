@@ -40,7 +40,7 @@ const staff: Command = {
 
 		if (
 			role === 'moderator' ||
-            role === 'MOD' ||
+            role === 'mod' ||
             role === 'moderators' ||
             role === 'mods'
 		) {
@@ -61,7 +61,7 @@ const staff: Command = {
 
 		if (
 			role === 'administrator' ||
-            role === 'ADMIN' ||
+            role === 'admin' ||
             role === 'administrators' ||
             role === 'admins'
 		) {
