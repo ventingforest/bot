@@ -1,11 +1,12 @@
 import { Message } from 'discord.js';
 
 const pingCommand: Command = {
-	run: async (_tvf, msg) => {
-		const msg2 = (await msg.channel.send('pong!')) as Message;
+	run: async (tvf, msg) => {
+		const embed = tvf.createEmbed().setTitle('Pong!').setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
+		const msg2 = (await msg.channel.send(embed)) as Message;
 		const ping = Math.round(msg2.createdTimestamp - msg.createdTimestamp);
 
-		return msg2.edit(`pong! \`${ping}ms\``);
+		return msg2.edit(embed.setDescription(`${ping}ms`));
 	},
 	config: {
 		name: 'ping',
