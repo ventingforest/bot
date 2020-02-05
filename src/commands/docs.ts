@@ -54,7 +54,8 @@ const docs: Command = {
 		description: 'Allows you to search the discord.js documentation',
 		module: 'Core',
 		args: true,
-		usage: '**query**',
+		usage: '**query** [source]',
+		allowGeneral: false,
 	},
 };
 

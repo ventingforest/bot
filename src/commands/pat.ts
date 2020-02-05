@@ -23,6 +23,7 @@ const pat: Command = {
 		module: 'Fun',
 		args: true,
 		usage: '<@user>',
+		allowGeneral: false,
 	},
 };
 

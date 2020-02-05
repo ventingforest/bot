@@ -26,6 +26,7 @@ export const hug: Command = {
 		module: 'Fun',
 		args: true,
 		usage: '<@user>',
+		allowGeneral: false,
 	},
 };
 

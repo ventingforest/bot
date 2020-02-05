@@ -96,6 +96,7 @@ export const help: Command = {
 		description: 'Helps you use me!',
 		module: 'Core',
 		dm: true,
+		allowGeneral: true,
 	},
 };
 

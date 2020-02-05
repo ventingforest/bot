@@ -28,6 +28,7 @@ const kiss: Command = {
 		module: 'Fun',
 		args: true,
 		usage: '<@user>',
+		allowGeneral: false,
 	},
 };
 

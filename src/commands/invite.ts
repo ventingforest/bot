@@ -1,5 +1,5 @@
 const invite: Command = {
-	run: async (tvf, msg) => msg.reply(tvf.other.INVITE),
+	run: async (tvf, msg) => msg.channel.send(tvf.createEmbed().setTitle('TVF Server Invite').setDescription(tvf.other.INVITE).setURL(tvf.other.INVITE).setThumbnail(tvf.server.iconURL())),
 	config: {
 		name: 'invite',
 		module: 'Core',

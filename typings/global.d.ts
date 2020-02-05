@@ -11,7 +11,7 @@ declare global {
         args?: boolean; // whether the command requires arguments
         usage?: string; // an example of how to use the command
         dm?: boolean; // whether the command responds in dms
-        allowGeneral?: boolean; // whether the command can be run in the general channels
+        allowGeneral: boolean; // whether the command can be run in the general channels
     };
 
     interface Command {

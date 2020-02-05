@@ -1,5 +1,5 @@
 const say: Command = {
-	run: async (tvf, msg, args) => {
+	run: async (_tvf, msg, args) => {
 		await msg.delete();
 
 		const message = args.join(' ');

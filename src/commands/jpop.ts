@@ -25,7 +25,7 @@ const jpop: Command = {
 		}
 
 		// join the voice channel and stream the music
-		await voice
+		return await voice
 			.join()
 			.then((connection) =>
 				connection
@@ -39,8 +39,6 @@ const jpop: Command = {
 					),
 					),
 			);
-
-		return await msg.react(tvf.emojis.TICK);
 	},
 	config: {
 		name: 'jpop',

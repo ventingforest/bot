@@ -112,6 +112,7 @@ const staff: Command = {
             'Allows you to view statistics about the staff like how many are in each position and how many are online, or just view the staff.',
 		module: 'Core',
 		usage: '*position*',
+		allowGeneral: false,
 	},
 };
 
