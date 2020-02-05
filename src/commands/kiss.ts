@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const hug: Command = {
+const kiss: Command = {
 	run: async (tvf, msg, args) => {
 		// find the mentioned member
 		const member = tvf.checkForMember(msg, args).user;
@@ -31,4 +31,4 @@ const hug: Command = {
 	},
 };
 
-export default hug;
+export default kiss;
