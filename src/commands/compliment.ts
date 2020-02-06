@@ -1,22 +1,18 @@
-import axios from 'axios';
-
-export const hug: Command = {
+const hug: Command = {
 	run: async (tvf, msg, args) => {
 		// find the mentioned member
 		const member = tvf.checkForMember(msg, args).user;
 
-		// make a request for a gif
-		const gif = (await axios.get('https://nekos.life/api/pat')).data.url;
+		// make the embed
 		const compliment = tvf.other.COMPLIMENTS[Math.floor(Math.random() * tvf.other.COMPLIMENTS.length)];
-		const embed = tvf.createEmbed().setImage(gif).setTitle(compliment).setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
+		const embed = tvf.createEmbed().setTitle(compliment).setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
 
+		// send the emebed
+		msg.channel.send(member, embed);
 		// check if the mentioned user is the bot
 		if (member === tvf.bot.user) {
-			msg.channel.send(tvf.bot.user, embed);
 			return msg.reply('aww, thank you 💞');
 		}
-
-		return msg.channel.send(member, embed);
 	},
 	config: {
 		name: 'compliment',
