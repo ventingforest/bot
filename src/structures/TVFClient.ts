@@ -3,6 +3,7 @@ import * as winston from 'winston';
 import User from '../models/user';
 import * as fs from 'fs';
 import * as mongoose from 'mongoose';
+import axios from 'axios';
 
 import TVFEmojis from '../constants/Emojis';
 import TVFChannels from '../constants/Channels';
@@ -195,14 +196,38 @@ export default class TVFClient {
     }
 
     /**
+	 * Fetches a random reddit post from a specified subreddit.
+	 * @param {string} subreddit - the subreddit to fetch from.
+	 * @param {Discord.Message} msg - the message invoking the command.
+	 * @returns {Discord.MessageEmbed} a fully configured MessageEmbed.
+	 */
+    async getRedditPost(subreddit: string, msg: Discord.Message): Promise<Discord.MessageEmbed> {
+    	// get a random post
+    	const request = async () => (await axios.get(`https://reddit.com/r/${subreddit}/random.json`)).data[0].data.children[0].data;
+    	let post = await request();
+
+    	// ensure that the post is not a video
+    	while (post.post_hint !== 'image') {
+    		post = await request();
+    	}
+
+    	// create the embed and return it
+    	return this.createEmbed()
+    		.setTitle(this.truncate(post.title, 256))
+    		.setURL(`https://reddit.com${post.permalink}`)
+    		.setImage(post.url)
+    		.setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
+    }
+
+    /**
      * Creates an embed.
      * @param {Color} colour - which colour you would like the embed to be - orange by default.
      * @param {boolean} timestamp - whether the time should be displayed on the embed.
-     * @returns {Discord.RichEmbed} a simply configured RichEmbed.
+     * @returns {Discord.MessageEmbed} a simply configured MessageEmbed.
      */
     createEmbed(
     	colour: Colour = 'orange',
-    	timestamp: boolean = true,
+    	timestamp: boolean = false,
     ): Discord.MessageEmbed {
     	// create an embed and set the default options
     	const embed = new Discord.MessageEmbed();
@@ -287,7 +312,7 @@ export default class TVFClient {
      */
     truncate(str: string, n: number): string {
     	if (str.length > n) {
-    		return `${str.slice(0, n)}...`;
+    		return `${str.slice(0, n - 3)}...`;
     	}
     	else {
     		return str;
