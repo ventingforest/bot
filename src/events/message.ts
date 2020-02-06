@@ -18,7 +18,8 @@ const message = async (tvf: Client, msg: Message) => {
 	if (
 		msg.mentions.roles.first() &&
         msg.mentions.roles.first().id === tvf.roles.HELPER &&
-        msg.channel.id != tvf.channels.HELPER
+		msg.channel.id != tvf.channels.HELPER &&
+		tvf.isProduction
 	) {
 		const embed = tvf
 			.createEmbed('random')
