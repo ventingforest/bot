@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@aero/centra@^1.0.0":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@aero/centra/-/centra-1.0.3.tgz#e16e47f6e54bb297fa0222fc41f775ec7b382625"
+  integrity sha512-Ljd3utKoMcXiMSLr4uxMD9EAFeqw2nOEGfvMXVRKX4sT1OlYuUVQEz1Xrfi5z0RNrGXjm50lJq1jLlRW4FYcEA==
+
 "@babel/code-frame@^7.0.0":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
@@ -1117,7 +1122,7 @@ dir-glob@^3.0.1:
 
 discord.js@discordjs/discord.js:
   version "12.0.0-dev"
-  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/b4e56d3e0e8c3bf242d6bf52af03b0826af62bd8"
+  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/fe7df708e44e0280dfaf0f8e457b154781bb5140"
   dependencies:
     "@discordjs/collection" "^0.1.1"
     abort-controller "^3.0.0"
@@ -1617,7 +1622,7 @@ flat-cache@^2.0.1:
     rimraf "2.6.3"
     write "1.0.3"
 
-flatted@^2.0.0:
+flatted@^2.0.0, flatted@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.1.tgz#69e57caa8f0eacbc281d2e2cb458d46fdb449e08"
   integrity sha512-a1hQMktqW9Nmqr5aktAux3JMNqaucxGcjtjWnZLHX7yyPCmlSV3M54nGYbqT8K+0GhF3NBgmJCc3ma+WOgX8Jg==
@@ -2445,6 +2450,14 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
   integrity sha512-s5kLOcnH0XqDO+FvuaLX8DDjZ18CGFk7VygH40QoKPUQhW4e2rvM0rwUq0t8IQDOwYSeLK01U90OjzBTme2QqA==
+
+ksoft.js@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/ksoft.js/-/ksoft.js-3.1.4.tgz#d3b3eb54f38e3e225ea508c5eac3c5259f55d77e"
+  integrity sha512-b9h+6kSDTeuVqMAXj9V+8XUxJvp7DZZzdFVSwGJqhfYZBi9P7YiicxJgA81mSvlffzUZOrPUQdKXtUv0usU+VA==
+  dependencies:
+    "@aero/centra" "^1.0.0"
+    flatted "^2.0.1"
 
 kuler@1.0.x:
   version "1.0.1"

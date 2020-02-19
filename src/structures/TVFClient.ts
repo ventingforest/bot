@@ -4,6 +4,7 @@ import User from '../models/user';
 import * as fs from 'fs';
 import * as mongoose from 'mongoose';
 import axios from 'axios';
+import { KSoftClient } from 'ksoft.js';
 
 import TVFEmojis from '../constants/Emojis';
 import TVFChannels from '../constants/Channels';
@@ -39,6 +40,7 @@ export default class TVFClient {
     commands: Discord.Collection<string, Command> = new Discord.Collection();
 	events: Discord.Collection<string, any> = new Discord.Collection();
 	server: Discord.Guild;
+	ksoft: KSoftClient;
 
     db = {
     	users: User,
@@ -57,6 +59,7 @@ export default class TVFClient {
     auth = {
     	discord: this.isProduction ? process.env.STABLE : process.env.BETA,
     	mongo: process.env.MONGO,
+    	ksoft: process.env.KSOFT,
     };
 
     /**
@@ -121,6 +124,11 @@ export default class TVFClient {
     	logger.error = new Proxy(logger.error, winstonError);
 
     	this.logger = logger;
+    	logger.info('Logger initialised.');
+
+    	// initiate ksoft client
+    	this.ksoft = new KSoftClient(this.auth.ksoft);
+    	logger.info('ksoft.si client initialised.');
     }
 
     // ==============================================================================================================================================================================================================================================================================================================================================
