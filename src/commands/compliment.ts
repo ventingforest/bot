@@ -5,10 +5,10 @@ const hug: Command = {
 
 		// make the embed
 		const compliment = tvf.other.COMPLIMENTS[Math.floor(Math.random() * tvf.other.COMPLIMENTS.length)];
-		const embed = tvf.createEmbed().setTitle(compliment).setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
+		const embed = tvf.createEmbed().setTitle(`${member.tag}, ${compliment}`).setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
 
 		// send the emebed
-		msg.channel.send(member, embed);
+		msg.channel.send(embed);
 		// check if the mentioned user is the bot
 		if (member === tvf.bot.user) {
 			return msg.reply('aww, thank you 💞');
