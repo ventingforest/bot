@@ -3,6 +3,8 @@ import Client from '../src/structures/TVFClient';
 
 declare global {
     type Module = 'Core' | 'Fun' | 'Music' | 'Admin' | 'Mod' | 'FK';
+    type StaffRole = 'fk' | 'mod' | 'admin';
+    type Colour = 'green' | 'red' | 'blue' | 'purple' | 'orange' | 'black' | 'white' | 'random';
 
     type CommandConfig = {
         name: string; // the name of the command

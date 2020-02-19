@@ -19,7 +19,7 @@ const privateVenting: Command = {
 			const cancelledAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
 
 			// check if a staff member run this command, and it has an ID after it
-			if (id && tvf.isFK(msg.author)) {
+			if (id && tvf.isUser('fk', msg.author)) {
 				// get the venter's document frsom the database
 				const doc = await User.findOne({ 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
 
@@ -30,7 +30,7 @@ const privateVenting: Command = {
 				// post an announcement in the forest keeper channel
 				const embed = tvf
 					.createEmbed('red')
-					.setTitle(`${msg.author.tag} has cancelled ${doc.tag}'s session`)
+					.setTitle(`${msg.author.tag} has cancelled ${tvf.getMemberByID(doc.id).user.tag}'s session`)
 					.addField('Session ID', doc.private.id, true)
 					.addField('venter ID', doc.id, true)
 					.addField('Canceller ID', msg.author.id, true)
@@ -94,7 +94,7 @@ const privateVenting: Command = {
 			doc.private.reason = null;
 			doc.save().catch((error) => tvf.logger.error(error));
 		}
-		else if (subcommand === 'list' && tvf.isFK(msg.author)) {
+		else if (subcommand === 'list' && tvf.isUser('fk', msg.author)) {
 			// collect the documents of all users that have a pending session
 			const docs = await User.find({ 'private.requested': true }, (err, res) => err ? tvf.logger.error(err) : res);
 
@@ -119,13 +119,13 @@ const privateVenting: Command = {
 				}
 
 				// add details to the embed
-				embed.addField(`${i}. ${doc.tag}`, `Reason: ${doc.private.reason}\nSession ID: ${doc.private.id}`);
+				embed.addField(`${i}. ${tvf.getMemberByID(doc.id).user.tag}`, `Reason: ${doc.private.reason}\nSession ID: ${doc.private.id}\nRequested at: ${doc.private.requestedAt}`);
 			});
 
 			// send the embed
 			return msg.channel.send(embed);
 		}
-		else if (subcommand === 'start' && tvf.isFK(msg.author)) {
+		else if (subcommand === 'start' && tvf.isUser('fk', msg.author)) {
 			await msg.delete();
 			const id = args[1];
 
@@ -146,11 +146,11 @@ const privateVenting: Command = {
 			const member = msg.guild.member(doc.id);
 
 			// get an array of the member's roles
-			const roles = member.roles.map((r) => r.id);
+			const roles = member.roles.cache.map((r) => r.id);
 
 			// remove all of the member's roles and give them the private venting role
 			await member.roles
-				.remove(member.roles.array(), 'Private venting')
+				.remove(member.roles.cache.array(), 'Private venting')
 				.catch((err) => tvf.logger.error(err));
 			await member.roles.add(tvf.roles.PRIVATE, 'Private venting');
 
@@ -180,7 +180,7 @@ const privateVenting: Command = {
 			doc.roles = roles;
 			doc.save().catch((error) => tvf.logger.error(error));
 		}
-		else if ((subcommand === 'end' || subcommand === 'stop') && tvf.isFK(msg.author)) {
+		else if ((subcommand === 'end' || subcommand === 'stop') && tvf.isUser('fk', msg.author)) {
 			const id = args[1];
 
 			// get end notes from the command
@@ -209,7 +209,7 @@ const privateVenting: Command = {
 
 			for (let i = 0; i < doc.roles.length; i++) {
 				const rId = doc.roles[i];
-				const role = msg.guild.roles.get(rId);
+				const role = msg.guild.roles.cache.get(rId);
 				roles.set(rId, role);
 			}
 
@@ -271,13 +271,14 @@ const privateVenting: Command = {
 
 			// create an ID for the session, and update the database
 			const id = shortid.generate();
+			const requestedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
 			doc.private.requested = true;
 			doc.private.id = id;
 			doc.private.reason = reason;
+			doc.private.requestedAt = requestedAt;
 			doc.save().catch((error) => tvf.logger.error(error));
 
 			// post a message in the forest keeper channel
-			const requestedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
 
 			const embed = tvf
 				.createEmbed('green')

@@ -56,7 +56,7 @@ const message = async (tvf: Client, msg: Message) => {
 
 		// checks
 		if (
-			(config.module === 'Admin' && !tvf.isAdmin(msg.author) || (config.module === 'Mod' && !tvf.isMod(msg.author)) || (config.module === 'FK' && !tvf.isFK(msg.author)))
+			(config.module === 'Admin' && !tvf.isUser('admin', msg.author) || (config.module === 'Mod' && !tvf.isUser('mod', msg.author)) || (config.module === 'FK' && !tvf.isUser('fk', msg.author)))
 		) {
 			return msg.reply(
 				'you do not have permission to run that command 😢',

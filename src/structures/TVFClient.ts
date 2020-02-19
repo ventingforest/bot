@@ -3,7 +3,6 @@ import * as winston from 'winston';
 import User from '../models/user';
 import * as fs from 'fs';
 import * as mongoose from 'mongoose';
-import axios from 'axios';
 import { KSoftClient } from 'ksoft.js';
 
 import TVFEmojis from '../constants/Emojis';
@@ -12,16 +11,6 @@ import TVFRoles from '../constants/Roles';
 import TVFColours from '../constants/Colours';
 import TVFUsers from '../constants/Users';
 import TVFOther from '../constants/Other';
-
-type Colour =
-    | 'green'
-    | 'red'
-    | 'blue'
-    | 'purple'
-    | 'orange'
-    | 'black'
-    | 'white'
-    | 'random';
 
 export default class TVFClient {
 	// ==============================================================================================================================================================================================================================================================================================================================================================
@@ -200,31 +189,7 @@ export default class TVFClient {
     	await this.bot.login(this.auth.discord);
 
     	// save the guild to the server property
-    	this.server = this.bot.guilds.get('435894444101861408');
-    }
-
-    /**
-	 * Fetches a random reddit post from a specified subreddit.
-	 * @param {string} subreddit - the subreddit to fetch from.
-	 * @param {Discord.Message} msg - the message invoking the command.
-	 * @returns {Discord.MessageEmbed} a fully configured MessageEmbed.
-	 */
-    async getRedditPost(subreddit: string, msg: Discord.Message): Promise<Discord.MessageEmbed> {
-    	// get a random post
-    	const request = async () => (await axios.get(`https://reddit.com/r/${subreddit}/random.json`)).data[0].data.children[0].data;
-    	let post = await request();
-
-    	// ensure that the post is not a video
-    	while (post.post_hint !== 'image') {
-    		post = await request();
-    	}
-
-    	// create the embed and return it
-    	return this.createEmbed()
-    		.setTitle(this.truncate(post.title, 256))
-    		.setURL(`https://reddit.com${post.permalink}`)
-    		.setImage(post.url)
-    		.setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
+    	this.server = this.bot.guilds.cache.get('435894444101861408');
     }
 
     /**
@@ -281,35 +246,37 @@ export default class TVFClient {
 	 * @param {any} content The content of the message
 	 * @param {any} params Any other parameters to be passed into the send function
 	 */
-    sendToChannel(id: string, content: any, ...params) {
-    	((this.bot.channels.get(id)) as Discord.TextChannel).send(content, ...params);
+    async sendToChannel(id: string, content: any, ...params) {
+    	(await (this.bot.channels.fetch(id)) as Discord.TextChannel).send(content, ...params);
     }
 
     /**
-	 * Checks if a user is a Forest Keeper
-	 * @param {Discord.User} user The user to run the check on
-	 * @returns a boolean specifying whether the user is a forest keeper or not
+	 * Check if a member is a certain role of staff
+	 * @param {StaffRole} role The role of staff to check the member against
+	 * @param {Discord.User} member The user to check the role against
+	 * @returns {boolean} 'true' if the member is of that role, 'false' if not
 	 */
-    isFK(user: Discord.User): boolean {
-    	return this.server.member(user).roles.has(this.roles.FK);
+    isUser(role: StaffRole, user: Discord.User): boolean {
+    	const member = this.server.member(user);
+    	return role === 'fk' ? member.roles.cache.has(this.roles.FK) : role === 'mod' ? member.roles.cache.has(this.roles.MOD) : role === 'admin' ? member.roles.cache.has(this.roles.ADMIN) || member.roles.cache.has(this.roles.TECHADMIN) || member.roles.cache.has(this.roles.NEWT2) : false;
     }
 
     /**
-	 * Checks if a user is a Moderator
-	 * @param {Discord.User} user The user to run the check on
-	 * @returns a boolean specifying whether the user is a moderator or not
+	 * Get a member by their ID
+	 * @param {string} id The member's ID
+	 * @returns {Discord.GuildMember} The member
 	 */
-    isMod(user: Discord.User): boolean {
-    	return this.server.member(user).roles.has(this.roles.MOD);
+    getMemberByID(id: string): Discord.GuildMember {
+    	return this.server.members.cache.get(id);
     }
 
     /**
-	 * Checks if a user is an Administrator/Tech Admin
-	 * @param {Discord.User} user The user to run the check on
-	 * @returns a boolean specifying whether the user is an administrator or not
+	 * Resolve an emoji as a string from an ID
+	 * @param {string} id The ID of the emoji
+	 * @returns {string}
 	 */
-    isAdmin(user: Discord.User): boolean {
-    	return this.server.member(user).roles.has(this.roles.ADMIN) || this.server.member(user).roles.has(this.roles.TECHADMIN) || this.server.member(user).roles.has(this.roles.NEWT2);
+    resolveEmoji(id: string): string {
+    	return this.bot.emojis.cache.get(id).toString();
     }
 
     /**
@@ -349,10 +316,10 @@ export default class TVFClient {
      * @param {string[]} args - the arguments to the command.
      * @returns {Discord.GuildMember} a member mentioned in the message.
      */
-    checkForMember(msg: Discord.Message, args: string[]): Discord.GuildMember {
-    	return msg.mentions.members.first() === undefined
-    		? msg.guild.members.find(({ user }) => user.tag === args.join(' '))
-    		: msg.mentions.members.first();
+    async checkForMember(msg: Discord.Message, args: string[]): Promise<Discord.GuildMember> {
+    	return (msg.mentions.members.first() === undefined
+    		? (await msg.guild.members.fetch()).filter(u => u.user.tag === args.join(' '))
+    		: msg.mentions.members.first()) as Discord.GuildMember;
     }
 
     /**

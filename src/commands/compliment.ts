@@ -1,7 +1,7 @@
 const hug: Command = {
 	run: async (tvf, msg, args) => {
 		// find the mentioned member
-		const member = tvf.checkForMember(msg, args).user;
+		const member = (await tvf.checkForMember(msg, args)).user;
 
 		// make the embed
 		const compliment = tvf.other.COMPLIMENTS[Math.floor(Math.random() * tvf.other.COMPLIMENTS.length)];

@@ -3,7 +3,9 @@ import * as ms from 'ms';
 const about: Command = {
 	run: async (tvf, msg) => {
 		try {
-			const developer = msg.guild.roles.get(tvf.roles.TECHADMIN).members.first().user;
+			const developer = msg.guild.roles.cache.get(tvf.roles.TECHADMIN).members.first().user;
+			const members = await msg.guild.members.fetch();
+			const channels = msg.guild.channels.cache;
 
 			const embed = tvf
 				.createEmbed('green', false)
@@ -11,12 +13,12 @@ const about: Command = {
 				.setThumbnail(msg.guild.iconURL())
 				.addField('Uptime', ms(tvf.bot.uptime, { long: true }), true)
 				.addBlankField(false)
-				.addField('Members', msg.guild.members.size, true)
-				.addField('Users', msg.guild.members.filter(m => !m.user.bot).size, true)
-				.addField('Bots', msg.guild.members.filter(m => m.user.bot).size, true)
-				.addField('Channels', msg.guild.channels.size, true)
-				.addField('Text Channels', msg.guild.channels.filter(c => c.type === 'text').size, true)
-				.addField('Voice Channels', msg.guild.channels.filter(c => c.type === 'voice').size, true)
+				.addField('Members', members.size, true)
+				.addField('Users', members.filter(m => !m.user.bot).size, true)
+				.addField('Bots', members.filter(m => m.user.bot).size, true)
+				.addField('Channels', channels.size, true)
+				.addField('Text Channels', channels.filter(c => c.type === 'text').size, true)
+				.addField('Voice Channels', channels.filter(c => c.type === 'voice').size, true)
 				.setFooter(
 					'Made with ❤ and discord.js',
 					'https://miro.medium.com/max/1200/1*mn6bOs7s6Qbao15PMNRyOA.png',

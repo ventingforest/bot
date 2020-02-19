@@ -1,7 +1,7 @@
 const kiss: Command = {
 	run: async (tvf, msg, args) => {
 		// find the mentioned member
-		const member = tvf.checkForMember(msg, args).user;
+		const member = (await tvf.checkForMember(msg, args)).user;
 
 		// make the embed
 		const embed = tvf.createEmbed().setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());

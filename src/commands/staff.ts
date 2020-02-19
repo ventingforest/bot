@@ -2,20 +2,20 @@ const staff: Command = {
 	run: (tvf, msg, args) => {
 		const role = args.join(' ').toLowerCase();
 
-		const admins = msg.guild.roles
+		const admins = msg.guild.roles.cache
 			.get(tvf.roles.ADMIN)
 			.members.concat(
-				msg.guild.roles.get(tvf.roles.TECHADMIN).members,
+				msg.guild.roles.cache.get(tvf.roles.TECHADMIN).members,
 			);
-		const mods = msg.guild.roles
+		const mods = msg.guild.roles.cache
 			.get(tvf.roles.MOD)
-			.members.filter((m) => !m.roles.has(tvf.roles.ADMIN))
-			.filter((m) => !m.roles.has(tvf.roles.TECHADMIN));
-		const fks = msg.guild.roles
+			.members.filter((m) => !m.roles.cache.has(tvf.roles.ADMIN))
+			.filter((m) => !m.roles.cache.has(tvf.roles.TECHADMIN));
+		const fks = msg.guild.roles.cache
 			.get(tvf.roles.FK)
-			.members.filter((m) => !m.roles.has(tvf.roles.MOD))
-			.filter((m) => !m.roles.has(tvf.roles.ADMIN))
-			.filter((m) => !m.roles.has(tvf.roles.TECHADMIN));
+			.members.filter((m) => !m.roles.cache.has(tvf.roles.MOD))
+			.filter((m) => !m.roles.cache.has(tvf.roles.ADMIN))
+			.filter((m) => !m.roles.cache.has(tvf.roles.TECHADMIN));
 
 		if (
 			role === 'forest keeper' ||

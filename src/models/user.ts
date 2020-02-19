@@ -1,7 +1,6 @@
 import * as mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
-    tag: string;
     id: string;
     isolated: boolean;
     roles: string[];
@@ -9,15 +8,12 @@ export interface IUser extends mongoose.Document {
         requested: boolean;
 		id: string;
 		reason: string;
+		requestedAt: string;
     };
 }
 
 const userSchema = new mongoose.Schema(
 	{
-		tag: {
-			type: String,
-			required: true,
-		},
 		id: {
 			type: String,
 			required: true,
@@ -28,6 +24,7 @@ const userSchema = new mongoose.Schema(
 			requested: Boolean,
 			id: String,
 			reason: String,
+			requestedAt: String,
 		},
 	},
 	{

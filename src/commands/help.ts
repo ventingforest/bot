@@ -1,5 +1,5 @@
 export const help: Command = {
-	run: (tvf, msg, args) => {
+	run: async (tvf, msg, args) => {
 		// embed
 		const embed = tvf
 			.createEmbed('random')
@@ -36,18 +36,15 @@ export const help: Command = {
 				.setTitle('Help 👋')
 				.addField('Commands 🎉', `\`\`\`${commands}\`\`\``);
 
-			if (msg.member.roles.get(tvf.roles.FK) && tvf.commands.filter(c => c.config.module == 'FK').size > 0) {
+			if (await tvf.isUser('fk', msg.author) && tvf.commands.filter(c => c.config.module == 'FK').size > 0) {
 				embed.addField('FK ♥', `\`\`\`${fkCommands}\`\`\``);
 			}
 
-			if (msg.member.roles.get(tvf.roles.MOD)) {
+			if (await tvf.isUser('mod', msg.author)) {
 				embed.addField('Mod 🔨', `\`\`\`${modCommands}\`\`\``);
 			}
 
-			if (
-				msg.member.roles.get(tvf.roles.TECHADMIN) ||
-                msg.member.roles.get(tvf.roles.ADMIN)
-			) {
+			if (await tvf.isUser('admin', msg.author)) {
 				embed.addField('Admin ⚙', `\`\`\`${adminCommands}\`\`\``);
 			}
 
@@ -57,8 +54,8 @@ export const help: Command = {
 					'If you ever spot a bug, please contact the Tech Admin and explain what is wrong so that they can get to fixing it.',
 				)
 				.setFooter(
-					`Current Tech Admin: ${msg.guild.roles
-						.get(tvf.roles.TECHADMIN)
+					`Current Tech Admin: ${(await msg.guild.roles
+						.fetch(tvf.roles.TECHADMIN))
 						.members.map((m) => m.user.tag)
 						.join(', ')}`,
 				);

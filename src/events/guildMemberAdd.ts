@@ -50,7 +50,7 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 	}
 
 	// welcome the user
-	tvf.sendToChannel(tvf.channels.GENERAL, `Welcome ${tvf.bot.emojis.get(tvf.emojis.HAI).toString()}`);
+	tvf.sendToChannel(tvf.channels.GENERAL, `Welcome ${tvf.resolveEmoji(tvf.emojis.HAI)}`);
 
 	// database
 	return User.create({

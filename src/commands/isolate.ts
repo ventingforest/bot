@@ -10,7 +10,7 @@ const isolate: Command = {
 		// get the tagged member
 		const member =
             msg.mentions.members.first() === undefined
-            	? msg.guild.members.find(({ user }) => user.tag === args[0])
+            	? (await msg.guild.members.fetch()).find(({ user }) => user.tag === args[0])
             	: msg.mentions.members.first();
 
 		// prepare the reason
@@ -26,11 +26,11 @@ const isolate: Command = {
 
 		if (!doc.isolated) {
 			// get an array of the member's roles
-			const roles = member.roles.map((r) => r.id);
+			const roles = member.roles.cache.map((r) => r.id);
 
 			// remove the roles from the member and add the isolated role
 			await member.roles
-				.remove(member.roles.array(), 'Isolated')
+				.remove(member.roles.cache.array(), 'Isolated')
 				.catch((err) => tvf.logger.error(err));
 			await member.roles.add(tvf.roles.ISOLATION, 'Isolated');
 
@@ -72,7 +72,7 @@ const isolate: Command = {
 
 			for (let i = 0; i < doc.roles.length; i++) {
 				const id = doc.roles[i];
-				const role = msg.guild.roles.get(id);
+				const role = await msg.guild.roles.fetch(id);
 				roles.set(id, role);
 			}
 
