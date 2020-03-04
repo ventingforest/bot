@@ -242,6 +242,8 @@ const privateVenting: Command = {
 			// update the document
 			doc.private.id = null;
 			doc.roles = [];
+			doc.private.reason = null;
+			doc.private.requestedAt = null;
 			doc.save().catch((error) => tvf.logger.error(error));
 		}
 		else {
