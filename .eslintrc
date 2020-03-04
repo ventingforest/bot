@@ -33,7 +33,7 @@
                 "max": 2
             }
         ],
-        "no-console": "off",
+        "no-console": "error",
         "no-empty-function": "error",
         "no-floating-decimal": "error",
         "no-lonely-if": "error",
@@ -71,6 +71,6 @@
         "space-infix-ops": "error",
         "space-unary-ops": "error",
         "spaced-comment": "error",
-        "yoda": "error"
+        "yoda": "error",
     }
 }

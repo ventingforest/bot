@@ -1,5 +1,8 @@
 import * as Discord from 'discord.js';
 import * as winston from 'winston';
+import * as logdna from 'logdna-winston';
+import * as os from 'os';
+import * as address from 'address';
 import User from '../models/user';
 import * as fs from 'fs';
 import * as mongoose from 'mongoose';
@@ -49,15 +52,16 @@ export default class TVFClient {
     	discord: this.isProduction ? process.env.STABLE : process.env.BETA,
     	mongo: process.env.MONGO,
     	ksoft: process.env.KSOFT,
+    	logdna: process.env.LOGDNA_INGESTION,
     };
 
     /**
      * Constructs the Client class.
      * @param {Discord.ClientOptions={}} options
      */
-    constructor(options: Discord.ClientOptions = {}) {
+    constructor() {
     	// create the bot instance
-    	this.bot = new Discord.Client(options);
+    	this.bot = new Discord.Client({});
 
     	// create the logger
     	winston.addColors({
@@ -66,6 +70,10 @@ export default class TVFClient {
     		info: 'bold cyan',
     		debug: 'bold white',
     	});
+
+    	const ip = address.ip();
+    	let mac: string;
+    	address.mac((_e, macadd) => { mac = macadd; });
 
     	const logger = winston.createLogger({
     		transports: [
@@ -88,6 +96,14 @@ export default class TVFClient {
     								),
     						),
     				),
+    			}),
+    			new logdna({
+    				key: this.auth.logdna,
+    				hostname: os.hostname(),
+    				ip,
+    				mac,
+    				app: this.isProduction ? 'TVF Bot' : 'TVF Bot Beta',
+    				handleExceptions: true,
     			}),
     		],
     	});

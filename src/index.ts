@@ -5,6 +5,4 @@ import Client from './structures/TVFClient';
 dotenv();
 
 // create the client and start the bot
-new Client({
-	disabledEvents: ['TYPING_START'],
-}).start();
+new Client().start();
