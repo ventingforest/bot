@@ -23,17 +23,21 @@ const staff: Command = {
             role === 'forest keepers' ||
             role === 'fks'
 		) {
-			const embed = tvf
-				.createEmbed('green')
+			const embed = tvf.createEmbed('green')
 				.setTitle('Forest Keepers')
 				.setDescription(fks.map((fk) => `<@!${fk.user.id}>`))
-				.addField('Amount', fks.size, true)
-				.addField(
-					'Online',
-					fks.filter((fk) => fk.user.presence.status !== 'offline')
-						.size,
-					true,
-				);
+				.addFields([
+					{
+						name: 'Amount',
+						value: fks.size,
+						inline: true,
+					},
+					{
+						name: 'Online',
+						value: fks.filter((fk) => fk.user.presence.status !== 'offline').size,
+						inline: true,
+					},
+				]);
 
 			return msg.channel.send(embed);
 		}
@@ -44,17 +48,21 @@ const staff: Command = {
             role === 'moderators' ||
             role === 'mods'
 		) {
-			const embed = tvf
-				.createEmbed('red')
+			const embed = tvf.createEmbed('red')
 				.setTitle('Moderators')
 				.setDescription(mods.map((mod) => `<@!${mod.user.id}>`))
-				.addField('Amount', mods.size, true)
-				.addField(
-					'Online',
-					mods.filter((mod) => mod.user.presence.status !== 'offline')
-						.size,
-					true,
-				);
+				.addFields([
+					{
+						name: 'Amount',
+						value: mods.size,
+						inline: true,
+					},
+					{
+						name: 'Online',
+						value: mods.filter((mod) => mod.user.presence.status !== 'offline').size,
+						inline: true,
+					},
+				]);
 
 			return msg.channel.send(embed);
 		}
@@ -65,43 +73,47 @@ const staff: Command = {
             role === 'administrators' ||
             role === 'admins'
 		) {
-			const embed = tvf
-				.createEmbed('blue')
+			const embed = tvf.createEmbed('blue')
 				.setTitle('Administrators')
 				.setDescription(admins.map((admin) => `<@!${admin.user.id}>`))
-				.addField('Amount', admins.size, true)
-				.addField(
-					'Online',
-					admins.filter(
-						(admin) => admin.user.presence.status !== 'offline',
-					).size,
-					true,
-				);
+				.addFields([
+					{
+						name: 'Amount',
+						value: admins.size,
+						inline: true,
+					},
+					{
+						name: 'Online',
+						value: admins.filter((admin) => admin.user.presence.status !== 'offline').size,
+						inline: true,
+					},
+				]);
 
 			return msg.channel.send(embed);
 		}
 		else {
-			const embed = tvf
-				.createEmbed('orange')
+			const embed = tvf.createEmbed()
 				.setTitle('Staff')
 				.setDescription(
 					`Total: **${admins.size + mods.size + fks.size}**`,
 				)
-				.addField(
-					`Administrators (${admins.size})`,
-					admins.map((admin) => `<@!${admin.user.id}>`),
-					true,
-				)
-				.addField(
-					`Moderators (${mods.size})`,
-					mods.map((mod) => `<@!${mod.user.id}>`),
-					true,
-				)
-				.addField(
-					`Forest Keepers (${fks.size})`,
-					fks.map((fk) => `<@!${fk.user.id}>`),
-					true,
-				);
+				.addFields([
+					{
+						name: `Administrators (${admins.size})`,
+						value: admins.map(admin => `<@!${admin.user.id}>`),
+						inline: true,
+					},
+					{
+						name: `Moderators (${mods.size})`,
+						value: mods.map(mod => `<@!${mod.user.id}>`),
+						inline: true,
+					},
+					{
+						name: `Forest Keepers (${fks.size})`,
+						value: fks.map(fk => `<@!${fk.user.id}>`),
+						inline: true,
+					},
+				]);
 
 			return msg.channel.send(embed);
 		}

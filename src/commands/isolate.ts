@@ -46,9 +46,17 @@ const isolate: Command = {
 			const embed = tvf
 				.createEmbed('red')
 				.setTitle('Isolated')
-				.addField('Target', member.user, true)
-				.addField('Reason', reason)
 				.setThumbnail(tvf.server.iconURL())
+				.addFields([
+					{
+						name: 'Target',
+						value: member.user,
+					},
+					{
+						name: 'Reason',
+						value: reason,
+					},
+				])
 				.setFooter(`Isolated by ${msg.author.tag} at ${isolatedAt}`, msg.author.avatarURL());
 
 			tvf.sendToChannel(tvf.channels.FK, embed);
@@ -91,9 +99,17 @@ const isolate: Command = {
 			const embed = tvf
 				.createEmbed('green')
 				.setTitle('Un-isolated')
-				.addField('Target', member.user, true)
-				.addField('Notes', reason)
 				.setThumbnail(tvf.server.iconURL())
+				.addFields([
+					{
+						name: 'Target',
+						value: member.user,
+					},
+					{
+						name: 'Notes',
+						value: reason,
+					},
+				])
 				.setFooter(`Un-isolated by ${msg.author.tag} at ${unisolatedAt}`, msg.author.avatarURL());
 
 			tvf.sendToChannel(tvf.channels.FK, embed);

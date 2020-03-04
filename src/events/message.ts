@@ -24,8 +24,16 @@ const message = async (tvf: Client, msg: Message) => {
 		const embed = tvf
 			.createEmbed('random')
 			.setTitle(`${msg.author.username} needs help!`)
-			.addField('Where?', `<#${msg.channel.id}>`)
-			.addField('Message:', tvf.truncate(msg.content, 2048));
+			.addFields([
+				{
+					name: 'Where?',
+					value: `<#${msg.channel.id}>`,
+				},
+				{
+					name: 'Message',
+					value: tvf.truncate(msg.content, 2048),
+				},
+			]);
 
 		tvf.sendToChannel(tvf.channels.HELPER, embed);
 

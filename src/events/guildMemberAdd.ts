@@ -41,16 +41,29 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 			const embed = tvf.createEmbed('red')
 				.setTitle('A globally banned member has joined the server!')
 				.setDescription(`Reason: ${data.reason}`)
-				.addField('Tag', member.user.tag, true)
-				.addField('User ID', member.id, true)
-				.addField('Proof', data.proof);
+				.addFields([
+					{
+						name: 'Tag',
+						value: member.user.tag,
+						inline: true,
+					},
+					{
+						name: 'User ID',
+						value: member.user.id,
+						inline: true,
+					},
+					{
+						name: 'Proof',
+						value: data.proof,
+					},
+				]);
 
 			return tvf.sendToChannel(tvf.channels.FK, `<@&${tvf.roles.FK}>`, embed);
 		}
 	}
 
-	// welcome the user
-	tvf.sendToChannel(tvf.channels.GENERAL, `Welcome ${tvf.resolveEmoji(tvf.emojis.HAI)}`);
+	// welcome the user if on the production branch
+	tvf.isProduction ? tvf.sendToChannel(tvf.channels.GENERAL, `Welcome ${tvf.resolveEmoji(tvf.emojis.HAI)}`) : null;
 
 	// database
 	return User.create({

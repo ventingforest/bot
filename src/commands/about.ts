@@ -8,18 +8,54 @@ const about: Command = {
 			const channels = msg.guild.channels.cache;
 
 			const embed = tvf
-				.createEmbed('green', false)
+				.createEmbed('green')
 				.setAuthor(developer.tag, developer.avatarURL())
 				.setThumbnail(msg.guild.iconURL())
-				.addFields([])
-				.addField('Uptime', ms(tvf.bot.uptime, { long: true }), true)
-				.addField('', '')
-				.addField('Members', members.size, true)
-				.addField('Users', members.filter(m => !m.user.bot).size, true)
-				.addField('Bots', members.filter(m => m.user.bot).size, true)
-				.addField('Channels', channels.size, true)
-				.addField('Text Channels', channels.filter(c => c.type === 'text').size, true)
-				.addField('Voice Channels', channels.filter(c => c.type === 'voice').size, true)
+				.addFields([
+					{
+						name: 'Uptime',
+						value: ms(tvf.bot.uptime, { long: true }),
+						inline: true,
+					},
+					{
+						name: tvf.other.BLANKFIELD,
+						value: tvf.other.BLANKFIELD,
+					},
+					{
+						name: 'Members',
+						value: members.size,
+						inline: true,
+					},
+					{
+						name: 'Users',
+						value: members.filter(m => !m.user.bot).size,
+						inline: true,
+					},
+					{
+						name: 'Bots',
+						value: members.filter(m => m.user.bot).size,
+						inline: true,
+					},
+					{
+						name: tvf.other.BLANKFIELD,
+						value: tvf.other.BLANKFIELD,
+					},
+					{
+						name: 'Channels',
+						value: channels.filter(c => c.type !== 'category').size,
+						inline: true,
+					},
+					{
+						name: 'Text Channels',
+						value: channels.filter(c => c.type === 'text').size,
+						inline: true,
+					},
+					{
+						name: 'Voice Channels',
+						value: channels.filter(c => c.type === 'voice').size,
+						inline: true,
+					},
+				])
 				.setFooter(
 					'Made with ❤ and discord.js',
 					'https://miro.medium.com/max/1200/1*mn6bOs7s6Qbao15PMNRyOA.png',

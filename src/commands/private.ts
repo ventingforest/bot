@@ -2,6 +2,7 @@ import User from '../models/user';
 import * as Discord from 'discord.js';
 import * as shortid from 'shortid';
 import * as moment from 'moment';
+import { truncate } from 'fs';
 
 const privateVenting: Command = {
 	run: async (tvf, msg, args) => {
@@ -28,23 +29,37 @@ const privateVenting: Command = {
 				reason = args.join(' ') ? args.join(' ') : '*No reason specified.*';
 
 				// post an announcement in the forest keeper channel
-				const embed = tvf
-					.createEmbed('red')
+				const embed = tvf.createEmbed('red')
 					.setTitle(`${msg.author.tag} has cancelled ${tvf.getMemberByID(doc.id).user.tag}'s session`)
-					.addField('Session ID', doc.private.id, true)
-					.addField('venter ID', doc.id, true)
-					.addField('Canceller ID', msg.author.id, true)
-					.addField('Reason', reason)
+					.addFields([
+						{
+							name: 'Session ID',
+							value: doc.private.id,
+							inline: true,
+						},
+						{
+							name: 'Venter ID',
+							value: doc.id,
+							inline: true,
+						},
+						{
+							name: 'Canceller ID',
+							value: msg.author.id,
+							inline: true,
+						},
+						{
+							name: 'Reason',
+							value: reason,
+						},
+					])
 					.setFooter(`Cancelled at ${cancelledAt}`);
 
 				tvf.sendToChannel(tvf.channels.FK, embed);
 
 				// inform the venter that their session has been cancelled
 				const venter = msg.guild.member(doc.id);
-				const venterEmbed = tvf
-					.createEmbed('red')
+				const venterEmbed = tvf.createEmbed('red')
 					.setTitle('A member of staff has cancelled your private venting session!')
-					.setThumbnail(msg.guild.iconURL())
 					.setDescription('If you believe this has been done in error, don\'t hesitate to contact a member of staff.')
 					.addField('Reason', reason)
 					.setFooter(`Cancelled at ${cancelledAt}`);
@@ -77,14 +92,26 @@ const privateVenting: Command = {
 			}
 
 			// post a message in the forest keeper channel
-			const embed = tvf
-				.createEmbed('red')
+			const embed = tvf.createEmbed('red')
 				.setTitle(
 					`${msg.author.tag} has cancelled their private venting session.`,
 				)
-				.addField('Session ID', doc.private.id, true)
-				.addField('User ID', msg.author.id, true)
-				.addField('Reason', reason)
+				.addFields([
+					{
+						name: 'Session ID',
+						value: doc.private.id,
+						inline: true,
+					},
+					{
+						name: 'User ID',
+						value: msg.author.id,
+						inline: true,
+					},
+					{
+						name: 'Reason',
+						value: reason,
+					},
+				])
 				.setFooter(`Cancelled at ${cancelledAt}`);
 
 			tvf.sendToChannel(tvf.channels.FK, embed);
@@ -99,11 +126,9 @@ const privateVenting: Command = {
 			const docs = await User.find({ 'private.requested': true }, (err, res) => err ? tvf.logger.error(err) : res);
 
 			// prepare an embed
-			const embed = docs.length === 0 ? tvf
-				.createEmbed('green')
+			const embed = docs.length === 0 ? tvf.createEmbed('green')
 				.setTitle('No private venting sessions pending!')
-				 : tvf
-					.createEmbed('orange')
+				 : tvf.createEmbed()
 					.setTitle('Pending private venting sessions...');
 
 			embed.setFooter(`${docs.length} sessions pending.`);
@@ -157,8 +182,7 @@ const privateVenting: Command = {
 			// post a message in the private venting
 			const startedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
 
-			const embed = tvf
-				.createEmbed('green')
+			const embed = tvf.createEmbed('green')
 				.setTitle(`Welcome to private venting, ${member.user.username}!`)
 				.addField(
 					'Your session is being taken by...',
@@ -167,8 +191,7 @@ const privateVenting: Command = {
 				)
 				.setFooter(`Session ID: ${doc.private.id} | Started at ${startedAt}`);
 
-			const takenEmbed = tvf
-				.createEmbed('green')
+			const takenEmbed = tvf.createEmbed('green')
 				.setTitle(`${member.user.tag}'s private venting session is currently being taken by ${msg.author.tag}`)
 				.setFooter(`Session ID: ${doc.private.id} | Started at ${startedAt}`);
 
@@ -222,16 +245,27 @@ const privateVenting: Command = {
 			// post a message in the private venting
 			const endedAt = moment(msg.createdAt).format(tvf.other.MOMENT_FORMAT);
 
-			const embed = tvf
-				.createEmbed('red')
+			const embed = tvf.createEmbed('red')
 				.setTitle('Session over.')
-				.addField('Venter', member.user.tag, true)
-				.addField('Taken by', msg.author.tag, true)
-				.addField('Notes', notes)
+				.addFields([
+					{
+						name: 'Venter',
+						value: member.user.tag,
+						inline: true,
+					},
+					{
+						name: 'Taken by',
+						value: msg.author.tag,
+						inline: true,
+					},
+					{
+						name: 'Notes',
+						value: notes,
+					},
+				])
 				.setFooter(`Session ID: ${doc.private.id} | Ended at ${endedAt}`);
 
-			const finishedEmbed = tvf
-				.createEmbed('red')
+			const finishedEmbed = tvf.createEmbed('red')
 				.setTitle(`${msg.author.tag} has finished taking ${member.user.tag}'s session`)
 				.addField('Notes', notes)
 				.setFooter(`Session ID: ${doc.private.id} | Ended at ${endedAt}`);
@@ -282,32 +316,60 @@ const privateVenting: Command = {
 
 			// post a message in the forest keeper channel
 
-			const embed = tvf
-				.createEmbed('green')
+			const embed = tvf.createEmbed('green')
 				.setTitle(
 					`Private venting session requested by ${msg.author.tag}`,
 				)
 				.setDescription(
 					`Start the session now by typing \`tvf private start ${id}\` in the private venting channel.`,
 				)
-				.addField('User', msg.author.tag, true)
-				.addField('Session ID', id, true)
-				.addField('User ID', msg.author.id, true)
-				.addField('Reason', reason)
+				.addFields(
+					{
+						name: 'User',
+						value: msg.author.tag,
+						inline: true,
+					},
+					{
+						name: 'Session ID',
+						value: id,
+						inline: true,
+					},
+					{
+						name: 'User ID',
+						value: msg.author.id,
+						inline: true,
+					},
+					{
+						name: 'Reason',
+						value: reason,
+					},
+				)
 				.setFooter(`Requested at ${requestedAt}`);
 
 			tvf.sendToChannel(tvf.channels.FK, tvf.isProduction ? `<@&${tvf.roles.FK}>` : '', embed);
 
 			// send a message to the venter
-			const venterEmbed = tvf
-				.createEmbed('green')
+			const venterEmbed = tvf.createEmbed('green')
 				.setTitle('Your private venting session has been requested.')
 				.setDescription('Your session may begin quickly, or it may take some time - it depends on how busy we are, how many staff are available, and whether any staff are comfortable with taking it. Please remain online until your session begins. You\'ll recieve a ping from the server when we\'re ready for you. A few things to note before we start...')
-				.setThumbnail(msg.guild.iconURL())
-				.addField('The 15 minute rule', 'Private venting sessions typically only last fifteen minutes. As such, staff are not obliged to continue after this point. However, you can request more time.')
-				.addField('Our staff are not counsellors or medical professionals', 'They can not offer you medical or deep life advice.')
-				.addField('Who can view your session', 'Your sessions can be viewed by all staff members, but no-one else and staff are not allowed to share the contents elsewhere, **unless** you disclose that you or another are at serious risk, or you disclose something illegal.')
-				.addField('The right to transfer', 'Staff reserve the right to transfer your session over to another for any given reason during your session.');
+				.addFields([
+					{
+						name: 'The 15 minutes rule',
+						value: 'Private venting sessions typically only last fifteen minutes. As such, staff are not obliged to continue after this point. However, you can request more time.',
+					},
+					{
+						name: 'Our staff are not counsellors or medical professionals',
+						value: 'They can not offer you medical or deep life advice.',
+					},
+					{
+						name: 'Who can view your session',
+						value: 'Your sessions can be viewed by all staff members, but no-one else and staff are not allowed to share the contents elsewhere, **unless** you disclose that you or another are at serious risk, or you disclose something illegal.',
+					},
+					{
+						name: 'The right to transfer',
+						value: 'Staff reserve the right to transfer your session over to another for any given reason during your session.',
+					},
+				]);
 
 			return msg.author.send(venterEmbed);
 		}

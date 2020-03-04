@@ -210,46 +210,55 @@ export default class TVFClient {
 
     /**
      * Creates an embed.
-     * @param {Color} colour - which colour you would like the embed to be - orange by default.
-     * @param {boolean} timestamp - whether the time should be displayed on the embed.
+     * @param {Color} colour - which colour you would like the embed to be - defaults to orang.
+	 * @param {EmbedOptions} options - the options for the embed
+	 * @param {boolean} options.timestamp - whether the timestamp automatically appears on the embed - defaults to false.
+	 * @param {boolean} options.thumbnail - whether the embed's thumbnail is automatically set to the server's icon - defaults to true.
      * @returns {Discord.MessageEmbed} a simply configured MessageEmbed.
      */
     createEmbed(
     	colour: Colour = 'orange',
-    	timestamp: boolean = false,
+    	options: EmbedOptions = {
+    		timestamp: false,
+    		thumbnail: true,
+    	},
     ): Discord.MessageEmbed {
     	// create an embed and set the default options
     	const embed = new Discord.MessageEmbed();
 
     	switch (colour) {
-    	case 'blue':
-    		embed.setColor(this.colours.BLUE);
-    		break;
-    	case 'red':
-    		embed.setColor(this.colours.RED);
-    		break;
-    	case 'purple':
-    		embed.setColor(this.colours.PURPLE);
-    		break;
-    	case 'orange':
-    		embed.setColor(this.colours.ORANGE);
-    		break;
-    	case 'green':
-    		embed.setColor(this.colours.GREEN);
-    		break;
-    	case 'black':
-    		embed.setColor(this.colours.BLACK);
-    		break;
-    	case 'white':
-    		embed.setColor(this.colours.WHITE);
-    		break;
-    	case 'random':
-    		embed.setColor('RANDOM');
-    		break;
+    		case 'blue':
+    			embed.setColor(this.colours.BLUE);
+    			break;
+    		case 'red':
+    			embed.setColor(this.colours.RED);
+    			break;
+    		case 'purple':
+    			embed.setColor(this.colours.PURPLE);
+    			break;
+    		case 'orange':
+    			embed.setColor(this.colours.ORANGE);
+    			break;
+    		case 'green':
+    			embed.setColor(this.colours.GREEN);
+    			break;
+    		case 'black':
+    			embed.setColor(this.colours.BLACK);
+    			break;
+    		case 'white':
+    			embed.setColor(this.colours.WHITE);
+    			break;
+    		case 'random':
+    			embed.setColor('RANDOM');
+    			break;
     	}
 
-    	if (timestamp) {
+    	if (options.timestamp) {
     		embed.setTimestamp(new Date());
+    	}
+
+    	if (options.thumbnail) {
+    		embed.setThumbnail(this.server.iconURL());
     	}
 
     	// return the embed
