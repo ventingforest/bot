@@ -272,7 +272,7 @@ export default class TVFClient {
 	 * @param {any} params Any other parameters to be passed into the send function
 	 */
     async sendToChannel(id: string, content: any, ...params) {
-    	(await (this.bot.channels.fetch(id)) as Discord.TextChannel).send(content, ...params);
+    	return (await (this.bot.channels.fetch(id)) as Discord.TextChannel).send(content, ...params);
     }
 
     /**
