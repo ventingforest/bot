@@ -46,8 +46,8 @@ const message = async (tvf: Client, msg: Message) => {
 	const prefixRegex = new RegExp(
 		`^(<@!?${tvf.bot.user.id}> |${tvf.escapeRegex(tvf.prefix)})\\s*`,
 	);
-	const prefix = msg.content.match(prefixRegex)
-		? msg.content.match(prefixRegex)[0]
+	const prefix = msg.content.toLowerCase().match(prefixRegex)
+		? msg.content.toLowerCase().match(prefixRegex)[0]
 		: null;
 
 	if (prefix) {
