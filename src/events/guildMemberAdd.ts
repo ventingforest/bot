@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import { Ban } from 'ksoft.js';
 import { stripIndents } from 'common-tags';
 
-const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
+const guildMemberAdd = (tvf: Client, member: Discord.GuildMember) => tvf.isProduction ? async () => {
 	// bot detection
 	const botRegex = /[A-Z][a-z]+[1-9]+/g;
 	const now = moment(Date.now());
@@ -23,8 +23,8 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 	// ksoft.si ban api
 	// if the user is in the ban list
 	if (await tvf.ksoft.bans.check(member.id)) {
-		// get information about the user's ban
 		// @ts-ignore
+		// get information about the user's ban
 		const data: Ban = await tvf.ksoft.bans.info(member.id);
 
 		// if the ban is unappealable
@@ -62,9 +62,6 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 			return tvf.sendToChannel(tvf.channels.FK, `<@&${tvf.roles.FK}>`, embed);
 		}
 	}
-
-	// welcome the user if on the production branch
-	tvf.isProduction ? tvf.sendToChannel(tvf.channels.GENERAL, `Welcome ${tvf.resolveEmoji(tvf.emojis.HAI)}`) : null;
 
 	// database
 	User.create({
@@ -126,7 +123,8 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 
 	// welcome in #the_enchanted_woods
 	const welcomeEmbed = tvf.createEmbed()
-		.setTitle(`Welcome to TVF, ${member.user.tag}!`)
+		.setTitle(`Welcome to TVF, ${member.user.username}!`)
+		.setThumbnail(member.user.avatarURL())
 		.setDescription(stripIndents`
 			This may be a somewhat large server, but we can certainly make you feel at home - that's what our **Welcome Team** is for! 
 			**First of all, check out <#${tvf.channels.RULES}> as it contains much of what you need to know, and <#${tvf.channels.ROLES}>, which you can self-assign.**
@@ -135,6 +133,6 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 
 	const msg = await tvf.sendToChannel(tvf.channels.GENERAL, `<@&${tvf.roles.WELCOMETEAM}>`, welcomeEmbed);
 	return msg.react(tvf.emojis.WAVE);
-};
+} : null;
 
 export default guildMemberAdd;
