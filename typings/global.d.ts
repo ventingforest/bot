@@ -6,8 +6,8 @@ declare global {
     type StaffRole = 'fk' | 'mod' | 'admin';
     type Colour = 'green' | 'red' | 'blue' | 'purple' | 'orange' | 'black' | 'white' | 'random';
     type EmbedOptions = {
-        timestamp: boolean; // whether the timestamp appears on the embed - defaults to false
-        thumbnail: boolean; // whether the thumbnail is automatically set to the server's icon - defaults to true
+        timestamp?: boolean; // whether the timestamp appears on the embed - defaults to false
+        thumbnail?: boolean; // whether the thumbnail is automatically set to the server's icon - defaults to true
     }
 
     type CommandConfig = {

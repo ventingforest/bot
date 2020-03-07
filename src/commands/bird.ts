@@ -1,5 +1,7 @@
-const birb: Command = {
-	run: async (tvf, msg) => msg.channel.send(tvf.createEmbed().setImage((await tvf.ksoft.images.random('birb', { nsfw: false })).url).setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL())),
+import * as Discord from 'discord.js';
+
+const bird: Command = {
+	run: async (tvf, msg) => msg.channel.send(new Discord.MessageAttachment((await tvf.ksoft.images.random('birb', { nsfw: false })).url)),
 	config: {
 		name: 'bird',
 		description: 'Get a picture of a bird ^w^',
@@ -8,4 +10,4 @@ const birb: Command = {
 	},
 };
 
-export default birb;
+export default bird;

@@ -1,8 +1,14 @@
 const wholesome: Command = {
 	run: async (tvf, msg) => {
-		const img = await tvf.ksoft.images.reddit('wholesome', { removeNSFW: true, span: 'week' });
+		let img = await tvf.ksoft.images.reddit('wholesome', { removeNSFW: true, span: 'week' });
+
+		// ensure that the image is not a gif
+		while (img.url.endsWith('.gif')) {
+			img = await tvf.ksoft.images.reddit('wholesome', { removeNSFW: true, span: 'week' });
+		}
+
 		return msg.channel.send(
-			tvf.createEmbed()
+			tvf.createEmbed('orange', { thumbnail: false })
 				.setTitle(img.post.title)
 				.setURL(img.post.link)
 				.setImage(img.url)

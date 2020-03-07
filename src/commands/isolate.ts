@@ -124,7 +124,7 @@ const isolate: Command = {
 		module: 'Mod',
 		description: 'Isolates a user!',
 		args: true,
-		usage: '<@user> *reason*',
+		usage: '<@user> [reason]',
 		allowGeneral: true,
 	},
 };
