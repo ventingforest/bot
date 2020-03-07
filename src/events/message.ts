@@ -71,10 +71,6 @@ const message = async (tvf: Client, msg: Message) => {
 			);
 		}
 
-		if (config.dm && msg.channel.type == 'text') {
-			msg.reply('check your DMs.');
-		}
-
 		if (config.args && args.length === 0) {
 			let reply = 'you did not provide any arguments!';
 

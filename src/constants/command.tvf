@@ -8,7 +8,6 @@ const commandName: Command = {
 		module: '',
         args: false,
         usage: '',
-        dm: false,
 		allowGeneral: false,
 	},
 };
