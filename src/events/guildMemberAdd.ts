@@ -5,7 +5,8 @@ import * as moment from 'moment';
 import { Ban } from 'ksoft.js';
 import { stripIndents } from 'common-tags';
 
-const guildMemberAdd = (tvf: Client, member: Discord.GuildMember) => tvf.isProduction ? async () => {
+const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
+        if (tvf.isProduction) {
 	// bot detection
 	const botRegex = /[A-Z][a-z]+[1-9]+/g;
 	const now = moment(Date.now());
@@ -133,6 +134,7 @@ const guildMemberAdd = (tvf: Client, member: Discord.GuildMember) => tvf.isProdu
 
 	const msg = await tvf.sendToChannel(tvf.channels.GENERAL, `<@&${tvf.roles.WELCOMETEAM}>`, welcomeEmbed);
 	return msg.react(tvf.emojis.WAVE);
-} : null;
+    }
+};
 
 export default guildMemberAdd;
