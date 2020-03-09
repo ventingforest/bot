@@ -70,6 +70,7 @@ const privateVenting: Command = {
 				doc.private.requested = false;
 				doc.private.id = null;
 				doc.private.reason = null;
+				doc.private.requestedAt = null;
 				return doc.save().catch(err => tvf.logger.error(err));
 			}
 
