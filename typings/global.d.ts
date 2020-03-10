@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import Client from '../src/structures/TVFClient';
 
 declare global {
-    type Module = 'Core' | 'Fun' | 'Music' | 'Admin' | 'Mod' | 'FK';
+    type Module = 'Core' | 'Fun' | 'Music' | 'Admin' | 'Mod' | 'FK' | 'Venting';
     type StaffRole = 'fk' | 'mod' | 'admin';
     type Colour = 'green' | 'red' | 'blue' | 'purple' | 'orange' | 'black' | 'white' | 'random';
     type EmbedOptions = {
