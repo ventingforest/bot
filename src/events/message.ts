@@ -2,14 +2,7 @@ import { Message, TextChannel } from 'discord.js';
 import Client from '../structures/TVFClient';
 
 const message = async (tvf: Client, msg: Message) => {
-	// reactions
-	if (
-		msg.author.id === tvf.users.CARL &&
-        msg.content.startsWith('**Welcome to TVF')
-	) {
-		return await msg.react(tvf.emojis.WAVE);
-	}
-
+	// react to all messages in the starboard with the star emoji
 	if (msg.channel.id === tvf.channels.STARBOARD) return await msg.react(tvf.emojis.STAR);
 
 	// ignore messages from other bots
@@ -84,7 +77,7 @@ const message = async (tvf: Client, msg: Message) => {
 		if (
 			!config.allowGeneral &&
             (msg.channel.id === tvf.channels.GENERAL ||
-                msg.channel.id === tvf.channels.GENERAL2)
+                msg.channel.id === tvf.channels.SERIOUS)
 		) {
 			return await msg.delete();
 		}
@@ -103,9 +96,7 @@ const message = async (tvf: Client, msg: Message) => {
 
 	// random compliments
 	if (
-		Math.floor(Math.random() * 300) === 1 &&
-        (msg.channel.id === tvf.channels.GENERAL ||
-            msg.channel.id === tvf.channels.GENERAL2)
+		Math.floor(Math.random() * 300) === 1 && msg.channel.id === tvf.channels.GENERAL
 	) {
 		const compliment =
             tvf.other.COMPLIMENTS[
