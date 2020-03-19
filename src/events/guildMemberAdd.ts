@@ -69,7 +69,7 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 					value: stripIndents`
 					Now that you have joined our server, there are a couple things that you should know and that you need to do.
 					First off, you must read <#${tvf.channels.RULES}>, as it contains the majority of what you need to know.
-					
+
 					You must then visit <#${tvf.channels.ROLES}>, where you can assign some cool roles to yourself that will allow you to access hidden channels.
 					After 10 minutes of being in the server, you should recieve the **Approved** role.
 				`,
@@ -86,7 +86,7 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 					name: 'What is private venting?',
 					value: stripIndents`
 					We provide a service known as private venting, in which you can vent one-on-one with a member of our lovely staff team.
-					
+
 					You can request one of these sessions using the \`tvf private\` command. The format is \`tvf private [reason]\`.
 					You may also cancel your session using the \`tvf private cancel\` command. Providing a reason is always appreciated.
 				`,
@@ -112,12 +112,12 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 			.setTitle(`Welcome to TVF, ${member.user.username}!`)
 			.setThumbnail(member.user.avatarURL())
 			.setDescription(stripIndents`
-				This may be a somewhat large server, but we can certainly make you feel at home - that's what our **Welcome Team** is for! 
+				This may be a somewhat large server, but we can certainly make you feel at home - that's what our **Welcome Team** is for!
 				**First of all, check out <#${tvf.channels.RULES}> as it contains much of what you need to know, and <#${tvf.channels.ROLES}>, which you can self-assign.**
 				After 10 minutes of membership, you'll recieve the **Approved** role, which gives you some more perms. Have fun!
 			`);
 
-		const msg = await tvf.sendToChannel(tvf.channels.GENERAL, `<@&${tvf.roles.WELCOMETEAM}>`, welcomeEmbed);
+		const msg = await tvf.sendToChannel(tvf.channels.GENERAL, `**Welcome to TVF, <@!${member.user.id}>!** (<@&${tvf.roles.WELCOMETEAM}>)`, welcomeEmbed);
 		return msg.react(tvf.emojis.WAVE);
 	}
 };
