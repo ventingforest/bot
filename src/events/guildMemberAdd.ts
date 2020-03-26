@@ -103,7 +103,7 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 				`,
 				},
 			])
-			.setFooter('The Venting Forest, serving suers across the world since April 2018.', member.guild.iconURL());
+			.setFooter('The Venting Forest, serving users across the world since April 2018.', member.guild.iconURL());
 
 		member.send(dmEmbed);
 
