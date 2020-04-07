@@ -31,7 +31,7 @@ const message = async (tvf: Client, msg: Message) => {
 		tvf.sendToChannel(tvf.channels.HELPER, embed);
 
 		return msg.reply(
-			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.RESOURCES}>. You can also request a one-on-one private session with a staff by typing \`?private\` in any channel.`,
+			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.RESOURCES}>. You can also request a one-on-one private session with a staff by typing \`tvf private\` in any channel. If possible, please do provide a reason by typing the reason after the command.`,
 		);
 	}
 
