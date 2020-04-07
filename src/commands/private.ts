@@ -43,6 +43,11 @@ const privateVenting: Command = {
 							inline: true,
 						},
 						{
+							name: 'Venter nickname',
+							value: msg.guild.member(doc.id).nickname,
+							inline: true,
+						}
+						{
 							name: 'Canceller ID',
 							value: msg.author.id,
 							inline: true,
@@ -108,6 +113,11 @@ const privateVenting: Command = {
 						value: msg.author.id,
 						inline: true,
 					},
+					{
+						name: 'User nickname',
+						value: msg.guild.member(msg.author).nickname,
+						inline: true,
+					}
 					{
 						name: 'Reason',
 						value: reason,
@@ -338,6 +348,11 @@ const privateVenting: Command = {
 					{
 						name: 'User ID',
 						value: msg.author.id,
+						inline: true,
+					},
+					{
+						name: 'User Nickname',
+						value: msg.guild.member(msg.author).nickname,
 						inline: true,
 					},
 					{
