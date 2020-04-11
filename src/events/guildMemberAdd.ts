@@ -120,6 +120,16 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 		const msg = await tvf.sendToChannel(tvf.channels.GENERAL, `**Welcome to TVF, <@!${member.user.id}>!** (<@&${tvf.roles.WELCOMETEAM}>)`, welcomeEmbed);
 		return msg.react(tvf.emojis.WAVE);
 	}
+
+	// verification wait - 10 minutes
+	setTimeout(() => {
+		// if they are still in the server
+		if (member.guild.member(member.user.id)) {
+			tvf.logger.info(`Approving ${member.user.tag}!`);
+			member.roles.add(tvf.roles.APPROVED, 'Approved!');
+			member.user.send(`You have been approved in TVF!`)
+		}
+	}, 600000);
 };
 
 export default guildMemberAdd;

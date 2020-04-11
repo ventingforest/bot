@@ -11,7 +11,12 @@ const guildMemberRemove = async (tvf: Client, member: Discord.GuildMember) => {
 
 		// send goodbye message
 		const ban = await member.guild.fetchBan(member.user);
-		return tvf.sendToChannel(tvf.channels.GENERAL, ban ? `**${member.user.tag}** has been banned from the Forest.` : `**${member.user.tag}** has exited the Forest.`);
+
+		if (ban.user === member.user) {
+			tvf.sendToChannel(tvf.channels.GENERAL, `**${member.user.tag}** has been banned from the Forest`);
+		} else {
+			tvf.sendToChannel(tvf.channels.GENERAL, `**${member.user.tag}** has exited the Forest.`);
+		}
 	}
 };
 
