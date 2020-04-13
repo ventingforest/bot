@@ -117,7 +117,7 @@ const guildMemberAdd = async (tvf: Client, member: Discord.GuildMember) => {
 				After 10 minutes of membership, you'll recieve the **Approved** role, which gives you some more perms. Have fun!
 			`);
 
-		const msg = await tvf.sendToChannel(tvf.channels.GENERAL, `**Welcome to TVF, <@!${member.user.id}>!** (<@&${tvf.roles.WELCOMETEAM}>)`, welcomeEmbed);
+		const msg = await tvf.sendToChannel(tvf.channels.GENERAL, `**Welcome to TVF, <@!${member.user.id}>!** (${member.user.id === '625919227651555348' ? 'newt\'s alt - no ping' : `<@&${tvf.roles.WELCOMETEAM}>`})`, welcomeEmbed);
 		return msg.react(tvf.emojis.WAVE);
 	}
 
