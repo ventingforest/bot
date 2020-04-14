@@ -8,7 +8,7 @@ const guildMemberRemove = async (tvf: Client, member: Discord.GuildMember) => {
 		// ban auditor bots
 		if (member.user.bot && moment(member.joinedAt).diff(Date.now(), 'second') <= 3) {
 			tvf.sendToChannel(tvf.channels.GENERAL, '**Begone, bot!**');
-			return member.ban({ reason: `Most likely an auditor bot. `});
+			return tvf.server.members.ban(member.user.id, { reason: `Auditor bot. `});
 		}
 
 		// delete user from database
