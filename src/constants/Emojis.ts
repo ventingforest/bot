@@ -11,5 +11,6 @@ export default {
   confetti: '🎉',
   square: '▫',
   bell: '🔔',
-	cross: '❌'
+	cross: '❌',
+	hug: '🤗',
 };
