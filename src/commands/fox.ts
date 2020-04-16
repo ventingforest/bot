@@ -6,5 +6,13 @@ export default {
   module: 'Core',
   usage: 'fox',
   examples: ['fox'],
-  run: async (tvf, msg) => msg.channel.send(new Discord.MessageAttachment((await tvf.ksoft.images.random('fox', { nsfw: false })).url)),
+  run: async (tvf, msg) => {
+    let img = (await tvf.ksoft.images.random('fox', { nsfw: false })).url;
+
+    do {
+      img = (await tvf.ksoft.images.random('fox', { nsfw: false })).url;
+    } while (!(/.jpg|.jpeg|.png|.webp|.gif/.test(img)))
+
+    msg.channel.send(new Discord.MessageAttachment(img));
+  },
 } as Command;
