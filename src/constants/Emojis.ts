@@ -1,15 +1,15 @@
 export default {
-	BIN: '🗑',
-	WAVE: '👋',
-	STAR: '⭐',
-	TICK: '✅',
-
-	// thumbs
-	THUMBS: {
-		UP: '👍',
-		DOWN: '👎',
+	bin: '🗑',
+	wave: '👋',
+	star: '⭐',
+	tick: '✅',
+	thumbs: {
+		up: '👍',
+		down: '👎',
 	},
-
-	// custom
-	HAI: '607900592769204224',
+	grimacing: '😬',
+  confetti: '🎉',
+  square: '▫',
+  bell: '🔔',
+	cross: '❌'
 };

@@ -1,8 +1,6 @@
-import { config as dotenv } from 'dotenv';
-import Client from './structures/TVFClient';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-// load environmental variables
-dotenv();
-
-// create the client and start the bot
+// start the bot
+import Client from './Client';
 new Client().start();

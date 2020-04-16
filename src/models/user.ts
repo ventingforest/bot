@@ -1,14 +1,14 @@
 import * as mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
-    id: string;
-    isolated: boolean;
-    roles: string[];
+    id: string; // the id of the user
+    isolated: boolean; // whether the user is isolated or not
+    roles: string[]; // storage for the user's roles when isolating
     private: {
-        requested: boolean;
-		id: string;
-		reason: string;
-		requestedAt: string;
+      requested: boolean; // whether the user has a pending private venting session
+      id: string; // the id of the private venting session
+      reason: string; // the reason why the user wanted the session
+      requestedAt: string; // when the user requested the session
     };
 }
 

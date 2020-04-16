@@ -1,21 +1,17 @@
-import { Message, TextChannel } from 'discord.js';
-import Client from '../structures/TVFClient';
+import * as Discord from 'discord.js';
+import Client from '../Client';
+import _ from 'lodash';
 
-const message = async (tvf: Client, msg: Message) => {
+export default async (tvf: Client, msg: Discord.Message) => {
 	// react to all messages in the starboard with the star emoji
-	if (msg.channel.id === tvf.channels.STARBOARD) return await msg.react(tvf.emojis.STAR);
+	if (msg.channel.id === tvf.channels.starboard) return await msg.react(tvf.emojis.star);
 
 	// ignore messages from other bots
 	if (msg.author.bot) return undefined;
 
-	if (
-		msg.mentions.roles.first() &&
-        msg.mentions.roles.first().id === tvf.roles.HELPER &&
-		msg.channel.id != tvf.channels.HELPER &&
-		tvf.isProduction
-	) {
-		const embed = tvf
-			.createEmbed('random')
+  // helper ping
+	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.helper &&	msg.channel.id != tvf.channels.helper && tvf.isProduction) {
+		const embed = tvf.createEmbed()
 			.setTitle(`${msg.author.username} needs help!`)
 			.addFields([
 				{
@@ -24,24 +20,20 @@ const message = async (tvf: Client, msg: Message) => {
 				},
 				{
 					name: 'Message',
-					value: tvf.truncate(msg.content, 2048),
+					value: _.truncate(msg.content, { length: 2048 }),
 				},
 			]);
 
-		tvf.sendToChannel(tvf.channels.HELPER, embed);
+		tvf.sendToChannel(tvf.channels.helper, embed);
 
 		return msg.reply(
-			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.RESOURCES}>. You can also request a one-on-one private session with a staff by typing \`tvf private\` in any channel. If possible, please do provide a reason by typing the reason after the command.`,
+			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.resources}>. You can also request a one-on-one private session with a staff by typing \`tvf private\` in any channel. If possible, please do provide a reason by typing the reason after the command.`,
 		);
 	}
 
 	// prefix matching
-	const prefixRegex = new RegExp(
-		`^(<@!?${tvf.bot.user.id}> |${tvf.escapeRegex(tvf.prefix)})\\s*`,
-	);
-	const prefix = msg.content.toLowerCase().match(prefixRegex)
-		? msg.content.toLowerCase().match(prefixRegex)[0]
-		: null;
+	const prefixRegex = new RegExp(`^(<@!?${tvf.bot.user.id}> |${_.escapeRegExp(tvf.prefix)})\\s*`);
+	const prefix = msg.content.toLowerCase().match(prefixRegex) ? msg.content.toLowerCase().match(prefixRegex)[0] : null;
 
 	if (prefix) {
 		// get the args and command name
@@ -52,37 +44,43 @@ const message = async (tvf: Client, msg: Message) => {
 		const command = tvf.commands.get(commandName);
 		if (!command) return undefined;
 
-		// extract the config
-		const config = command.config;
+    // checks
 
-		// checks
-		if (
-			(config.module === 'Admin' && !tvf.isUser('admin', msg.author) || (config.module === 'Mod' && !tvf.isUser('mod', msg.author)) || (config.module === 'FK' && !tvf.isUser('fk', msg.author)))
-		) {
-			return msg.reply(
-				'you do not have permission to run that command 😢',
-			);
+		// if a command isn't allowed to be run in general, delete the message
+		if (!command.allowGeneral && msg.channel.id === tvf.channels.general) {
+			await msg.delete();
+			return msg.author.send(`**${tvf.emojis.grimacing}  |**  you can not run that command in general!`);
 		}
 
-		if (config.args && args.length === 0) {
-			let reply = 'you did not provide any arguments!';
+    // if there are certain permissions required to run a command
+    if (command.permissions) {
+      let missingPermissions = [];
 
-			if (config.usage) {
-				reply += `\nThe correct usage would be: \`${prefix}${config.name} ${config.usage}\``;
-			}
+      // for every permission listed, check if the user has it
+      for (let i = 0; i < command.permissions.length; i++) {
+        if (!msg.member.hasPermission(command.permissions[i])) missingPermissions.push(command.permissions[i]);
+      }
 
-			return msg.reply(reply);
-		}
+      // if there are any permissions missing, inform the user
+      if (missingPermissions.length > 0) {
+        msg.author.send(`**${tvf.emojis.grimacing}  |**  you are missing these permissions in **${msg.guild.name}** to run **${command.name}**\n\`\`\`${tvf.friendlyPermissions(msg.member.permissions).join('\n')}\`\`\``);
+        return msg.channel.send(`**${tvf.emojis.cross}  |**  you do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.`);
+      }
+    }
 
-		if (
-			!config.allowGeneral &&
-            (msg.channel.id === tvf.channels.GENERAL ||
-                msg.channel.id === tvf.channels.SERIOUS)
-		) {
-			return await msg.delete();
-		}
+    // if the command requires arguments but hasn't been given any
+    if (command.args && args.length === 0) {
+      let reply = `**${tvf.emojis.cross}  |**  you did not provide any arguments!`;
 
-		// attempt to execute the command
+      // if the usage is listed for the command, append it to the reply
+      if (command.usage) {
+        reply += `\n**${tvf.emojis.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
+      }
+
+      return msg.channel.send(reply);
+    }
+
+		// execute the command
 		try {
 			return command.run(tvf, msg, args);
 		}
@@ -95,15 +93,8 @@ const message = async (tvf: Client, msg: Message) => {
 	}
 
 	// random compliments
-	if (
-		Math.floor(Math.random() * 300) === 1 && msg.channel.id === tvf.channels.GENERAL
-	) {
-		const compliment =
-            tvf.other.COMPLIMENTS[
-            	Math.floor(Math.random() * tvf.other.COMPLIMENTS.length)
-            ];
+	if (Math.floor(Math.random() * 300) === 1 && msg.channel.id === tvf.channels.general) {
+		const compliment = tvf.compliments[Math.floor(Math.random() * tvf.compliments.length)];
 		return msg.reply(compliment);
 	}
 };
-
-export default message;
