@@ -154,7 +154,7 @@ export default class Client {
     timestamp?: boolean, // if false, the timestamp is omitted
     thumbnail?: boolean, // if false, the thumbnail is omitted
   } = {
-    colour: this.colours.green,
+    colour: this.colours.white,
     timestamp: false,
     thumbnail: true,
   }): Discord.MessageEmbed {

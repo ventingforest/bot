@@ -1,7 +1,8 @@
 export default {
-	blue: '#779ECB',
-	red: '#FE6B64',
-	green: '#77DD77',
+	blue: '#61a8ff',
+	red: '#ff6961',
+	green: '#61ffb8',
+	orange: 'ffb861',
 	black: '#000000',
-	white: '#ffffff',
+	white: '#f7f7f7',
 };
