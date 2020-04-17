@@ -12,9 +12,9 @@ export default {
     console.log(role);
 
     // group users by role
-    const admins = msg.guild.roles.cache.get(tvf.roles.admin).members.concat(msg.guild.roles.cache.get(tvf.roles.techAdmin).members);
-    const mods = msg.guild.roles.cache.get(tvf.roles.mod).members.filter(m => !m.roles.cache.has(tvf.roles.admin)).filter(m => !m.roles.cache.has(tvf.roles.techAdmin));
-    const fks = msg.guild.roles.cache.get(tvf.roles.fk).members.filter(m => !m.roles.cache.has(tvf.roles.admin)).filter(m => !m.roles.cache.has(tvf.roles.techAdmin)).filter(m => !m.roles.cache.has(tvf.roles.mod));
+    const admins = tvf.roles.admin.members.concat(tvf.roles.techAdmin.members);
+    const mods = tvf.roles.mod.members.filter(m => !m.roles.cache.has(tvf.roles.admin.id)).filter(m => !m.roles.cache.has(tvf.roles.techAdmin.id));
+    const fks = tvf.roles.fk.members.filter(m => !m.roles.cache.has(tvf.roles.admin.id)).filter(m => !m.roles.cache.has(tvf.roles.techAdmin.id)).filter(m => !m.roles.cache.has(tvf.roles.mod.id));
     const staff = admins.concat(mods).concat(fks);
 
     // roles

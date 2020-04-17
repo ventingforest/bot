@@ -336,7 +336,7 @@ export default {
         ])
         .setFooter(`Session ID: ${id}`, msg.guild.iconURL());
 
-      tvf.channels.fk.send(tvf.isProduction ? `<@&${tvf.roles.fk}>` : '', embed);
+      tvf.channels.fk.send(tvf.isProduction ? tvf.roles.fk : '', embed);
 
       // send a message to the venter
       const venterEmbed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true })

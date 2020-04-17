@@ -8,7 +8,7 @@ export default {
   usage: 'about',
   examples: ['about'],
   run: async (tvf, msg) => {
-    const developer = msg.guild.roles.cache.get(tvf.roles.techAdmin).members.first().user;
+    const developer = tvf.roles.techAdmin.members.first().user;
     const members = await msg.guild.members.fetch();
     const channels = msg.guild.channels.cache;
 

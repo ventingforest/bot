@@ -10,7 +10,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 	if (msg.author.bot) return undefined;
 
   // helper ping
-	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.helper &&	msg.channel.id != tvf.channels.helper.id && tvf.isProduction) {
+	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.helper.id &&	msg.channel.id != tvf.channels.helper.id && tvf.isProduction) {
 		const embed = tvf.createEmbed()
 			.setTitle(`${msg.author.username} needs help!`)
 			.addFields([

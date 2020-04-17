@@ -5,7 +5,7 @@ import mongoose = require('mongoose');
 import { KSoftClient } from 'ksoft.js';
 
 import User, { IUser } from './models/user';
-import Roles from './constants/Roles';
+import { IRoles } from './constants/Roles';
 import Colours from './constants/Colours';
 import { IChannels } from './constants/Channels';
 import Emojis from './constants/Emojis';
@@ -28,7 +28,7 @@ export default class Client {
   banAppeal = 'https://forms.gle/EoUp6hxmNvuAJXJfA';
   prefix = this.isProduction ? 'tvf ': 'tvf beta ';
 
-  roles = Roles;
+  roles: IRoles;
   colours = Colours;
   channels: IChannels;
   emojis = Emojis;
@@ -65,7 +65,7 @@ export default class Client {
     });
 
     const winstonError = {
-      apply: (target, _, argumentsList: any[]) => {
+      apply: (target: any, _: any, argumentsList: any[]) => {
         if (
           argumentsList.length >= 2 ||
                   argumentsList.length <= 0 ||
@@ -171,7 +171,7 @@ export default class Client {
   // checks if a member has a staff role
   isUser(role: StaffRole, user: Discord.User): boolean {
     const member = this.server.member(user);
-    return role === 'fk' ? member.roles.cache.has(this.roles.fk) : role === 'mod' ? member.roles.cache.has(this.roles.mod) : role === 'admin' ? member.roles.cache.has(this.roles.admin) || member.roles.cache.has(this.roles.techAdmin) || member.roles.cache.has(this.roles.newt2) : false;
+    return role === 'fk' ? member.roles.cache.has(this.roles.fk.id) : role === 'mod' ? member.roles.cache.has(this.roles.mod.id) : role === 'admin' ? member.roles.cache.has(this.roles.admin.id) || member.roles.cache.has(this.roles.techAdmin.id) || member.roles.cache.has(this.roles.newt2.id) : false;
   }
 
   // find a member in a message
