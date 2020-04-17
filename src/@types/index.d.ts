@@ -11,7 +11,7 @@ declare global {
     }
 
     interface Command {
-      run(taiga: Client, msg: Discord.Message, args: string[]): void; // method containing the command's code
+      run(taiga: Client, msg: Discord.Message, args: string[], other: { prefix: string }): void; // method containing the command's code
       name: string; // the name of the command
       description?: string; // a description of what the command does
       module: Module; // the module the command belongs in

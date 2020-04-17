@@ -82,7 +82,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 
 		// execute the command
 		try {
-			return command.run(tvf, msg, args);
+			return command.run(tvf, msg, args, { prefix });
 		}
 		catch (error) {
 			tvf.logger.error(error);
