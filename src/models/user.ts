@@ -12,6 +12,9 @@ export interface IUser extends mongoose.Document {
       startedAt: Date; // when a member of staff started the session
       takenBy: string; // the member of staff that started the session
     };
+    stats: {
+      privatesTaken: number; // the amount of private venting sessions the user has taken
+    }
 }
 
 const userSchema = new mongoose.Schema(
@@ -30,6 +33,9 @@ const userSchema = new mongoose.Schema(
       startedAt: Date,
       takenBy: String,
 		},
+    stats: {
+      privatesTaken: Number,
+    },
 	},
 	{
 		versionKey: false,

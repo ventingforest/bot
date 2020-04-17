@@ -201,7 +201,13 @@ export default {
 
       tvf.sendToChannel(tvf.channels.fk, takenEmbed);
 
-      // update the document
+      // increase the staff member's privatesTaken count
+      const staffDoc = await tvf.userDoc(msg.author.id);
+      staffDoc.stats.privatesTaken = staffDoc.stats.privatesTaken + 1;
+
+      tvf.saveDoc(staffDoc);
+
+      // update the venter's document
       doc.private.requested = false;
       doc.private.startedAt = new Date();
       doc.private.takenBy = msg.author.tag;
