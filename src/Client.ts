@@ -239,4 +239,9 @@ export default class Client {
 
     return newList;
   }
+
+  // save a document
+  saveDoc(doc: mongoose.Document) {
+    doc.save().catch(err => this.logger.error(`There was an error saving that document: ${err}`));
+  }
 }

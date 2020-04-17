@@ -3,7 +3,7 @@ export default {
   description: 'Hug another user in the server',
   module: 'Fun',
   args: true,
-  usage: '<@user>',
+  usage: 'hug <@user>',
   examples: ['hug @newt#1234'],
   run: async (tvf, msg, args) => {
     // find the mentioned member
