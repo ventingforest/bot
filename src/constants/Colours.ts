@@ -5,4 +5,5 @@ export default {
 	orange: 'ffb861',
 	black: '#000000',
 	white: '#f7f7f7',
+	purple: '#7375FF',
 };
