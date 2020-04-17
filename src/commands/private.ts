@@ -62,7 +62,7 @@ export default {
           ])
           .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
 
-          tvf.sendToChannel(tvf.channels.fk, staffEmbed);
+          tvf.channels.fk.send(staffEmbed);
 
           // inform the venter that their session has been cancelled
           const venterEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true })
@@ -72,7 +72,7 @@ export default {
 
           venter.send(venterEmbed).catch(error => {
             tvf.logger.error(error)
-            tvf.sendToChannel(tvf.channels.discussion, stripIndents`
+            tvf.channels.discussion.send(stripIndents`
               <@!${venter.id}>, your private venting session has been cancelled!
               Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please consider investigating this.
               If you believe this has been done in error, don't hesitate to contact a member of staff - or request a new session!
@@ -116,7 +116,7 @@ export default {
           ])
           .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
 
-        tvf.sendToChannel(tvf.channels.fk, embed);
+        tvf.channels.fk.send(embed);
 
         // cancel the session
         doc.private.requested = false;
@@ -190,7 +190,7 @@ export default {
         .setTitle(`Welcome to private venting, ${venter.user.username}!`)
         .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
 
-      tvf.sendToChannel(tvf.channels.private, `<@!${venter.id}>`, embed);
+      tvf.channels.private.send(`<@!${venter.id}>`, embed);
 
       // alert staff that the session is being taken
       const takenEmbed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false })
@@ -199,7 +199,7 @@ export default {
         .setTitle(`${venter.user.tag}'s private venting session is being taken by ${msg.author.username}!`)
         .setFooter(`Session ID: ${doc.private.id}`);
 
-      tvf.sendToChannel(tvf.channels.fk, takenEmbed);
+      tvf.channels.fk.send(takenEmbed);
 
       // update the venter's document
       doc.private.requested = false;
@@ -266,7 +266,7 @@ export default {
         ])
         .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
 
-      tvf.sendToChannel(tvf.channels.private, embed);
+      tvf.channels.private.send(embed);
 
       // alert staff that the session has finished
       const finishedEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
@@ -276,7 +276,7 @@ export default {
         .setDescription(notes)
         .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
 
-      tvf.sendToChannel(tvf.channels.fk, finishedEmbed);
+      tvf.channels.fk.send(finishedEmbed);
 
       // update the document
       doc.private.id = null;
@@ -336,7 +336,7 @@ export default {
         ])
         .setFooter(`Session ID: ${id}`, msg.guild.iconURL());
 
-      tvf.sendToChannel(tvf.channels.fk, tvf.isProduction ? `<@&${tvf.roles.fk}>` : '', embed);
+      tvf.channels.fk.send(tvf.isProduction ? `<@&${tvf.roles.fk}>` : '', embed);
 
       // send a message to the venter
       const venterEmbed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true })

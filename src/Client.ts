@@ -7,7 +7,7 @@ import { KSoftClient } from 'ksoft.js';
 import User, { IUser } from './models/user';
 import Roles from './constants/Roles';
 import Colours from './constants/Colours';
-import Channels from './constants/Channels';
+import { IChannels } from './constants/Channels';
 import Emojis from './constants/Emojis';
 import Compliments from './constants/Compliments';
 
@@ -30,7 +30,7 @@ export default class Client {
 
   roles = Roles;
   colours = Colours;
-  channels = Channels;
+  channels: IChannels;
   emojis = Emojis;
   compliments = Compliments;
 
@@ -166,11 +166,6 @@ export default class Client {
     if (options.thumbnail) embed.setThumbnail(this.server.iconURL());
 
     return embed;
-  }
-
-  // send a message to a specific channel
-  async sendToChannel(id: string, content: any, ...params): Promise<Discord.Message> {
-    return (await (this.bot.channels.fetch(id)) as Discord.TextChannel).send(content, ...params);
   }
 
   // checks if a member has a staff role

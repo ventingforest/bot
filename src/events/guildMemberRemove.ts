@@ -7,7 +7,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 	if (tvf.isProduction) {
 		// ban auditor bots
 		if (member.user.bot && moment(member.joinedAt).diff(Date.now(), 'second') <= 3) {
-			tvf.sendToChannel(tvf.channels.general, '**Begone, bot!**');
+			tvf.channels.general.send('**Begone, bot!**');
 			return tvf.server.members.ban(member.user.id, { reason: `Auditor bot. `});
 		}
 
@@ -17,6 +17,6 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 		);
 
 		// send goodbye message
-		tvf.sendToChannel(tvf.channels.general, `**${member.user.tag}** has exited the Forest.`);
+		tvf.channels.general.send(`**${member.user.tag}** has exited the Forest.`);
 	}
 };

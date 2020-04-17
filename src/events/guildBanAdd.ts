@@ -10,6 +10,6 @@ export default async (tvf: Client, user: Discord.User) => {
 		);
 
 		// send ban message
-		tvf.sendToChannel(tvf.channels.general, `**${user.tag}** has been banned from the Forest.`);
+		tvf.channels.general.send(`**${user.tag}** has been banned from the Forest.`);
 	}
 };

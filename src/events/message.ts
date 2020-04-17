@@ -4,13 +4,13 @@ import _ from 'lodash';
 
 export default async (tvf: Client, msg: Discord.Message) => {
 	// react to all messages in the starboard with the star emoji
-	if (msg.channel.id === tvf.channels.starboard) return await msg.react(tvf.emojis.star);
+	if (msg.channel.id === tvf.channels.starboard.id) return await msg.react(tvf.emojis.star);
 
 	// ignore messages from other bots
 	if (msg.author.bot) return undefined;
 
   // helper ping
-	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.helper &&	msg.channel.id != tvf.channels.helper && tvf.isProduction) {
+	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.helper &&	msg.channel.id != tvf.channels.helper.id && tvf.isProduction) {
 		const embed = tvf.createEmbed()
 			.setTitle(`${msg.author.username} needs help!`)
 			.addFields([
@@ -24,7 +24,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 				},
 			]);
 
-		tvf.sendToChannel(tvf.channels.helper, embed);
+		tvf.channels.helper.send(embed);
 
 		return msg.reply(
 			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.resources}>. You can also request a one-on-one private session with a staff by typing \`tvf private\` in any channel. If possible, please do provide a reason by typing the reason after the command.`,
@@ -47,7 +47,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
     // checks
 
 		// if a command isn't allowed to be run in general, delete the message
-		if (!command.allowGeneral && msg.channel.id === tvf.channels.general) {
+		if (!command.allowGeneral && msg.channel.id === tvf.channels.general.id) {
 			await msg.delete();
 			return msg.author.send(`**${tvf.emojis.grimacing}  |**  you can not run that command in general!`);
 		}
@@ -93,7 +93,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 	}
 
 	// random compliments
-	if (Math.floor(Math.random() * 300) === 1 && msg.channel.id === tvf.channels.general) {
+	if (tvf.isProduction && Math.floor(Math.random() * 300) === 1 && msg.channel.id === tvf.channels.general.id) {
 		const compliment = tvf.compliments[Math.floor(Math.random() * tvf.compliments.length)];
 		return msg.reply(compliment);
 	}

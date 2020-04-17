@@ -41,7 +41,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
             },
           ]);
 
-        tvf.sendToChannel(tvf.channels.fk, `<@&${tvf.roles.fk}>`, embed);
+        tvf.channels.fk.send(`<@&${tvf.roles.fk}>`, embed);
       }
     }
 
@@ -106,7 +106,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 				After 10 minutes of membership, you'll recieve the **Approved** role, which gives you some more perms. Have fun!
 			`);
 
-    const msg = await tvf.sendToChannel(tvf.channels.general, `**Welcome to TVF, <@!${id}>!** ${member.user.id === '625919227651555348' || member.user.bot ? '' : `(<@&${tvf.roles.welcomeTeam}>)`}`, welcomeEmbed);
+    const msg = await tvf.channels.general.send(`**Welcome to TVF, <@!${id}>!** ${member.user.id === '625919227651555348' || member.user.bot ? '' : `(<@&${tvf.roles.welcomeTeam}>)`}`, welcomeEmbed);
     return msg.react(tvf.emojis.wave);
   }
 
