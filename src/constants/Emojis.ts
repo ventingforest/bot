@@ -13,4 +13,9 @@ export default {
   bell: '🔔',
 	cross: '❌',
 	hug: '🤗',
+	think: '🤔',
+	hearts: {
+		revolving: '💞'
+	},
+	flushed: '😳',
 };
