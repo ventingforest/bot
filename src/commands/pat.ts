@@ -1,5 +1,5 @@
 export default {
-  name: 'kiss',
+  name: 'pat',
   description: 'Pat another user\'s head.',
   module: 'Fun',
   args: true,
@@ -16,7 +16,7 @@ export default {
       const embed = tvf.createEmbed({ thumbnail: false })
         .setAuthor(msg.author.tag, msg.author.avatarURL())
         .setThumbnail(member.avatarURL())
-        .setImage((await tvf.randomImage('headpat')).url);
+        .setImage((await tvf.randomImage('pat')).url);
 
         // if the mentioned user was the author
         if (member === msg.author) {
