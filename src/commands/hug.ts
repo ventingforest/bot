@@ -11,8 +11,9 @@ export default {
 
     // make the embed
     const embed = tvf.createEmbed({ thumbnail: false })
+      .setAuthor(msg.author.tag, msg.author.avatarURL())
       .setThumbnail(member.avatarURL())
-      .setImage((await tvf.ksoft.images.random('hug', { nsfw: false})).url)
+      .setImage((await tvf.randomImage('hug')).url)
       .setFooter(`Requested by ${msg.author.username}`, msg.author.avatarURL());
 
     // if the mentioned user was the author

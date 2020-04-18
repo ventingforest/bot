@@ -6,13 +6,5 @@ export default {
   module: 'Core',
   usage: 'bird',
   examples: ['bird'],
-  run: async (tvf, msg) => {
-    let img = (await tvf.ksoft.images.random('bird', { nsfw: false })).url;
-
-    do {
-      img = (await tvf.ksoft.images.random('bird', { nsfw: false })).url;
-    } while (!(/.jpg|.jpeg|.png|.webp|.gif/.test(img)))
-
-    msg.channel.send(new Discord.MessageAttachment(img));
-  },
+  run: async (tvf, msg) => msg.channel.send(new Discord.MessageAttachment((await tvf.randomImage('birb')).url)),
 } as Command;

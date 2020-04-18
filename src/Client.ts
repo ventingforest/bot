@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as winston from 'winston';
 import * as fs from 'fs';
 import mongoose = require('mongoose');
-import { KSoftClient } from 'ksoft.js';
+import { KSoftClient, Image } from 'ksoft.js';
 
 import User, { IUser } from './models/user';
 import { IRoles } from './constants/Roles';
@@ -238,5 +238,16 @@ export default class Client {
   // save a document
   saveDoc(doc: mongoose.Document) {
     doc.save().catch(err => this.logger.error(`There was an error saving that document: ${err}`));
+  }
+
+  // extension of the <Client>.ksoft.images.random function
+  async randomImage(term: string): Promise<Image> {
+    let img = await this.ksoft.images.random(term, { nsfw: false });
+
+    do {
+      img = await this.ksoft.images.random(term, { nsfw: false });
+    } while (!(/.jpg|.jpeg|.png|.webp|.gif/.test(img.url)))
+
+    return img;
   }
 }
