@@ -46,7 +46,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
     }
 
     // create a document in the database
-    User.create({ tag, id });
+    User.create({ tag, id, pda: true });
 
     // send a DM welcoming the user
     const dmEmbed = tvf.createEmbed()

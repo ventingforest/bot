@@ -92,8 +92,11 @@ export default async (tvf: Client, msg: Discord.Message) => {
 		}
 	}
 
+	// get the user's document from the database
+	const doc = await tvf.userDoc(msg.author.id);
+
 	// random compliments
-	if (tvf.isProduction && Math.floor(Math.random() * 300) === 1 && msg.channel.id === tvf.channels.general.id) {
+	if (tvf.isProduction && doc.pda && Math.floor(Math.random() * 300) === 1 && msg.channel.id === tvf.channels.general.id) {
 		const compliment = tvf.compliments[Math.floor(Math.random() * tvf.compliments.length)];
 		return msg.reply(compliment);
 	}
