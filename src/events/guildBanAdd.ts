@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import Client from '../Client';
 import User from '../models/user';
 
-export default async (tvf: Client, user: Discord.User) => {
+export default async (tvf: Client, _guild: Discord.Guild, user: Discord.User) => {
 	if (tvf.isProduction) {
 		// delete user from database
 		User.findOneAndDelete({ id: user.id }).then(() =>
