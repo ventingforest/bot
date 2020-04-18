@@ -12,9 +12,9 @@ export default {
     // make the embed
     const compliment = tvf.compliments[Math.floor(Math.random() * tvf.compliments.length)];
     const embed = tvf.createEmbed({ thumbnail: false })
+      .setAuthor(msg.author.tag, msg.author.avatarURL())
       .setTitle(`${member.username}, ${compliment}`)
       .setThumbnail(member.avatarURL())
-      .setFooter(`Requested by ${msg.author.username}`, msg.author.avatarURL());
 
     msg.channel.send(embed);
 

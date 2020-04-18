@@ -8,7 +8,10 @@ export default {
 	examples: ['ping'],
 	allowGeneral: true,
 	run: async (tvf, msg) => {
-		const embed = tvf.createEmbed().setTitle('Pong!').setFooter(`Requested by ${msg.author.tag}`, msg.author.avatarURL());
+		const embed = tvf.createEmbed()
+			.setAuthor(msg.author.tag, msg.author.avatarURL())
+			.setTitle('Pong!');
+
 		const msg2 = (await msg.channel.send(embed)) as Message;
 		const ping = Math.round(msg2.createdTimestamp - msg.createdTimestamp);
 

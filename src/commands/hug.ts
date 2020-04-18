@@ -13,8 +13,7 @@ export default {
     const embed = tvf.createEmbed({ thumbnail: false })
       .setAuthor(msg.author.tag, msg.author.avatarURL())
       .setThumbnail(member.avatarURL())
-      .setImage((await tvf.randomImage('hug')).url)
-      .setFooter(`Requested by ${msg.author.username}`, msg.author.avatarURL());
+      .setImage((await tvf.randomImage('hug')).url);
 
     // if the mentioned user was the author
     if (member === msg.author) return msg.channel.send(embed.setTitle(`${msg.author.username} hugged themselves ${tvf.emojis.hug}`));
