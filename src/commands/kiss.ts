@@ -3,8 +3,7 @@ export default {
   description: 'Kiss another user in the server.',
   module: 'Fun',
   args: true,
-  usage: 'kiss <@user>',
-  examples: ['kiss @newt#1234'],
+  usage: '<@user>',
   run: async (tvf, msg, args) => {
     // find the mentioned member
     const member = tvf.checkForMember(msg, args).user;

@@ -2,8 +2,6 @@ export default {
   name: 'wholesome',
   description: 'Gets a random image from r/wholesome',
   module: 'Fun',
-  usage: 'wholesome',
-  examples: ['wholesome'],
   run: async (tvf, msg) => {
     let img = await tvf.ksoft.images.reddit('wholesome', { removeNSFW: true, span: 'week' });
 

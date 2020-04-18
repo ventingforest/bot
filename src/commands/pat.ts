@@ -3,8 +3,7 @@ export default {
   description: 'Pat another user\'s head.',
   module: 'Fun',
   args: true,
-  usage: 'pat <@user>',
-  examples: ['pat @newt#1234'],
+  usage: '<@user>',
   run: async (tvf, msg, args) => {
     // find the mentioned member
     const member = tvf.checkForMember(msg, args).user;

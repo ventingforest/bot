@@ -3,7 +3,6 @@ export default {
   description: 'Allows you to view statistics about the staff.',
   module: 'Core',
   usage: '<position>',
-  examples: ['staff', 'staff fk'],
   allowGeneral: false,
   run: async (tvf, msg, args) => {
     const role = args.join(' ').toLowerCase();

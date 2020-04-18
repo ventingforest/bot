@@ -3,8 +3,7 @@ export default {
   description: 'Compliment another user in the server!',
   module: 'Fun',
   args: true,
-  usage: 'compliment <@user>',
-  examples: ['compliment @newt#1234'],
+  usage: '<@user>',
   run: async (tvf, msg, args) => {
     // find the mentioned member
     const member = tvf.checkForMember(msg, args).user;

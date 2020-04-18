@@ -4,8 +4,6 @@ export default {
 	name: 'ping',
 	module: 'Core',
 	description: 'Check if I\'m still alive <3',
-	usage: 'ping',
-	examples: ['ping'],
 	allowGeneral: true,
 	run: async (tvf, msg) => {
 		const embed = tvf.createEmbed()

@@ -4,8 +4,7 @@ export default {
   name: 'aww',
   description: 'Get a cute picture ^w^',
   module: 'Core',
-  usage: 'aww',
-  examples: ['aww'],
+  aliases: ['cute'],
   run: async (tvf, msg) => {
     let img = (await tvf.ksoft.images.aww()).url;
 

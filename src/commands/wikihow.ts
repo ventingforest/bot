@@ -1,11 +1,7 @@
-import * as Discord from 'discord.js';
-
 export default {
   name: 'wikihow',
   description: 'Get a random WikiHow article',
   module: 'Fun',
-  usage: 'wikihow',
-  examples: ['wikihow'],
   run: async (tvf, msg) => {
     const article = await tvf.ksoft.images.wikihow();
 

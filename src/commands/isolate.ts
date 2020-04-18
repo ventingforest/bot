@@ -6,8 +6,8 @@ export default {
   description: 'Isolates/unisolates a user!',
   module: 'Mod',
   args: true,
-  usage: 'isolate <@user> [reason]',
-  examples: ['isolate @newt#1234 you\'ve been a bad boy >:('],
+  usage: '<@user> [reason]',
+  aliases: ['unisolate'],
   allowGeneral: true,
   run: async (tvf, msg, args) => {
     await msg.delete();

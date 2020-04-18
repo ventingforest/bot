@@ -8,8 +8,7 @@ export default {
   name: 'private',
   module: 'Venting',
   description: 'Allows you to request/cancel a private venting session!',
-  usage: 'private [reason]',
-  examples: ['private', 'private i\'m sad', 'private cancel', 'private cancel i\'m not sad anymore :D'],
+  usage: '[reason]',
   allowGeneral: true,
   aliases: ['privatevent', 'privateventing', 'pv'],
   run: async (tvf, msg, args, { prefix }) => {

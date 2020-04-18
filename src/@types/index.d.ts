@@ -18,8 +18,7 @@ declare global {
       aliases?: string[]; // other names for the command
       permissions?: Discord.PermissionResolvable[]; // required permissions to run the command
       args?: boolean; // whether the command requires arguments
-      usage: string; // shows how the command is supposed to be used, listing all arguments
-      examples: string[]; // examples of how the command should be run - usage but with dummy arguments filled in
+      usage?: string; // shows how the command is supposed to be used, listing all arguments
       allowGeneral?: boolean; // whether the command can be run in general
     }
 }

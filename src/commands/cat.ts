@@ -4,7 +4,6 @@ export default {
   name: 'cat',
   description: 'Get a picture of a cat ^w^',
   module: 'Core',
-  usage: 'cat',
-  examples: ['cat'],
+  aliases: ['catto', 'kitty'],
   run: async (tvf, msg) => msg.channel.send(new Discord.MessageAttachment((await tvf.randomImage('cat')).url)),
 } as Command;

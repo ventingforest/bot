@@ -41,7 +41,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 		const commandName = args.shift().toLowerCase();
 
 		// find the command
-		const command = tvf.commands.get(commandName);
+		const command = tvf.commands.get(commandName) || tvf.commands.find(c => c.aliases && c.aliases.includes(commandName));
 		if (!command) return undefined;
 
     // checks

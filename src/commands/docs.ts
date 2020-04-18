@@ -6,8 +6,7 @@ export default {
   description: 'Allows you to search the discord.js documentation',
   module: 'Core',
   args: true,
-  usage: 'docs <query> [stable|master=master]',
-  examples: ['docs Client', 'docs Client stable', 'docs Client master'],
+  usage: '<query> [stable|master=master]',
   run: async (tvf, msg, args) => {
     // get the data
     const source = ['stable', 'master'].includes(args.slice(-1)[0]) ? args.pop() : 'master';

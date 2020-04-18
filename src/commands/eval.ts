@@ -5,8 +5,7 @@ export default {
   description: 'Allows newt to run code without editing the bot!',
   module: 'Admin',
   args: true,
-  usage: 'eval <code>',
-  examples: ['eval console.log(\'test\')'],
+  usage: '<code>',
   allowGeneral: true,
   run: (tvf, msg, args) => {
     try {

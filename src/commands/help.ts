@@ -3,8 +3,7 @@ export default {
   description: 'Helps you use me!',
   module: 'Core',
   aliases: ['h'],
-  usage: 'help [command]',
-  examples: ['help', 'help ping', 'help hug'],
+  usage: '[command]',
   allowGeneral: true,
 	run: async (tvf, msg, args) => {
 		const embed = tvf.createEmbed({ thumbnail: false, timestamp: true })
@@ -49,11 +48,11 @@ export default {
 			const q = args[0].toLowerCase();
 
 			// search for the command
-			const cmd = tvf.commands.get(q);
+			const cmd = tvf.commands.get(q) || tvf.commands.find(c => c.aliases && c.aliases.includes(q));
 			if (!cmd) return msg.reply('that command does not exist.');
 
 			// setup the embed accordingly
-			const { name, description, module, usage } = cmd;
+			const { name, description, module, usage, aliases } = cmd;
 
 			embed
 				.setTitle(`${name} Command Help`)
@@ -61,11 +60,12 @@ export default {
 				.addField('Module ⚙', module);
 
 			if (usage) {
-				embed.addField(
-					'Usage 🤓',
-					`${tvf.isProduction ? 'tvf ' : 'tvf beta '}${name} ${usage}`,
-				);
+				embed.addField('Usage 🤓', `${tvf.isProduction ? 'tvf ' : 'tvf beta '}${name} ${usage}`);
 			}
+
+      if (aliases) {
+        embed.addField('Aliases 📜', `\`\`\`${aliases[0]}\n${aliases.join('\n')}\`\`\``);
+      }
 		}
 
 		return msg.author.send(embed).then(() => msg.channel.type !== 'dm' ? msg.channel.send(`**${tvf.emojis.confetti}  |**  check your DMs!`) : null).catch(() => {

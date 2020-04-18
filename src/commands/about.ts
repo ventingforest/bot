@@ -5,8 +5,6 @@ export default {
   description: 'Information about the bot and the server!',
   module: 'Core',
   aliases: ['stats', 'serverinfo', 'botinfo'],
-  usage: 'about',
-  examples: ['about'],
   run: async (tvf, msg) => {
     const developer = tvf.roles.techAdmin.members.first().user;
     const members = await msg.guild.members.fetch();
