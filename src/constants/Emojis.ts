@@ -18,4 +18,5 @@ export default {
 		revolving: '💞'
 	},
 	flushed: '😳',
+	angel: '😇',
 };
