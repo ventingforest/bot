@@ -57,9 +57,9 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
           name: 'I\'m in, so now what?',
           value: stripIndents`
           Now that you have joined our server, there are a couple things that you should know and that you need to do.
-          First off, you must read <#${tvf.channels.rules}>, as it contains the majority of what you need to know.
+          First off, you must read ${tvf.channels.rules}, as it contains the majority of what you need to know.
 
-          You must then visit <#${tvf.channels.roles}>, where you can assign some cool roles to yourself that will allow you to access hidden channels.
+          You must then visit ${tvf.channels.roles}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
           After 10 minutes of being in the server, you should recieve the **Approved** role.
         `,
         },
@@ -102,11 +102,11 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
       .setThumbnail(member.user.avatarURL())
       .setDescription(stripIndents`
 				This may be a somewhat large server, but we can certainly make you feel at home - that's what our **Welcome Team** is for!
-				**First of all, check out <#${tvf.channels.rules}> as it contains much of what you need to know, and ${tvf.channels.roles}, which you can self-assign.**
+				**First of all, check out ${tvf.channels.rules} as it contains much of what you need to know, and ${tvf.channels.roles}, which you can self-assign.**
 				After 10 minutes of membership, you'll recieve the **Approved** role, which gives you some more perms. Have fun!
 			`);
 
-    const msg = await tvf.channels.general.send(`**Welcome to TVF, <@!${id}>!** ${member.user.id === '625919227651555348' || member.user.bot ? '' : `(${tvf.roles.welcomeTeam})`}`, welcomeEmbed);
+    const msg = await tvf.channels.general.send(`**Welcome to TVF, <@!${id}>!** ${member.user.id === '625919227651555348' || member.user.id === '326767126406889473' || member.user.bot ? '' : `(${tvf.roles.welcomeTeam.toString()})`}`, welcomeEmbed);
     return msg.react(tvf.emojis.wave);
   }
 

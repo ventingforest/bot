@@ -6,7 +6,7 @@ import moment from 'moment';
 export default async (tvf: Client, member: Discord.GuildMember) => {
 	if (tvf.isProduction) {
 		// ban auditor bots
-		if (member.user.bot && moment(member.joinedAt).diff(Date.now(), 'second') <= 3) {
+		if (member.user.bot && moment(member.joinedAt).diff(Date.now(), 'ms') <= 1) {
 			tvf.channels.general.send('**Begone, bot!**');
 			return tvf.server.members.ban(member.user.id, { reason: `Auditor bot. `});
 		}
