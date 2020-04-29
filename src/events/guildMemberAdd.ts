@@ -41,7 +41,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
             },
           ]);
 
-        tvf.channels.fk.send(tvf.roles.fk, embed);
+        tvf.channels.fk.send(tvf.roles.fk.toString(), embed);
       }
     }
 

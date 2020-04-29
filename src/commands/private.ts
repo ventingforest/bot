@@ -44,22 +44,14 @@ export default {
           .setThumbnail(venter.user.avatarURL())
           .setTitle(`${msg.author.tag} has cancelled ${venter.user.tag}'s session'`)
           .setDescription(reason)
-          .addFields([
-            {
-              name: 'Venter ID',
-              value: venter.id,
-              inline: true,
-            },
-
-            venter.nickname ? { name: 'Venter\'s Nickname', value: venter.nickname, inline: true } : null,
-
-            {
-              name: 'Canceller ID',
-              value: msg.author.id,
-              inline: true,
-            }
-          ])
+          .addField('Venter ID', venter.id, true)
           .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+
+          if (venter.nickname) {
+            staffEmbed.addField('Venter\'s Nickname', venter.nickname, true);
+          }
+
+          staffEmbed.addField('Canceller ID', msg.author.id, true);
 
           tvf.channels.fk.send(staffEmbed);
 
@@ -105,15 +97,12 @@ export default {
           .setThumbnail(msg.author.avatarURL())
           .setTitle(`${msg.author.username} has cancelled their private venting session`)
           .setDescription(reason)
-          .addFields([
-            {
-              name: 'User ID',
-              value: msg.author.id
-            },
-
-            msg.guild.member(msg.author).nickname ? { name: 'Venter Nickname', value: msg.guild.member(msg.author).nickname, inline: true } : null
-          ])
+          .addField('User ID', msg.author.id, true)
           .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+
+        if (msg.guild.member(msg.author).nickname) {
+          embed.addField('Venter Nickname', msg.guild.member(msg.author).nickname, true);
+        }
 
         tvf.channels.fk.send(embed);
 
@@ -325,17 +314,16 @@ export default {
             value: msg.author.id,
             inline: true,
           },
-
-          msg.guild.member(msg.author).nickname ? { name: 'Venter Nickname', value: msg.guild.member(msg.author).nickname, inline: true } : null,
-
-          {
-            name: 'Reason',
-            value: reason,
-          },
         ])
         .setFooter(`Session ID: ${id}`, msg.guild.iconURL());
 
-      tvf.channels.fk.send(tvf.isProduction ? tvf.roles.fk : '', embed);
+      if (msg.guild.member(msg.author).nickname) {
+        embed.addField('Venter Nickname', msg.guild.member(msg.author).nickname, true);
+      }
+
+      embed.addField('Reason', reason);
+
+      tvf.channels.fk.send(tvf.isProduction ? tvf.roles.fk.toString() : '', embed);
 
       // send a message to the venter
       const venterEmbed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true })

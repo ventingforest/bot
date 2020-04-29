@@ -29,5 +29,5 @@ export default (server: Discord.Guild): IRoles => {
 		newt2: server.roles.cache.get('631002094467547148'),
 		welcomeTeam: server.roles.cache.get('499302826028302368'),
 		approved: server.roles.cache.get('463438193115529226'),
-};
+	};
 };
