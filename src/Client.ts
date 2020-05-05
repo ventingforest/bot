@@ -28,6 +28,17 @@ export default class Client {
   banAppeal = 'https://forms.gle/EoUp6hxmNvuAJXJfA';
   prefix = this.isProduction ? 'tvf ': 'tvf beta ';
 
+  embedLimit = {
+    title: 256,
+    description: 2048,
+    footer: 2048,
+    author: 256,
+    field: {
+      title: 256,
+      value: 1024
+    }
+  }
+
   roles: IRoles;
   colours = Colours;
   channels: IChannels;
@@ -153,17 +164,20 @@ export default class Client {
     colour?: string, // input hexadecimal
     timestamp?: boolean, // if false, the timestamp is omitted
     thumbnail?: boolean, // if false, the thumbnail is omitted
+    author?: boolean, // if true, the author gets automatically set to the author of the message
   } = {
     colour: this.colours.white,
     timestamp: false,
     thumbnail: true,
-  }): Discord.MessageEmbed {
+    author: false,
+  }, msg?: Discord.Message): Discord.MessageEmbed {
     // create an embed and configure it accordinly
     const embed = new Discord.MessageEmbed()
       .setColor(options.colour || this.colours.green);
 
     if (options.timestamp) embed.setTimestamp();
     if (options.thumbnail) embed.setThumbnail(this.server.iconURL());
+    if (msg && options.author) embed.setAuthor(msg.author.tag, msg.author.avatarURL());
 
     return embed;
   }

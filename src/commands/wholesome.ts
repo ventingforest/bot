@@ -9,8 +9,7 @@ export default {
       img = await tvf.ksoft.images.reddit('wholesome', { removeNSFW: true, span: 'week' });
     } while (!(/.jpg|.jpeg|.png|.webp|.gif/.test(img.url)));
 
-    const embed = tvf.createEmbed({ thumbnail: false })
-      .setAuthor(msg.author.tag, msg.author.avatarURL())
+    const embed = tvf.createEmbed({ thumbnail: false, author: true }, msg)
       .setTitle(img.post.title)
       .setURL(img.post.link)
       .setImage(img.url);

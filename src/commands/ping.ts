@@ -6,8 +6,7 @@ export default {
 	description: 'Check if I\'m still alive <3',
 	allowGeneral: true,
 	run: async (tvf, msg) => {
-		const embed = tvf.createEmbed()
-			.setAuthor(msg.author.tag, msg.author.avatarURL())
+		const embed = tvf.createEmbed({ author: true }, msg)
 			.setTitle('Pong!');
 
 		const msg2 = (await msg.channel.send(embed)) as Message;

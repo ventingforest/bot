@@ -41,9 +41,8 @@ export default {
       // alert the staff
       const isolatedAt = moment(msg.createdAt).format(tvf.moment);
 
-      const embed = tvf.createEmbed({ colour: tvf.colours.red })
+      const embed = tvf.createEmbed({ colour: tvf.colours.red, author: true }, msg)
         .setTitle(`${member.user.username} has been isolated.`)
-        .setAuthor(msg.author.tag, msg.author.avatarURL())
         .addFields([
           {
             name: 'Target',
@@ -88,9 +87,8 @@ export default {
       // alert the staff
       const unisolatedAt = moment(msg.createdAt).format(tvf.moment);
 
-      const embed = tvf.createEmbed()
+      const embed = tvf.createEmbed({ author: true }, msg)
         .setTitle(`${member.user.username} has been unisolated`)
-        .setAuthor(msg.author.tag, msg.author.avatarURL())
         .addFields([
           {
             name: 'Target',

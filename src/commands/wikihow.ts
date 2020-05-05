@@ -5,8 +5,7 @@ export default {
   run: async (tvf, msg) => {
     const article = await tvf.ksoft.images.wikihow();
 
-    const embed = tvf.createEmbed({ thumbnail: false })
-      .setAuthor(msg.author.tag, msg.author.avatarURL())
+    const embed = tvf.createEmbed({ thumbnail: false, author: true }, msg)
       .setTitle(`How to ${article.article.title}`)
       .setURL(article.article.link)
       .setImage(article.url);

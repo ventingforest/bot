@@ -14,8 +14,7 @@ export default {
     if (doc.pda) {
       // make the embed
       const compliment = tvf.compliments[Math.floor(Math.random() * tvf.compliments.length)];
-      const embed = tvf.createEmbed({ thumbnail: false })
-        .setAuthor(msg.author.tag, msg.author.avatarURL())
+      const embed = tvf.createEmbed({ thumbnail: false, author: true }, msg)
         .setTitle(`${member.username}, ${compliment}`)
         .setThumbnail(member.avatarURL())
 

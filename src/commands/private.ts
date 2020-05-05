@@ -39,8 +39,7 @@ export default {
         if (!reason) reason = 'No reason specified.';
 
         // post an announcement in the forest keeper channel
-        const staffEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
-          .setAuthor(msg.author.tag, msg.author.avatarURL())
+        const staffEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
           .setThumbnail(venter.user.avatarURL())
           .setTitle(`${msg.author.tag} has cancelled ${venter.user.tag}'s session'`)
           .setDescription(reason)
@@ -92,8 +91,7 @@ export default {
         }
 
         // alert staff
-        const embed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
-          .setAuthor(msg.author.tag, msg.author.avatarURL())
+        const embed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
           .setThumbnail(msg.author.avatarURL())
           .setTitle(`${msg.author.username} has cancelled their private venting session`)
           .setDescription(reason)
@@ -172,8 +170,7 @@ export default {
       await venter.roles.add(tvf.roles.private, `Private venting - session ${doc.private.id}`);
 
       // post a message in private venting
-      const embed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false })
-        .setAuthor(msg.author.username, msg.author.avatarURL())
+      const embed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(venter.user.avatarURL())
         .setTitle(`Welcome to private venting, ${venter.user.username}!`)
         .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
@@ -181,8 +178,7 @@ export default {
       tvf.channels.private.send(`<@!${venter.id}>`, embed);
 
       // alert staff that the session is being taken
-      const takenEmbed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false })
-        .setAuthor(msg.author.tag, msg.author.avatarURL())
+      const takenEmbed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(venter.user.avatarURL())
         .setTitle(`${venter.user.tag}'s private venting session is being taken by ${msg.author.username}!`)
         .setFooter(`Session ID: ${doc.private.id}`);
@@ -227,8 +223,7 @@ export default {
       await venter.roles.remove(tvf.roles.private, `Private Venting ended - session ${doc.private.id}`);
 
       // post a message in the private ventigng channel
-      const embed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
-        .setAuthor(msg.author.tag, msg.author.avatarURL())
+      const embed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(venter.user.avatarURL())
         .setTitle(`${venter.user.username}'s session is over.`)
         .setDescription(notes)
@@ -257,8 +252,7 @@ export default {
       tvf.channels.private.send(embed);
 
       // alert staff that the session has finished
-      const finishedEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
-        .setAuthor(msg.author.tag, msg.author.avatarURL())
+      const finishedEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(venter.user.avatarURL())
         .setTitle(`${venter.user.tag}'s session is over.`)
         .setDescription(notes)
@@ -298,8 +292,7 @@ export default {
       const id = shortid.generate();
 
       // alert the staff
-      const embed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false })
-        .setAuthor(msg.author.tag, msg.author.avatarURL())
+      const embed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(msg.author.avatarURL())
         .setTitle(`${msg.author.username} has requested a private venting session!`)
         .setDescription(`Start the session now by typing \`${prefix}private start ${id}\` in the private venting channel.`)
@@ -326,8 +319,7 @@ export default {
       tvf.channels.fk.send(tvf.isProduction ? tvf.roles.fk.toString() : '', embed);
 
       // send a message to the venter
-      const venterEmbed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true })
-        .setAuthor(msg.author.tag, msg.author.avatarURL())
+      const venterEmbed = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, author: true }, msg)
 				.setTitle('Your private venting session has been requested.')
 				.setDescription('Your session may begin quickly, or it may take some time - it depends on how busy we are, how many staff are available, and whether any staff are comfortable with taking it. Please remain online until your session begins. You\'ll recieve a ping from the server when we\'re ready for you. A few things to note before we start...')
 				.addFields([

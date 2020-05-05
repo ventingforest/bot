@@ -20,7 +20,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 				},
 				{
 					name: 'Message',
-					value: _.truncate(msg.content, { length: 2048 }),
+					value: _.truncate(msg.content, { length: tvf.embedLimit.field.value }),
 				},
 			]);
 
