@@ -12,7 +12,7 @@ export default {
     const embed = tvf.createEmbed({ author: true }, msg)
       .setTitle('Chirp! 🐦')
       .setDescription(_.truncate(fact, { length: tvf.embedLimit.description }))
-      .setImage((await tvf.randomImage('birb')).url);
+      .setImage((await tvf.randomImage('birb', false)).url);
 
     msg.channel.send(embed);
   },

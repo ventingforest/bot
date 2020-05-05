@@ -7,7 +7,12 @@ export default {
   module: 'Core',
   run: async (tvf, msg) => {
     const fact = (await axios.get('https://some-random-api.ml/facts/panda')).data.fact;
-    const image = Math.floor(Math.random() * 2) === 0 ? (await axios.get('https://some-random-api.ml/img/panda')).data.link : (await axios.get('https://some-random-api.ml/img/red_panda')).data.link;
+    const isRed = !(Math.floor(Math.random() * 2) === 0);
+
+    let image = isRed ? (await axios.get('https://some-random-api.ml/img/panda')).data.link : (await axios.get('https://some-random-api.ml/img/red_panda')).data.link;
+    do {
+      image = isRed ? (await axios.get('https://some-random-api.ml/img/panda')).data.link : (await axios.get('https://some-random-api.ml/img/red_panda')).data.link;
+    } while (!(/.jpg|.jpeg|.png|.webp/.test(image)))
 
     const embed = tvf.createEmbed({ author: true }, msg)
       .setTitle('Huff! 🐼')

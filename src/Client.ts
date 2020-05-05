@@ -255,12 +255,12 @@ export default class Client {
   }
 
   // extension of the <Client>.ksoft.images.random function
-  async randomImage(term: string): Promise<Image> {
+  async randomImage(term: string, gif: boolean = true): Promise<Image> {
     let img = await this.ksoft.images.random(term, { nsfw: false });
 
     do {
       img = await this.ksoft.images.random(term, { nsfw: false });
-    } while (!(/.jpg|.jpeg|.png|.webp|.gif/.test(img.url)))
+    } while (gif ? !(/.jpg|.jpeg|.png|.webp|.gif/.test(img.url)) : !(/.jpg|.jpeg|.png|.webp/.test(img.url)))
 
     return img;
   }
