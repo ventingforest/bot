@@ -46,6 +46,10 @@ export default async (tvf: Client, msg: Discord.Message) => {
 
     // checks
 
+		if ((command.module === 'Admin' && !tvf.isUser('admin', msg.author)) || (command.module === 'Mod' && !tvf.isUser('mod', msg.author)) || (command.module === 'FK' && !tvf.isUser('fk', msg.author))) {
+			return msg.channel.send(`**${tvf.emojis.cross}  |**  you are not allowed to run that command!`);
+		}
+
 		// if a command isn't allowed to be run in general, delete the message
 		if (!command.allowGeneral && msg.channel.id === tvf.channels.general.id) {
 			await msg.delete();
