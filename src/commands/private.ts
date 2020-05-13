@@ -3,6 +3,8 @@ import { stripIndents } from 'common-tags';
 import moment from 'moment';
 import Discord from 'discord.js';
 import shortid from 'shortid';
+import timeout from 'timeout';
+import { IUser } from '../models/user';
 
 export default {
   name: 'private',
@@ -41,7 +43,7 @@ export default {
         // post an announcement in the forest keeper channel
         const staffEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
           .setThumbnail(venter.user.avatarURL())
-          .setTitle(`${msg.author.tag} has cancelled ${venter.user.tag}'s session'`)
+          .setTitle(`${msg.author.tag} has cancelled ${venter.user.tag}'s session`)
           .setDescription(reason)
           .addField('Venter ID', venter.id, true)
           .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
@@ -55,8 +57,9 @@ export default {
           tvf.channels.fk.send(staffEmbed);
 
           // inform the venter that their session has been cancelled
-          const venterEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true })
+          const venterEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
             .setTitle('A member of staff has cancelled your private venting session.')
+            .setThumbnail(venter.user.avatarURL())
             .setDescription('If you believe this has been done in error, don\'t hesitate to contact a member of staff - or request a new session!')
             .addField('Reason', reason);
 
@@ -191,11 +194,14 @@ export default {
       doc.private.takenBy = msg.author.tag;
       doc.roles = roles;
 
-      return tvf.saveDoc(doc);
+      tvf.saveDoc(doc);
+
+      // clear the expiry timeout
+      timeout.timeout(doc.private.id, null);
     }
 
     // if a member of staff wants to end the session
-    if ((subcommand === 'end' || subcommand === 'stop') && tvf.isUser('fk', msg.author)) {
+    else if ((subcommand === 'end' || subcommand === 'stop') && tvf.isUser('fk', msg.author)) {
       const id = args[1];
 
       // get notes from the command
@@ -272,13 +278,15 @@ export default {
       return tvf.saveDoc(doc);
     }
 
-    // if the author wants to request a session#
+    // if the author wants to request a session
     else {
       await msg.delete();
 
       // get the reason
-      let reason = args.join(' ');
-      if (!reason) reason = 'No reason specified.';
+      const reason = args.join(' ');
+      if (!reason) {
+        return msg.author.send(`**${tvf.emojis.cross}  |**  When requesting a session you must provide a reason!`);
+      }
 
       // get the author's document
       const doc = await tvf.userDoc(msg.author.id);
@@ -349,7 +357,49 @@ export default {
       doc.private.reason = reason;
       doc.private.requestedAt = new Date();
 
-      return tvf.saveDoc(doc);
+      tvf.saveDoc(doc);
+
+      // begin expiry countdown
+      timeout.timeout(doc.private.id, 21600000, () => {
+        const venter = msg.guild.member(doc.id);
+
+        // post an embed
+        const expiryEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
+          .setTitle(`${venter.user.username}'s private venting session has expired!`)
+          .setThumbnail(venter.user.avatarURL())
+          .addField('Venter ID', venter.id, true)
+          .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+
+        tvf.channels.fk.send(expiryEmbed);
+
+        const venterEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
+          .setTitle('Your private venting session has expired!')
+          .setThumbnail(venter.user.avatarURL())
+          .setDescription(stripIndents`
+            We're sorry we couldn't get to your private venting session in time ):
+            We automatically cancel old private venting sessions so that users can request new ones if they still need help, and to unclog the system!
+            If you would still like some help, please do not be scared to request a new session! Thanks! (:
+          `)
+
+          venter.send(venterEmbed).catch(error => {
+            tvf.logger.error(error)
+            tvf.channels.discussion.send(stripIndents`
+              <@!${venter.id}>, your private venting session has expired!
+              Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please look into this this and ping newt#1234 if you need any help!
+              If you still need a session, please do not fear to open a new one! Thanks (:
+            `);
+          });
+
+        // cancel the session
+        doc.private.requested = false;
+        doc.private.id = null;
+        doc.private.reason = null;
+        doc.private.requestedAt = null;
+        doc.private.startedAt = null;
+        doc.private.takenBy = null;
+
+        tvf.saveDoc(doc);
+      });
     }
   }
 } as Command;
