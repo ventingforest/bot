@@ -27,6 +27,7 @@ export default class Client {
   invite = 'https://discord.gg/RS69ssj';
   banAppeal = 'https://forms.gle/EoUp6hxmNvuAJXJfA';
   prefix = this.isProduction ? 'tvf ': 'tvf beta ';
+  privateTimeout = 21600000;
 
   embedLimit = {
     title: 256,

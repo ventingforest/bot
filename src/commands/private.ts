@@ -146,8 +146,11 @@ export default {
             embed.fields = [];
           }
 
+          const expires = moment(doc.private.requestedAt).add(tvf.privateTimeout, 'ms');
+          const fromNow = expires.diff(new Date(), 'h');
+
           // add field to the embed
-          embed.addField(`${i+1}. ${msg.guild.member(doc.id).user.tag}`, `▪ ID: ${doc.private.id}\n▪ Requested at: ${moment(doc.private.requestedAt).format(tvf.moment)}\n▪ Reason: ${doc.private.reason}`);
+          embed.addField(`${i+1}. ${msg.guild.member(doc.id).user.tag}`, `▪ ID: ${doc.private.id}\n▪ Requested at: ${moment(doc.private.requestedAt).format(tvf.moment)}\n▪ Expires at: ${expires.format(tvf.moment)} (${fromNow} hours from now)\n▪ Reason: ${doc.private.reason}`);
         });
       }
 
@@ -360,7 +363,7 @@ export default {
       tvf.saveDoc(doc);
 
       // begin expiry countdown
-      timeout.timeout(doc.private.id, 21600000, () => {
+      timeout.timeout(doc.private.id, tvf.privateTimeout, () => {
         const venter = msg.guild.member(doc.id);
 
         // post an embed
