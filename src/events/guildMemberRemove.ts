@@ -18,6 +18,11 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 		// if the user has a pending venting session, clear the expiry timeout
 		if (doc.private.requested) {
 			timeout.timeout(doc.private.id, null);
+			timeout.timeout(`${doc.private.id}1`, null);
+			timeout.timeout(`${doc.private.id}2`, null);
+			timeout.timeout(`${doc.private.id}3`, null);
+			timeout.timeout(`${doc.private.id}4`, null);
+			timeout.timeout(`${doc.private.id}5`, null);
 		}
 
 		// delete user from database

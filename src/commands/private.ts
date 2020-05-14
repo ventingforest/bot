@@ -201,6 +201,11 @@ export default {
 
       // clear the expiry timeout
       timeout.timeout(doc.private.id, null);
+			timeout.timeout(`${doc.private.id}1`, null);
+			timeout.timeout(`${doc.private.id}2`, null);
+			timeout.timeout(`${doc.private.id}3`, null);
+			timeout.timeout(`${doc.private.id}4`, null);
+			timeout.timeout(`${doc.private.id}5`, null);
     }
 
     // if a member of staff wants to end the session
@@ -362,16 +367,20 @@ export default {
 
       tvf.saveDoc(doc);
 
+      const venter = msg.guild.member(doc.id);
+
       // begin expiry countdown
       timeout.timeout(doc.private.id, tvf.privateTimeout, () => {
-        const venter = msg.guild.member(doc.id);
-
         // post an embed
         const expiryEmbed = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false })
           .setTitle(`${venter.user.username}'s private venting session has expired!`)
           .setThumbnail(venter.user.avatarURL())
           .addField('Venter ID', venter.id, true)
           .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+
+        if (venter.nickname) {
+          expiryEmbed.addField('Venter Nickname', venter.nickname, true);
+        }
 
         tvf.channels.fk.send(expiryEmbed);
 
@@ -403,6 +412,26 @@ export default {
 
         tvf.saveDoc(doc);
       });
+
+      // expiry reminders
+      const reminderEmbed = tvf.createEmbed({ colour: tvf.colours.orange, thumbnail: false, timestamp: true })
+        .setThumbnail(venter.user.avatarURL())
+        .setDescription(`Reason: ${reason}`)
+        .addField('Session ID', doc.private.id, true)
+        .addField('Venter ID', venter.id, true)
+        .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+
+      if (venter.nickname) {
+        reminderEmbed.addField('Venter Nickname', venter.nickname, true);
+      }
+
+      const hour = tvf.privateTimeout / 6;
+
+      timeout.timeout(`${doc.private.id}1`, hour, () => tvf.channels.fk.send(reminderEmbed.setTitle(`${venter.user.username}'s session will expire in five hours!`)));
+      timeout.timeout(`${doc.private.id}2`, hour * 2, () => tvf.channels.fk.send(reminderEmbed.setTitle(`${venter.user.username}'s session will expire in four hours!`)));
+      timeout.timeout(`${doc.private.id}3`, hour * 3, () => tvf.channels.fk.send(reminderEmbed.setTitle(`${venter.user.username}'s session will expire in three hours!`)));
+      timeout.timeout(`${doc.private.id}4`, hour * 4, () => tvf.channels.fk.send(reminderEmbed.setTitle(`${venter.user.username}'s session will expire in two hours!`)));
+      timeout.timeout(`${doc.private.id}5`, hour * 5, () => tvf.channels.fk.send(tvf.isProduction ? tvf.roles.fk.toString() : '', reminderEmbed.setTitle(`${venter.user.username}'s session will expire in one hour!`)));
     }
   }
 } as Command;
