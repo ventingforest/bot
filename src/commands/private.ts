@@ -27,10 +27,12 @@ export default {
       let reason = args.join(' ');
       if (!reason) reason = 'No reason specified.';
 
+      let doc: IUser;
+
       // check if the command was run by staff, and an ID is given
       if (id && tvf.isUser('fk', msg.author)) {
         // get the venter's document from the database by the session's ID
-        const doc = await User.findOne({ 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
+        doc = await User.findOne({ 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
 
         // get the venter by their ID
         const venter = msg.guild.members.cache.get(doc.id);
@@ -80,13 +82,13 @@ export default {
           doc.private.startedAt = null;
           doc.private.takenBy = null;
 
-          return tvf.saveDoc(doc);
+          tvf.saveDoc(doc);
       }
 
       // if the command was run by the user themselves
       else {
         // get the author of the message's document from the database
-        const doc = await tvf.userDoc(msg.author.id);
+        doc = await tvf.userDoc(msg.author.id);
 
         // ensure that the author has requested a private venting session before trying to cancel
         if (!doc.private.requested) {
@@ -115,8 +117,16 @@ export default {
         doc.private.startedAt = null;
         doc.private.takenBy = null;
 
-        return tvf.saveDoc(doc);
+        tvf.saveDoc(doc);
       }
+
+      // clear the expiry timeout
+      timeout.timeout(doc.private.id, null);
+			timeout.timeout(`${doc.private.id}1`, null);
+			timeout.timeout(`${doc.private.id}2`, null);
+			timeout.timeout(`${doc.private.id}3`, null);
+			timeout.timeout(`${doc.private.id}4`, null);
+			timeout.timeout(`${doc.private.id}5`, null);
     }
 
     // if a member of staff requests a list of all pending sessions
