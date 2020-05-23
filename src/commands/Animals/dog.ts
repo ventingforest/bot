@@ -4,7 +4,6 @@ import * as _ from 'lodash';
 export default {
   name: 'dog',
   description: 'Get a picture of a dog ^w^',
-  module: 'Core',
   aliases: ['doggo', 'puppy', 'pupper'],
   run: async (tvf, msg) => {
     const fact = (await axios.get('https://some-random-api.ml/facts/dog')).data.fact;

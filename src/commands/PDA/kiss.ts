@@ -1,7 +1,6 @@
 export default {
   name: 'kiss',
   description: 'Kiss another user in the server.',
-  module: 'Fun',
   args: true,
   usage: '<@user>',
   run: async (tvf, msg, args) => {

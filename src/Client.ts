@@ -111,22 +111,24 @@ export default class Client {
       useUnifiedTopology: true,
     });
 
-    // get all of the files in the event and command folders
+    // get all of the files in the event folder and command folders
     const eventFiles = fs.readdirSync(`${__dirname}/events/`).filter(f => f.endsWith('.js'));
-    const commandFiles = fs.readdirSync(`${__dirname}/commands/`).filter(f => f.endsWith('.js'));
+    const categories = fs.readdirSync(`${__dirname}/commands/`).filter(f => !f.endsWith('.js'));
 
-    // load all commands
-    for (const file of commandFiles) {
-      // get the command file and add it to the collection
-      const { default: command } = require(`./commands/${file}`);
-      this.commands.set(command.name, command);
+    categories.forEach(category => {
+      const files = fs.readdirSync(`${__dirname}/commands/${category}/`).filter(f => f.endsWith('.js'));
 
-      // log that the command has been loaded
-      this.logger.info(`${command.name} command loaded.`);
-    }
+      for (const file of files) {
+          let { default: command }: { default: Command } = require(`./commands/${category}/${file}`);
+          command.category = category;
+          this.commands.set(command.name, command);
+          this.logger.info(`"${command.name}" command loaded from the "${command.category}" category!`);
+      }
+    });
 
     // events
 
+    // error events
     this.bot.on('debug', m => this.logger.debug(m));
     this.bot.on('warn', m => this.logger.warn(m));
     this.bot.on('error', m => this.logger.error(m));

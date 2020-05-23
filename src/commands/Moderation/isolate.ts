@@ -4,7 +4,6 @@ import * as Discord from 'discord.js';
 export default {
   name: 'isolate',
   description: 'Isolates/unisolates a user!',
-  module: 'Mod',
   args: true,
   usage: '<@user> [reason]',
   aliases: ['unisolate'],

@@ -3,7 +3,6 @@ import * as Discord from 'discord.js';
 export default {
   name: 'aww',
   description: 'Get a cute picture ^w^',
-  module: 'Core',
   aliases: ['cute'],
   run: async (tvf, msg) => {
     let img = (await tvf.ksoft.images.aww()).url;

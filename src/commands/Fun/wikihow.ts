@@ -1,7 +1,6 @@
 export default {
   name: 'wikihow',
   description: 'Get a random WikiHow article',
-  module: 'Fun',
   run: async (tvf, msg) => {
     const article = await tvf.ksoft.images.wikihow();
 

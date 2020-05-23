@@ -1,14 +1,12 @@
-import User from '../models/user';
+import User, { IUser } from '../../models/user';
 import { stripIndents } from 'common-tags';
 import moment from 'moment';
 import Discord from 'discord.js';
 import shortid from 'shortid';
 import timeout from 'timeout';
-import { IUser } from '../models/user';
 
 export default {
   name: 'private',
-  module: 'Venting',
   description: 'Allows you to request/cancel a private venting session!',
   usage: '[reason]',
   allowGeneral: true,

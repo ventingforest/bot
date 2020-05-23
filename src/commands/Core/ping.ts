@@ -2,7 +2,6 @@ import { Message } from 'discord.js';
 
 export default {
 	name: 'ping',
-	module: 'Core',
 	description: 'Check if I\'m still alive <3',
 	allowGeneral: true,
 	run: async (tvf, msg) => {

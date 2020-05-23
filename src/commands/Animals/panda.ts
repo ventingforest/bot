@@ -4,7 +4,6 @@ import * as _ from 'lodash';
 export default {
   name: 'panda',
   description: 'Get a picture of a panda ^w^',
-  module: 'Core',
   run: async (tvf, msg) => {
     const fact = (await axios.get('https://some-random-api.ml/facts/panda')).data.fact;
     const isRed = !(Math.floor(Math.random() * 2) === 0);

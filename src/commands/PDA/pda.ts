@@ -1,7 +1,6 @@
 export default {
   name: 'pda',
   description: 'Allows you to opt out of PDA related features.',
-  module: 'Core',
   aliases: ['disablecontact', 'disablepda', 'enablepda', 'enablecontact'],
   run: async (tvf, msg) => {
     // get the author's document

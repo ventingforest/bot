@@ -1,7 +1,6 @@
 export default {
   name: 'help',
   description: 'Helps you use me!',
-  module: 'Core',
   aliases: ['h'],
   usage: '[command]',
   allowGeneral: true,
@@ -12,15 +11,15 @@ export default {
 
 		// spread all of the commands into arrays
 		const commands = tvf.commands
-			.filter((c) => c.module !== 'Admin')
-			.filter((c) => c.module !== 'Mod')
-			.filter((c) => c.module !== 'FK')
+			.filter((c) => c.category !== 'Admin')
+			.filter((c) => c.category !== 'Mod')
+			.filter((c) => c.category !== 'FK')
 			.map((c) => c.name)
 			.join(', ');
 
-		const adminCommands = tvf.commands.filter((c) => c.module === 'Admin').map((c) => c.name).join(', ');
-		const modCommands = tvf.commands.filter((c) => c.module === 'Mod').map((c) => c.name).join(', ');
-		const fkCommands = tvf.commands.filter((c) => c.module === 'FK').map((c) => c.name).join(', ');
+		const adminCommands = tvf.commands.filter((c) => c.category === 'Admin').map((c) => c.name).join(', ');
+		const modCommands = tvf.commands.filter((c) => c.category === 'Mod').map((c) => c.name).join(', ');
+		const fkCommands = tvf.commands.filter((c) => c.category === 'FK').map((c) => c.name).join(', ');
 
 		// if there are no arguments
 		if (args.length === 0) {
@@ -29,15 +28,15 @@ export default {
 				.setTitle('Help 👋')
 				.addField('Commands 🎉', `\`\`\`${commands}\`\`\``);
 
-			if (tvf.isUser('fk', msg.author) && tvf.commands.filter(c => c.module == 'FK').size > 0) {
+			if (tvf.isUser('fk', msg.author) && tvf.commands.filter(c => c.category == 'FK').size > 0) {
 				embed.addField('FK ♥', `\`\`\`${fkCommands}\`\`\``);
 			}
 
-			if (tvf.isUser('mod', msg.author)) {
+			if (tvf.isUser('mod', msg.author) && tvf.commands.filter(c => c.category == 'FK').size > 0) {
 				embed.addField('Mod 🔨', `\`\`\`${modCommands}\`\`\``);
 			}
 
-			if (tvf.isUser('admin', msg.author)) {
+			if (tvf.isUser('admin', msg.author) && tvf.commands.filter(c => c.category == 'FK').size > 0) {
 				embed.addField('Admin ⚙', `\`\`\`${adminCommands}\`\`\``);
 			}
 
@@ -52,12 +51,12 @@ export default {
 			if (!cmd) return msg.reply('that command does not exist.');
 
 			// setup the embed accordingly
-			const { name, description, module, usage, aliases } = cmd;
+			const { name, description, category, usage, aliases } = cmd;
 
 			embed
 				.setTitle(`${name} Command Help`)
 				.setDescription(description ? description : 'No description given.')
-				.addField('Module ⚙', module);
+				.addField('category ⚙', category);
 
 			if (usage) {
 				embed.addField('Usage 🤓', `${tvf.isProduction ? 'tvf ' : 'tvf beta '}${name} ${usage}`);

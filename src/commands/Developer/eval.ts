@@ -3,7 +3,6 @@ import * as util from 'util';
 export default {
   name: 'eval',
   description: 'Allows newt to run code without editing the bot!',
-  module: 'Admin',
   args: true,
   usage: '<code>',
   allowGeneral: true,

@@ -1,7 +1,6 @@
 export default {
-  name: 'hug',
-  description: 'Hug another user in the server',
-  module: 'Fun',
+  name: 'compliment',
+  description: 'Compliment another user in the server!',
   args: true,
   usage: '<@user>',
   run: async (tvf, msg, args) => {
@@ -13,17 +12,15 @@ export default {
 
     if (doc.pda) {
       // make the embed
+      const compliment = tvf.compliments[Math.floor(Math.random() * tvf.compliments.length)];
       const embed = tvf.createEmbed({ thumbnail: false, author: true }, msg)
+        .setTitle(`${member.username}, ${compliment}`)
         .setThumbnail(member.avatarURL())
-        .setImage((await tvf.randomImage('hug')).url);
 
-      // if the mentioned user was the author
-      if (member === msg.author) return msg.channel.send(embed.setTitle(`${msg.author.username} hugged themselves ${tvf.emojis.hug}`));
+      msg.channel.send(embed);
 
       // if the mentioned user was the bot
-      if (member === tvf.bot.user) return msg.channel.send(embed.setTitle(`${msg.author.username} hugged me ${tvf.emojis.hug}`));
-
-      msg.channel.send(embed.setTitle(`${msg.author.username} hugged ${member.username} ${tvf.emojis.hug}`));
+      if (member === tvf.bot.user) msg.reply('aww, thank you <3');
     } else {
       await msg.delete();
       return msg.author.send(`**${tvf.emojis.cross}  |**  ${member.username} has opted out of PDA - so you can not use this command on them. Sorry!`)

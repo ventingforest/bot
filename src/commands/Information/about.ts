@@ -3,7 +3,6 @@ import ms from 'ms';
 export default {
   name: 'about',
   description: 'Information about the bot and the server!',
-  module: 'Core',
   aliases: ['stats', 'serverinfo', 'botinfo'],
   run: async (tvf, msg) => {
     const developer = tvf.roles.techAdmin.members.first().user;

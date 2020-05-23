@@ -2,17 +2,16 @@ import axios from 'axios';
 import * as _ from 'lodash';
 
 export default {
-  name: 'fox',
-  description: 'Get a picture of a fox ^w^',
-  module: 'Core',
-  aliases: ['foxo', 'foxy'],
+  name: 'cat',
+  description: 'Get a picture of a cat ^w^',
+  aliases: ['catto', 'kitty'],
   run: async (tvf, msg) => {
-    const fact = (await axios.get('https://some-random-api.ml/facts/fox')).data.fact;
+    const fact = (await axios.get('https://some-random-api.ml/facts/cat')).data.fact;
 
     const embed = tvf.createEmbed({ author: true }, msg)
-      .setTitle('Yip! 🦊')
+      .setTitle('Meow! 🐈')
       .setDescription(_.truncate(fact, { length: tvf.embedLimit.description }))
-      .setImage((await tvf.randomImage('fox', false)).url);
+      .setImage((await tvf.randomImage('cat', false)).url);
 
     msg.channel.send(embed);
   },

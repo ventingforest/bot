@@ -1,7 +1,6 @@
 export default {
   name: 'pat',
   description: 'Pat another user\'s head.',
-  module: 'Fun',
   args: true,
   usage: '<@user>',
   run: async (tvf, msg, args) => {

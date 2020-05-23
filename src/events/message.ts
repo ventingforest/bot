@@ -46,7 +46,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 
     // checks
 
-		if ((command.module === 'Admin' && !tvf.isUser('admin', msg.author)) || (command.module === 'Mod' && !tvf.isUser('mod', msg.author)) || (command.module === 'FK' && !tvf.isUser('fk', msg.author))) {
+		if ((command.category === 'Admin' && !tvf.isUser('admin', msg.author)) || (command.category === 'Mod' && !tvf.isUser('mod', msg.author)) || (command.category === 'FK' && !tvf.isUser('fk', msg.author))) {
 			return msg.channel.send(`**${tvf.emojis.cross}  |**  you are not allowed to run that command!`);
 		}
 

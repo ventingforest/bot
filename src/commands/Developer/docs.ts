@@ -4,7 +4,6 @@ import axios from 'axios';
 export default {
   name: 'docs',
   description: 'Allows you to search the discord.js documentation',
-  module: 'Core',
   args: true,
   usage: '<query> [stable|master=master]',
   run: async (tvf, msg, args) => {
