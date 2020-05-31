@@ -3,6 +3,8 @@ import * as winston from 'winston';
 import * as fs from 'fs';
 import mongoose = require('mongoose');
 import { KSoftClient, Image } from 'ksoft.js';
+import * as jimp from 'jimp';
+import * as path from 'path';
 
 import User, { IUser } from './models/user';
 import { IRoles } from './constants/Roles';
@@ -255,6 +257,23 @@ export default class Client {
   // save a document
   saveDoc(doc: mongoose.Document) {
     doc.save().catch(err => this.logger.error(`There was an error saving that document: ${err}`));
+  }
+
+  // generate a pride image
+  async prideImage(user: Discord.User, type: string): Promise<Buffer> {
+    // load the necessary images
+    const image = await jimp.read(user.avatarURL({ size: 512, format: 'png' }));
+    const flag = await jimp.read(path.resolve(`assets/pride/${type}.png`));
+
+    // resize the flag and set opacity to 50%
+    flag.resize(image.getWidth(), image.getHeight());
+    flag.opacity(0.5);
+
+    // overlay the flag onto the image
+    image.blit(flag, 0, 0);
+
+    // return the manipulated image's buffer
+    return await image.getBufferAsync(jimp.MIME_PNG);
   }
 
   // extension of the <Client>.ksoft.images.random function

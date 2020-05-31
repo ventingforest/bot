@@ -17,6 +17,7 @@
         "cross-env": "^7.0.0",
         "discord.js": "discordjs/discord.js",
         "dotenv": "^8.2.0",
+        "jimp": "^0.12.1",
         "ksoft.js": "^3.1.4",
         "lodash": "^4.17.15",
         "moment": "^2.24.0",
