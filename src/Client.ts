@@ -260,14 +260,14 @@ export default class Client {
   }
 
   // generate a pride image
-  async prideImage(user: Discord.User, type: string): Promise<Buffer> {
+  async pridePfp(user: Discord.User, type: string, opacity: number): Promise<Buffer> {
     // load the necessary images
     const image = await jimp.read(user.avatarURL({ size: 512, format: 'png' }));
     const flag = await jimp.read(path.resolve(`assets/pride/${type}.png`));
 
     // resize the flag and set opacity to 50%
     flag.resize(image.getWidth(), image.getHeight());
-    flag.opacity(0.5);
+    flag.opacity(opacity);
 
     // overlay the flag onto the image
     image.blit(flag, 0, 0);

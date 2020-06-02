@@ -4,5 +4,13 @@ export default {
 	name: 'polyamory',
 	description: 'Overlay a polyamory pride flag over your profile picture!',
 	aliases: ['poly'],
-	run: async (tvf, msg) => msg.channel.send(new Discord.MessageAttachment(await tvf.prideImage(msg.author, 'polyamory')))
+	run: async (tvf, msg, args) => {
+		const opacity = (parseInt(args[0]) / 100) || 0.5;
+
+		if (opacity > 1) {
+			return msg.channel.send(`**${tvf.emojis.cross}  |**  The provided opacity has to be below 100!`);
+		}
+
+		msg.channel.send(new Discord.MessageAttachment(await tvf.pridePfp(msg.author, 'polyamory', opacity)));
+	}
 } as Command;
