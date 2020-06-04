@@ -45,8 +45,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 		if (!command) return undefined;
 
     // checks
-
-		if ((command.category === 'Admin' && !tvf.isUser('admin', msg.author)) || (command.category === 'Mod' && !tvf.isUser('mod', msg.author)) || (command.category === 'FK' && !tvf.isUser('fk', msg.author))) {
+		if ((command.category === 'Admin' && !tvf.isUser('admin', msg.author)) || (command.category === 'Mod' && !tvf.isUser('mod', msg.author)) || (command.category === 'FK' && !tvf.isUser('fk', msg.author)) || (command.category === 'Developer' && !tvf.isUser('developer', msg.author))) {
 			return msg.channel.send(`**${tvf.emojis.cross}  |**  you are not allowed to run that command!`);
 		}
 

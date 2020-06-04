@@ -71,16 +71,6 @@ export default {
               If you believe this has been done in error, don't hesitate to contact a member of staff - or request a new session!
             `);
           });
-
-          // update the venter's document
-          doc.private.requested = false;
-          doc.private.id = null;
-          doc.private.reason = null;
-          doc.private.requestedAt = null;
-          doc.private.startedAt = null;
-          doc.private.takenBy = null;
-
-          tvf.saveDoc(doc);
       }
 
       // if the command was run by the user themselves
@@ -106,16 +96,6 @@ export default {
         }
 
         tvf.channels.fk.send(embed);
-
-        // cancel the session
-        doc.private.requested = false;
-        doc.private.id = null;
-        doc.private.reason = null;
-        doc.private.requestedAt = null;
-        doc.private.startedAt = null;
-        doc.private.takenBy = null;
-
-        tvf.saveDoc(doc);
       }
 
       // clear the expiry timeout
@@ -125,6 +105,16 @@ export default {
 			timeout.timeout(`${doc.private.id}3`, null);
 			timeout.timeout(`${doc.private.id}4`, null);
 			timeout.timeout(`${doc.private.id}5`, null);
+
+      // update the venter's document
+      doc.private.requested = false;
+      doc.private.id = null;
+      doc.private.reason = null;
+      doc.private.requestedAt = null;
+      doc.private.startedAt = null;
+      doc.private.takenBy = null;
+
+      tvf.saveDoc(doc);
     }
 
     // if a member of staff requests a list of all pending sessions

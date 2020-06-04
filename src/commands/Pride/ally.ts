@@ -11,6 +11,6 @@ export default {
 			return msg.channel.send(`**${tvf.emojis.cross}  |**  The provided opacity has to be below 100!`);
 		}
 
-		msg.channel.send(new Discord.MessageAttachment(await tvf.pridePfp(msg.author, 'agender', opacity)));
+		msg.channel.send(new Discord.MessageAttachment(await tvf.pridePfp(msg.author, 'ally', opacity)));
 	}
 } as Command;

@@ -29,7 +29,12 @@ export default class Client {
   invite = 'https://discord.gg/RS69ssj';
   banAppeal = 'https://forms.gle/EoUp6hxmNvuAJXJfA';
   prefix = this.isProduction ? 'tvf ': 'tvf beta ';
-  privateTimeout = 21600000;
+  privateTimeout = 12000;
+
+  developers = [
+    '326767126406889473', // newt main
+    '625919227651555348' // newt alt
+  ];
 
   embedLimit = {
     title: 256,
@@ -190,7 +195,11 @@ export default class Client {
   // checks if a member has a staff role
   isUser(role: StaffRole, user: Discord.User): boolean {
     const member = this.server.member(user);
-    return role === 'fk' ? member.roles.cache.has(this.roles.fk.id) : role === 'mod' ? member.roles.cache.has(this.roles.mod.id) : role === 'admin' ? member.roles.cache.has(this.roles.admin.id) || member.roles.cache.has(this.roles.techAdmin.id) || member.roles.cache.has(this.roles.newt2.id) : false;
+    return role === 'fk' ? member.roles.cache.has(this.roles.fk.id) :
+           role === 'mod' ? member.roles.cache.has(this.roles.mod.id) :
+           role === 'admin' ? member.roles.cache.has(this.roles.admin.id) || member.roles.cache.has(this.roles.techAdmin.id) || member.roles.cache.has(this.roles.newt2.id) :
+           role === 'developer' ? member.roles.cache.has(this.roles.developer.id)
+           : false;
   }
 
   // find a member in a message
