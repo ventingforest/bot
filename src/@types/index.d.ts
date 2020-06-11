@@ -20,4 +20,8 @@ declare global {
       usage?: string; // shows how the command is supposed to be used, listing all arguments
       allowGeneral?: boolean; // whether the command can be run in general
     }
+
+    interface BotConfig {
+      botbanner: boolean; // if true, all new bots are banned from the server
+    }
 }

@@ -8,6 +8,11 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
   if (tvf.isProduction) {
     const { tag, id } = member.user;
 
+    // if the bot banner is enabled, and a bot joins the server
+    if (tvf.config.botbanner && member.user.bot) {
+      return member.ban({ reason: `Bot banner is enabled! `});
+    }
+
     // ksoft.si ban api
 
     // if the user is in the ban list
@@ -110,7 +115,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
     return msg.react(tvf.emojis.wave);
   }
 
-  // verification wait - 10 minutes
+  /* verification wait - 10 minutes [FIX]
   setTimeout(() => {
     // if they are still in the server, approve them
     if (member.guild.member(member.user.id)) {
@@ -118,5 +123,5 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
       member.roles.add(tvf.roles.approved, 'Approved!');
       member.user.send(`**${tvf.emojis.bell}  |**  You have been approved in TVF! (:`);
     }
-  }, 600000);
+  }, 600000); */
 };

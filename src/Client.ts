@@ -5,6 +5,7 @@ import mongoose = require('mongoose');
 import { KSoftClient, Image } from 'ksoft.js';
 import * as jimp from 'jimp';
 import * as path from 'path';
+import axios from 'axios';
 
 import User, { IUser } from './models/user';
 import { IRoles } from './constants/Roles';
@@ -21,7 +22,10 @@ export default class Client {
   commands: Discord.Collection<string, Command> = new Discord.Collection();
   events: Discord.Collection<string, any> = new Discord.Collection();
   ksoft: KSoftClient;
-  server: Discord.Guild;
+  server: Discord.Guild
+  config: BotConfig = {
+    botbanner: true,
+  };
 
   // constants
   moment = 'ddd, MMM Do, YYYY h:mm A';
