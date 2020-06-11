@@ -4,7 +4,7 @@ import User from '../models/user';
 
 export default async (tvf: Client, _guild: Discord.Guild, user: Discord.User) => {
 	if (tvf.isProduction) {
-		// delete user from database
+		// delete doc from database
 		User.findOneAndDelete({ id: user.id }).then(() =>
 			tvf.logger.info(`Removed ${user.tag} from the database.`),
 		);

@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
     id: string; // the id of the user
+    approved: boolean; // whether the user has been approved
     pda: boolean; // whether the user is comfortable with PDA and compliments
     isolated: boolean; // whether the user is isolated or not
     roles: string[]; // storage for the user's roles when isolating or private venting
@@ -21,6 +22,10 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+    approved: {
+      type: Boolean,
+      default: false,
+    },
     pda: {
       type: Boolean,
       required: true,

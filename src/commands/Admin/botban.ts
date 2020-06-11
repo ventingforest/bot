@@ -2,6 +2,7 @@ export default {
   name: 'botban',
   description: 'Toggles the bot banner.',
   aliases: ['botbanner'],
+  allowGeneral: true,
   run: async (tvf, msg) => {
     // toggle the bot banner
     tvf.config.botbanner = !tvf.config.botbanner;

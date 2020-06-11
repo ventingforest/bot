@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import Client from '../Client';
 import User from '../models/user';
-import * as timeout from 'timeout';
+import timeout from 'timeout';
 
 export default async (tvf: Client, member: Discord.GuildMember) => {
 	if (tvf.isProduction) {
