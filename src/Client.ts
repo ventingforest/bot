@@ -33,7 +33,7 @@ export default class Client {
   invite = 'https://discord.gg/RS69ssj';
   banAppeal = 'https://forms.gle/EoUp6hxmNvuAJXJfA';
   prefix = this.isProduction ? 'tvf ': 'tvf beta ';
-  privateTimeout = 12000;
+  privateTimeout = 21600000;
 
   developers = [
     '326767126406889473', // newt main
