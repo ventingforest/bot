@@ -6,4 +6,10 @@ export default {
 	black: '#000000',
 	white: '#f7f7f7',
 	purple: '#7375FF',
+	coronavirus: '#FF6961',
+	coronavirusChart: {
+        confirmed: '#ffb347',
+        recovered: '#77dd77',
+        deaths: '#FF0000'
+    }
 };

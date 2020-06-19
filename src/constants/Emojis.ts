@@ -8,9 +8,9 @@ export default {
 		down: '👎',
 	},
 	grimacing: '😬',
-  confetti: '🎉',
-  square: '▫',
-  bell: '🔔',
+ 	confetti: '🎉',
+ 	square: '▫',
+ 	bell: '🔔',
 	cross: '❌',
 	hug: '🤗',
 	think: '🤔',
@@ -19,4 +19,5 @@ export default {
 	},
 	flushed: '😳',
 	angel: '😇',
+	graph: '📈',
 };

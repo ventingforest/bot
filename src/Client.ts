@@ -299,4 +299,9 @@ export default class Client {
 
     return img;
   }
+
+  // formats a number
+  formatNumber(n: number): string {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
 }
