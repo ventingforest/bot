@@ -51,6 +51,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
     // create a document in the database if they don't already have one
     const doc = await User.findOne({ id: member.id }, (err, res) => err ? tvf.logger.error(err) : res) || undefined;
     if (!doc) User.create({ id: member.id });
+    else { doc.inServer = true; tvf.saveDoc(doc); }
 
     // send a DM welcoming the user
     const dmEmbed = tvf.createEmbed()
