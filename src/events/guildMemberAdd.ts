@@ -6,8 +6,6 @@ import { stripIndents } from 'common-tags';
 
 export default async (tvf: Client, member: Discord.GuildMember) => {
   if (tvf.isProduction) {
-    const { tag, id } = member.user;
-
     // if the bot banner is enabled, and a bot joins the server
     if (tvf.config.botbanner && member.user.bot) {
       return member.ban({ reason: `Bot banner is enabled! `});
@@ -32,12 +30,12 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
           .addFields([
             {
               name: 'Tag',
-              value: tag,
+              value: member.user.tag,
               inline: true,
             },
             {
               name: 'ID',
-              value: id,
+              value: member.id,
               inline: true,
             },
             {
@@ -50,8 +48,9 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
       }
     }
 
-    // create a document in the database
-    User.create({ tag, id, pda: true });
+    // create a document in the database if they don't already have one
+    const doc = await User.findOne({ id: member.id }, (err, res) => err ? tvf.logger.error(err) : res) || undefined;
+    if (!doc) User.create({ id: member.id });
 
     // send a DM welcoming the user
     const dmEmbed = tvf.createEmbed()
@@ -111,7 +110,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 				After 10 minutes of membership, you'll recieve the **Approved** role, which gives you some more perms. Have fun!
 			`);
 
-    const msg = await tvf.channels.general.send(`**Welcome to TVF, <@!${id}>!** ${member.user.id === '625919227651555348' || member.user.id === '326767126406889473' || member.user.bot ? '' : `(${tvf.roles.welcomeTeam.toString()})`}`, welcomeEmbed);
+    const msg = await tvf.channels.general.send(`**Welcome to TVF, <@!${member.id}>!** ${member.id === '625919227651555348' || member.id === '326767126406889473' || member.user.bot ? '' : `(${tvf.roles.welcomeTeam.toString()})`}`, welcomeEmbed);
     return msg.react(tvf.emojis.wave);
   }
 };

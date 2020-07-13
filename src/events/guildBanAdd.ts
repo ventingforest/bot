@@ -10,11 +10,11 @@ export default async (tvf: Client, _guild: Discord.Guild, user: Discord.User) =>
 		);
 
 		// send the ban message
-    if (tvf.config.botbanner && user.bot) {
-      const general = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: false })
-        .setThumbnail(user.avatarURL())
-        .setTitle('Begone Bot!')
-        .setDescription(`${user.tag} was banned from the server! Stinky bot!`);
+    	if (tvf.config.botbanner && user.bot) {
+			const general = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: false })
+				.setThumbnail(user.avatarURL())
+				.setTitle('Begone Bot!')
+				.setDescription(`${user.tag} was banned from the server! Stinky bot!`);
 
 			const staff = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: false })
 				.setThumbnail(user.avatarURL())

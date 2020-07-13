@@ -18,10 +18,9 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 			timeout.timeout(`${doc.private.id}5`, null);
 		}
 
-		// delete user from database
-		User.findOneAndDelete({ id: member.user.id }).then(() =>
-			tvf.logger.info(`Removed ${member.user.tag} from the database.`),
-		);
+		// update the user's document to mention that they have left
+		doc.inServer = false;
+		tvf.saveDoc(doc);
 
 		// send goodbye message
 		tvf.channels.general.send(`**${member.user.tag}** has exited the Forest.`);

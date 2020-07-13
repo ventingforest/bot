@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose';
 export interface IUser extends mongoose.Document {
     id: string; // the id of the user
     approved: boolean; // whether the user has been approved
+    inServer: boolean; // whether the user is still in the server
     pda: boolean; // whether the user is comfortable with PDA and compliments
     isolated: boolean; // whether the user is isolated or not
     roles: string[]; // storage for the user's roles when isolating or private venting
@@ -22,13 +23,12 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-    approved: {
+    inServer: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     pda: {
       type: Boolean,
-      required: true,
       default: true,
     },
 		isolated: Boolean,

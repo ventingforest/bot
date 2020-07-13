@@ -12,7 +12,6 @@ export interface IRoles {
 	private: Discord.Role;
 	newt2: Discord.Role;
 	welcomeTeam: Discord.Role;
-	approved: Discord.Role;
 	developer: Discord.Role;
 }
 
@@ -29,7 +28,6 @@ export default (server: Discord.Guild): IRoles => {
 		private: server.roles.cache.get('470942878676549652'),
 		newt2: server.roles.cache.get('631002094467547148'),
 		welcomeTeam: server.roles.cache.get('499302826028302368'),
-		approved: server.roles.cache.get('463438193115529226'),
 		developer: server.roles.cache.get('718196519664353300'),
 	};
 };

@@ -64,6 +64,10 @@ export default class Client {
     logdna: process.env.LOGDNA,
   }
 
+  db = {
+    user: User,
+  }
+
   // constructor
   constructor() {
     // create the logger

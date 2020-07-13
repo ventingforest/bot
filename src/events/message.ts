@@ -9,7 +9,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 	// ignore messages from other bots
 	if (msg.author.bot) return undefined;
 
-  // helper ping
+ 	// helper ping
 	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.helper.id &&	msg.channel.id != tvf.channels.helper.id && tvf.isProduction) {
 		const embed = tvf.createEmbed()
 			.setTitle(`${msg.author.username} needs help!`)
