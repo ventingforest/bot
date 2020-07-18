@@ -7,12 +7,10 @@ export default {
     const role = args.join(' ').toLowerCase();
     let embed = tvf.createEmbed({ timestamp: true });
 
-    console.log(role);
-
     // group users by role
-    const admins = tvf.roles.admin.members.concat(tvf.roles.techAdmin.members);
-    const mods = tvf.roles.mod.members.filter(m => !m.roles.cache.has(tvf.roles.admin.id)).filter(m => !m.roles.cache.has(tvf.roles.techAdmin.id));
-    const fks = tvf.roles.fk.members.filter(m => !m.roles.cache.has(tvf.roles.admin.id)).filter(m => !m.roles.cache.has(tvf.roles.techAdmin.id)).filter(m => !m.roles.cache.has(tvf.roles.mod.id));
+    const admins = tvf.roles.admin.members;
+    const mods = tvf.roles.mod.members.filter(m => !m.roles.cache.has(tvf.roles.admin.id));
+    const fks = tvf.roles.fk.members.filter(m => !m.roles.cache.has(tvf.roles.admin.id)).filter(m => !m.roles.cache.has(tvf.roles.mod.id));
     const staff = admins.concat(mods).concat(fks);
 
     // roles
@@ -47,7 +45,7 @@ export default {
         ]);
     }
 
-    // administrators & tech admins
+    // administrators
     else if (role === 'administrator' || role === 'admin' || role === 'administrators' || role === 'admins') {
       embed
         .setColor(tvf.colours.purple)
