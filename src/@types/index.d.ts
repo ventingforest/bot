@@ -24,4 +24,10 @@ declare global {
     interface BotConfig {
       botbanner: boolean; // if true, all new bots are banned from the server
     }
+
+    interface Suggestion {
+      id: string; // the id of the suggestion
+      suggestion: string; // the suggestion
+      messageID: string;
+    }
 }

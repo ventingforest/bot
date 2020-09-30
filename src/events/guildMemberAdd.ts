@@ -63,14 +63,10 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
           value: stripIndents`
           Now that you have joined our server, there are a couple things that you should know and that you need to do.
           First off, you must read ${tvf.channels.rules}, as it contains the majority of what you need to know.
-
-          You must then visit ${tvf.channels.roles}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
-          After 10 minutes of being in the server, you should recieve the **Approved** role.
+          If you have any questions, feel free to read our ${tvf.channels.faq}. You can also find out about our staff in ${tvf.channels.staff}.
+          When you are ready, please verify yourself in ${tvf.channels.verification}!
+          You should then visit ${tvf.channels.roles}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
         `,
-        },
-        {
-          name: 'What does the Approved role do?',
-          value: 'The **Approved** role unlocks more features in the server! You can now access **The Venting Centre** - where all of our generalised venting channels are held, venting cahnels for smaller things, a no-response venting cahnnel, and a voice chat for venting!',
         },
         {
           name: 'What should I do if I spot a rule breaker?',
@@ -107,8 +103,8 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
       .setThumbnail(member.user.avatarURL())
       .setDescription(stripIndents`
 				This may be a somewhat large server, but we can certainly make you feel at home - that's what our **Welcome Team** is for!
-				**First of all, check out ${tvf.channels.rules} as it contains much of what you need to know, and ${tvf.channels.roles}, which you can self-assign.**
-				After 10 minutes of membership, you'll recieve the **Approved** role, which gives you some more perms. Have fun!
+        **First of all, check out ${tvf.channels.rules} as it contains much of what you need to know, and ${tvf.channels.roles}, which you can self-assign.**
+        We hope you have fun and enjoy your stay here at The Venting Forest!
 			`);
 
     const msg = await tvf.channels.general.send(`**Welcome to TVF, <@!${member.id}>!** ${member.id === '625919227651555348' || member.id === '326767126406889473' || member.user.bot ? '' : `(${tvf.roles.welcomeTeam.toString()})`}`, welcomeEmbed);

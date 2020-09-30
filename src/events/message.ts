@@ -27,7 +27,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 		tvf.channels.helper.send(embed);
 
 		return msg.reply(
-			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.resources}>. You can also request a one-on-one private session with a staff by typing \`tvf private\` in any channel. If possible, please do provide a reason by typing the reason after the command.`,
+			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.resources}>. You can also request a one-on-one private session with a staff by using the \`tvf private\` command in any channel. If possible, please do provide a reason by typing the reason after the command.`,
 		);
 	}
 

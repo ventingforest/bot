@@ -9,7 +9,8 @@
     "scripts": {
         "dev": "cross-env NODE_ENV=development ts-nodemon",
         "beta": "npm run dev",
-        "prod": "tsc && cross-env NODE_ENV=production node build"
+        "prod": "tsc && cross-env NODE_ENV=production node build",
+        "clean": "rimraf build"
     },
     "dependencies": {
         "axios": "^0.19.2",
@@ -42,6 +43,7 @@
         "@types/shortid": "^0.0.29",
         "@types/winston": "^2.4.4",
         "eslint": "^6.8.0",
+        "rimraf": "^3.0.2",
         "typescript": "^3.8.3"
     }
 }

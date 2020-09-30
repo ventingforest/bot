@@ -5,13 +5,12 @@ import mongoose = require('mongoose');
 import { KSoftClient, Image } from 'ksoft.js';
 import * as jimp from 'jimp';
 import * as path from 'path';
-import axios from 'axios';
 
 import User, { IUser } from './models/user';
 import { IRoles } from './constants/Roles';
 import Colours from './constants/Colours';
 import { IChannels } from './constants/Channels';
-import Emojis from './constants/Emojis';
+import { IEmojis } from './constants/Emojis';
 import Compliments from './constants/Compliments';
 
 export default class Client {
@@ -54,7 +53,7 @@ export default class Client {
   roles: IRoles;
   colours = Colours;
   channels: IChannels;
-  emojis = Emojis;
+  emojis: IEmojis;
   compliments = Compliments;
 
   auth = {

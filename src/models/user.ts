@@ -2,7 +2,6 @@ import * as mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
     id: string; // the id of the user
-    approved: boolean; // whether the user has been approved
     inServer: boolean; // whether the user is still in the server
     pda: boolean; // whether the user is comfortable with PDA and compliments
     isolated: boolean; // whether the user is isolated or not
@@ -15,6 +14,7 @@ export interface IUser extends mongoose.Document {
       startedAt: Date; // when a member of staff started the session
       takenBy: string; // the member of staff that started the session
     };
+    suggestions: Suggestion[];
 }
 
 const userSchema = new mongoose.Schema(
@@ -40,7 +40,11 @@ const userSchema = new mongoose.Schema(
 			requestedAt: Date,
       startedAt: Date,
       takenBy: String,
-		},
+    },
+    suggestions: {
+      type: Array,
+      default: []
+    }
 	},
 	{
 		versionKey: false,
