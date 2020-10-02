@@ -11,5 +11,6 @@ export default {
         confirmed: '#ffb347',
         recovered: '#77dd77',
         deaths: '#FF0000'
-    }
+	},
+	yellow: '#ffc600',
 };

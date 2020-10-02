@@ -17,13 +17,14 @@ export default {
             tvf.logger.error(err);
             msg.channel.send(`**${tvf.emojis.cross}  |**  Either there was an error looking for the suggestion, or a suggestion with that ID does not exist. Please try again.`);
         } : res);
+        const member = msg.guild.member(user.id);
 
         const suggestion = user.suggestions.find(e => e.id === id);
         
         // update the original suggestion message
         const embed = tvf.createEmbed({ timestamp: true, colour: tvf.colours.red })
-			.setTitle(`Suggestion by ${_.truncate(msg.guild.member(user.id).user.username, { length: tvf.embedLimit.title - 40 })} has been denied!`)
-            .setThumbnail(msg.author.avatarURL())
+			.setTitle(`Suggestion by ${_.truncate(member.user.username, { length: tvf.embedLimit.title - 40 })} has been denied!`)
+            .setThumbnail(member.user.avatarURL())
             .setDescription(_.truncate(suggestion.suggestion, { length: tvf.embedLimit.description }))
             .addField(`Denied by ${msg.author.username}`, `**${tvf.emojis.suggestions.downvote.toString()}  |**  ${_.truncate(comment, { length: tvf.embedLimit.field.value - 20 })}`)
             .setFooter(`Suggestion ID: ${id}`);
@@ -34,18 +35,15 @@ export default {
             })
             .catch(err => tvf.logger.error(err));
 
-		// remove the suggestion from the database
-        const index = user.suggestions.indexOf(suggestion);
-        if (index > -1) user.suggestions.splice(index, 1);
-        tvf.saveDoc(user);
 
         // notify the user
         const denied = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true })
             .setTitle(`Your suggestion has been denied by ${_.truncate(msg.author.username, { length: tvf.embedLimit.title - 40 })}!`)
+            .setThumbnail(msg.author.avatarURL())
             .addField('Suggestion', _.truncate(suggestion.suggestion, { length: tvf.embedLimit.field.value }))
             .setFooter(`Suggestion ID: ${suggestion.id}`);
 
-        msg.guild.members.cache.get(user.id).send(denied);
+        member.send(denied);
 		await msg.delete();
 	}
 } as Command;

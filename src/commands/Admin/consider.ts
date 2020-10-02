@@ -2,8 +2,8 @@ import _ from 'lodash';
 import User from '../../models/user';
 
 export default {
-	name: 'approve',
-	description: 'Approve a suggestion!',
+	name: 'consider',
+	description: 'Consider a suggestion!',
 	allowGeneral: true,
 	args: true,
 	usage: '<id> [comment]',
@@ -22,11 +22,11 @@ export default {
         const suggestion = user.suggestions.find(e => e.id === id);
         
         // update the original suggestion message
-        const embed = tvf.createEmbed({ timestamp: true, colour: tvf.colours.green })
-			.setTitle(`Suggestion by ${_.truncate(member.user.username, { length: tvf.embedLimit.title - 40 })} has been approved!`)
+        const embed = tvf.createEmbed({ timestamp: true, colour: tvf.colours.yellow })
+			.setTitle(`Suggestion by ${_.truncate(member.user.username, { length: tvf.embedLimit.title - 40 })} has been considered!`)
             .setThumbnail(msg.author.avatarURL())
             .setDescription(_.truncate(suggestion.suggestion, { length: tvf.embedLimit.description }))
-            .addField(`Approved by ${msg.author.username}`, `**${tvf.emojis.suggestions.upvote.toString()}  |**  ${_.truncate(comment, { length: tvf.embedLimit.field.value - 20 })}`)
+            .addField(`Considered by ${msg.author.username}`, `**${tvf.emojis.question}  |**  ${_.truncate(comment, { length: tvf.embedLimit.field.value - 20 })}`)
             .setFooter(`Suggestion ID: ${id}`);
 
         tvf.channels.suggestions.messages.fetch(suggestion.messageID)
@@ -36,8 +36,8 @@ export default {
             .catch(err => tvf.logger.error(err));
 
         // notify the user
-        const approved = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true })
-            .setTitle(`Your suggestion has been approved by ${_.truncate(msg.author.username, { length: tvf.embedLimit.title - 40 })}!`)
+        const approved = tvf.createEmbed({ colour: tvf.colours.yellow, timestamp: true })
+            .setTitle(`Your suggestion has been considered by ${_.truncate(msg.author.username, { length: tvf.embedLimit.title - 40 })}!`)
             .setThumbnail(msg.author.avatarURL())
             .addField('Suggestion', _.truncate(suggestion.suggestion, { length: tvf.embedLimit.field.value }))
             .setFooter(`Suggestion ID: ${suggestion.id}`);

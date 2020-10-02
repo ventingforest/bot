@@ -8,7 +8,7 @@ export interface IEmojis {
 	thumbs: {
 		up: string;
 		down: string;
-	},
+	};
 	grimacing: string;
 	confetti: string;
 	square: string;
@@ -18,14 +18,15 @@ export interface IEmojis {
 	think: string;
 	hearts: {
 		revolving: string;
-	}
+	};
 	flushed: string;
 	angel: string;
 	graph: string;
 	suggestions: {
 		upvote: Discord.GuildEmoji;
 		downvote: Discord.GuildEmoji;
-	}
+	};
+	question: string;
 }
 
 export default (server: Discord.Guild): IEmojis => {
@@ -55,5 +56,6 @@ export default (server: Discord.Guild): IEmojis => {
 			upvote: server.emojis.cache.get('760820779344068609'),
 			downvote: server.emojis.cache.get('760820793507971093'),
 		},
+		question: '❓',
 	};
 };
