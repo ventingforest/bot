@@ -10,7 +10,7 @@ export default {
 	run: async (tvf, msg, args) => {
         const id = args[0];
         args.shift();
-        const comment = args.join() || 'No comment provided.';
+        const comment = args.join(' ') || 'No comment provided.';
 
         // search for the user who made the suggestion
         const user = await User.findOne({ 'suggestions.id': id }, (err, res) => err ? () => {
@@ -21,8 +21,8 @@ export default {
         const suggestion = user.suggestions.find(e => e.id === id);
         
         // update the original suggestion message
-        const embed = tvf.createEmbed({ author: true, timestamp: true, colour: tvf.colours.green })
-			.setTitle(`Suggestion by ${_.truncate(msg.author.username, { length: tvf.embedLimit.title - 40 })} has been approved!`)
+        const embed = tvf.createEmbed({ timestamp: true, colour: tvf.colours.green })
+			.setTitle(`Suggestion by ${_.truncate(msg.guild.member(user.id).user.username, { length: tvf.embedLimit.title - 40 })} has been approved!`)
             .setThumbnail(msg.author.avatarURL())
             .setDescription(_.truncate(suggestion.suggestion, { length: tvf.embedLimit.description }))
             .addField(`Approved by ${msg.author.username}`, `**${tvf.emojis.suggestions.upvote.toString()}  |**  ${_.truncate(comment, { length: tvf.embedLimit.field.value - 20 })}`)
@@ -40,7 +40,12 @@ export default {
         tvf.saveDoc(user);
 
         // notify the user
-        msg.guild.members.cache.get(user.id).send(`**${tvf.emojis.suggestions.upvote.toString()}  |** your suggestion, \`${suggestion.suggestion}\` (id: ${suggestion.id}) has been approved!`);
+        const approved = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true })
+            .setTitle(`Your suggestion has been approved by ${_.truncate(msg.author.username, { length: tvf.embedLimit.title - 40 })}!`)
+            .addField('Suggestion', _.truncate(suggestion.suggestion, { length: tvf.embedLimit.field.value }))
+            .setFooter(`Suggestion ID: ${suggestion.id}`);
+
+        msg.guild.members.cache.get(user.id).send(approved);
 		await msg.delete();
 	}
 } as Command;

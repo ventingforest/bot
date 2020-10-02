@@ -11,7 +11,7 @@ export default {
 		const id = shortid.generate();
 		
 		// post the suggestion
-		const embed = tvf.createEmbed({ author: true, timestamp: true })
+		const embed = tvf.createEmbed({ timestamp: true })
 			.setTitle(_.truncate(`New suggestion by ${msg.author.username}!`, { length: tvf.embedLimit.title }))
 			.setThumbnail(msg.author.avatarURL())
 			.setDescription(_.truncate(suggestion, { length: tvf.embedLimit.description }))
@@ -26,7 +26,7 @@ export default {
 		userDoc.suggestions.push({ id, suggestion, messageID: message.id });
 		tvf.saveDoc(userDoc);
 
-		// notify the user
-		msg.reply('your suggestion has been made!');
+		// delete the user's message
+		await msg.delete();
 	}
 } as Command;
