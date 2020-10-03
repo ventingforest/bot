@@ -17,7 +17,7 @@ export default {
 			.setDescription(_.truncate(suggestion, { length: tvf.embedLimit.description }))
 			.setFooter(`Suggestion ID: ${id}`);
 
-		const message = await tvf.channels.suggestions.send(embed);
+		const message = await tvf.channels.community.suggestions.send(embed);
 		await message.react(tvf.emojis.suggestions.upvote);
 		await message.react(tvf.emojis.suggestions.downvote);
 

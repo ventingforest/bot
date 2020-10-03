@@ -11,15 +11,14 @@ export default {
 
 		// spread all of the commands into arrays
 		const commands = tvf.commands
-			.filter((c) => c.category !== 'Admin')
-			.filter((c) => c.category !== 'Mod')
-			.filter((c) => c.category !== 'FK')
+			.filter((c) => !c.staffAccess)
 			.map((c) => c.name)
 			.join(', ');
 
-		const adminCommands = tvf.commands.filter((c) => c.category === 'Admin').map((c) => c.name).join(', ');
-		const modCommands = tvf.commands.filter((c) => c.category === 'Mod').map((c) => c.name).join(', ');
-		const fkCommands = tvf.commands.filter((c) => c.category === 'FK').map((c) => c.name).join(', ');
+		const adminCommands = tvf.commands.filter((c) => c.staffAccess && c.staffAccess.includes('Admin')).map((c) => c.name).join(', ');
+		const moderationCommands = tvf.commands.filter((c) => c.staffAccess && c.staffAccess.includes('Moderation')).map((c) => c.name).join(', ');
+		const supportCommands = tvf.commands.filter((c) => c.staffAccess && c.staffAccess.includes('Support')).map((c) => c.name).join(', ');
+		const techCommands = tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Tech')).map(c => c.name).join(', ');
 
 		// if there are no arguments
 		if (args.length === 0) {
@@ -28,19 +27,23 @@ export default {
 				.setTitle('Help 👋')
 				.addField('Commands 🎉', `\`\`\`${commands}\`\`\``);
 
-			if (tvf.isUser('fk', msg.author) && tvf.commands.filter(c => c.category == 'FK').size > 0) {
-				embed.addField('FK ♥', `\`\`\`${fkCommands}\`\`\``);
+			if (tvf.isUser('Support', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Support')).size > 0) {
+				embed.addField('Support ♥', `\`\`\`${supportCommands}\`\`\``);
 			}
 
-			if (tvf.isUser('mod', msg.author) && tvf.commands.filter(c => c.category == 'FK').size > 0) {
-				embed.addField('Mod 🔨', `\`\`\`${modCommands}\`\`\``);
+			if (tvf.isUser('Tech', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Tech')).size > 0) {
+				embed.addField('Tech 💻', `\`\`\`${techCommands}\`\`\``);
 			}
 
-			if (tvf.isUser('admin', msg.author) && tvf.commands.filter(c => c.category == 'FK').size > 0) {
+			if (tvf.isUser('Moderation', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Moderation')).size > 0) {
+				embed.addField('Moderation 🔨', `\`\`\`${moderationCommands}\`\`\``);
+			}
+
+			if (tvf.isUser('Admin', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Admin')).size > 0) {
 				embed.addField('Admin ⚙', `\`\`\`${adminCommands}\`\`\``);
 			}
 
-			embed.addField('Support 🤗', 'If you ever spot a bug, please contact newt#1234 and explain what is wrong so that they can get to fixing it.');
+			embed.addField('Support 🤗', 'If you ever spot a bug, please contact the head of tech and explain what is wrong so that they can get to fixing it.');
 		}
 		else {
 			// get the query

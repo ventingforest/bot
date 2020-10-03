@@ -8,47 +8,19 @@ export default {
     let embed = tvf.createEmbed({ timestamp: true });
 
     // group users by role
-    const admins = tvf.roles.admin.members;
-    const mods = tvf.roles.mod.members.filter(m => !m.roles.cache.has(tvf.roles.admin.id));
-    const fks = tvf.roles.fk.members.filter(m => !m.roles.cache.has(tvf.roles.admin.id)).filter(m => !m.roles.cache.has(tvf.roles.mod.id));
-    const staff = admins.concat(mods).concat(fks);
+    const admins = tvf.roles.staff.admins.members;
+    const engagement = tvf.roles.staff.engagement.members;
+    const support = tvf.roles.staff.support.members;
+    const tech = tvf.roles.staff.tech.members;
+    const moderators = tvf.roles.staff.moderators.members;
+    const staff = admins.concat(engagement).concat(support).concat(tech).concat(moderators);
 
     // roles
 
-    // forest keepers
-    if (role === 'forest keeper' || role === 'fk' || role === 'forest keepers' || role === 'fks') {
-      embed
-        .setColor(tvf.colours.green)
-        .setTitle(`Forest Keepers (${fks.size})`)
-        .setDescription(fks.map(fk => `<@!${fk.user.id}>`))
-        .addFields([
-          {
-            name: 'Online',
-            value: fks.filter(fk => fk.user.presence.status !== 'offline').size,
-            inline: true,
-          },
-        ]);
-    }
-
-    // moderators
-    else if (role === 'moderator' || role === 'mod' || role === 'moderators' || role === 'mods') {
-      embed
-        .setColor(tvf.colours.red)
-        .setTitle(`Moderators (${mods.size})`)
-        .setDescription(mods.map(mod => `<@!${mod.user.id}>`))
-        .addFields([
-          {
-            name: 'Online',
-            value: mods.filter(mod => mod.user.presence.status !== 'offline').size,
-            inline: true,
-          },
-        ]);
-    }
-
     // administrators
-    else if (role === 'administrator' || role === 'admin' || role === 'administrators' || role === 'admins') {
+    if (role === 'administrator' || role === 'admin' || role === 'administrators' || role === 'admins') {
       embed
-        .setColor(tvf.colours.purple)
+        .setColor(tvf.colours.yellow)
         .setTitle(`Administrators (${admins.size})`)
         .setDescription(admins.map(admin => `<@!${admin.user.id}>`))
         .addFields([
@@ -60,11 +32,71 @@ export default {
         ]);
     }
 
+    // engagement
+    if (role === 'engagement') {
+      embed
+        .setColor(tvf.colours.staff.engagement)
+        .setTitle(`Engagement (${engagement.size})`)
+        .setDescription(engagement.map(e => `<@!${e.user.id}>`))
+        .addFields([
+          {
+            name: 'Online',
+            value: engagement.filter(e => e.user.presence.status !== 'offline').size,
+            inline: true,
+          },
+        ]);
+    }
+
+    // support
+    else if (role === 'support') {
+      embed
+        .setColor(tvf.colours.staff.support)
+        .setTitle(`Support (${support.size})`)
+        .setDescription(support.map(s => `<@!${s.user.id}>`))
+        .addFields([
+          {
+            name: 'Online',
+            value: support.filter(s => s.user.presence.status !== 'offline').size,
+            inline: true,
+          },
+        ]);
+    }
+
+    // tech
+    else if (role === 'tech') {
+      embed
+        .setColor(tvf.colours.staff.tech)
+        .setTitle(`Tech (${tech.size})`)
+        .setDescription(tech.map(t => `<@!${t.user.id}>`))
+        .addFields([
+          {
+            name: 'Online',
+            value: tech.filter(t => t.user.presence.status !== 'offline').size,
+            inline: true,
+          },
+        ]);
+    }
+
+    // moderators
+    else if (role === 'moderator' || role === 'mod' || role === 'moderators' || role === 'moderators') {
+      embed
+        .setColor(tvf.colours.staff.moderation)
+        .setTitle(`Moderators (${moderators.size})`)
+        .setDescription(moderators.map(mod => `<@!${mod.user.id}>`))
+        .addFields([
+          {
+            name: 'Online',
+            value: moderators.filter(mod => mod.user.presence.status !== 'offline').size,
+            inline: true,
+          },
+        ]);
+    }
+
     // staff list
 
     else {
       embed
-        .setTitle(`Staff (${staff.size})`)
+        .setTitle(`Staff`)
         .addFields([
           {
             name: `Administrators (${admins.size})`,
@@ -72,13 +104,23 @@ export default {
             inline: true,
           },
           {
-            name: `Moderators (${mods.size})`,
-            value: mods.map(mod => `<@!${mod.user.id}>`),
+            name: `Moderators (${moderators.size})`,
+            value: moderators.map(mod => `<@!${mod.user.id}>`),
             inline: true,
           },
           {
-            name: `Forest Keepers (${fks.size})`,
-            value: fks.map(fk => `<@!${fk.user.id}>`),
+            name: `Tech (${tech.size})`,
+            value: tech.map(t => `<@!${t.user.id}>`),
+            inline: true,
+          },
+          {
+            name: `Engagement (${engagement.size})`,
+            value: engagement.map(e => `<@!${e.user.id}>`),
+            inline: true,
+          },
+          {
+            name: `Support (${support.size})`,
+            value: support.map(s => `<@!${s.user.id}>`),
             inline: true,
           },
         ]);

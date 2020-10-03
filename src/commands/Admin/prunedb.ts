@@ -4,6 +4,7 @@ export default {
 	name: 'prunedb',
 	description: 'Prunes the database, deleting documents for everyone who is no longer in the server.',
 	allowGeneral: true,
+	staffAccess: ['Admin'],
 	run: async (tvf, msg) => {
         const count = await User.find({ inServer: false }, (err, res) => err ? tvf.logger.error(err) : res.length);
         await User.deleteMany({ inServer: false }, err => err ? tvf.logger.error(err) : null);

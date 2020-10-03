@@ -3,7 +3,8 @@ import User from '../../models/user';
 export default {
 	name: 'refreshdb',
 	description: 'Refreshes the database, ensuring that everyone in the server has a document.',
-	allowGeneral: true,
+    allowGeneral: true,
+    staffAccess: ['Admin'],
 	run: async (tvf, msg) => {
         let i = 0;
 

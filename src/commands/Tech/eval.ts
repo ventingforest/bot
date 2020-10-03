@@ -6,6 +6,7 @@ export default {
   args: true,
   usage: '<code>',
   allowGeneral: true,
+  staffAccess: ['Admin'],
   run: (tvf, msg, args) => {
     try {
       // get the code

@@ -6,7 +6,8 @@ export default {
 	description: 'Approve a suggestion!',
 	allowGeneral: true,
 	args: true,
-	usage: '<id> [comment]',
+    usage: '<id> [comment]',
+    staffAccess: ['Admin'],
 	run: async (tvf, msg, args) => {
         const id = args[0];
         args.shift();
@@ -29,7 +30,7 @@ export default {
             .addField(`Approved by ${msg.author.username}`, `**${tvf.emojis.suggestions.upvote.toString()}  |**  ${_.truncate(comment, { length: tvf.embedLimit.field.value - 20 })}`)
             .setFooter(`Suggestion ID: ${id}`);
 
-        tvf.channels.suggestions.messages.fetch(suggestion.messageID)
+        tvf.channels.community.suggestions.messages.fetch(suggestion.messageID)
             .then(async res => {
                 await res.edit(embed);
             })

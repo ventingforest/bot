@@ -200,12 +200,14 @@ export default class Client {
   }
 
   // checks if a member has a staff role
-  isUser(role: StaffRole, user: Discord.User): boolean {
+  isUser(role: StaffRole | 'Staff', user: Discord.User): boolean {
     const member = this.server.member(user);
-    return role === 'fk' ? member.roles.cache.has(this.roles.fk.id) :
-           role === 'mod' ? member.roles.cache.has(this.roles.mod.id) :
-           role === 'admin' ? member.roles.cache.has(this.roles.admin.id) || member.roles.cache.has(this.roles.techAdmin.id) || member.roles.cache.has(this.roles.newt2.id) :
-           role === 'developer' ? member.roles.cache.has(this.roles.developer.id)
+    return role === 'Support' ? member.roles.cache.has(this.roles.staff.support.id) || member.roles.cache.has(this.roles.staff.heads.support.id) :
+           role === 'Tech' ? member.roles.cache.has(this.roles.staff.tech.id) || member.roles.cache.has(this.roles.staff.heads.tech.id) :
+           role === 'Engagement' ? member.roles.cache.has(this.roles.staff.engagement.id) || member.roles.cache.has(this.roles.staff.heads.engagement.id) :
+           role === 'Moderation' ? member.roles.cache.has(this.roles.staff.moderators.id) || member.roles.cache.has(this.roles.staff.heads.moderators.id) :
+           role === 'Admin' ? member.roles.cache.has(this.roles.staff.admins.id) :
+           role === 'Staff' ? member.roles.cache.has(this.roles.staff.support.id) || member.roles.cache.has(this.roles.staff.heads.support.id) || member.roles.cache.has(this.roles.staff.tech.id) || member.roles.cache.has(this.roles.staff.heads.tech.id) || member.roles.cache.has(this.roles.staff.engagement.id) || member.roles.cache.has(this.roles.staff.heads.engagement.id) || member.roles.cache.has(this.roles.staff.moderators.id) || member.roles.cache.has(this.roles.staff.heads.moderators.id) || member.roles.cache.has(this.roles.staff.admins.id)
            : false;
   }
 

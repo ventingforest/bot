@@ -44,7 +44,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
             },
           ]);
 
-        tvf.channels.fk.send(tvf.roles.fk.toString(), embed);
+        tvf.channels.staff.support.send(tvf.roles.staff.support.toString(), embed);
       }
     }
 
@@ -63,7 +63,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
           value: stripIndents`
           Now that you have joined our server, there are a couple things that you should know and that you need to do.
           First off, you must read ${tvf.channels.rules}, as it contains the majority of what you need to know.
-          If you have any questions, feel free to read our ${tvf.channels.faq}. You can also find out about our staff in ${tvf.channels.staff}.
+          If you have any questions, feel free to read our ${tvf.channels.community.faq}. You can also find out about our staff in ${tvf.channels.staff}.
           When you are ready, please verify yourself in ${tvf.channels.verification}!
           You should then visit ${tvf.channels.roles}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
         `,
@@ -107,7 +107,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
         We hope you have fun and enjoy your stay here at The Venting Forest!
 			`);
 
-    const msg = await tvf.channels.general.send(`**Welcome to TVF, <@!${member.id}>!** ${member.id === '625919227651555348' || member.id === '326767126406889473' || member.user.bot ? '' : `(${tvf.roles.welcomeTeam.toString()})`}`, welcomeEmbed);
+    const msg = await tvf.channels.general.send(`**Welcome to TVF, <@!${member.id}>!** ${member.id === '625919227651555348' || member.id === '326767126406889473' || member.user.bot ? '' : `(${tvf.roles.community.welcomeTeam.toString()})`}`, welcomeEmbed);
     return msg.react(tvf.emojis.wave);
   }
 };

@@ -4,13 +4,13 @@ import _ from 'lodash';
 
 export default async (tvf: Client, msg: Discord.Message) => {
 	// react to all messages in the starboard with the star emoji
-	if (msg.channel.id === tvf.channels.starboard.id) return await msg.react(tvf.emojis.star);
+	if (msg.channel.id === tvf.channels.community.starboard.id) return await msg.react(tvf.emojis.star);
 
 	// ignore messages from other bots
 	if (msg.author.bot) return undefined;
 
  	// helper ping
-	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.helper.id &&	msg.channel.id != tvf.channels.helper.id && tvf.isProduction) {
+	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.community.helper.id && msg.channel.id != tvf.channels.community.helper.id && tvf.isProduction) {
 		const embed = tvf.createEmbed()
 			.setTitle(`${msg.author.username} needs help!`)
 			.addFields([
@@ -24,7 +24,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 				},
 			]);
 
-		tvf.channels.helper.send(embed);
+		tvf.channels.community.helper.send(embed);
 
 		return msg.reply(
 			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.resources}>. You can also request a one-on-one private session with a staff by using the \`tvf private\` command in any channel. If possible, please do provide a reason by typing the reason after the command.`,
@@ -44,8 +44,8 @@ export default async (tvf: Client, msg: Discord.Message) => {
 		const command = tvf.commands.get(commandName) || tvf.commands.find(c => c.aliases && c.aliases.includes(commandName));
 		if (!command) return undefined;
 
-    // checks
-		if ((command.category === 'Admin' && !tvf.isUser('admin', msg.author)) || (command.category === 'Moderation' && !tvf.isUser('mod', msg.author)) || (command.category === 'FK' && !tvf.isUser('fk', msg.author)) || (command.category === 'Developer' && !tvf.isUser('developer', msg.author))) {
+	    // checks
+		if ((command.staffAccess && !tvf.isUser('Staff', msg.author)) && ((command.staffAccess && command.staffAccess.includes('Support') && !tvf.isUser('Support', msg.author)) || (command.staffAccess && command.staffAccess.includes('Moderation') && !tvf.isUser('Moderation', msg.author)) || (command.staffAccess && command.staffAccess.includes('Admin') && !tvf.isUser('Admin', msg.author)))) {
 			return msg.channel.send(`**${tvf.emojis.cross}  |**  you are not allowed to run that command!`);
 		}
 
@@ -55,33 +55,33 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			return msg.author.send(`**${tvf.emojis.grimacing}  |**  you can not run that command in general!`);
 		}
 
-    // if there are certain permissions required to run a command
-    if (command.permissions) {
-      let missingPermissions = [];
+		// if there are certain permissions required to run a command
+		if (command.permissions) {
+			let missingPermissions = [];
 
-      // for every permission listed, check if the user has it
-      for (let i = 0; i < command.permissions.length; i++) {
-        if (!msg.member.hasPermission(command.permissions[i])) missingPermissions.push(command.permissions[i]);
-      }
+			// for every permission listed, check if the user has it
+			for (let i = 0; i < command.permissions.length; i++) {
+				if (!msg.member.hasPermission(command.permissions[i])) missingPermissions.push(command.permissions[i]);
+			}
 
-      // if there are any permissions missing, inform the user
-      if (missingPermissions.length > 0) {
-        msg.author.send(`**${tvf.emojis.grimacing}  |**  you are missing these permissions in **${msg.guild.name}** to run **${command.name}**\n\`\`\`${tvf.friendlyPermissions(msg.member.permissions).join('\n')}\`\`\``);
-        return msg.channel.send(`**${tvf.emojis.cross}  |**  you do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.`);
-      }
-    }
+			// if there are any permissions missing, inform the user
+			if (missingPermissions.length > 0) {
+				msg.author.send(`**${tvf.emojis.grimacing}  |**  you are missing these permissions in **${msg.guild.name}** to run **${command.name}**\n\`\`\`${tvf.friendlyPermissions(msg.member.permissions).join('\n')}\`\`\``);
+				return msg.channel.send(`**${tvf.emojis.cross}  |**  you do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.`);
+			}
+		}
 
-    // if the command requires arguments but hasn't been given any
-    if (command.args && args.length === 0) {
-      let reply = `**${tvf.emojis.cross}  |**  you did not provide any arguments!`;
+		// if the command requires arguments but hasn't been given any
+		if (command.args && args.length === 0) {
+		let reply = `**${tvf.emojis.cross}  |**  you did not provide any arguments!`;
 
-      // if the usage is listed for the command, append it to the reply
-      if (command.usage) {
-        reply += `\n**${tvf.emojis.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
-      }
+		// if the usage is listed for the command, append it to the reply
+		if (command.usage) {
+			reply += `\n**${tvf.emojis.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
+		}
 
-      return msg.channel.send(reply);
-    }
+		return msg.channel.send(reply);
+		}
 
 		// execute the command
 		try {

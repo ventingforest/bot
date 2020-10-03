@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import Client from '../Client';
 
 declare global {
-    type StaffRole = 'fk' | 'mod' | 'admin' | 'developer';
+    type StaffRole = 'Support' | 'Engagement' | 'Tech' | 'Moderation' | 'Admin';
     type EmbedOptions = {
         colour: string; // the colour of the embed. can be any hex.
         timestamp?: boolean; // whether the timestamp appears on the embed - defaults to false
@@ -18,6 +18,7 @@ declare global {
       permissions?: Discord.PermissionResolvable[]; // required permissions to run the command
       args?: boolean; // whether the command requires arguments
       usage?: string; // shows how the command is supposed to be used, listing all arguments
+      staffAccess?: StaffRole[]; // which staff roles can use the command
       allowGeneral?: boolean; // whether the command can be run in general
     }
 

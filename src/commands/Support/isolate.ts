@@ -8,6 +8,7 @@ export default {
   usage: '<@user> [reason]',
   aliases: ['unisolate'],
   allowGeneral: true,
+  staffAccess: ['Support', 'Moderation'],
   run: async (tvf, msg, args) => {
     await msg.delete();
     args.shift();
@@ -54,15 +55,15 @@ export default {
         ])
         .setFooter(`Isolated by ${msg.author.username} at ${isolatedAt}`, msg.author.avatarURL());
 
-      tvf.channels.fk.send(embed);
-      tvf.channels.modlog.send(embed);
+      tvf.channels.staff.support.send(embed);
+      tvf.channels.staff.modlog.send(embed);
 
       // welcome the user to isolation
       const welcomeEmbed = tvf.createEmbed()
         .setTitle(`Welcome to isolation, ${member.user.username}!`)
         .setDescription(`Hey there, ${member.user.username}! Welcome to isolation! You have been put here by a member of staff - but don't worry, this doesn't necessarily mean you have done something wrong. Staff put people here in order to help people calm down if you're feeling bad, or if you are harming other members of the server. Only you and the staff can see this channel, and it is completely private - feel free to talk to them.`);
 
-      tvf.channels.isolation.send(welcomeEmbed);
+      tvf.channels.staff.isolation.send(welcomeEmbed);
     } else if (doc.isolated) {
       // get the user's roles from the database
       const roles: Discord.Collection<string, Discord.Role> = new Discord.Collection();
@@ -100,9 +101,9 @@ export default {
         ])
         .setFooter(`Unisolated by ${msg.author.username} at ${unisolatedAt}`, msg.author.avatarURL());
 
-      tvf.channels.fk.send(embed);
-      tvf.channels.modlog.send(embed);
-      tvf.channels.isolation.send(embed);
+      tvf.channels.staff.support.send(embed);
+      tvf.channels.staff.modlog.send(embed);
+      tvf.channels.staff.isolation.send(embed);
     }
   }
 } as Command;
