@@ -13,7 +13,7 @@ export default {
     const support = tvf.roles.staff.support.members;
     const tech = tvf.roles.staff.tech.members;
     const moderators = tvf.roles.staff.moderators.members;
-    const staff = admins.concat(engagement).concat(support).concat(tech).concat(moderators);
+    const staff = tvf.roles.staff.staff.members;
 
     // roles
 
@@ -96,7 +96,7 @@ export default {
 
     else {
       embed
-        .setTitle(`Staff`)
+        .setTitle(`Staff (${staff.size})`)
         .addFields([
           {
             name: `Administrators (${admins.size})`,
