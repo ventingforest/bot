@@ -12,7 +12,10 @@ export interface IUser extends mongoose.Document {
       reason: string; // the reason why the user wanted the session
       requestedAt: Date; // when the user requested the session
       startedAt: Date; // when a member of staff started the session
-      takenBy: string; // the member of staff that started the session
+      channels: {
+        text: string; // the id of the text channel
+        vc: string; // the id of the vc
+      };
     };
     suggestions: Suggestion[];
 }
@@ -39,7 +42,10 @@ const userSchema = new mongoose.Schema(
 			reason: String,
 			requestedAt: Date,
       startedAt: Date,
-      takenBy: String,
+      channels: {
+        text: String,
+        vc: String,
+      },
     },
     suggestions: {
       type: Array,

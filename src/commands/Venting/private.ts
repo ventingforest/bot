@@ -15,7 +15,83 @@ export default {
     const subcommand = args[0];
 
     // Handle the starting of a session
-    if (subcommand === 'start') {}
+    if (subcommand === 'start' &&(tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+      const id = args[1];
+
+      // Try and find the user's document and begin updating it
+      const doc = await User.findOne({ 'private.requested': true, 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
+      if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.emojis.cross, `\`${id}\` is an invalid ID!`));
+      const user = msg.guild.member(doc.id).user;
+
+      doc.private.requested = false;
+      doc.private.startedAt = new Date();
+
+      // Create a channel and vc for the private venting session to take place in
+      const channel = await tvf.server.channels.create(`${user.username}-${user.discriminator}`, {
+        parent: tvf.channels.staff.private.category,
+        type: 'text',
+        topic: `${tvf.emojis.tick} | Session started: ${moment(doc.private.startedAt).format(tvf.moment)}`,
+        permissionOverwrites: [
+          {
+            id: tvf.server.roles.everyone,
+            allow: ['READ_MESSAGE_HISTORY', 'SEND_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'USE_EXTERNAL_EMOJIS'],
+            deny: ['ADD_REACTIONS', 'SEND_TTS_MESSAGES']
+          },
+          {
+            id: user.id,
+            allow: 'VIEW_CHANNEL'
+          },
+          {
+            id: tvf.roles.staff.support,
+            allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES']
+          },
+        ],
+      });
+
+      const vc = await tvf.server.channels.create(user.tag, {
+        parent: tvf.channels.staff.private.category,
+        type: 'voice',
+        permissionOverwrites: [
+          {
+            id: tvf.server.roles.everyone,
+            allow: ['CONNECT', 'SPEAK', 'STREAM']
+          },
+          {
+            id: user.id,
+            allow: 'VIEW_CHANNEL'
+          },
+          {
+            id: tvf.roles.staff.support,
+            allow: ['VIEW_CHANNEL', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'PRIORITY_SPEAKER']
+          },
+        ],
+      });
+
+      // Welcome the user to private venting and mark the session as open
+      channel.send(`Welcome to your private venting session, ${user.toString()} (:`);
+
+      // Inform the support team that the user's session has begun and post it in the logs
+      const sessionBegun = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false, author: true }, msg)
+        .setThumbnail(user.avatarURL())
+        .setTitle(`${user.username}'s private venting session has been started by ${msg.author.username}!`)
+        .setFooter(`Sesssion ID: ${doc.private.id}`);
+
+      tvf.channels.staff.support.send(sessionBegun);
+      tvf.channels.staff.private.logs.send(sessionBegun);
+
+      // Finsh updating the user's document
+      doc.private.channels.text = channel.id;
+      doc.private.channels.vc = vc.id;
+      tvf.saveDoc(doc);
+
+      // Clear the expiry reminders
+      timeout.timeout(doc.private.id, null);
+			timeout.timeout(`${doc.private.id}1`, null);
+			timeout.timeout(`${doc.private.id}2`, null);
+			timeout.timeout(`${doc.private.id}3`, null);
+			timeout.timeout(`${doc.private.id}4`, null);
+			timeout.timeout(`${doc.private.id}5`, null);
+    }
 
     // Handle the ending of a session
     else if (subcommand === 'end') {}
@@ -87,7 +163,7 @@ export default {
 
       // Cancel the session
 
-      // Remove the expiry timeouts
+      // Clear the expiry reminders
       timeout.timeout(doc.private.id, null);
 			timeout.timeout(`${doc.private.id}1`, null);
 			timeout.timeout(`${doc.private.id}2`, null);
@@ -101,7 +177,6 @@ export default {
       doc.private.reason = null;
       doc.private.requestedAt = null;
       doc.private.startedAt = null;
-      doc.private.takenBy = null;
       tvf.saveDoc(doc);
     }
 
@@ -174,7 +249,6 @@ export default {
           doc.private.reason = null;
           doc.private.requestedAt = null;
           doc.private.startedAt = null;
-          doc.private.takenBy = null;
           tvf.saveDoc(doc);
 
           // Inform the support team that the user's session has expired

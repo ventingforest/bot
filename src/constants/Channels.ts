@@ -11,6 +11,7 @@ export interface IChannels {
 		modlog: Discord.TextChannel;
 		isolation: Discord.TextChannel;
 		private: {
+			category: Discord.CategoryChannel;
 			logs: Discord.TextChannel;
 		};
 		support: Discord.TextChannel;
@@ -37,6 +38,7 @@ export default (server: Discord.Guild): IChannels => {
 			modlog: (server.channels.cache.get('499652797638115348') as Discord.TextChannel),
 			isolation: (server.channels.cache.get('586251824563224576') as Discord.TextChannel),
 			private: {
+				category: (server.channels.cache.get('768113425867472936') as Discord.CategoryChannel),
 				logs: (server.channels.cache.get('768113624861507624') as Discord.TextChannel),
 			},
 			support: (server.channels.cache.get('761718388090863616') as Discord.TextChannel),
