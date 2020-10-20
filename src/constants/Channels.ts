@@ -10,7 +10,9 @@ export interface IChannels {
 	staff: {
 		modlog: Discord.TextChannel;
 		isolation: Discord.TextChannel;
-		private: Discord.TextChannel;
+		private: {
+			logs: Discord.TextChannel;
+		};
 		support: Discord.TextChannel;
 	};
 	community: {
@@ -34,7 +36,9 @@ export default (server: Discord.Guild): IChannels => {
 		staff: {
 			modlog: (server.channels.cache.get('499652797638115348') as Discord.TextChannel),
 			isolation: (server.channels.cache.get('586251824563224576') as Discord.TextChannel),
-			private: (server.channels.cache.get('454330124486049833') as Discord.TextChannel),
+			private: {
+				logs: (server.channels.cache.get('768113624861507624') as Discord.TextChannel),
+			},
 			support: (server.channels.cache.get('761718388090863616') as Discord.TextChannel),
 		},
 		community: {

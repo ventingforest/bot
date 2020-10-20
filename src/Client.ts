@@ -199,6 +199,11 @@ export default class Client {
     return embed;
   }
 
+  // format an emoji message
+  emojiMessage(emoji: string, msg: string) {
+    return `**${emoji}  |** ${msg}`;
+  }
+
   // checks if a member has a staff role
   isUser(role: StaffRole | 'Staff', user: Discord.User): boolean {
     const member = this.server.member(user);
