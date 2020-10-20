@@ -30,7 +30,7 @@ export default {
       const channel = await tvf.server.channels.create(`${user.username}-${user.discriminator}`, {
         parent: tvf.channels.staff.private.category,
         type: 'text',
-        topic: `${tvf.emojis.tick} | Session started: ${moment(doc.private.startedAt).format(tvf.moment)}`,
+        topic: `${tvf.emojis.tick}  |  Session started: ${moment(doc.private.startedAt).format(tvf.moment)} (id: ${doc.private.id})`,
         permissionOverwrites: [
           {
             id: tvf.server.roles.everyone,
@@ -68,7 +68,14 @@ export default {
       });
 
       // Welcome the user to private venting and mark the session as open
-      channel.send(`Welcome to your private venting session, ${user.toString()} (:`);
+      channel.send(
+        `Welcome to your private venting session, ${user.toString()} (:`,
+        tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false })
+          .setThumbnail(user.avatarURL())
+          .setTitle(`Welcome to your private venting session, ${user.username}!`)
+          .setDescription(`Reason for session: ${doc.private.reason}`)
+          .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL())
+      );
 
       // Inform the support team that the user's session has begun and post it in the logs
       const sessionBegun = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false, author: true }, msg)
@@ -94,7 +101,9 @@ export default {
     }
 
     // Handle the ending of a session
-    else if (subcommand === 'end') {}
+    else if (subcommand === 'end' && (tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+
+    }
 
     // Handle the cancellation of a session
     else if (subcommand === 'cancel') {
