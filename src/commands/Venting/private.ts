@@ -102,7 +102,53 @@ export default {
 
     // Handle the ending of a session
     else if (subcommand === 'end' && (tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+      const id = args[1];
 
+      // Get notes from the command
+      args.shift();
+      args.shift();
+      let notes = args.join(' ');
+      if (!notes) notes = 'No notes provided.';
+
+      // Try and find the user's document
+      const doc = await User.findOne({ 'private.requested': false, 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
+      if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.emojis.cross, `\`${id}\` is an invalid ID!`));
+      const user = msg.guild.member(doc.id).user;
+
+      // Fetch the channels associated with the session
+      const text = tvf.server.channels.cache.get(doc.private.channels.text) as Discord.TextChannel;
+      const vc = tvf.server.channels.cache.get(doc.private.channels.vc) as Discord.VoiceChannel;
+
+      // Inform the support team that the session has ended and post it in the logs
+      const sessionEnded = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
+        .setThumbnail(user.avatarURL())
+        .setTitle(`${user.username}'s session is over!`)
+        .setDescription(notes)
+        .addFields([
+          { name: 'Time open', value: `${moment(new Date()).diff(moment(doc.private.startedAt), 'minutes')} minutes` },
+          { name: 'Started at', value: moment(doc.private.startedAt).format(tvf.moment) },
+          { name: 'Ended at', value: moment(new Date()).format(tvf.moment) },
+          // { name: 'Message count', value: },
+        ])
+        .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+
+      tvf.channels.staff.support.send(sessionEnded);
+      tvf.channels.staff.private.logs.send(sessionEnded);
+
+      // Delete the channels associated with the session
+      await text.delete();
+      await vc.delete();
+
+      // Update the user's document
+      doc.private.id = null;
+      doc.private.reason = null;
+      doc.private.requested = null;
+      doc.private.requestedAt = null;
+      doc.private.startedAt = null;
+      doc.private.channels.text = null;
+      doc.private.channels.vc = null;
+      
+      return tvf.saveDoc(doc);
     }
 
     // Handle the cancellation of a session
@@ -186,7 +232,10 @@ export default {
       doc.private.reason = null;
       doc.private.requestedAt = null;
       doc.private.startedAt = null;
-      tvf.saveDoc(doc);
+      doc.private.channels.text = null;
+      doc.private.channels.vc = null;
+      
+      return tvf.saveDoc(doc);
     }
 
     // Handle the requesting of a session
@@ -258,6 +307,9 @@ export default {
           doc.private.reason = null;
           doc.private.requestedAt = null;
           doc.private.startedAt = null;
+          doc.private.channels.text = null;
+          doc.private.channels.vc = null;
+
           tvf.saveDoc(doc);
 
           // Inform the support team that the user's session has expired
