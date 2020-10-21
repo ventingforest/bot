@@ -16,6 +16,7 @@ export default {
 
     // Handle the starting of a session
     if (subcommand === 'start' &&(tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+      await msg.delete();
       const id = args[1];
 
       // Try and find the user's document and begin updating it
@@ -35,11 +36,11 @@ export default {
           {
             id: tvf.server.roles.everyone,
             allow: ['READ_MESSAGE_HISTORY', 'SEND_MESSAGES', 'EMBED_LINKS', 'ATTACH_FILES', 'USE_EXTERNAL_EMOJIS'],
-            deny: ['ADD_REACTIONS', 'SEND_TTS_MESSAGES']
+            deny: ['VIEW_CHANNEL', 'ADD_REACTIONS', 'SEND_TTS_MESSAGES'],
           },
           {
             id: user.id,
-            allow: 'VIEW_CHANNEL'
+            allow: 'VIEW_CHANNEL',
           },
           {
             id: tvf.roles.staff.support,
@@ -54,11 +55,12 @@ export default {
         permissionOverwrites: [
           {
             id: tvf.server.roles.everyone,
-            allow: ['CONNECT', 'SPEAK', 'STREAM']
+            allow: ['CONNECT', 'SPEAK', 'STREAM'],
+            deny: 'VIEW_CHANNEL',
           },
           {
             id: user.id,
-            allow: 'VIEW_CHANNEL'
+            allow: 'VIEW_CHANNEL',
           },
           {
             id: tvf.roles.staff.support,
@@ -102,6 +104,7 @@ export default {
 
     // Handle the ending of a session
     else if (subcommand === 'end' && (tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+      await msg.delete();
       const id = args[1];
 
       // Get notes from the command
@@ -119,7 +122,17 @@ export default {
       const text = tvf.server.channels.cache.get(doc.private.channels.text) as Discord.TextChannel;
       const vc = tvf.server.channels.cache.get(doc.private.channels.vc) as Discord.VoiceChannel;
 
-      // Inform the support team that the session has ended and post it in the logs
+      // Upload the message history to pastebin
+      const messages = await text.messages.fetch();
+      
+      const paste = await tvf.pastebin.createPaste({
+        title: `Private Venting Session - ${user.tag} - ${moment(new Date()).format(tvf.moment)}`,
+        text: messages.array().reverse().map(msg => `${moment(msg.createdTimestamp).format('D/M/YYYY HH:MM')} ${msg.author.tag}: ${msg.content}`).join('\n'),
+        format: null,
+        privacy: 1,
+      });
+
+      // Inform the support team that the session has ended and post it in the logs 
       const sessionEnded = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(user.avatarURL())
         .setTitle(`${user.username}'s session is over!`)
@@ -128,7 +141,8 @@ export default {
           { name: 'Time open', value: `${moment(new Date()).diff(moment(doc.private.startedAt), 'minutes')} minutes` },
           { name: 'Started at', value: moment(doc.private.startedAt).format(tvf.moment) },
           { name: 'Ended at', value: moment(new Date()).format(tvf.moment) },
-          // { name: 'Message count', value: },
+          { name: 'Message count', value: messages.size, inline: true },
+          { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
         ])
         .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
 

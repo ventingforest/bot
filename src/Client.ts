@@ -5,6 +5,7 @@ import mongoose = require('mongoose');
 import { KSoftClient, Image } from 'ksoft.js';
 import * as jimp from 'jimp';
 import * as path from 'path';
+import PastebinAPI from 'pastebin-js';
 
 import User, { IUser } from './models/user';
 import { IRoles } from './constants/Roles';
@@ -25,6 +26,11 @@ export default class Client {
   config: BotConfig = {
     botbanner: true,
   };
+  pastebin = new PastebinAPI({
+    'api_dev_key': process.env.PASTEBIN_KEY,
+    'api_user_name': process.env.PASTEBIN_USERNAME,
+    'api_user_password': process.env.PASTEBIN_PASSWORD
+  });
 
   // constants
   moment = 'ddd, MMM Do, YYYY h:mm A';

@@ -28,6 +28,7 @@
         "mongoose": "^5.8.11",
         "ms": "^2.1.2",
         "novelcovid": "^2.2.0",
+        "pastebin-js": "^1.0.5",
         "shortid": "^2.2.15",
         "timeout": "^0.2.1",
         "winston": "3.2.1"
