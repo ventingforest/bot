@@ -50,7 +50,7 @@ export default {
         });
 
         const vc = await tvf.server.channels.create(member.user.tag, {
-          parent: tvf.channels.staff.private.category,
+          parent: tvf.channels.staff.isolation.category,
           type: 'voice',
           permissionOverwrites: [
             {
