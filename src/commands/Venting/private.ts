@@ -83,7 +83,7 @@ export default {
       const sessionBegun = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(user.avatarURL())
         .setTitle(`${user.username}'s private venting session has been started by ${msg.author.username}!`)
-        .setFooter(`Sesssion ID: ${doc.private.id}`);
+        .setFooter(`Session ID: ${doc.private.id}`);
 
       tvf.channels.staff.support.send(sessionBegun);
       tvf.channels.staff.private.logs.send(sessionBegun);
@@ -152,8 +152,8 @@ export default {
         .setDescription(notes)
         .addFields([
           { name: 'Time open', value: `${moment(new Date()).diff(moment(doc.private.startedAt), 'minutes')} minutes` },
-          { name: 'Started at', value: startedAt },
-          { name: 'Ended at', value: endedAt },
+          { name: 'Started at', value: startedAt, inline: true },
+          { name: 'Ended at', value: endedAt, inline: true },
           { name: 'Reason', value: doc.private.reason },
           { name: 'Message count', value: messages.size, inline: true },
           { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },

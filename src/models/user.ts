@@ -20,6 +20,7 @@ export interface IUser extends mongoose.Document {
       isolated: boolean; // whether the user is isolated or not
       reason: string; // the reason for isolation
       isolatedAt: Date; // when the user was isolated
+      isolatedBy: string; // the id of the user who isolated them
       channels: {
         text: string; // the id of the text channel
         vc: string; // the id of the vc
@@ -58,6 +59,7 @@ const userSchema = new mongoose.Schema(
       isolated: Boolean,
       reason: String,
       isolatedAt: Date,
+      isolatedBy: String,
       channels: {
         text: String,
         vc: String,

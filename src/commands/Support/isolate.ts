@@ -81,12 +81,18 @@ export default {
             .setDescription(`Hey there, ${member.user.username}! Welcome to isolation! You have been put here by a member of staff - but don't worry, this doesn't necessarily mean you have done something wrong. Staff put people here in order to help people calm down if you're feeling bad, or if you are harming other members of the server. Only you and the staff can see this channel, and it is completely private - feel free to talk to them.`)
         );
 
-        // Hide every other channel from the isolated user
-        tvf.server.channels.cache.filter(c => c.id !== channel.id && c.id !== vc.id).forEach(c => c.updateOverwrite(member, { VIEW_CHANNEL: false }));
+        // Hide every other channel from the isolated user and disconnect them from any vc they were in
+        if (member.voice) member.voice.kick();
+
+        tvf.server.channels.cache.filter(c => c.id !== channel.id && c.id !== vc.id).forEach(c => {
+          if (c.type === 'text') c.updateOverwrite(member, { VIEW_CHANNEL: false, SEND_MESSAGES: false });
+          if (c.type === 'voice') c.updateOverwrite(member, { VIEW_CHANNEL: false, CONNECT: false });
+        });
         
         // Update the user's document
         doc.isolation.isolated = true;
         doc.isolation.isolatedAt = new Date();
+        doc.isolation.isolatedBy = msg.author.id;
         doc.isolation.reason = reason;
         doc.isolation.channels.text = channel.id;
         doc.isolation.channels.vc = vc.id
@@ -146,10 +152,12 @@ export default {
           .setDescription(notes)
           .addFields([
             { name: 'Time isolated', value: `${moment(new Date()).diff(moment(doc.isolation.isolatedAt), 'minutes')} minutes` },
-            { name: 'Isolated at', value: isolatedAt },
-            { name: 'Unisolated at', value: unisolatedAt },
+            { name: 'Isolated at', value: isolatedAt, inline: true },
+            { name: 'Unisolated at', value: unisolatedAt, inline: true },
             { name: 'Reason', value: doc.private.reason },
             { name: 'Notes', value: notes },
+            { name: 'Isolated by', value: tvf.server.member(doc.isolation.isolatedBy).user.username, inline: true },
+            { name: 'Unisolated by', value: msg.author.username, inline: true },
             { name: 'Message count', value: messages.size, inline: true },
             { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
           ])
@@ -168,11 +176,12 @@ export default {
       tvf.server.channels.cache.forEach(c => c.permissionOverwrites.get(member.id).delete());
 
       // Update the user's document
-      doc.isolation.channels.text = null;
-      doc.isolation.channels.vc = null;
       doc.isolation.isolated = false;
       doc.isolation.isolatedAt = null;
+      doc.isolation.isolatedBy = null;
       doc.isolation.reason = null;
+      doc.isolation.channels.text = null;
+      doc.isolation.channels.vc = null;
     
       tvf.saveDoc(doc);
     }
