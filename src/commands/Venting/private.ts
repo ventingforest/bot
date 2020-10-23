@@ -122,12 +122,24 @@ export default {
       const text = tvf.server.channels.cache.get(doc.private.channels.text) as Discord.TextChannel;
       const vc = tvf.server.channels.cache.get(doc.private.channels.vc) as Discord.VoiceChannel;
 
+      // Calculate important things for later
+      const startedAt = moment(doc.private.startedAt).format(tvf.moment);
+      const endedAt = moment(new Date()).format(tvf.moment);
+
       // Upload the message history to pastebin
-      const messages = await text.messages.fetch();
+      const messages = text.messages.cache;
       
       const paste = await tvf.pastebin.createPaste({
         title: `Private Venting Session - ${user.tag} - ${moment(new Date()).format(tvf.moment)}`,
-        text: messages.array().reverse().map(msg => `${moment(msg.createdTimestamp).format('D/M/YYYY HH:MM')} ${msg.author.tag}: ${msg.content}`).join('\n'),
+        text: stripIndents`
+          Venter: ${user.tag} (${user.id})
+          Reason: ${doc.private.reason}
+          Started at: ${startedAt}
+          Ended at: ${endedAt}
+          Message count: ${messages.size}
+          ----------------------------------
+          ${messages.map(msg => `${moment(msg.createdTimestamp).format('D/M/YYYY HH:MM')} ${msg.author.tag}: ${msg.content}`).join('\n')}
+        `,
         format: null,
         privacy: 1,
       });
@@ -139,8 +151,8 @@ export default {
         .setDescription(notes)
         .addFields([
           { name: 'Time open', value: `${moment(new Date()).diff(moment(doc.private.startedAt), 'minutes')} minutes` },
-          { name: 'Started at', value: moment(doc.private.startedAt).format(tvf.moment) },
-          { name: 'Ended at', value: moment(new Date()).format(tvf.moment) },
+          { name: 'Started at', value: startedAt },
+          { name: 'Ended at', value: endedAt },
           { name: 'Reason', value: doc.private.reason },
           { name: 'Message count', value: messages.size, inline: true },
           { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
