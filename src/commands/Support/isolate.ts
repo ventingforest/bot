@@ -154,14 +154,13 @@ export default {
             { name: 'Time isolated', value: `${moment(new Date()).diff(moment(doc.isolation.isolatedAt), 'minutes')} minutes` },
             { name: 'Isolated at', value: isolatedAt, inline: true },
             { name: 'Unisolated at', value: unisolatedAt, inline: true },
-            { name: 'Reason', value: doc.private.reason },
+            { name: 'Reason', value: doc.isolation.reason },
             { name: 'Notes', value: notes },
             { name: 'Isolated by', value: tvf.server.member(doc.isolation.isolatedBy).user.username, inline: true },
             { name: 'Unisolated by', value: msg.author.username, inline: true },
             { name: 'Message count', value: messages.size, inline: true },
             { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
-          ])
-          .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
+          ]);
 
       tvf.channels.staff.moderators.chat.send(isolationEnded);
       tvf.channels.staff.moderators.modlogs.send(isolationEnded);
