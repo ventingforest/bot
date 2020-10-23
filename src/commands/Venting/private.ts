@@ -141,6 +141,7 @@ export default {
           { name: 'Time open', value: `${moment(new Date()).diff(moment(doc.private.startedAt), 'minutes')} minutes` },
           { name: 'Started at', value: moment(doc.private.startedAt).format(tvf.moment) },
           { name: 'Ended at', value: moment(new Date()).format(tvf.moment) },
+          { name: 'Reason', value: doc.private.reason },
           { name: 'Message count', value: messages.size, inline: true },
           { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
         ])
@@ -280,6 +281,7 @@ export default {
           .setTitle(`${msg.author.username} has requested a private venting session!`)
           .setDescription(`Begin the session now by typing \`${prefix}private start ${doc.private.id}\` in this channel!`)
           .addFields([
+            { name: 'Reason', value: doc.private.reason },
             { name: 'Session ID', value: doc.private.id, inline: true },
             { name: 'Venter ID', value: msg.author.id, inline: true },
           ])
