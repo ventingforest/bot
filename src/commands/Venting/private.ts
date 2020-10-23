@@ -91,7 +91,7 @@ export default {
       // Finsh updating the user's document
       doc.private.channels.text = channel.id;
       doc.private.channels.vc = vc.id;
-      
+
       tvf.saveDoc(doc);
 
       // Clear the expiry reminders
@@ -131,7 +131,7 @@ export default {
       const messages = text.messages.cache;
       
       const paste = await tvf.pastebin.createPaste({
-        title: `Private Venting Session - ${user.tag} - ${moment(new Date()).format(tvf.moment)}`,
+        title: `Private Venting Session - ${user.tag} - ${endedAt}`,
         text: stripIndents`
           Venter: ${user.tag} (${user.id})
           Reason: ${doc.private.reason}
