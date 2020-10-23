@@ -91,6 +91,7 @@ export default {
       // Finsh updating the user's document
       doc.private.channels.text = channel.id;
       doc.private.channels.vc = vc.id;
+      
       tvf.saveDoc(doc);
 
       // Clear the expiry reminders

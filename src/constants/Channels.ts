@@ -8,13 +8,20 @@ export interface IChannels {
 	roles: Discord.TextChannel;
 	verification: Discord.TextChannel;
 	staff: {
-		modlog: Discord.TextChannel;
-		isolation: Discord.TextChannel;
 		private: {
 			category: Discord.CategoryChannel;
 			logs: Discord.TextChannel;
 		};
+		isolation: {
+			category: Discord.CategoryChannel;
+			logs: Discord.TextChannel;
+		};
 		support: Discord.TextChannel;
+		moderators: {
+			chat: Discord.TextChannel;
+			logs: Discord.TextChannel;
+			modlogs: Discord.TextChannel;
+		};
 	};
 	community: {
 		faq: Discord.TextChannel;
@@ -35,13 +42,20 @@ export default (server: Discord.Guild): IChannels => {
 		roles: (server.channels.cache.get('481131558296616961') as Discord.TextChannel),
 		verification: (server.channels.cache.get('760809680598990878') as Discord.TextChannel),
 		staff: {
-			modlog: (server.channels.cache.get('499652797638115348') as Discord.TextChannel),
-			isolation: (server.channels.cache.get('586251824563224576') as Discord.TextChannel),
 			private: {
 				category: (server.channels.cache.get('768113425867472936') as Discord.CategoryChannel),
 				logs: (server.channels.cache.get('768113624861507624') as Discord.TextChannel),
 			},
+			isolation: {
+				category: (server.channels.cache.get('769232209886183455') as Discord.CategoryChannel),
+				logs: (server.channels.cache.get('769232273185833020') as Discord.TextChannel),
+			},
 			support: (server.channels.cache.get('761718388090863616') as Discord.TextChannel),
+			moderators: {
+				chat: (server.channels.cache.get('452905389596475404') as Discord.TextChannel),
+				logs: (server.channels.cache.get('452822928355098635') as Discord.TextChannel),
+				modlogs: (server.channels.cache.get('499652797638115348') as Discord.TextChannel),
+			},
 		},
 		community: {
 			faq: (server.channels.cache.get('454062697567223808') as Discord.TextChannel),

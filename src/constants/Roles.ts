@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 
 export interface IRoles {
-	isolation: Discord.Role;
 	staff: {
 		staff: Discord.Role;
 		moderators: Discord.Role;
@@ -20,13 +19,11 @@ export interface IRoles {
 		welcomeTeam: Discord.Role;
 	};
 	bot: Discord.Role;
-	private: Discord.Role;
 	newt2: Discord.Role;
 }
 
 export default (server: Discord.Guild): IRoles => {
 	return {
-		isolation: server.roles.cache.get('586251637539209216'),
 		staff: {
 			staff: server.roles.cache.get('452662935035052032'),
 			moderators: server.roles.cache.get('435897654682320925'),
@@ -45,7 +42,6 @@ export default (server: Discord.Guild): IRoles => {
 			welcomeTeam: server.roles.cache.get('499302826028302368'),
 		},
 		bot: server.roles.cache.get('451344230023954442'),
-		private: server.roles.cache.get('470942878676549652'),
 		newt2: server.roles.cache.get('631002094467547148'),
 	};
 };

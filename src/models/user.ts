@@ -4,7 +4,6 @@ export interface IUser extends mongoose.Document {
     id: string; // the id of the user
     inServer: boolean; // whether the user is still in the server
     pda: boolean; // whether the user is comfortable with PDA and compliments
-    isolated: boolean; // whether the user is isolated or not
     roles: string[]; // storage for the user's roles when isolating or private venting
     private: {
       requested: boolean; // whether the user has a pending private venting session
@@ -17,6 +16,15 @@ export interface IUser extends mongoose.Document {
         vc: string; // the id of the vc
       };
     };
+    isolation: {
+      isolated: boolean; // whether the user is isolated or not
+      reason: string; // the reason for isolation
+      isolatedAt: Date; // when the user was isolated
+      channels: {
+        text: string; // the id of the text channel
+        vc: string; // the id of the vc
+      }
+    }
     suggestions: Suggestion[];
 }
 
@@ -34,7 +42,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-		isolated: Boolean,
 		roles: Array,
 		private: {
 			requested: Boolean,
@@ -42,6 +49,15 @@ const userSchema = new mongoose.Schema(
 			reason: String,
 			requestedAt: Date,
       startedAt: Date,
+      channels: {
+        text: String,
+        vc: String,
+      },
+    },
+    isolation: {
+      isolated: Boolean,
+      reason: String,
+      isolatedAt: Date,
       channels: {
         text: String,
         vc: String,
