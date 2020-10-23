@@ -40,11 +40,6 @@ export default class Client {
   prefix = this.isProduction ? 'tvf ': 'tvf beta ';
   privateTimeout = 21600000;
 
-  developers = [
-    '326767126406889473', // newt main
-    '625919227651555348' // newt alt
-  ];
-
   embedLimit = {
     title: 256,
     description: 2048,
@@ -214,11 +209,10 @@ export default class Client {
   isUser(role: StaffRole | 'Staff', user: Discord.User): boolean {
     const member = this.server.member(user);
     return role === 'Support' ? member.roles.cache.has(this.roles.staff.support.id) || member.roles.cache.has(this.roles.staff.heads.support.id) :
-           role === 'Tech' ? member.roles.cache.has(this.roles.staff.tech.id) || member.roles.cache.has(this.roles.staff.heads.tech.id) :
            role === 'Engagement' ? member.roles.cache.has(this.roles.staff.engagement.id) || member.roles.cache.has(this.roles.staff.heads.engagement.id) :
            role === 'Moderation' ? member.roles.cache.has(this.roles.staff.moderators.id) || member.roles.cache.has(this.roles.staff.heads.moderators.id) :
            role === 'Admin' ? member.roles.cache.has(this.roles.staff.admins.id) :
-           role === 'Staff' ? member.roles.cache.has(this.roles.staff.support.id) || member.roles.cache.has(this.roles.staff.heads.support.id) || member.roles.cache.has(this.roles.staff.tech.id) || member.roles.cache.has(this.roles.staff.heads.tech.id) || member.roles.cache.has(this.roles.staff.engagement.id) || member.roles.cache.has(this.roles.staff.heads.engagement.id) || member.roles.cache.has(this.roles.staff.moderators.id) || member.roles.cache.has(this.roles.staff.heads.moderators.id) || member.roles.cache.has(this.roles.staff.admins.id)
+           role === 'Staff' ? member.roles.cache.has(this.roles.staff.staff.id)
            : false;
   }
 

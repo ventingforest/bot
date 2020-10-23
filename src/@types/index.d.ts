@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import Client from '../Client';
 
 declare global {
-    type StaffRole = 'Support' | 'Engagement' | 'Tech' | 'Moderation' | 'Admin';
+    type StaffRole = 'Support' | 'Engagement' | 'Moderation' | 'Admin';
     type EmbedOptions = {
         colour: string; // the colour of the embed. can be any hex.
         timestamp?: boolean; // whether the timestamp appears on the embed - defaults to false

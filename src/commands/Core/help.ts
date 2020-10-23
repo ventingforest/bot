@@ -18,7 +18,6 @@ export default {
 		const adminCommands = tvf.commands.filter((c) => c.staffAccess && c.staffAccess.includes('Admin')).map((c) => c.name).join(', ');
 		const moderationCommands = tvf.commands.filter((c) => c.staffAccess && c.staffAccess.includes('Moderation')).map((c) => c.name).join(', ');
 		const supportCommands = tvf.commands.filter((c) => c.staffAccess && c.staffAccess.includes('Support')).map((c) => c.name).join(', ');
-		const techCommands = tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Tech')).map(c => c.name).join(', ');
 
 		// if there are no arguments
 		if (args.length === 0) {
@@ -29,10 +28,6 @@ export default {
 
 			if (tvf.isUser('Support', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Support')).size > 0) {
 				embed.addField('Support ♥', `\`\`\`${supportCommands}\`\`\``);
-			}
-
-			if (tvf.isUser('Tech', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Tech')).size > 0) {
-				embed.addField('Tech 💻', `\`\`\`${techCommands}\`\`\``);
 			}
 
 			if (tvf.isUser('Moderation', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Moderation')).size > 0) {

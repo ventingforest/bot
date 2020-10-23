@@ -5,7 +5,7 @@ export default {
   description: 'Information about the bot and the server!',
   aliases: ['stats', 'serverinfo', 'botinfo'],
   run: async (tvf, msg) => {
-    const developer = tvf.roles.staff.heads.tech.members.first().user;
+    const developer = tvf.roles.staff.hackerbeing.members.first().user;
     const members = await msg.guild.members.fetch();
     const channels = msg.guild.channels.cache;
 

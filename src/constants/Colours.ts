@@ -16,7 +16,6 @@ export default {
 	staff: {
 		support: '#fcb8d4',
 		engagement: '#beffa3',
-		tech: '#b187d7',
 		moderation: '#a793f2',
 	},
 };

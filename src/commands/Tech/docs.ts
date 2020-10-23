@@ -6,7 +6,6 @@ export default {
   description: 'Allows you to search the discord.js documentation',
   args: true,
   usage: '<query> [stable|master=master]',
-  staffAccess: ['Tech'],
   run: async (tvf, msg, args) => {
     // get the data
     const source = ['stable', 'master'].includes(args.slice(-1)[0]) ? args.pop() : 'master';

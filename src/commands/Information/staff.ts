@@ -11,7 +11,6 @@ export default {
     const admins = tvf.roles.staff.admins.members;
     const engagement = tvf.roles.staff.engagement.members;
     const support = tvf.roles.staff.support.members;
-    const tech = tvf.roles.staff.tech.members;
     const moderators = tvf.roles.staff.moderators.members;
     const staff = tvf.roles.staff.staff.members;
 
@@ -62,21 +61,6 @@ export default {
         ]);
     }
 
-    // tech
-    else if (role === 'tech') {
-      embed
-        .setColor(tvf.colours.staff.tech)
-        .setTitle(`Tech (${tech.size})`)
-        .setDescription(tech.map(t => `<@!${t.user.id}>`))
-        .addFields([
-          {
-            name: 'Online',
-            value: tech.filter(t => t.user.presence.status !== 'offline').size,
-            inline: true,
-          },
-        ]);
-    }
-
     // moderators
     else if (role === 'moderator' || role === 'mod' || role === 'moderators' || role === 'moderators') {
       embed
@@ -106,11 +90,6 @@ export default {
           {
             name: `Moderators (${moderators.size})`,
             value: moderators.map(mod => `<@!${mod.user.id}>`),
-            inline: true,
-          },
-          {
-            name: `Tech (${tech.size})`,
-            value: tech.map(t => `<@!${t.user.id}>`),
             inline: true,
           },
           {
