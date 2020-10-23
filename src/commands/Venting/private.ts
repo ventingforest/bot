@@ -22,7 +22,7 @@ export default {
       // Try and find the user's document and begin updating it
       const doc = await User.findOne({ 'private.requested': true, 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
       if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.emojis.cross, `\`${id}\` is an invalid ID!`));
-      const user = msg.guild.member(doc.id).user;
+      const user = tvf.server.member(doc.id).user;
 
       doc.private.requested = false;
       doc.private.startedAt = new Date();
@@ -117,7 +117,7 @@ export default {
       // Try and find the user's document
       const doc = await User.findOne({ 'private.requested': false, 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
       if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.emojis.cross, `\`${id}\` is an invalid ID!`));
-      const user = msg.guild.member(doc.id).user;
+      const user = tvf.server.member(doc.id).user;
 
       // Fetch the channels associated with the session
       const text = tvf.server.channels.cache.get(doc.private.channels.text) as Discord.TextChannel;
@@ -158,7 +158,7 @@ export default {
           { name: 'Message count', value: messages.size, inline: true },
           { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
         ])
-        .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+        .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
       tvf.channels.staff.support.send(sessionEnded);
       tvf.channels.staff.private.logs.send(sessionEnded);
@@ -238,7 +238,7 @@ export default {
           .setTitle(`${msg.author.username} has cancelled their private venting session!`)
           .setDescription(`Reason: ${reason}`)
           .addField('User ID', msg.author.id, true)
-          .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+          .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
         tvf.channels.staff.support.send(cancelled);
         tvf.channels.staff.private.logs.send(cancelled);
@@ -298,7 +298,7 @@ export default {
             { name: 'Session ID', value: doc.private.id, inline: true },
             { name: 'Venter ID', value: msg.author.id, inline: true },
           ])
-          .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+          .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
       tvf.channels.staff.support.send(tvf.isProduction ? tvf.roles.staff.support.toString() : '', sessionRequested);
       tvf.channels.staff.private.logs.send(sessionRequested);
@@ -347,7 +347,7 @@ export default {
               .setThumbnail(msg.author.avatarURL())
               .setTitle(`${msg.author.username}'s private venting session has expired!`)
               .addField('Venter ID', msg.author.id, true)
-              .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL())
+              .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL())
           );
 
           // Inform the user that their session has expired
@@ -374,7 +374,7 @@ export default {
             { name: 'Session ID', value: doc.private.id, inline: true },
             { name: 'Venter ID', value: msg.author.id, inline: true },
           ])
-          .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+          .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
         timeout.timeout(`${doc.private.id}1`, hour, () => tvf.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in five hours!`)));
         timeout.timeout(`${doc.private.id}2`, hour * 2, () => tvf.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in four hours!`)));

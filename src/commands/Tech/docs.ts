@@ -17,7 +17,7 @@ export default {
     }
 
     // if the bot doesn't have permission to delete messages
-    if ((msg.channel as Discord.TextChannel).permissionsFor(msg.guild.me).has(['ADD_REACTIONS', 'MANAGE_MESSAGES'], false)) {
+    if ((msg.channel as Discord.TextChannel).permissionsFor(tvf.server.me).has(['ADD_REACTIONS', 'MANAGE_MESSAGES'], false)) {
       return msg.channel.send({ embed });
     }
 

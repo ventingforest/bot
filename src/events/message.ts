@@ -66,7 +66,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 
 			// if there are any permissions missing, inform the user
 			if (missingPermissions.length > 0) {
-				msg.author.send(`**${tvf.emojis.grimacing}  |**  you are missing these permissions in **${msg.guild.name}** to run **${command.name}**\n\`\`\`${tvf.friendlyPermissions(msg.member.permissions).join('\n')}\`\`\``);
+				msg.author.send(`**${tvf.emojis.grimacing}  |**  you are missing these permissions in **${tvf.server.name}** to run **${command.name}**\n\`\`\`${tvf.friendlyPermissions(msg.member.permissions).join('\n')}\`\`\``);
 				return msg.channel.send(`**${tvf.emojis.cross}  |**  you do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.`);
 			}
 		}

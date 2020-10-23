@@ -18,7 +18,7 @@ export default {
 
       // allow referencing of the guild
       // @ts-ignore
-      if (code.includes('guild')) code.replace('guild', msg.guild);
+      if (code.includes('guild')) code.replace('guild', tvf.server);
 
       // evaluate the code
       let evaled = eval(code);

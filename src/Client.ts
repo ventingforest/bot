@@ -219,7 +219,7 @@ export default class Client {
   // find a member in a message
   checkForMember(msg: Discord.Message, args: string[]): Discord.GuildMember {
     return msg.mentions.members.first() === undefined ?
-      msg.guild.members.cache.find(({ user }) => user.tag === args.join(' ')) :
+      this.server.members.cache.find(({ user }) => user.tag === args.join(' ')) :
       msg.mentions.members.first();
   }
 

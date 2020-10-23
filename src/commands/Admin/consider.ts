@@ -18,7 +18,7 @@ export default {
             tvf.logger.error(err);
             msg.channel.send(`**${tvf.emojis.cross}  |**  Either there was an error looking for the suggestion, or a suggestion with that ID does not exist. Please try again.`);
         } : res);
-        const member = msg.guild.member(user.id);
+        const member = tvf.server.member(user.id);
 
         const suggestion = user.suggestions.find(e => e.id === id);
         

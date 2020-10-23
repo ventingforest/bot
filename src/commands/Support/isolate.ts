@@ -161,7 +161,7 @@ export default {
             { name: 'Message count', value: messages.size, inline: true },
             { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
           ])
-          .setFooter(`Session ID: ${doc.private.id}`, msg.guild.iconURL());
+          .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
       tvf.channels.staff.moderators.chat.send(isolationEnded);
       tvf.channels.staff.moderators.modlogs.send(isolationEnded);

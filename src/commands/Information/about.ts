@@ -6,8 +6,8 @@ export default {
   aliases: ['stats', 'serverinfo', 'botinfo'],
   run: async (tvf, msg) => {
     const developer = tvf.roles.staff.hackerbeing.members.first().user;
-    const members = await msg.guild.members.fetch();
-    const channels = msg.guild.channels.cache;
+    const members = await tvf.server.members.fetch();
+    const channels = tvf.server.channels.cache;
 
     const embed = tvf.createEmbed()
       .setAuthor(developer.tag, developer.avatarURL())
