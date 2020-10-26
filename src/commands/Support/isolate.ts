@@ -85,7 +85,7 @@ export default {
         if (member.voice) member.voice.kick();
 
         tvf.server.channels.cache.filter(c => c.id !== channel.id && c.id !== vc.id).forEach(c => {
-          if (c.type === 'text') c.updateOverwrite(member, { VIEW_CHANNEL: false, SEND_MESSAGES: false });
+          if (c.type === 'text' || c.type === 'news') c.updateOverwrite(member, { VIEW_CHANNEL: false, SEND_MESSAGES: false });
           if (c.type === 'voice') c.updateOverwrite(member, { VIEW_CHANNEL: false, CONNECT: false });
         });
         
@@ -172,7 +172,10 @@ export default {
       await vc.delete();
 
       // Give the user access to all other channels
-      tvf.server.channels.cache.forEach(c => c.permissionOverwrites.get(member.id).delete());
+      tvf.server.channels.cache.forEach(c => {
+        const o = c.permissionOverwrites.get(member.id);
+        if (o) o.delete();
+      });
 
       // Update the user's document
       doc.isolation.isolated = false;
