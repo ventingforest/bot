@@ -2,9 +2,7 @@ import * as mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
     id: string; // the id of the user
-    inServer: boolean; // whether the user is still in the server
     pda: boolean; // whether the user is comfortable with PDA and compliments
-    roles: string[]; // storage for the user's roles when isolating or private venting
     private: {
       requested: boolean; // whether the user has a pending private venting session
       id: string; // the id of the private venting session
@@ -35,15 +33,10 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-    inServer: {
-      type: Boolean,
-      default: true,
-    },
     pda: {
       type: Boolean,
       default: true,
     },
-		roles: Array,
 		private: {
 			requested: Boolean,
 			id: String,
