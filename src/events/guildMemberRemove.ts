@@ -6,7 +6,7 @@ import moment from 'moment';
 import { stripIndents } from 'common-tags';
 
 export default async (tvf: Client, member: Discord.GuildMember) => {
-	if (!tvf.isProduction) {
+	if (tvf.isProduction) {
 		// get the user's document
 		const doc = await tvf.userDoc(member.id);
 

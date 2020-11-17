@@ -8,6 +8,7 @@ export interface IChannels {
 	roles: Discord.TextChannel;
 	verification: Discord.TextChannel;
 	staff: {
+		meet: Discord.TextChannel;
 		private: {
 			category: Discord.CategoryChannel;
 			logs: Discord.TextChannel;
@@ -42,6 +43,7 @@ export default (server: Discord.Guild): IChannels => {
 		roles: (server.channels.cache.get('481131558296616961') as Discord.TextChannel),
 		verification: (server.channels.cache.get('760809680598990878') as Discord.TextChannel),
 		staff: {
+			meet: (server.channels.cache.get('479744966575390733') as Discord.TextChannel),
 			private: {
 				category: (server.channels.cache.get('768113425867472936') as Discord.CategoryChannel),
 				logs: (server.channels.cache.get('768113624861507624') as Discord.TextChannel),

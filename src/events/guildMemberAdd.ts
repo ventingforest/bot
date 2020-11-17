@@ -60,10 +60,10 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
           name: 'I\'m in, so now what?',
           value: stripIndents`
           Now that you have joined our server, there are a couple things that you should know and that you need to do.
-          First off, you must read ${tvf.channels.rules}, as it contains the majority of what you need to know.
-          If you have any questions, feel free to read our ${tvf.channels.community.faq}. You can also find out about our staff in ${tvf.channels.staff}.
-          When you are ready, please verify yourself in ${tvf.channels.verification}!
-          You should then visit ${tvf.channels.roles}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
+          First off, you must read ${tvf.channels.rules.toString()}, as it contains the majority of what you need to know.
+          If you have any questions, feel free to read our ${tvf.channels.community.faq.toString()}. You can also find out about our staff in ${tvf.channels.staff.meet.toString()}.
+          When you are ready, please verify yourself in ${tvf.channels.verification.toString()}!
+          You should then visit ${tvf.channels.roles.toString()}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
         `,
         },
         {
@@ -75,8 +75,8 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
           value: stripIndents`
           We provide a service known as private venting, in which you can vent one-on-one with a member of our lovely staff team.
 
-          You can request one of these sessions using the \`tvf private\` command. The format is \`tvf private [reason]\`.
-          You may also cancel your session using the \`tvf private cancel\` command. Providing a reason is always appreciated.
+          You can request one of these sessions using the \`${tvf.prefix}private\` command. The format is \`${tvf.prefix}private [reason]\`.
+          You may also cancel your session using the \`${tvf.prefix}private cancel\` command. Providing a reason is always appreciated.
         `,
         },
         {
