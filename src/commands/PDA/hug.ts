@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export default {
   name: 'hug',
   description: 'Hug another user in the server',
@@ -14,7 +16,7 @@ export default {
       // make the embed
       const embed = tvf.createEmbed({ thumbnail: false, author: true }, msg)
         .setThumbnail(member.avatarURL())
-        .setImage((await tvf.randomImage('hug')).url);
+        .setImage((await axios.get('https://some-random-api.ml/animu/hug')).data.link);
 
       // if the mentioned user was the author
       if (member === msg.author) return msg.channel.send(embed.setTitle(`${msg.author.username} hugged themselves ${tvf.emojis.hug}`));

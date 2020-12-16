@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export default {
   name: 'pat',
   description: 'Pat another user\'s head.',
@@ -14,7 +16,7 @@ export default {
       // create the embed
       const embed = tvf.createEmbed({ thumbnail: false, author: true }, msg)
         .setThumbnail(member.avatarURL())
-        .setImage((await tvf.randomImage('pat')).url);
+        .setImage((await axios.get('https://some-random-api.ml/animu/pat')).data.link);
 
         // if the mentioned user was the author
         if (member === msg.author) {

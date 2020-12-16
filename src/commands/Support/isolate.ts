@@ -12,10 +12,12 @@ export default {
   staffAccess: ['Support', 'Moderation', 'Admin'],
   run: async (tvf, msg, args) => {
       await msg.delete(); // Delete the message
-      args.shift(); // Shift the arguments to remove the user
 
-      const member = tvf.checkForMember(msg, args); // Get the mentioned member
-      const doc = await tvf.userDoc(member.user.id); // Get the member's document from the database
+      const user = await tvf.resolveUser(msg, args[0]); // Get the mentioned user
+      const member = tvf.server.member(user);
+      const doc = await tvf.userDoc(user.id); // Get the member's document from the database
+
+      args.shift(); // Shift the arguments to remove the user
 
       // Isolating the user
       if (!doc.isolation.isolated) {
@@ -24,7 +26,7 @@ export default {
         if (!reason) reason = 'No reason specified';
 
         // Create a channel and vc for the isolated user
-        const channel = await tvf.server.channels.create(`${member.user.username}-${member.user.discriminator}`, {
+        const channel = await tvf.server.channels.create(`${user.username}-${user.discriminator}`, {
           parent: tvf.channels.staff.isolation.category,
           type: 'text',
           topic: `${tvf.emojis.tick}  |  Session started: ${moment(doc.isolation.isolatedAt).format(tvf.moment)}`,
@@ -35,21 +37,17 @@ export default {
               deny: ['VIEW_CHANNEL', 'ADD_REACTIONS', 'SEND_TTS_MESSAGES'],
             },
             {
-              id: member.id,
-              allow: 'VIEW_CHANNEL',
-            },
-            {
               id: tvf.roles.staff.support,
               allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
             },
             {
               id: tvf.roles.staff.moderators,
               allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
-            },
+            }
           ],
         });
 
-        const vc = await tvf.server.channels.create(member.user.tag, {
+        const vc = await tvf.server.channels.create(user.tag, {
           parent: tvf.channels.staff.isolation.category,
           type: 'voice',
           permissionOverwrites: [
@@ -59,26 +57,27 @@ export default {
               deny: 'VIEW_CHANNEL',
             },
             {
-              id: member.id,
-              allow: 'VIEW_CHANNEL',
-            },
-            {
               id: tvf.roles.staff.support,
               allow: ['VIEW_CHANNEL', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'PRIORITY_SPEAKER'],
             },
             {
               id: tvf.roles.staff.moderators,
               allow: ['VIEW_CHANNEL', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'PRIORITY_SPEAKER']
-            },
+            }
           ],
         });
 
+        if (tvf.server.member(user)) {
+          channel.createOverwrite(user, { VIEW_CHANNEL: true });
+          vc.createOverwrite(user, { VIEW_CHANNEL: true });
+        }
+
         channel.send(
-          `Welcome to isolation, ${member.toString()}!`,
+          `Welcome to isolation, ${user.toString()}!`,
           tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false })
-            .setThumbnail(member.user.avatarURL())
-            .setTitle(`Welcome to isolation, ${member.user.username}!`)
-            .setDescription(`Hey there, ${member.user.username}! Welcome to isolation! You have been put here by a member of staff - but don't worry, this doesn't necessarily mean you have done something wrong. Staff put people here in order to help people calm down if you're feeling bad, or if you are harming other members of the server. Only you and the staff can see this channel, and it is completely private - feel free to talk to them.`)
+            .setThumbnail(user.avatarURL())
+            .setTitle(`Welcome to isolation, ${user.username}!`)
+            .setDescription(`Hey there, ${user.username}! Welcome to isolation! You have been put here by a member of staff - but don't worry, this doesn't necessarily mean you have done something wrong. Staff put people here in order to help people calm down if you're feeling bad, or if you are harming other members of the server. Only you and the staff can see this channel, and it is completely private - feel free to talk to them.`)
         );
 
         // Hide every other channel from the isolated user and disconnect them from any vc they were in
@@ -95,14 +94,14 @@ export default {
         doc.isolation.isolatedBy = msg.author.id;
         doc.isolation.reason = reason;
         doc.isolation.channels.text = channel.id;
-        doc.isolation.channels.vc = vc.id
+        doc.isolation.channels.vc = vc.id;
       
         tvf.saveDoc(doc);
 
         // Inform relevant staff that the user has been isolated and post it in the logs
         const isolated = tvf.createEmbed({ colour: tvf.colours.red, thumbnail: false, author: true }, msg)
-          .setThumbnail(member.user.avatarURL())
-          .setTitle(`${member.user.username} has been isolated.`)
+          .setThumbnail(user.avatarURL())
+          .setTitle(`${user.username} has been isolated.`)
           .setDescription(`Reason: ${reason}`)
           .setFooter(`Isolated by ${msg.author.username} at ${moment(doc.isolation.isolatedAt).format(tvf.moment)}`, msg.author.avatarURL());
 
@@ -128,7 +127,6 @@ export default {
 
         // Upload the message history to pastebin
         const messages = text.messages.cache;
-        const user = tvf.server.member(doc.id).user;
 
         const paste = await tvf.pastebin.createPaste({
           title: `Isolation - ${user.tag} - ${unisolatedAt}`,
@@ -167,15 +165,17 @@ export default {
       tvf.channels.staff.support.send(isolationEnded);
       tvf.channels.staff.isolation.logs.send(isolationEnded);
 
+      if (tvf.server.member(user)) {
+        // Give the user access to all other channels
+        tvf.server.channels.cache.forEach(c => {
+          const o = c.permissionOverwrites.get(user.id);
+          if (o) o.delete();
+        });
+      }
+
       // Delete the channels associated with the session
       await text.delete();
       await vc.delete();
-
-      // Give the user access to all other channels
-      tvf.server.channels.cache.forEach(c => {
-        const o = c.permissionOverwrites.get(member.id);
-        if (o) o.delete();
-      });
 
       // Update the user's document
       doc.isolation.isolated = false;

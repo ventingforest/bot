@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@aero/centra@1.0.3", "@aero/centra@^1.0.0":
+"@aero/centra@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@aero/centra/-/centra-1.0.3.tgz#e16e47f6e54bb297fa0222fc41f775ec7b382625"
   integrity sha512-Ljd3utKoMcXiMSLr4uxMD9EAFeqw2nOEGfvMXVRKX4sT1OlYuUVQEz1Xrfi5z0RNrGXjm50lJq1jLlRW4FYcEA==
@@ -1136,7 +1136,7 @@ flat-cache@^2.0.1:
     rimraf "2.6.3"
     write "1.0.3"
 
-flatted@^2.0.0, flatted@^2.0.1:
+flatted@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.1.tgz#69e57caa8f0eacbc281d2e2cb458d46fdb449e08"
   integrity sha512-a1hQMktqW9Nmqr5aktAux3JMNqaucxGcjtjWnZLHX7yyPCmlSV3M54nGYbqT8K+0GhF3NBgmJCc3ma+WOgX8Jg==
@@ -1575,14 +1575,6 @@ kareem@2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/kareem/-/kareem-2.3.1.tgz#def12d9c941017fabfb00f873af95e9c99e1be87"
   integrity sha512-l3hLhffs9zqoDe8zjmb/mAN4B8VT3L56EUvKNqLFVs9YlFA+zx7ke1DO8STAdDyYNkeSo1nKmjuvQeI12So8Xw==
-
-ksoft.js@^3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/ksoft.js/-/ksoft.js-3.1.4.tgz#d3b3eb54f38e3e225ea508c5eac3c5259f55d77e"
-  integrity sha512-b9h+6kSDTeuVqMAXj9V+8XUxJvp7DZZzdFVSwGJqhfYZBi9P7YiicxJgA81mSvlffzUZOrPUQdKXtUv0usU+VA==
-  dependencies:
-    "@aero/centra" "^1.0.0"
-    flatted "^2.0.1"
 
 kuler@1.0.x:
   version "1.0.1"

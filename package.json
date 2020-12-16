@@ -22,7 +22,6 @@
         "dotenv": "^8.2.0",
         "imgur-uploader": "^4.2.1",
         "jimp": "^0.12.1",
-        "ksoft.js": "^3.1.4",
         "lodash": "^4.17.15",
         "moment": "^2.24.0",
         "mongoose": "^5.8.11",

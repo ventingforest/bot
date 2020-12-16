@@ -11,7 +11,7 @@ export default {
     const embed = tvf.createEmbed({ author: true }, msg)
       .setTitle('Yip! 🦊')
       .setDescription(_.truncate(fact, { length: tvf.embedLimit.description }))
-      .setImage((await tvf.randomImage('fox', false)).url);
+      .setImage((await axios.get('https://some-random-api.ml/img/fox')).data.link);
 
     msg.channel.send(embed);
   },

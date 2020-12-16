@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as winston from 'winston';
 import * as fs from 'fs';
 import mongoose = require('mongoose');
-import { KSoftClient, Image } from 'ksoft.js';
 import * as jimp from 'jimp';
 import * as path from 'path';
 import PastebinAPI from 'pastebin-js';
@@ -21,7 +20,6 @@ export default class Client {
   logger: winston.Logger;
   commands: Discord.Collection<string, Command> = new Discord.Collection();
   events: Discord.Collection<string, any> = new Discord.Collection();
-  ksoft: KSoftClient;
   server: Discord.Guild
   config: BotConfig = {
     botbanner: true,
@@ -60,7 +58,6 @@ export default class Client {
   auth = {
     discord: this.isProduction ? process.env.STABLE : process.env.BETA,
     mongo: process.env.MONGO,
-    ksoft: process.env.KSOFT,
     logdna: process.env.LOGDNA,
   }
 
@@ -113,9 +110,8 @@ export default class Client {
 
     // set properties
     this.bot = new Discord.Client();
-    this.ksoft = new KSoftClient(this.auth.ksoft);
     this.logger = logger;
-    logger.info('Discord client, KSoft client, and logger are all initialised');
+    logger.info('Discord client and logger are both initialised');
   }
 
   // start the bot
@@ -216,7 +212,13 @@ export default class Client {
            : false;
   }
 
-  // find a member in a message
+  // find a user from their id
+  async resolveUser(msg: Discord.Message, arg: string): Promise<Discord.User> {
+    const id = msg.mentions.members.first() ? msg.mentions.members.first().id : arg;
+    return await this.bot.users.fetch(id);
+  }
+
+  // find a member from their tag
   checkForMember(msg: Discord.Message, args: string[]): Discord.GuildMember {
     return msg.mentions.members.first() === undefined ?
       this.server.members.cache.find(({ user }) => user.tag === args.join(' ')) :
@@ -297,17 +299,6 @@ export default class Client {
 
     // return the manipulated image's buffer
     return await image.getBufferAsync(jimp.MIME_PNG);
-  }
-
-  // extension of the <Client>.ksoft.images.random function
-  async randomImage(term: string, gif: boolean = true): Promise<Image> {
-    let img = await this.ksoft.images.random(term, { nsfw: false });
-
-    do {
-      img = await this.ksoft.images.random(term, { nsfw: false });
-    } while (gif ? !(/.jpg|.jpeg|.png|.webp|.gif/.test(img.url)) : !(/.jpg|.jpeg|.png|.webp/.test(img.url)))
-
-    return img;
   }
 
   // formats a number
