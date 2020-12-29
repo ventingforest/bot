@@ -45,8 +45,13 @@ export default async (tvf: Client, msg: Discord.Message) => {
 		if (!command) return undefined;
 
 	    // checks
-		if ((command.staffAccess && !tvf.isUser('Staff', msg.author)) || (command.staffAccess && (command.staffAccess.includes('Support') && !tvf.isUser('Support', msg.author) || (command.staffAccess.includes('Engagement') && !tvf.isUser('Engagement', msg.author) || (command.staffAccess.includes('Moderation') && !tvf.isUser('Moderation', msg.author)) || (command.staffAccess.includes('Admin') && !tvf.isUser('Admin', msg.author)))))) {
-			return msg.channel.send(`**${tvf.emojis.cross}  |**  you are not allowed to run that command!`);
+		if (command.staffAccess) {
+			let access = [];
+			command.staffAccess.forEach(role => access.push(tvf.isUser(role, msg.author)));
+
+			if (!access.includes(true)) {
+				return msg.channel.send(`**${tvf.emojis.cross}  |**  you are not allowed to run that command!`);
+			}
 		}
 
 		// if a command isn't allowed to be run in general, delete the message
