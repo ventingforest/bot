@@ -20,6 +20,9 @@ export default {
         } : res);
         const member = tvf.server.member(user.id);
         const suggestion = user.suggestions.find(s => s.id === id);
+
+        user.suggestions = user.suggestions.filter(s => s.id !== id);
+        tvf.saveDoc(user);
         
         // update the original suggestion message
         const embed = tvf.createEmbed({ timestamp: true, colour: tvf.const.red })
