@@ -10,7 +10,7 @@ declare global {
     }
 
     interface Command {
-      run(taiga: Client, msg: Discord.Message, args: string[], other: { prefix: string }): void; // method containing the command's code
+      run(tvf: Client, msg: Discord.Message, args: string[], other: { prefix: string }): void; // method containing the command's code
       name: string; // the name of the command
       description?: string; // a description of what the command does
       category?: string; // the category the command belongs in
@@ -26,9 +26,20 @@ declare global {
       botbanner: boolean; // if true, all new bots are banned from the server
     }
 
+    type SuggestionStatus = 'pending' | 'approved' | 'denied' | 'considered' | 'implemented';
+
     interface Suggestion {
       id: string; // the id of the suggestion
       suggestion: string; // the suggestion
-      messageID: string;
+      status: SuggestionStatus; // the status of the suggestion
+      messageID: string; // the id of the message
+    }
+
+    type ModlogType = 'warn' | 'mute' | 'kick' | 'ban';
+
+    interface Modlog {
+      type: ModlogType; // the type of the log
+      issuer: string; // the id of the person who issued the log
+      issuedAt: Date; // when the modlog was issued
     }
 }

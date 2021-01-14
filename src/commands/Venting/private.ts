@@ -15,13 +15,13 @@ export default {
     const subcommand = args[0];
 
     // Handle the starting of a session
-    if (subcommand === 'start' &&(tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+    if (subcommand === 'start' && (tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
       await msg.delete();
       const id = args[1];
 
       // Try and find the user's document and begin updating it
       const doc = await User.findOne({ 'private.requested': true, 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
-      if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.emojis.cross, `\`${id}\` is an invalid ID!`));
+      if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.const.cross, `\`${id}\` is an invalid ID!`));
       const user = await tvf.bot.users.fetch(doc.id);
 
       doc.private.requested = false;
@@ -29,9 +29,9 @@ export default {
 
       // Create a channel and vc for the private venting session to take place in
       const channel = await tvf.server.channels.create(`${user.username}-${user.discriminator}`, {
-        parent: tvf.channels.staff.private.category,
+        parent: tvf.const.staffChannels.private.category,
         type: 'text',
-        topic: `${tvf.emojis.tick}  |  Session started: ${moment(doc.private.startedAt).format(tvf.moment)} (id: ${doc.private.id})`,
+        topic: `${tvf.const.tick}  |  Session started: ${moment(doc.private.startedAt).format(tvf.moment)} (id: ${doc.private.id})`,
         permissionOverwrites: [
           {
             id: tvf.server.roles.everyone,
@@ -43,14 +43,14 @@ export default {
             allow: 'VIEW_CHANNEL',
           },
           {
-            id: tvf.roles.staff.support,
+            id: tvf.const.staffRoles.support,
             allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES']
           },
         ],
       });
 
       const vc = await tvf.server.channels.create(user.tag, {
-        parent: tvf.channels.staff.private.category,
+        parent: tvf.const.staffChannels.private.category,
         type: 'voice',
         permissionOverwrites: [
           {
@@ -63,7 +63,7 @@ export default {
             allow: 'VIEW_CHANNEL',
           },
           {
-            id: tvf.roles.staff.support,
+            id: tvf.const.staffRoles.support,
             allow: ['VIEW_CHANNEL', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'PRIORITY_SPEAKER']
           },
         ],
@@ -72,7 +72,7 @@ export default {
       // Welcome the user to private venting and mark the session as open
       channel.send(
         `Welcome to your private venting session, ${user.toString()} (:`,
-        tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false })
+        tvf.createEmbed({ colour: tvf.const.green, timestamp: true, thumbnail: false })
           .setThumbnail(user.avatarURL())
           .setTitle(`Welcome to your private venting session, ${user.username}!`)
           .setDescription(`Reason for session: ${doc.private.reason}`)
@@ -80,13 +80,13 @@ export default {
       );
 
       // Inform the support team that the user's session has begun and post it in the logs
-      const sessionBegun = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false, author: true }, msg)
+      const sessionBegun = tvf.createEmbed({ colour: tvf.const.green, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(user.avatarURL())
         .setTitle(`${user.username}'s private venting session has been started by ${msg.author.username}!`)
         .setFooter(`Session ID: ${doc.private.id}`);
 
-      tvf.channels.staff.support.send(sessionBegun);
-      tvf.channels.staff.private.logs.send(sessionBegun);
+      tvf.const.staffChannels.support.send(sessionBegun);
+      tvf.const.staffChannels.private.logs.send(sessionBegun);
 
       // Finsh updating the user's document
       doc.private.channels.text = channel.id;
@@ -116,7 +116,7 @@ export default {
 
       // Try and find the user's document
       const doc = await User.findOne({ 'private.requested': false, 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
-      if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.emojis.cross, `\`${id}\` is an invalid ID!`));
+      if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.const.cross, `\`${id}\` is an invalid ID!`));
       const user = await tvf.bot.users.fetch(doc.id);
 
       // Fetch the channels associated with the session
@@ -146,7 +146,7 @@ export default {
       });
 
       // Inform the support team that the session has ended and post it in the logs 
-      const sessionEnded = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
+      const sessionEnded = tvf.createEmbed({ colour: tvf.const.red, timestamp: true, thumbnail: false, author: true }, msg)
         .setThumbnail(user.avatarURL())
         .setTitle(`${user.username}'s session is over!`)
         .setDescription(notes)
@@ -160,8 +160,8 @@ export default {
         ])
         .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
-      tvf.channels.staff.support.send(sessionEnded);
-      tvf.channels.staff.private.logs.send(sessionEnded);
+      tvf.const.staffChannels.support.send(sessionEnded);
+      tvf.const.staffChannels.private.logs.send(sessionEnded);
 
       // Delete the channels associated with the session
       await text.delete();
@@ -202,7 +202,7 @@ export default {
         if (!reason) reason = 'No reason specified.';
 
         // Inform the support team that the venter's session has been cancelled and post it in the logs
-        const cancelled = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
+        const cancelled = tvf.createEmbed({ colour: tvf.const.red, timestamp: true, thumbnail: false, author: true }, msg)
           .setThumbnail(venter.user.avatarURL())
           .setTitle(`${msg.author.username} has cancelled ${venter.user.username}'s session`)
           .setDescription(`Reason: ${reason}`)
@@ -212,16 +212,16 @@ export default {
           ])
           .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
-        tvf.channels.staff.support.send(cancelled);
-        tvf.channels.staff.private.logs.send(cancelled);
+        tvf.const.staffChannels.support.send(cancelled);
+        tvf.const.staffChannels.private.logs.send(cancelled);
 
         // Send the user a message informing them that their session has been cancelled
         venter.send(
-          tvf.createEmbed({ colour: tvf.colours.red, timestamp: true })
+          tvf.createEmbed({ colour: tvf.const.red, timestamp: true })
             .setTitle('A member of the support team has cancelled your private venting session.')
             .setDescription('If you believe this has been done in error, please do not hesitate to contact a member of the support team - or request a new session!')
             .addField('Reason', reason)
-        ).catch(() => tvf.channels.community.discussion.send(stripIndents`
+        ).catch(() => tvf.const.communityChannels.discussion.send(stripIndents`
           <@!${venter.id}>, your private venting session has been cancelled!
           Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please consider investigating this.
           If you believe this has been done in error, don't hesitate to contact a member of staff - or request a new session!
@@ -231,17 +231,17 @@ export default {
       // If the user wants to cancel their own session
       else {
         doc = await tvf.userDoc(msg.author.id); // Get the user's document from the database
-        if (!doc.private.requested) return msg.author.send(tvf.emojiMessage(tvf.emojis.cross, 'Sorry, you do not have a pending private venting session to cancel!'));
+        if (!doc.private.requested) return msg.author.send(tvf.emojiMessage(tvf.const.cross, 'Sorry, you do not have a pending private venting session to cancel!'));
 
         // Inform the support team that the venter has cancelled their session and post it in the logs
-        const cancelled = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
+        const cancelled = tvf.createEmbed({ colour: tvf.const.red, timestamp: true, thumbnail: false, author: true }, msg)
           .setTitle(`${msg.author.username} has cancelled their private venting session!`)
           .setDescription(`Reason: ${reason}`)
           .addField('User ID', msg.author.id, true)
           .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
-        tvf.channels.staff.support.send(cancelled);
-        tvf.channels.staff.private.logs.send(cancelled);
+        tvf.const.staffChannels.support.send(cancelled);
+        tvf.const.staffChannels.private.logs.send(cancelled);
       }
 
       // Cancel the session
@@ -275,10 +275,10 @@ export default {
 
       // From the message, fetch the reason
       const reason = args.join(' ');
-      if (!reason) return msg.author.send(tvf.emojiMessage(tvf.emojis.cross, 'You must provide a reason for your session!'));
+      if (!reason) return msg.author.send(tvf.emojiMessage(tvf.const.cross, 'You must provide a reason for your session!'));
 
       // Ensure that the user hasn't already got a pending session
-      if (doc.private.requested) return msg.author.send(tvf.emojiMessage(tvf.emojis.cross, `You already have a pending session! If you would like to request a new one, please first cancel your pending session by running \`${prefix}private cancel\`!`));
+      if (doc.private.requested) return msg.author.send(tvf.emojiMessage(tvf.const.cross, `You already have a pending session! If you would like to request a new one, please first cancel your pending session by running \`${prefix}private cancel\`!`));
 
       // Update the user's document to reflect the changes
       doc.private.requested = true;
@@ -289,7 +289,7 @@ export default {
       tvf.saveDoc(doc);
 
       // Alert the support team that a new private venting session has been requested and post in the logs
-      const sessionRequested = tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false, author: true }, msg)
+      const sessionRequested = tvf.createEmbed({ colour: tvf.const.green, timestamp: true, thumbnail: false, author: true }, msg)
           .setThumbnail(msg.author.avatarURL()) // Make the thumnbail the user's profile picture
           .setTitle(`${msg.author.username} has requested a private venting session!`)
           .setDescription(`Begin the session now by typing \`${prefix}private start ${doc.private.id}\` in this channel!`)
@@ -300,12 +300,12 @@ export default {
           ])
           .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
-      tvf.channels.staff.support.send(tvf.isProduction ? tvf.roles.staff.support.toString() : '', sessionRequested);
-      tvf.channels.staff.private.logs.send(sessionRequested);
+      tvf.const.staffChannels.support.send(tvf.isProduction ? tvf.const.staffRoles.support.toString() : '', sessionRequested);
+      tvf.const.staffChannels.private.logs.send(sessionRequested);
 
       // Send the user a message confirming that their session has been requested
       msg.author.send(
-        tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, author: true }, msg)
+        tvf.createEmbed({ colour: tvf.const.green, timestamp: true, author: true }, msg)
           .setTitle('Your private venting session has been requested.')
           .setDescription('Your session may begin quickly, or it may take some time - it depends on how busy we are, how many staff are available, and whether any staff are comfortable with taking it. Please remain online until your session begins. You\'ll recieve a ping from the server when we\'re ready for you. A few things to note before we start...')
           .addFields([
@@ -342,8 +342,8 @@ export default {
           tvf.saveDoc(doc);
 
           // Inform the support team that the user's session has expired
-          tvf.channels.staff.support.send(
-            tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
+          tvf.const.staffChannels.support.send(
+            tvf.createEmbed({ colour: tvf.const.red, timestamp: true, thumbnail: false, author: true }, msg)
               .setThumbnail(msg.author.avatarURL())
               .setTitle(`${msg.author.username}'s private venting session has expired!`)
               .addField('Venter ID', msg.author.id, true)
@@ -352,14 +352,14 @@ export default {
 
           // Inform the user that their session has expired
           msg.author.send(
-            tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, author: true }, msg)
+            tvf.createEmbed({ colour: tvf.const.red, timestamp: true, author: true }, msg)
               .setTitle('Your private venting session has expired!')
               .setDescription(stripIndents`
                 We're sorry we couldn't get to your private venting session in time ):
                 We automatically cancel old private venting sessions so that users can request new ones if they still need help, and to unclog the system!
                 If you would still like some help, please do not be scared to request a new session! Thanks! (:
               `)
-          ).catch(() => tvf.channels.community.discussion.send(stripIndents`
+          ).catch(() => tvf.const.communityChannels.discussion.send(stripIndents`
             <@!${msg.author.id}>, your private venting session has expired!
             Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please look into this this and ping newt#1234 if you need any help!
             If you still need a session, please do not fear to open a new one! Thanks (:
@@ -367,7 +367,7 @@ export default {
         });
 
         // Create reminders for the expiry
-        const reminderEmbed = tvf.createEmbed({ colour: tvf.colours.orange, timestamp: true, thumbnail: false, author: true }, msg)
+        const reminderEmbed = tvf.createEmbed({ colour: tvf.const.orange, timestamp: true, thumbnail: false, author: true }, msg)
           .setThumbnail(msg.author.avatarURL())
           .setDescription(`Reason: ${reason}`)
           .addFields([
@@ -376,11 +376,11 @@ export default {
           ])
           .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 
-        timeout.timeout(`${doc.private.id}1`, hour, () => tvf.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in five hours!`)));
-        timeout.timeout(`${doc.private.id}2`, hour * 2, () => tvf.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in four hours!`)));
-        timeout.timeout(`${doc.private.id}3`, hour * 3, () => tvf.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in three hours!`)));
-        timeout.timeout(`${doc.private.id}4`, hour * 4, () => tvf.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in two hours!`)));
-        timeout.timeout(`${doc.private.id}5`, hour * 5, () => tvf.channels.staff.support.send(tvf.isProduction ? tvf.roles.staff.support.toString() : '', reminderEmbed.setTitle(`${msg.author.username}'s session will expire in one hour!`)));
+        timeout.timeout(`${doc.private.id}1`, hour, () => tvf.const.staffChannels.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in five hours!`)));
+        timeout.timeout(`${doc.private.id}2`, hour * 2, () => tvf.const.staffChannels.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in four hours!`)));
+        timeout.timeout(`${doc.private.id}3`, hour * 3, () => tvf.const.staffChannels.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in three hours!`)));
+        timeout.timeout(`${doc.private.id}4`, hour * 4, () => tvf.const.staffChannels.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in two hours!`)));
+        timeout.timeout(`${doc.private.id}5`, hour * 5, () => tvf.const.staffChannels.support.send(tvf.isProduction ? tvf.const.staffRoles.support.toString() : '', reminderEmbed.setTitle(`${msg.author.username}'s session will expire in one hour!`)));
     }
   }
 } as Command;

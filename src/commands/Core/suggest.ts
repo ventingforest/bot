@@ -17,13 +17,13 @@ export default {
 			.setDescription(_.truncate(suggestion, { length: tvf.embedLimit.description }))
 			.setFooter(`Suggestion ID: ${id}`);
 
-		const message = await tvf.channels.community.suggestions.send(embed);
-		await message.react(tvf.emojis.suggestions.upvote);
-		await message.react(tvf.emojis.suggestions.downvote);
+		const message = await tvf.const.communityChannels.suggestions.send(embed);
+		await message.react(tvf.const.suggestions.upvote);
+		await message.react(tvf.const.suggestions.downvote);
 
 		// save the suggestion to the database
 		const userDoc = await tvf.userDoc(msg.author.id);
-		userDoc.suggestions.push({ id, suggestion, messageID: message.id });
+		userDoc.suggestions.push({ id, suggestion, messageID: message.id, status: 'pending' });
 		tvf.saveDoc(userDoc);
 
 		// delete the user's message

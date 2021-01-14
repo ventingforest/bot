@@ -21,8 +21,8 @@ export default {
 	run: async (tvf, msg, args) => {
         const country = args.join(' ').toLowerCase();
         var currentData, historicalData;
-        const embed = await tvf.createEmbed({ colour: tvf.colours.coronavirus, timestamp: true });
-        embed.setDescription(`React with ${tvf.emojis.graph} for a chart!`)
+        const embed = await tvf.createEmbed({ colour: '#FF6961', timestamp: true });
+        embed.setDescription(`React with ${tvf.const.graph} for a chart!`)
 
         // fetch the data
         if (!country || country === 'world') {
@@ -69,7 +69,7 @@ export default {
 
             // if the country was not found, cancel the command
             if (currentData.message && currentData.message === 'Country not found or doesn\'t have any cases') {
-                return msg.channel.send(`**${tvf.emojis.cross}  |**  \`${country}\` could not be found, or it doesn't have any cases!`);
+                return msg.channel.send(`**${tvf.const.cross}  |**  \`${country}\` could not be found, or it doesn't have any cases!`);
             }
 
             // populate the embed with data!
@@ -111,9 +111,9 @@ export default {
         }
 
         const embedMessage = await msg.channel.send(embed);
-        await embedMessage.react(tvf.emojis.graph);
+        await embedMessage.react(tvf.const.graph);
 
-        embedMessage.awaitReactions((r, u) => [tvf.emojis.graph].includes(r.emoji.name) && u.id === msg.author.id, { max: 1 })
+        embedMessage.awaitReactions((r, u) => [tvf.const.graph].includes(r.emoji.name) && u.id === msg.author.id, { max: 1 })
             .then(async collected => {
                 await embedMessage.reactions.removeAll();
                 const r = collected.first();
@@ -125,22 +125,22 @@ export default {
                         datasets: [
                             {
                                 label: 'Confirmed',
-                                backgroundColor: tvf.colours.coronavirusChart.confirmed,
-                                borderColor: tvf.colours.coronavirusChart.confirmed,
+                                backgroundColor: '#ffb347',
+                                borderColor: '#ffb347',
                                 data: Object.values(historicalData.cases),
                                 fill: false,
                             },
                             {
                                 label: 'Recovered',
-                                backgroundColor: tvf.colours.coronavirusChart.recovered,
-                                borderColor: tvf.colours.coronavirusChart.recovered,
+                                backgroundColor: '#77dd77',
+                                borderColor: '#77dd77',
                                 data: Object.values(historicalData.recovered),
                                 fill: false,
                             },
                             {
                                 label: 'Deaths',
-                                backgroundColor: tvf.colours.coronavirusChart.deaths,
-                                borderColor: tvf.colours.coronavirusChart.deaths,
+                                backgroundColor: '#FF0000',
+                                borderColor: '#FF0000',
                                 data: Object.values(historicalData.deaths),
                                 fill: false,
                             },

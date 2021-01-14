@@ -11,8 +11,6 @@ export default {
   allowGeneral: true,
   staffAccess: ['Support', 'Moderation', 'Admin'],
   run: async (tvf, msg, args) => {
-      await msg.delete(); // Delete the message
-
       const user = await tvf.resolveUser(msg, args[0]); // Get the mentioned user
       const member = tvf.server.member(user);
       const doc = await tvf.userDoc(user.id); // Get the member's document from the database
@@ -21,15 +19,17 @@ export default {
 
       // Isolating the user
       if (!doc.isolation.isolated) {
+        await msg.delete(); // Delete the message
+
         // Fetch the reason
         let reason = args.join(' ');
         if (!reason) reason = 'No reason specified';
 
         // Create a channel and vc for the isolated user
         const channel = await tvf.server.channels.create(`${user.username}-${user.discriminator}`, {
-          parent: tvf.channels.staff.isolation.category,
+          parent: tvf.const.staffChannels.isolation.category,
           type: 'text',
-          topic: `${tvf.emojis.tick}  |  Session started: ${moment(doc.isolation.isolatedAt).format(tvf.moment)}`,
+          topic: `${tvf.const.tick}  |  Session started: ${moment(doc.isolation.isolatedAt).format(tvf.moment)}`,
           permissionOverwrites: [
             {
               id: tvf.server.roles.everyone,
@@ -37,18 +37,18 @@ export default {
               deny: ['VIEW_CHANNEL', 'ADD_REACTIONS', 'SEND_TTS_MESSAGES'],
             },
             {
-              id: tvf.roles.staff.support,
+              id: tvf.const.staffRoles.support,
               allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
             },
             {
-              id: tvf.roles.staff.moderators,
+              id: tvf.const.staffRoles.moderators,
               allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
             }
           ],
         });
 
         const vc = await tvf.server.channels.create(user.tag, {
-          parent: tvf.channels.staff.isolation.category,
+          parent: tvf.const.staffChannels.isolation.category,
           type: 'voice',
           permissionOverwrites: [
             {
@@ -57,11 +57,11 @@ export default {
               deny: 'VIEW_CHANNEL',
             },
             {
-              id: tvf.roles.staff.support,
+              id: tvf.const.staffRoles.support,
               allow: ['VIEW_CHANNEL', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'PRIORITY_SPEAKER'],
             },
             {
-              id: tvf.roles.staff.moderators,
+              id: tvf.const.staffRoles.moderators,
               allow: ['VIEW_CHANNEL', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'PRIORITY_SPEAKER']
             }
           ],
@@ -74,7 +74,7 @@ export default {
 
         channel.send(
           `Welcome to isolation, ${user.toString()}!`,
-          tvf.createEmbed({ colour: tvf.colours.green, timestamp: true, thumbnail: false })
+          tvf.createEmbed({ colour: tvf.const.green, timestamp: true, thumbnail: false })
             .setThumbnail(user.avatarURL())
             .setTitle(`Welcome to isolation, ${user.username}!`)
             .setDescription(`Hey there, ${user.username}! Welcome to isolation! You have been put here by a member of staff - but don't worry, this doesn't necessarily mean you have done something wrong. Staff put people here in order to help people calm down if you're feeling bad, or if you are harming other members of the server. Only you and the staff can see this channel, and it is completely private - feel free to talk to them.`)
@@ -99,93 +99,99 @@ export default {
         tvf.saveDoc(doc);
 
         // Inform relevant staff that the user has been isolated and post it in the logs
-        const isolated = tvf.createEmbed({ colour: tvf.colours.red, thumbnail: false, author: true }, msg)
+        const isolated = tvf.createEmbed({ colour: tvf.const.red, thumbnail: false, author: true }, msg)
           .setThumbnail(user.avatarURL())
           .setTitle(`${user.username} has been isolated.`)
           .setDescription(`Reason: ${reason}`)
           .setFooter(`Isolated by ${msg.author.username} at ${moment(doc.isolation.isolatedAt).format(tvf.moment)}`, msg.author.avatarURL());
 
-        tvf.channels.staff.moderators.chat.send(isolated);
-        tvf.channels.staff.moderators.modlogs.send(isolated);
-        tvf.channels.staff.support.send(isolated);
-        tvf.channels.staff.isolation.logs.send(isolated);
+        tvf.const.staffChannels.moderators.chat.send(isolated);
+        tvf.const.staffChannels.moderators.modlogs.send(isolated);
+        tvf.const.staffChannels.support.send(isolated);
+        tvf.const.staffChannels.isolation.logs.send(isolated);
       } 
       
       // Unisolating the user
       else {
-        // Fetch any notes
-        let notes = args.join(' ');
-        if (!notes) notes = 'No notes provided';
+        if (tvf.isUser('Moderation', msg.author)) {
+          await msg.delete(); // Delete the message
 
-        // Fetch the channels associated with the isolation
-        const text = tvf.server.channels.cache.get(doc.isolation.channels.text) as Discord.TextChannel;
-        const vc = tvf.server.channels.cache.get(doc.isolation.channels.vc) as Discord.VoiceChannel;
+          // Fetch any notes
+          let notes = args.join(' ');
+          if (!notes) notes = 'No notes provided';
 
-        // Calculate important things for later
-        const isolatedAt = moment(doc.isolation.isolatedAt).format(tvf.moment);
-        const unisolatedAt = moment(new Date()).format(tvf.moment);
+          // Fetch the channels associated with the isolation
+          const text = tvf.server.channels.cache.get(doc.isolation.channels.text) as Discord.TextChannel;
+          const vc = tvf.server.channels.cache.get(doc.isolation.channels.vc) as Discord.VoiceChannel;
 
-        // Upload the message history to pastebin
-        const messages = text.messages.cache;
+          // Calculate important things for later
+          const isolatedAt = moment(doc.isolation.isolatedAt).format(tvf.moment);
+          const unisolatedAt = moment(new Date()).format(tvf.moment);
 
-        const paste = await tvf.pastebin.createPaste({
-          title: `Isolation - ${user.tag} - ${unisolatedAt}`,
-          text: stripIndents`
-            User isolated: ${user.tag} (${user.id})
-            Reason: ${doc.isolation.reason}
-            Isolated at: ${isolatedAt}
-            Unisolated at: ${unisolatedAt}
-            Message count: ${messages.size}
-            ----------------------------------
-          ${messages.map(msg => `${moment(msg.createdTimestamp).format('D/M/YYYY HH:MM')} ${msg.author.tag}: ${msg.content}`).join('\n')}
-          `,
-          format: null,
-          privacy: 1,
-        });
+          // Upload the message history to pastebin
+          const messages = text.messages.cache;
 
-        // Inform the support and moderation teams that the isolation is over and post it in the logs 
-        const isolationEnded = tvf.createEmbed({ colour: tvf.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
-          .setThumbnail(user.avatarURL())
-          .setTitle(`${user.username} has been unisolated!`)
-          .setDescription(notes)
-          .addFields([
-            { name: 'Time isolated', value: `${moment(new Date()).diff(moment(doc.isolation.isolatedAt), 'minutes')} minutes` },
-            { name: 'Isolated at', value: isolatedAt, inline: true },
-            { name: 'Unisolated at', value: unisolatedAt, inline: true },
-            { name: 'Reason', value: doc.isolation.reason },
-            { name: 'Notes', value: notes },
-            { name: 'Isolated by', value: tvf.server.member(doc.isolation.isolatedBy).user.username, inline: true },
-            { name: 'Unisolated by', value: msg.author.username, inline: true },
-            { name: 'Message count', value: messages.size, inline: true },
-            { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
-          ]);
+          const paste = await tvf.pastebin.createPaste({
+            title: `Isolation - ${user.tag} - ${unisolatedAt}`,
+            text: stripIndents`
+              User isolated: ${user.tag} (${user.id})
+              Reason: ${doc.isolation.reason}
+              Isolated at: ${isolatedAt}
+              Unisolated at: ${unisolatedAt}
+              Message count: ${messages.size}
+              ----------------------------------
+            ${messages.map(msg => `${moment(msg.createdTimestamp).format('D/M/YYYY HH:MM')} ${msg.author.tag}: ${msg.content}`).join('\n')}
+            `,
+            format: null,
+            privacy: 1,
+          });
 
-      tvf.channels.staff.moderators.chat.send(isolationEnded);
-      tvf.channels.staff.moderators.modlogs.send(isolationEnded);
-      tvf.channels.staff.support.send(isolationEnded);
-      tvf.channels.staff.isolation.logs.send(isolationEnded);
+          // Inform the support and moderation teams that the isolation is over and post it in the logs 
+          const isolationEnded = tvf.createEmbed({ colour: tvf.const.red, timestamp: true, thumbnail: false, author: true }, msg)
+            .setThumbnail(user.avatarURL())
+            .setTitle(`${user.username} has been unisolated!`)
+            .setDescription(notes)
+            .addFields([
+              { name: 'Time isolated', value: `${moment(new Date()).diff(moment(doc.isolation.isolatedAt), 'minutes')} minutes` },
+              { name: 'Isolated at', value: isolatedAt, inline: true },
+              { name: 'Unisolated at', value: unisolatedAt, inline: true },
+              { name: 'Reason', value: doc.isolation.reason },
+              { name: 'Notes', value: notes },
+              { name: 'Isolated by', value: tvf.server.member(doc.isolation.isolatedBy).user.username, inline: true },
+              { name: 'Unisolated by', value: msg.author.username, inline: true },
+              { name: 'Message count', value: messages.size, inline: true },
+              { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
+            ]);
 
-      if (tvf.server.member(user)) {
-        // Give the user access to all other channels
-        tvf.server.channels.cache.forEach(c => {
-          const o = c.permissionOverwrites.get(user.id);
-          if (o) o.delete();
-        });
+        tvf.const.staffChannels.moderators.chat.send(isolationEnded);
+        tvf.const.staffChannels.moderators.modlogs.send(isolationEnded);
+        tvf.const.staffChannels.support.send(isolationEnded);
+        tvf.const.staffChannels.isolation.logs.send(isolationEnded);
+
+        if (tvf.server.member(user)) {
+          // Give the user access to all other channels
+          tvf.server.channels.cache.forEach(c => {
+            const o = c.permissionOverwrites.get(user.id);
+            if (o) o.delete();
+          });
+        }
+
+        // Delete the channels associated with the session
+        await text.delete();
+        await vc.delete();
+
+        // Update the user's document
+        doc.isolation.isolated = false;
+        doc.isolation.isolatedAt = null;
+        doc.isolation.isolatedBy = null;
+        doc.isolation.reason = null;
+        doc.isolation.channels.text = null;
+        doc.isolation.channels.vc = null;
+      
+        tvf.saveDoc(doc);
+      } else {
+        msg.channel.send(tvf.emojiMessage(tvf.const.cross, 'Sorry, support team members can not unisolate members. Please contact a moderator.'));
       }
-
-      // Delete the channels associated with the session
-      await text.delete();
-      await vc.delete();
-
-      // Update the user's document
-      doc.isolation.isolated = false;
-      doc.isolation.isolatedAt = null;
-      doc.isolation.isolatedBy = null;
-      doc.isolation.reason = null;
-      doc.isolation.channels.text = null;
-      doc.isolation.channels.vc = null;
-    
-      tvf.saveDoc(doc);
     }
   }
 } as Command;

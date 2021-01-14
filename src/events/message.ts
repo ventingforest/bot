@@ -3,14 +3,11 @@ import Client from '../Client';
 import _ from 'lodash';
 
 export default async (tvf: Client, msg: Discord.Message) => {
-	// react to all messages in the starboard with the star emoji
-	if (msg.channel.id === tvf.channels.community.starboard.id) return await msg.react(tvf.emojis.star);
-
 	// ignore messages from other bots
 	if (msg.author.bot) return undefined;
 
  	// helper ping
-	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.roles.community.helper.id && msg.channel.id != tvf.channels.community.helper.id && tvf.isProduction) {
+	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.const.communityRoles.helper.id && msg.channel.id != tvf.const.communityChannels.helper.id && tvf.isProduction) {
 		const embed = tvf.createEmbed()
 			.setTitle(`${msg.author.username} needs help!`)
 			.addFields([
@@ -24,10 +21,10 @@ export default async (tvf: Client, msg: Discord.Message) => {
 				},
 			]);
 
-		tvf.channels.community.helper.send(embed);
+		tvf.const.communityChannels.helper.send(embed);
 
 		return msg.reply(
-			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.channels.resources}>. You can also request a one-on-one private session with a staff by using the \`tvf private\` command in any channel. If possible, please do provide a reason by typing the reason after the command.`,
+			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.const.resources}>. You can also request a one-on-one private session with a staff by using the \`tvf private\` command in any channel. If possible, please do provide a reason by typing the reason after the command.`,
 		);
 	}
 
@@ -50,14 +47,14 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			command.staffAccess.forEach(role => access.push(tvf.isUser(role, msg.author)));
 
 			if (!access.includes(true)) {
-				return msg.channel.send(`**${tvf.emojis.cross}  |**  you are not allowed to run that command!`);
+				return msg.channel.send(`**${tvf.const.cross}  |**  you are not allowed to run that command!`);
 			}
 		}
 
 		// if a command isn't allowed to be run in general, delete the message
-		if (!command.allowGeneral && msg.channel.id === tvf.channels.general.id) {
+		if (!command.allowGeneral && msg.channel.id === tvf.const.general.id) {
 			await msg.delete();
-			return msg.author.send(`**${tvf.emojis.grimacing}  |**  you can not run that command in general!`);
+			return msg.author.send(`**${tvf.const.grimacing}  |**  you can not run that command in general!`);
 		}
 
 		// if there are certain permissions required to run a command
@@ -71,18 +68,18 @@ export default async (tvf: Client, msg: Discord.Message) => {
 
 			// if there are any permissions missing, inform the user
 			if (missingPermissions.length > 0) {
-				msg.author.send(`**${tvf.emojis.grimacing}  |**  you are missing these permissions in **${tvf.server.name}** to run **${command.name}**\n\`\`\`${tvf.friendlyPermissions(msg.member.permissions).join('\n')}\`\`\``);
-				return msg.channel.send(`**${tvf.emojis.cross}  |**  you do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.`);
+				msg.author.send(`**${tvf.const.grimacing}  |**  you are missing these permissions in **${tvf.server.name}** to run **${command.name}**\n\`\`\`${tvf.friendlyPermissions(msg.member.permissions).join('\n')}\`\`\``);
+				return msg.channel.send(`**${tvf.const.cross}  |**  you do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.`);
 			}
 		}
 
 		// if the command requires arguments but hasn't been given any
 		if (command.args && args.length === 0) {
-		let reply = `**${tvf.emojis.cross}  |**  you did not provide any arguments!`;
+		let reply = `**${tvf.const.cross}  |**  you did not provide any arguments!`;
 
 		// if the usage is listed for the command, append it to the reply
 		if (command.usage) {
-			reply += `\n**${tvf.emojis.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
+			reply += `\n**${tvf.const.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
 		}
 
 		return msg.channel.send(reply);
@@ -98,14 +95,5 @@ export default async (tvf: Client, msg: Discord.Message) => {
 				'there was an error trying to execute that command.',
 			);
 		}
-	}
-
-	// get the user's document from the database
-	const doc = await tvf.userDoc(msg.author.id);
-
-	// random compliments
-	if (tvf.isProduction && doc.pda && Math.floor(Math.random() * 300) === 1 && msg.channel.id === tvf.channels.general.id) {
-		const compliment = tvf.compliments[Math.floor(Math.random() * tvf.compliments.length)];
-		return msg.reply(compliment);
 	}
 };

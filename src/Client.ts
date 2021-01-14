@@ -7,11 +7,7 @@ import * as path from 'path';
 import PastebinAPI from 'pastebin-js';
 
 import User, { IUser } from './models/user';
-import { IRoles } from './constants/Roles';
-import Colours from './constants/Colours';
-import { IChannels } from './constants/Channels';
-import { IEmojis } from './constants/Emojis';
-import Compliments from './constants/Compliments';
+import Constants, { IConstants } from './Constants';
 
 export default class Client {
   // properties
@@ -49,11 +45,7 @@ export default class Client {
     }
   }
 
-  roles: IRoles;
-  colours = Colours;
-  channels: IChannels;
-  emojis: IEmojis;
-  compliments = Compliments;
+  const: IConstants;
 
   auth = {
     discord: this.isProduction ? process.env.STABLE : process.env.BETA,
@@ -180,14 +172,14 @@ export default class Client {
     thumbnail?: boolean, // if false, the thumbnail is omitted
     author?: boolean, // if true, the author gets automatically set to the author of the message
   } = {
-    colour: this.colours.white,
+    colour: this.const.white,
     timestamp: false,
     thumbnail: true,
     author: false,
   }, msg?: Discord.Message): Discord.MessageEmbed {
     // create an embed and configure it accordinly
     const embed = new Discord.MessageEmbed()
-      .setColor(options.colour || this.colours.green);
+      .setColor(options.colour || this.const.green);
 
     if (options.timestamp) embed.setTimestamp();
     if (options.thumbnail) embed.setThumbnail(this.server.iconURL());
@@ -204,11 +196,11 @@ export default class Client {
   // checks if a member has a staff role
   isUser(role: StaffRole | 'Staff', user: Discord.User): boolean {
     const member = this.server.member(user);
-    return role === 'Support' ? member.roles.cache.has(this.roles.staff.support.id) || member.roles.cache.has(this.roles.staff.heads.support.id) :
-           role === 'Engagement' ? member.roles.cache.has(this.roles.staff.engagement.id) || member.roles.cache.has(this.roles.staff.heads.engagement.id) :
-           role === 'Moderation' ? member.roles.cache.has(this.roles.staff.moderators.id) || member.roles.cache.has(this.roles.staff.heads.moderators.id) :
-           role === 'Admin' ? member.roles.cache.has(this.roles.staff.admins.id) :
-           role === 'Staff' ? member.roles.cache.has(this.roles.staff.staff.id)
+    return role === 'Support' ? member.roles.cache.has(this.const.staffRoles.support.id) || member.roles.cache.has(this.const.staffRoles.heads.support.id) :
+           role === 'Engagement' ? member.roles.cache.has(this.const.staffRoles.engagement.id) || member.roles.cache.has(this.const.staffRoles.heads.engagement.id) :
+           role === 'Moderation' ? member.roles.cache.has(this.const.staffRoles.moderators.id) || member.roles.cache.has(this.const.staffRoles.heads.moderators.id) :
+           role === 'Admin' ? member.roles.cache.has(this.const.staffRoles.admins.id) :
+           role === 'Staff' ? member.roles.cache.has(this.const.staffRoles.staff.id)
            : false;
   }
 
@@ -234,46 +226,10 @@ export default class Client {
   friendlyPermissions(perms: Readonly<Discord.Permissions>): string[] {
     const list = perms.toArray();
 
-    const friendly = {
-      CREATE_INSTANT_INVITE: 'Create Instant Invite',
-      STREAM: 'Stream',
-      KICK_MEMBERS: 'Kick Members',
-      BAN_MEMBERS: 'Ban Members',
-      ADMINISTRATOR: 'Administrator',
-      MANAGE_CHANNELS: 'Manage Channels',
-      MANAGE_GUILD: 'Manage Guild',
-      ADD_REACTIONS: 'Add Reactions',
-      VIEW_AUDIT_LOG: 'View Audit Log',
-      PRIORITY_SPEAKER: 'Priority Speaker',
-      VIEW_CHANNEL: 'View Channel',
-      READ_MESSAGES: 'Read Messages',
-      SEND_MESSAGES: 'Send Messages',
-      SEND_TTS_MESSAGES: 'Send TTS Messages',
-      MANAGE_MESSAGES: 'Manage Messages',
-      EMBED_LINKS: 'Embed Links',
-      ATTACH_FILES: 'Attach Files',
-      READ_MESSAGE_HISTORY: 'Read Message History',
-      MENTION_EVERYONE: 'Mention Everyone',
-      EXTERNAL_EMOJIS: 'External Emojis',
-      USE_EXTERNAL_EMOJIS: 'Use External Emojis',
-      CONNECT: 'Connect',
-      SPEAK: 'Speak',
-      MUTE_MEMBERS: 'Mute Members',
-      DEAFEN_MEMBERS: 'Deafen Members',
-      MOVE_MEMBERS: 'Move Members',
-      USE_VAD: 'Use Voice Activity',
-      CHANGE_NICKNAME: 'Change Nickname',
-      MANAGE_NICKNAMES: 'Manage Nicknames',
-      MANAGE_ROLES: 'Manage Roles',
-      MANAGE_ROLES_OR_PERMISSIONS: 'Manage Roles',
-      MANAGE_WEBHOOKS: 'Manage Webhooks',
-      MANAGE_EMOJIS: 'Manage Emojis'
-    }
-
     let newList: string[] = [];
 
     for (let perm of list) {
-      newList.push(friendly[perm]);
+      newList.push(this.const.friendlyPermissions[perm]);
     }
 
     return newList;

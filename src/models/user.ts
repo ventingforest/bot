@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
     id: string; // the id of the user
-    pda: boolean; // whether the user is comfortable with PDA and compliments
+    xp: number; // the total xp of a user
     private: {
       requested: boolean; // whether the user has a pending private venting session
       id: string; // the id of the private venting session
@@ -25,6 +25,7 @@ export interface IUser extends mongoose.Document {
       }
     }
     suggestions: Suggestion[];
+    modlogs: Modlog[];
 }
 
 const userSchema = new mongoose.Schema(
@@ -33,10 +34,6 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-    pda: {
-      type: Boolean,
-      default: true,
-    },
 		private: {
 			requested: Boolean,
 			id: String,

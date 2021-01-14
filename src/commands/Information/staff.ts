@@ -8,18 +8,18 @@ export default {
     let embed = tvf.createEmbed({ timestamp: true });
 
     // group users by role
-    const admins = tvf.roles.staff.admins.members;
-    const engagement = tvf.roles.staff.engagement.members;
-    const support = tvf.roles.staff.support.members;
-    const moderators = tvf.roles.staff.moderators.members;
-    const staff = tvf.roles.staff.staff.members;
+    const admins = tvf.const.staffRoles.admins.members;
+    const engagement = tvf.const.staffRoles.engagement.members;
+    const support = tvf.const.staffRoles.support.members;
+    const moderators = tvf.const.staffRoles.moderators.members;
+    const staff = tvf.const.staffRoles.staff.members;
 
     // roles
 
     // administrators
     if (role === 'administrator' || role === 'admin' || role === 'administrators' || role === 'admins') {
       embed
-        .setColor(tvf.colours.yellow)
+        .setColor(tvf.const.yellow)
         .setTitle(`Administrators (${admins.size})`)
         .setDescription(admins.map(admin => `<@!${admin.user.id}>`))
         .addFields([
@@ -34,7 +34,7 @@ export default {
     // engagement
     if (role === 'engagement') {
       embed
-        .setColor(tvf.colours.staff.engagement)
+        .setColor(tvf.const.staffRoles.engagement.hexColor)
         .setTitle(`Engagement (${engagement.size})`)
         .setDescription(engagement.map(e => `<@!${e.user.id}>`))
         .addFields([
@@ -49,7 +49,7 @@ export default {
     // support
     else if (role === 'support') {
       embed
-        .setColor(tvf.colours.staff.support)
+        .setColor(tvf.const.staffRoles.support.hexColor)
         .setTitle(`Support (${support.size})`)
         .setDescription(support.map(s => `<@!${s.user.id}>`))
         .addFields([
@@ -64,7 +64,7 @@ export default {
     // moderators
     else if (role === 'moderator' || role === 'mod' || role === 'moderators' || role === 'moderators') {
       embed
-        .setColor(tvf.colours.staff.moderation)
+        .setColor(tvf.const.staffRoles.moderators.hexColor)
         .setTitle(`Moderators (${moderators.size})`)
         .setDescription(moderators.map(mod => `<@!${mod.user.id}>`))
         .addFields([
@@ -77,7 +77,6 @@ export default {
     }
 
     // staff list
-
     else {
       embed
         .setTitle(`Staff (${staff.size})`)
