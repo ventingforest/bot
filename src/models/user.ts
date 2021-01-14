@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 
 export interface IUser extends mongoose.Document {
     id: string; // the id of the user
+    level: number; // the level of a user
     xp: number; // the total xp of a user
     private: {
       requested: boolean; // whether the user has a pending private venting session
@@ -33,7 +34,15 @@ const userSchema = new mongoose.Schema(
 		id: {
 			type: String,
 			required: true,
-		},
+    },
+    level: {
+      type: Number,
+      default: 1,
+    },
+    xp: {
+      type: Number,
+      default: 0,
+    },
 		private: {
 			requested: Boolean,
 			id: String,

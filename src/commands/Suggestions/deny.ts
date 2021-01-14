@@ -47,6 +47,6 @@ export default {
             .setFooter(`Suggestion ID: ${suggestion.id}`);
 
         member.send(denied);
-		await msg.delete();
+        await msg.delete();
 	}
 } as Command;

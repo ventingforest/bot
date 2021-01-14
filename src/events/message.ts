@@ -95,5 +95,16 @@ export default async (tvf: Client, msg: Discord.Message) => {
 				'there was an error trying to execute that command.',
 			);
 		}
+	} else {
+		const doc = await tvf.userDoc(msg.author.id); // get the user's document
+		doc.xp += Math.floor(Math.random() * 25) + 15; // 15-25 xp per message
+
+		// level up!
+		if (doc.xp >= tvf.xpFor(doc.level + 1)) {
+			doc.level++;
+			msg.author.send(`You have levelled up to level ${doc.level}`);
+		}
+
+		tvf.saveDoc(doc);
 	}
 };

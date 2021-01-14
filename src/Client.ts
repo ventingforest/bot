@@ -261,4 +261,9 @@ export default class Client {
   formatNumber(n: number): string {
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
+
+  // calculates the amount of xp required for a level
+  xpFor(x: number): number {
+    return Math.floor(5/6 * x * (2 * x ** 2 + 27 * x + 91));
+  }
 }

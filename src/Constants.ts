@@ -77,7 +77,74 @@ export interface IConstants {
     question: string;
 
     // other
-    friendlyPermissions: Object;
+    friendlyPermissions: {
+		CREATE_INSTANT_INVITE: string;
+		STREAM: string;
+		KICK_MEMBERS: string;
+		BAN_MEMBERS: string;
+		ADMINISTRATOR:string;
+		MANAGE_CHANNELS:string;
+		MANAGE_GUILD: string;
+		ADD_REACTIONS: string;
+		VIEW_AUDIT_LOG: string;
+		PRIORITY_SPEAKER: string;
+		VIEW_CHANNEL: string;
+		READ_MESSAGES: string;
+		SEND_MESSAGES: string;
+		SEND_TTS_MESSAGES: string;
+		MANAGE_MESSAGES: string;
+		EMBED_LINKS: string;
+		ATTACH_FILES: string;
+		READ_MESSAGE_HISTORY: string;
+		MENTION_EVERYONE: string;
+		EXTERNAL_EMOJIS: string;
+		USE_EXTERNAL_EMOJIS: string;
+		CONNECT: string;
+		SPEAK: string;
+		MUTE_MEMBERS: string;
+		DEAFEN_MEMBERS: string;
+		MOVE_MEMBERS: string;
+		USE_VAD: string;
+		CHANGE_NICKNAME: string;
+		MANAGE_NICKNAMES: string;
+		MANAGE_ROLES: string;
+		MANAGE_ROLES_OR_PERMISSIONS: string;
+		MANAGE_WEBHOOKS: string;
+		MANAGE_EMOJIS: string;
+	};
+
+	levelRoles: {
+		oldOne: number;
+		dirt: number;
+		dullahan: number;
+		erlking: number;
+		treant: number;
+		barghest: number;
+		cockatrice: number;
+		davidBowie: number;
+		banshee: number;
+		eldritchBeing: number;
+		behemoth: number;
+		hydra: number;
+		dragon: number;
+		unicorn: number;
+		sphinx: number;
+		griffin: number;
+		phoenix: number;
+		warlock: number;
+		centaur: number;
+		dryad: number;
+		nymph: number;
+		leshy: number;
+		harpy: number;
+		faun: number;
+		leprechaun: number;
+		fairy: number;
+		brownie: number;
+		gnome: number;
+		goblin: number;
+		elf: number;
+	};
 }
 
 
@@ -193,6 +260,39 @@ export default (server: Discord.Guild): IConstants => {
             MANAGE_ROLES_OR_PERMISSIONS: 'Manage Roles',
             MANAGE_WEBHOOKS: 'Manage Webhooks',
             MANAGE_EMOJIS: 'Manage Emojis'
-        }
+		},
+		
+		levelRoles: {
+			oldOne: 100,
+			dirt: 90,
+			dullahan: 80,
+			erlking: 70,
+			treant: 62,
+			barghest: 58,
+			cockatrice: 54,
+			davidBowie: 50,
+			banshee: 46,
+			eldritchBeing: 42,
+			behemoth: 40,
+			hydra: 38,
+			dragon: 36,
+			unicorn: 34,
+			sphinx: 32,
+			griffin: 30,
+			phoenix: 28,
+			warlock: 26,
+			centaur: 24,
+			dryad: 22,
+			nymph: 20,
+			leshy: 18,
+			harpy: 16,
+			faun: 14,
+			leprechaun: 12,
+			fairy: 10,
+			brownie: 8,
+			gnome: 6,
+			goblin: 4,
+			elf: 2,
+		},
     }
 }
