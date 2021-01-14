@@ -19,8 +19,7 @@ export default {
             msg.channel.send(`**${tvf.const.cross}  |**  Either there was an error looking for the suggestion, or a suggestion with that ID does not exist. Please try again.`);
         } : res);
         const member = tvf.server.member(user.id);
-
-        const suggestion = user.suggestions.find(e => e.id === id);
+        const suggestion = user.suggestions.find(s => s.id === id);
         
         // update the original suggestion message
         const embed = tvf.createEmbed({ timestamp: true, colour: tvf.const.red })

@@ -23,7 +23,13 @@ export default {
 
 		// save the suggestion to the database
 		const userDoc = await tvf.userDoc(msg.author.id);
-		userDoc.suggestions.push({ id, suggestion, messageID: message.id, status: 'pending' });
+
+		if (userDoc.toObject().hasOwnProperty('suggestions') && userDoc.suggestions !== null) {
+			userDoc.suggestions.push({ id, suggestion, messageID: message.id });
+		} else {
+			userDoc.suggestions = [{ id, suggestion, messageID: message.id }];
+		}
+		
 		tvf.saveDoc(userDoc);
 
 		// delete the user's message

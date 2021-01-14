@@ -26,12 +26,9 @@ declare global {
       botbanner: boolean; // if true, all new bots are banned from the server
     }
 
-    type SuggestionStatus = 'pending' | 'approved' | 'denied' | 'considered' | 'implemented';
-
     interface Suggestion {
       id: string; // the id of the suggestion
       suggestion: string; // the suggestion
-      status: SuggestionStatus; // the status of the suggestion
       messageID: string; // the id of the message
     }
 
