@@ -1,5 +1,4 @@
 import { createCanvas, registerFont, loadImage } from 'canvas';
-import * as path from 'path';
 import * as Discord from 'discord.js';
 
 export default {

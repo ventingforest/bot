@@ -66,6 +66,11 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 
       const doc = await tvf.userDoc(member.user.id);
 
+      if (doc.stickyRoles.length > 0) {
+        doc.stickyRoles.forEach(r => member.roles.add(r, 'Sticky roles!'));
+        doc.stickyRoles = [];
+      }
+
       // If the user was previously isolated, hide all the channels again
       if (doc.isolation.isolated) {
         tvf.server.channels.cache.forEach(c => {
@@ -82,6 +87,8 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
         tvf.const.general.send(`**${member.user.username}** is currently isolated! They may not respond to your messages for a while.`);
         text.send(`<@!${member.id}> Welcome back to the server! You are still isolated - if you feel like you are ready to come out, please ping a member of staff.`);
       }
+
+      tvf.saveDoc(doc);
     }
 
     // welcome the user in #the_enchanted_woods

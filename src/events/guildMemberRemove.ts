@@ -9,6 +9,8 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 		// get the user's document
 		const doc = await tvf.userDoc(member.id);
 
+		doc.stickyRoles = member.roles.cache.map(r => r.id).filter(r => r !== '435894444101861408');
+
 		// if the user has requested a pending venting session, clear the expiry timeout
 		if (doc.private.requested) {
 			timeout.timeout(doc.private.id, null);
@@ -70,6 +72,8 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 			await text.delete();
 			await vc.delete();
 		}
+
+		tvf.saveDoc(doc);
 
 		// send goodbye message
 		tvf.const.general.send(`**${member.user.tag}** has exited the Forest.`);
