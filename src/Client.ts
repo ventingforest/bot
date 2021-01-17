@@ -268,27 +268,6 @@ export default class Client {
     return Math.floor(5/6 * x * (2 * x ** 2 + 27 * x + 91));
   }
 
-  /* get the top 100 members in the server based on xp
-  top100(): IUser[] {
-    var newDocs: IUser[] = [];
-
-    User.find({}).sort([['xp', -1]]).limit(100).exec((err, docs) => {
-      if (err) {
-        this.logger.error(err);
-      }
-      
-      docs.forEach(doc => {
-        if (this.server.member(doc.id) === null) {
-          console.log('No longer in the server');
-        } else {
-          newDocs.push(doc);
-        }
-      });
-    });
-
-    return newDocs;
-  } */
-
   // gets the user's rank on the level leaderboard
   async rankOnLevelLeaderboard(id: string) {
     const docs = await User.find({}).sort([['xp', -1]]).exec();
