@@ -1,5 +1,7 @@
 import * as Discord from 'discord.js';
 
+type LevelReward = { level: number, role: Discord.Role };
+
 export interface IConstants {
     // channels
     general: Discord.TextChannel;
@@ -113,7 +115,7 @@ export interface IConstants {
 		MANAGE_EMOJIS: string;
 	};
 
-	levelRoles: {
+	/*levelRoles: {
 		oldOne: number;
 		dirt: number;
 		dullahan: number;
@@ -144,7 +146,9 @@ export interface IConstants {
 		gnome: number;
 		goblin: number;
 		elf: number;
-	};
+	};*/
+
+	levelRoles: LevelReward[];
 }
 
 
@@ -261,38 +265,38 @@ export default (server: Discord.Guild): IConstants => {
             MANAGE_WEBHOOKS: 'Manage Webhooks',
             MANAGE_EMOJIS: 'Manage Emojis'
 		},
-		
-		levelRoles: {
-			oldOne: 100,
-			dirt: 90,
-			dullahan: 80,
-			erlking: 70,
-			treant: 62,
-			barghest: 58,
-			cockatrice: 54,
-			davidBowie: 50,
-			banshee: 46,
-			eldritchBeing: 42,
-			behemoth: 40,
-			hydra: 38,
-			dragon: 36,
-			unicorn: 34,
-			sphinx: 32,
-			griffin: 30,
-			phoenix: 28,
-			warlock: 26,
-			centaur: 24,
-			dryad: 22,
-			nymph: 20,
-			leshy: 18,
-			harpy: 16,
-			faun: 14,
-			leprechaun: 12,
-			fairy: 10,
-			brownie: 8,
-			gnome: 6,
-			goblin: 4,
-			elf: 2,
-		},
+
+		levelRoles: [
+			{ level: 2, role: server.roles.cache.get('441943660016173058') }, // elf
+			{ level: 4, role: server.roles.cache.get('466738306881814536') }, // goblin
+			{ level: 6, role: server.roles.cache.get('441944499149602816') }, // gnome
+			{ level: 8, role: server.roles.cache.get('466738333649731587') }, // brownie
+			{ level: 10, role: server.roles.cache.get('441944655450603520') }, // fairy
+			{ level: 12, role: server.roles.cache.get('441945051296301057') }, // leprechaun
+			{ level: 14, role: server.roles.cache.get('441945051296301057') }, // faun
+			{ level: 16, role: server.roles.cache.get('441945301721415681') }, // harpy
+			{ level: 18, role: server.roles.cache.get('453950866815320085') }, // leshy
+			{ level: 20, role: server.roles.cache.get('453950669573849091') }, // nymph
+			{ level: 22, role: server.roles.cache.get('441945780119535637') }, // dryad
+			{ level: 24, role: server.roles.cache.get('453947107825680396') }, // centaur
+			{ level: 26, role: server.roles.cache.get('453950089451405322') }, // warlock
+			{ level: 28, role: server.roles.cache.get('466738356831649793') }, // phoenix
+			{ level: 30, role: server.roles.cache.get('453947113643048982') }, // griffin
+			{ level: 32, role: server.roles.cache.get('453949450902044715') }, // sphinx
+			{ level: 34, role: server.roles.cache.get('453947119842099222') }, // unicorn
+			{ level: 36, role: server.roles.cache.get('466739004432318466') }, // dragon
+			{ level: 38, role: server.roles.cache.get('453950908640788480') }, // hydra
+			{ level: 40, role: server.roles.cache.get('635836969527541770') }, // behemoth
+			{ level: 42, role: server.roles.cache.get('640501774985461790') }, // eldritch being
+			{ level: 46, role: server.roles.cache.get('799084406354346054') }, // banshee
+			{ level: 48, role: server.roles.cache.get('799084468144308274') }, // cockatrice
+			{ level: 50, role: server.roles.cache.get('799084509667655721') }, // barghest
+			{ level: 52, role: server.roles.cache.get('799084438402891786') }, // david bowie
+			{ level: 54, role: server.roles.cache.get('799084536151277588') }, // treant
+			{ level: 56, role: server.roles.cache.get('799084559366881321') }, // elrking
+			{ level: 58, role: server.roles.cache.get('799084584067137580') }, // dullahan
+			{ level: 60, role: server.roles.cache.get('799084616350040064') }, // dirt
+			{ level: 62, role: server.roles.cache.get('799084638936367155') }, // old one
+		]
     }
 }

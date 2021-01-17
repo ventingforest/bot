@@ -96,15 +96,36 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			);
 		}
 	} else {
-		const doc = await tvf.userDoc(msg.author.id); // get the user's document
-		doc.xp += Math.floor(Math.random() * 25) + 15; // 15-25 xp per message
+		if (!tvf.talkedRecently.has(msg.author.id)) {
+			const doc = await tvf.userDoc(msg.author.id); // get the user's document
+			doc.xp += Math.floor(Math.random() * 25) + 15; // 15-25 xp per message
 
-		// level up!
-		if (doc.xp >= tvf.xpFor(doc.level + 1)) {
-			doc.level++;
-			msg.author.send(`You have levelled up to level ${doc.level}`);
+			// level up!
+			if (doc.xp >= tvf.xpFor(doc.level + 1)) {
+				doc.level++;
+				msg.author.send(`You have levelled up to level ${doc.level}`);
+
+				let levels = [];
+
+				tvf.const.levelRoles.forEach(r => {
+					levels.push(r.level);
+				});
+
+				if (levels.includes(doc.level)) {
+					const newRole = tvf.const.levelRoles.find(r => r.level === doc.level);
+					const oldRole = tvf.const.levelRoles.find(r => r.level === doc.level - 2);
+
+					const member = msg.guild.member(msg.author.id);
+					member.roles.remove(oldRole.role, `Levelled up to ${newRole.level}!`);
+					member.roles.add(newRole.role, `Levelled up to ${newRole.level}!`);
+				}
+			}
+
+			tvf.saveDoc(doc);
+
+			// put them on timeout for a minute
+			tvf.talkedRecently.add(msg.author.id);
+			setTimeout(() => tvf.talkedRecently.delete(msg.author.id), 60000);
 		}
-
-		tvf.saveDoc(doc);
 	}
 };

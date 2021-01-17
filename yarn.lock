@@ -1960,6 +1960,11 @@ optionator@^0.8.3:
     type-check "~0.3.2"
     word-wrap "~1.2.3"
 
+ord@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/ord/-/ord-1.0.1.tgz#9a6626ccb5798d7ce15fb2841eaef8162039dbad"
+  integrity sha512-p+ixgyW5hPNUb67tT+iR6qGV8pQRyrbYwyq5LzAF/bPZh7xFbOkeM7J7t3+F1lMSRj0Hedob7uedAEZk0I/TbQ==
+
 os-homedir@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"

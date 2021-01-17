@@ -13,7 +13,7 @@ declare global {
       run(tvf: Client, msg: Discord.Message, args: string[], other: { prefix: string }): void; // method containing the command's code
       name: string; // the name of the command
       description?: string; // a description of what the command does
-      category?: string; // the category the command belongs in
+      category?: string; // the category the command belongs in - automatically defined
       aliases?: string[]; // other names for the command
       permissions?: Discord.PermissionResolvable[]; // required permissions to run the command
       args?: boolean; // whether the command requires arguments

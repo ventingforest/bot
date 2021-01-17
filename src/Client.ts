@@ -7,7 +7,7 @@ import * as path from 'path';
 import PastebinAPI from 'pastebin-js';
 
 import User, { IUser } from './models/user';
-import Constants, { IConstants } from './Constants';
+import { IConstants } from './Constants';
 
 export default class Client {
   // properties
@@ -25,6 +25,7 @@ export default class Client {
     'api_user_name': process.env.PASTEBIN_USERNAME,
     'api_user_password': process.env.PASTEBIN_PASSWORD
   });
+  talkedRecently = new Set();
 
   // constants
   moment = 'ddd, MMM Do, YYYY h:mm A';
@@ -265,5 +266,32 @@ export default class Client {
   // calculates the amount of xp required for a level
   xpFor(x: number): number {
     return Math.floor(5/6 * x * (2 * x ** 2 + 27 * x + 91));
+  }
+
+  /* get the top 100 members in the server based on xp
+  top100(): IUser[] {
+    var newDocs: IUser[] = [];
+
+    User.find({}).sort([['xp', -1]]).limit(100).exec((err, docs) => {
+      if (err) {
+        this.logger.error(err);
+      }
+      
+      docs.forEach(doc => {
+        if (this.server.member(doc.id) === null) {
+          console.log('No longer in the server');
+        } else {
+          newDocs.push(doc);
+        }
+      });
+    });
+
+    return newDocs;
+  } */
+
+  // gets the user's rank on the level leaderboard
+  async rankOnLevelLeaderboard(id: string) {
+    const docs = await User.find({}).sort([['xp', -1]]).exec();
+    return docs.findIndex(d => d.id === id) + 1;
   }
 }

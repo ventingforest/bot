@@ -27,6 +27,7 @@
         "mongoose": "^5.8.11",
         "ms": "^2.1.2",
         "novelcovid": "^2.2.0",
+        "ord": "^1.0.1",
         "pastebin-js": "^1.0.5",
         "shortid": "^2.2.15",
         "timeout": "^0.2.1",
