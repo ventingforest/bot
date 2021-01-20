@@ -288,15 +288,35 @@ export default (server: Discord.Guild): IConstants => {
 			{ level: 38, role: server.roles.cache.get('453950908640788480') }, // hydra
 			{ level: 40, role: server.roles.cache.get('635836969527541770') }, // behemoth
 			{ level: 42, role: server.roles.cache.get('640501774985461790') }, // eldritch being
-			{ level: 46, role: server.roles.cache.get('799084406354346054') }, // banshee
-			{ level: 48, role: server.roles.cache.get('799084468144308274') }, // cockatrice
-			{ level: 50, role: server.roles.cache.get('799084509667655721') }, // barghest
-			{ level: 52, role: server.roles.cache.get('799084438402891786') }, // david bowie
-			{ level: 54, role: server.roles.cache.get('799084536151277588') }, // treant
-			{ level: 56, role: server.roles.cache.get('799084559366881321') }, // elrking
-			{ level: 58, role: server.roles.cache.get('799084584067137580') }, // dullahan
-			{ level: 60, role: server.roles.cache.get('799084616350040064') }, // dirt
-			{ level: 62, role: server.roles.cache.get('799084638936367155') }, // old one
+			{ level: 44, role: server.roles.cache.get('799084406354346054') }, // banshee
+			{ level: 46, role: server.roles.cache.get('799084468144308274') }, // cockatrice
+			{ level: 48, role: server.roles.cache.get('799084509667655721') }, // barghest
+			{ level: 50, role: server.roles.cache.get('801521919454609438') }, // draugr
+			{ level: 52, role: server.roles.cache.get('799084536151277588') }, // treant
+			{ level: 54, role: server.roles.cache.get('799084584067137580') }, // dullahan
+			{ level: 56, role: server.roles.cache.get('801518871927455794') }, // yokai 
+			{ level: 58, role: server.roles.cache.get('801518874113474631') }, // kelpie 
+			{ level: 60, role: server.roles.cache.get('801518876395044904') }, // jötnar
+			{ level: 62, role: server.roles.cache.get('801518878211571713') }, // rusalka
+			{ level: 64, role: server.roles.cache.get('801518880656064592') }, // kitsune
+			{ level: 66, role: server.roles.cache.get('801518881314177116') }, // fomorian
+			{ level: 68, role: server.roles.cache.get('801518884863606845') }, // jörmungandr
+			{ level: 70, role: server.roles.cache.get('799084559366881321') }, // erlking
+			{ level: 72, role: server.roles.cache.get('801518887053033502') }, // river deity
+			{ level: 74, role: server.roles.cache.get('801518889102999602') }, // spriggan
+			{ level: 76, role: server.roles.cache.get('801518890978246706') }, // hippogriff
+			{ level: 78, role: server.roles.cache.get('801518911165825125') }, // pixie
+			{ level: 80, role: server.roles.cache.get('801518914190180392') }, // pegasus
+			{ level: 82, role: server.roles.cache.get('801518919055573063') }, // chimera
+			{ level: 84, role: server.roles.cache.get('801520771876913242') }, // basilisk
+			{ level: 86, role: server.roles.cache.get('801520780876841001') }, // forest spirit
+			{ level: 88, role: server.roles.cache.get('801520784555769888') }, // moth man
+			{ level: 90, role: server.roles.cache.get('799084616350040064') }, // dirt
+			{ level: 92, role: server.roles.cache.get('799084438402891786') }, // david bowie
+			{ level: 94, role: server.roles.cache.get('801520795347320853') }, // rel
+			{ level: 96, role: server.roles.cache.get('801520798430265374') }, // dwayne "the rock" johnson
+			{ level: 98, role: server.roles.cache.get('799084638936367155') }, // gandalf
+			{ level: 100, role: server.roles.cache.get('801520799189958676') }, // how?
 		]
     }
 }
