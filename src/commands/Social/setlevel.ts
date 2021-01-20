@@ -11,8 +11,8 @@ export default {
         const doc = await tvf.userDoc(member.id); // get the member's document
 
         // set the new level
-        doc.level = parseInt(args[1]);
-        doc.xp = tvf.xpFor(doc.level);
+        doc.level = parseInt(args[1]); 
+        doc.xp = tvf.levels.xpFor(doc.level);
         await tvf.saveDoc(doc);
 
         msg.channel.send(`**${member.user.tag}** is now level **${doc.level}**`);

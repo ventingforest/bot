@@ -11,6 +11,6 @@ export default {
 			return msg.channel.send(`**${tvf.const.cross}  |**  The provided opacity has to be below 100!`);
 		}
 
-		msg.channel.send(new Discord.MessageAttachment(await tvf.pridePfp(msg.author, 'transgender', opacity)));
+		msg.channel.send(new Discord.MessageAttachment(await tvf.other.pridePfp(msg.author, 'transgender', opacity)));
 	}
 } as Command;

@@ -101,17 +101,11 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			doc.xp += Math.floor(Math.random() * 25) + 15; // 15-25 xp per message
 
 			// level up!
-			if (doc.xp >= tvf.xpFor(doc.level + 1)) {
+			if (doc.xp >= tvf.levels.xpFor(doc.level + 1)) {
 				doc.level++;
-				msg.author.send(`You have levelled up to level ${doc.level}`);
+				msg.author.send(`Congratulations! Your magical ability has advamced to **Level ${doc.level}** in The Venting Forest!`);
 
-				let levels = [];
-
-				tvf.const.levelRoles.forEach(r => {
-					levels.push(r.level);
-				});
-
-				if (levels.includes(doc.level)) {
+				if (tvf.const.levelRoles.find(r => r.level === doc.level)) {
 					const newRole = tvf.const.levelRoles.find(r => r.level === doc.level);
 					const oldRole = tvf.const.levelRoles.find(r => r.level === doc.level - 2);
 

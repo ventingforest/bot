@@ -11,9 +11,9 @@ export default {
 	run: async (tvf, msg, args) => {
         const member = tvf.checkForMember(msg, args) || msg.guild.member(msg.author); // find a member in the command
         const doc = await tvf.userDoc(member.id); // get the member's document
-        const rank = await tvf.rankOnLevelLeaderboard(member.id); // figure out the member's rank
-        const xpForLevel = tvf.xpFor(doc.level); // xp for the level the member is on
-        const xpForNextLevel = tvf.xpFor(doc.level + 1);
+        const rank = await tvf.levels.rankInServer(member.id); // figure out the member's rank
+        const xpForLevel = tvf.levels.xpFor(doc.level); // xp for the level the member is on
+        const xpForNextLevel = tvf.levels.xpFor(doc.level + 1); // xp for the level the member is going to reach
 
         // register league spartan as a font
         registerFont(`${__dirname}/../../../assets/fonts/LeagueSpartan.ttf`, { family: 'League Spartan'});

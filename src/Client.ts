@@ -2,12 +2,12 @@ import * as Discord from 'discord.js';
 import * as winston from 'winston';
 import * as fs from 'fs';
 import mongoose = require('mongoose');
-import * as jimp from 'jimp';
-import * as path from 'path';
 import PastebinAPI from 'pastebin-js';
 
 import User, { IUser } from './models/user';
 import { IConstants } from './Constants';
+import Levels from './helpers/Levels';
+import Other from './helpers/Other';
 
 export default class Client {
   // properties
@@ -26,6 +26,8 @@ export default class Client {
     'api_user_password': process.env.PASTEBIN_PASSWORD
   });
   talkedRecently = new Set();
+  levels = new Levels();
+  other = new Other();
 
   // constants
   moment = 'ddd, MMM Do, YYYY h:mm A';
@@ -47,12 +49,6 @@ export default class Client {
   }
 
   const: IConstants;
-
-  auth = {
-    discord: this.isProduction ? process.env.STABLE : process.env.BETA,
-    mongo: process.env.MONGO,
-    logdna: process.env.LOGDNA,
-  }
 
   db = {
     user: User,
@@ -160,7 +156,7 @@ export default class Client {
       .on('disconnect', () => this.logger.info('Disconnected from the database.'));
 
     // log into discord
-    await this.bot.login(this.auth.discord);
+    await this.bot.login(this.isProduction ? process.env.STABLE : process.env.BETA);
 
     // save the server for use in other methods
     this.server = this.bot.guilds.cache.get('435894444101861408');
@@ -241,36 +237,8 @@ export default class Client {
     doc.save().catch(err => this.logger.error(`There was an error saving that document: ${err}`));
   }
 
-  // generate a pride image
-  async pridePfp(user: Discord.User, type: string, opacity: number): Promise<Buffer> {
-    // load the necessary images
-    const image = await jimp.read(user.avatarURL({ size: 512, format: 'png' }));
-    const flag = await jimp.read(path.resolve(`assets/pride/${type}.png`));
-
-    // resize the flag and set opacity to 50%
-    flag.resize(image.getWidth(), image.getHeight());
-    flag.opacity(opacity);
-
-    // overlay the flag onto the image
-    image.blit(flag, 0, 0);
-
-    // return the manipulated image's buffer
-    return await image.getBufferAsync(jimp.MIME_PNG);
-  }
-
   // formats a number
   formatNumber(n: number): string {
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
-
-  // calculates the amount of xp required for a level
-  xpFor(x: number): number {
-    return Math.floor(5/6 * x * (2 * x ** 2 + 27 * x + 91));
-  }
-
-  // gets the user's rank on the level leaderboard
-  async rankOnLevelLeaderboard(id: string) {
-    const docs = await User.find({}).sort([['xp', -1]]).exec();
-    return docs.findIndex(d => d.id === id) + 1;
   }
 }
