@@ -115,39 +115,6 @@ export interface IConstants {
 		MANAGE_EMOJIS: string;
 	};
 
-	/*levelRoles: {
-		oldOne: number;
-		dirt: number;
-		dullahan: number;
-		erlking: number;
-		treant: number;
-		barghest: number;
-		cockatrice: number;
-		davidBowie: number;
-		banshee: number;
-		eldritchBeing: number;
-		behemoth: number;
-		hydra: number;
-		dragon: number;
-		unicorn: number;
-		sphinx: number;
-		griffin: number;
-		phoenix: number;
-		warlock: number;
-		centaur: number;
-		dryad: number;
-		nymph: number;
-		leshy: number;
-		harpy: number;
-		faun: number;
-		leprechaun: number;
-		fairy: number;
-		brownie: number;
-		gnome: number;
-		goblin: number;
-		elf: number;
-	};*/
-
 	levelRoles: LevelReward[];
 }
 
@@ -317,6 +284,6 @@ export default (server: Discord.Guild): IConstants => {
 			{ level: 96, role: server.roles.cache.get('801520798430265374') }, // dwayne "the rock" johnson
 			{ level: 98, role: server.roles.cache.get('799084638936367155') }, // gandalf
 			{ level: 100, role: server.roles.cache.get('801520799189958676') }, // how?
-		]
+		],
     }
 }

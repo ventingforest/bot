@@ -22,7 +22,7 @@ export default async (tvf: Client, _guild: Discord.Guild, user: Discord.User) =>
 				.setDescription(`${user.tag} was banned from the server. This is because TVF Bot's bot banner is enabled. To toggle this, an administrator must run the \`tvf botban\` command! Remember to turn it back on afterwards when you're done adding bots!`)
 
 			tvf.const.general.send(general);
-			tvf.const.staffChannels.support.send(staff);
+			tvf.const.staffChannels.moderators.chat.send(staff);
 		} else {
 			tvf.const.general.send(`**${user.tag}** has been banned from the Forest.`);
 		}

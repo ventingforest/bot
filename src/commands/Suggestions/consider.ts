@@ -7,7 +7,7 @@ export default {
 	allowGeneral: true,
 	args: true,
     usage: '<id> [comment]',
-    staffAccess: ['Admin'],
+    staffAccess: ['Admin', 'Engagement'],
 	run: async (tvf, msg, args) => {
         const id = args[0];
         args.shift();
