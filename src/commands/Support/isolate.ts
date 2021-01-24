@@ -11,7 +11,7 @@ export default {
   allowGeneral: true,
   staffAccess: ['Support', 'Moderation', 'Admin'],
   run: async (tvf, msg, args) => {
-      const user = await tvf.resolveUser(msg, args[0]); // Get the mentioned user
+      const user = await tvf.resolveUser(msg.mentions.members.first() ? msg.mentions.members.first().id : args[0]); // Get the mentioned user
       const member = tvf.server.member(user);
       const doc = await tvf.userDoc(user.id); // Get the member's document from the database
 
@@ -113,7 +113,7 @@ export default {
       
       // Unisolating the user
       else {
-        if (tvf.isUser('Moderation', msg.author)) {
+        if (tvf.isUser('Moderation', msg.member)) {
           await msg.delete(); // Delete the message
 
           // Fetch any notes

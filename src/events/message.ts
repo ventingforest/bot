@@ -44,17 +44,17 @@ export default async (tvf: Client, msg: Discord.Message) => {
 	    // checks
 		if (command.staffAccess) {
 			let access = [];
-			command.staffAccess.forEach(role => access.push(tvf.isUser(role, msg.author)));
+			command.staffAccess.forEach(role => access.push(tvf.isUser(role, msg.member)));
 
 			if (!access.includes(true)) {
-				return msg.channel.send(`**${tvf.const.cross}  |**  you are not allowed to run that command!`);
+				return msg.channel.send(tvf.emojiMessage(tvf.const.cross, 'You are not allowed to run that command!'));
 			}
 		}
 
 		// if a command isn't allowed to be run in general, delete the message
 		if (!command.allowGeneral && msg.channel.id === tvf.const.general.id) {
 			await msg.delete();
-			return msg.author.send(`**${tvf.const.grimacing}  |**  you can not run that command in general!`);
+			return msg.author.send(tvf.emojiMessage(tvf.const.cross, 'You can not run that command in general!'));
 		}
 
 		// if there are certain permissions required to run a command
@@ -68,21 +68,28 @@ export default async (tvf: Client, msg: Discord.Message) => {
 
 			// if there are any permissions missing, inform the user
 			if (missingPermissions.length > 0) {
-				msg.author.send(`**${tvf.const.grimacing}  |**  you are missing these permissions in **${tvf.server.name}** to run **${command.name}**\n\`\`\`${tvf.friendlyPermissions(msg.member.permissions).join('\n')}\`\`\``);
-				return msg.channel.send(`**${tvf.const.cross}  |**  you do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.`);
+				const list = msg.member.permissions.toArray();
+
+				let newList: string[] = [];
+				for (let perm of list) {
+					newList.push(tvf.const.friendlyPermissions[perm]);
+				}
+
+				msg.author.send(tvf.emojiMessage(tvf.const.grimacing, `You are missing these permissions in **${tvf.server.name}** to run **${command.name}**\n\`\`\`${newList.join('\n')}\`\`\``));
+				return msg.channel.send(tvf.emojiMessage(tvf.const.grimacing, 'You do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.'));
 			}
 		}
 
 		// if the command requires arguments but hasn't been given any
 		if (command.args && args.length === 0) {
-		let reply = `**${tvf.const.cross}  |**  you did not provide any arguments!`;
+			let reply = tvf.emojiMessage(tvf.const.cross, 'You did not provide any arguments!');
 
-		// if the usage is listed for the command, append it to the reply
-		if (command.usage) {
-			reply += `\n**${tvf.const.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
-		}
+			// if the usage is listed for the command, append it to the reply
+			if (command.usage) {
+				reply += `\n**${tvf.const.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
+			}
 
-		return msg.channel.send(reply);
+			return msg.channel.send(reply);
 		}
 
 		// execute the command
@@ -101,7 +108,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			doc.xp += Math.floor(Math.random() * 25) + 15; // 15-25 xp per message
 
 			// level up!
-			if (doc.xp >= tvf.levels.xpFor(doc.level + 1)) {
+			if (doc.xp >= tvf.xpFor(doc.level + 1)) {
 				doc.level++;
 				msg.author.send(`Congratulations! Your magical ability has advamced to **Level ${doc.level}** in The Venting Forest!`);
 

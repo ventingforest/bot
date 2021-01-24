@@ -26,15 +26,15 @@ export default {
 				.setTitle('Help 👋')
 				.addField('Commands 🎉', `\`\`\`${commands}\`\`\``);
 
-			if (tvf.isUser('Support', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Support')).size > 0) {
+			if (tvf.isUser('Support', msg.member) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Support')).size > 0) {
 				embed.addField('Support ♥', `\`\`\`${supportCommands}\`\`\``);
 			}
 
-			if (tvf.isUser('Moderation', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Moderation')).size > 0) {
+			if (tvf.isUser('Moderation', msg.member) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Moderation')).size > 0) {
 				embed.addField('Moderation 🔨', `\`\`\`${moderationCommands}\`\`\``);
 			}
 
-			if (tvf.isUser('Admin', msg.author) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Admin')).size > 0) {
+			if (tvf.isUser('Admin', msg.member) && tvf.commands.filter(c => c.staffAccess && c.staffAccess.includes('Admin')).size > 0) {
 				embed.addField('Admin ⚙', `\`\`\`${adminCommands}\`\`\``);
 			}
 
@@ -65,9 +65,9 @@ export default {
       }
 		}
 
-		return msg.author.send(embed).then(() => msg.channel.type !== 'dm' ? msg.channel.send(`**${tvf.const.confetti}  |**  check your DMs!`) : null).catch(() => {
+		return msg.author.send(embed).then(() => msg.channel.type !== 'dm' ? msg.channel.send(tvf.emojiMessage(tvf.const.confetti, 'check your DMs!')) : null).catch(() => {
 			tvf.logger.error(`Couldn't send help DM to ${msg.author.tag}.`);
-			return msg.reply(`**${tvf.const.cross}  |**  I was unable to send a DM to you. This could be because of an error, or it could be because you do not allow messages from server members. Please check that you allow messages from server members, and if the error persists contact \`newt#1234\`.`);
+			return msg.reply(tvf.emojiMessage(tvf.const.cross, 'I was unable to send a DM to you. This could be because of an error, or it could be because you do not allow messages from server members. Please check that you allow messages from server members, and if the error persists contact `newt#1234`.'));
 		});
 	},
 } as Command;

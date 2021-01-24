@@ -15,7 +15,7 @@ export default {
     const subcommand = args[0];
 
     // Handle the starting of a session
-    if (subcommand === 'start' && (tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+    if (subcommand === 'start' && (tvf.isUser('Support', msg.member) || tvf.isUser('Admin', msg.member))) {
       await msg.delete();
       const id = args[1];
 
@@ -104,7 +104,7 @@ export default {
     }
 
     // Handle the ending of a session
-    else if (subcommand === 'end' && (tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+    else if (subcommand === 'end' && (tvf.isUser('Support', msg.member) || tvf.isUser('Admin', msg.member))) {
       await msg.delete();
       const id = args[1];
 
@@ -192,7 +192,7 @@ export default {
       if (!reason) reason = 'No reason specified.';
 
       // If a member of the support team wishes to cancel a user's private venting session
-      if (id && (tvf.isUser('Support', msg.author) || tvf.isUser('Admin', msg.author))) {
+      if (id && (tvf.isUser('Support', msg.member) || tvf.isUser('Admin', msg.member))) {
         doc = await User.findOne({ 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
         const venter = tvf.server.members.cache.get(doc.id); // Get the venter by their ID
 

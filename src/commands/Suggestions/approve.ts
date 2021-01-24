@@ -16,7 +16,7 @@ export default {
         // search for the user who made the suggestion
         const user = await User.findOne({ 'suggestions.id': id }, (err, res) => err ? () => {
             tvf.logger.error(err);
-            msg.channel.send(`**${tvf.const.cross}  |**  Either there was an error looking for the suggestion, or a suggestion with that ID does not exist. Please try again.`);
+            msg.channel.send(tvf.emojiMessage(tvf.const.cross, 'Either there was an error looking for the suggestion, or a suggestion with that ID does not exist. Please try again.'));
         } : res);
         const member = tvf.server.member(user.id);
         const suggestion = user.suggestions.find(s => s.id === id);

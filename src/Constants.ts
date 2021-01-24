@@ -114,8 +114,8 @@ export interface IConstants {
 		MANAGE_WEBHOOKS: string;
 		MANAGE_EMOJIS: string;
 	};
-
 	levelRoles: LevelReward[];
+	currency: string;
 }
 
 
@@ -285,5 +285,6 @@ export default (server: Discord.Guild): IConstants => {
 			{ level: 98, role: server.roles.cache.get('799084638936367155') }, // gandalf
 			{ level: 100, role: server.roles.cache.get('801520799189958676') }, // how?
 		],
+		currency: '£',
     }
 }

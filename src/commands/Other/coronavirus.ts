@@ -69,7 +69,7 @@ export default {
 
             // if the country was not found, cancel the command
             if (currentData.message && currentData.message === 'Country not found or doesn\'t have any cases') {
-                return msg.channel.send(`**${tvf.const.cross}  |**  \`${country}\` could not be found, or it doesn't have any cases!`);
+                return msg.channel.send(tvf.emojiMessage(tvf.const.cross, `\`${country}\` could not be found, or it doesn't have any cases!`));
             }
 
             // populate the embed with data!

@@ -3,11 +3,12 @@ import * as winston from 'winston';
 import * as fs from 'fs';
 import mongoose = require('mongoose');
 import PastebinAPI from 'pastebin-js';
+import * as jimp from 'jimp';
+import * as path from 'path';
+import axios from 'axios';
 
 import User, { IUser } from './models/user';
 import { IConstants } from './Constants';
-import Levels from './helpers/Levels';
-import Other from './helpers/Other';
 
 export default class Client {
   // properties
@@ -26,8 +27,6 @@ export default class Client {
     'api_user_password': process.env.PASTEBIN_PASSWORD
   });
   talkedRecently = new Set();
-  levels = new Levels();
-  other = new Other();
 
   // constants
   moment = 'ddd, MMM Do, YYYY h:mm A';
@@ -50,8 +49,9 @@ export default class Client {
 
   const: IConstants;
 
-  db = {
+  db: { user: mongoose.Model<IUser,{}>, connection: mongoose.Connection | null } = {
     user: User,
+    connection: null,
   }
 
   // constructor
@@ -103,7 +103,139 @@ export default class Client {
     logger.info('Discord client and logger are both initialised');
   }
 
-  // start the bot
+  /**
+   * Gets a user's unbelievaboat balance.
+   * @param {string} id
+   */
+  async getBalance(id: string): Promise<UserBalance> {
+    const res = await axios.get(`https://unbelievaboat.com/api/v1/guilds/${this.server.id}/users/${id}`, { headers: { 'Authorization': process.env.UNBELIEVABOAT }});
+    return { cash: res.data.cash, bank: res.data.bank, total: res.data.total };
+  }
+
+  /**
+   * Updates a user's unbelievaboat balance.
+   * @param {string} id 
+   * @param data 
+   */
+  async updateBalance(id: string, data: { cash?: number, bank?: number, reason?: number }): Promise<UserBalance> {
+    const res = await axios.patch(`https://unbelievaboat.com/api/v1/guilds/${this.server.id}/users/${id}`, data, { headers: { 'Authorization': process.env.UNBELIEVABOAT }});
+    return { cash: res.data.cash, bank: res.data.bank, total: res.data.total };
+  }
+
+  /**
+   * Calculates the amount of xp required for a level.
+   * @param {number} x
+   */
+  xpFor(x: number): number {
+    return Math.floor(5/6 * x * (2 * x ** 2 + 27 * x + 91));
+  }
+
+  /**
+   * Gets the user's rank in the level rankings.
+   * @param {string} id
+   */
+  async rankInServer(id: string): Promise<number> {
+      const docs = await User.find({}).sort([['xp', -1]]).exec();
+      return docs.filter(e => this.server.member(e.id)).findIndex(d => d.id === id) + 1;
+  }
+
+  /**
+   * Generates an embed that satisfies the provided options.
+   * @param {EmbedOptions} options
+   * @param {Discord.Message} msg 
+   */
+  createEmbed(options: EmbedOptions = { colour: this.const.white, timestamp: false, thumbnail: true, author: false, }, msg?: Discord.Message): Discord.MessageEmbed {
+    // create an embed and configure it accordinly
+    const embed = new Discord.MessageEmbed()
+      .setColor(options.colour || this.const.green);
+
+    if (options.timestamp) embed.setTimestamp();
+    if (options.thumbnail) embed.setThumbnail(this.server.iconURL());
+    if (msg && options.author) embed.setAuthor(msg.author.tag, msg.author.avatarURL());
+
+    return embed;
+  }
+
+  /**
+   * Generates a string formatted with an emoji and a message.
+   * @param {string} emoji
+   * @param {string} msg 
+   */
+  emojiMessage(emoji: string, msg: string): string {
+    return `**${emoji}  |** ${msg}`;
+  }
+
+  /**
+   * Checks if a user has a staff role.
+   * @param {StaffRole | 'Staff'} role
+   * @param {Discord.GuildMember} member
+   */
+  isUser(role: StaffRole | 'Staff', member: Discord.GuildMember): boolean {
+    return role === 'Support' ? member.roles.cache.has(this.const.staffRoles.support.id) || member.roles.cache.has(this.const.staffRoles.heads.support.id) :
+           role === 'Engagement' ? member.roles.cache.has(this.const.staffRoles.engagement.id) || member.roles.cache.has(this.const.staffRoles.heads.engagement.id) :
+           role === 'Moderation' ? member.roles.cache.has(this.const.staffRoles.moderators.id) || member.roles.cache.has(this.const.staffRoles.heads.moderators.id) :
+           role === 'Admin' ? member.roles.cache.has(this.const.staffRoles.admins.id) :
+           role === 'Staff' ? member.roles.cache.has(this.const.staffRoles.staff.id)
+           : false;
+  }
+
+  /**
+   * Gets a user based on their ID. Used to fetch User objects for members that have left the server.
+   * @param {string} id
+   */
+  async resolveUser(id: string): Promise<Discord.User> {
+    return await this.bot.users.fetch(id);
+  }
+
+  /**
+   * Fetches a user's document from the database.
+   * @param {string} id
+   */
+  async userDoc(id: string): Promise<IUser> {
+    return await User.findOne({ id }, (err, doc) => err ? this.logger.error(err) : doc);
+  }
+
+  /**
+   * Saves a document to the database.
+   * @param {mongoose.Document} doc
+   */
+  saveDoc(doc: mongoose.Document): any {
+    doc.save().catch(err => this.logger.error(`There was an error saving that document: ${err}`));
+  }
+
+  /**
+   * Overlays a pride flag over a user's profile picture.
+   * @param {Discord.User} user
+   * @param {string} type
+   * @param {number} opacity
+   */
+  async pridePfp(user: Discord.User, type: string, opacity: number): Promise<Buffer> {
+    // load the necessary images
+    const image = await jimp.read(user.avatarURL({ size: 512, format: 'png' }));
+    const flag = await jimp.read(path.resolve(`assets/pride/${type}.png`));
+
+    // resize the flag and set opacity to 50%
+    flag.resize(image.getWidth(), image.getHeight());
+    flag.opacity(opacity);
+
+    // overlay the flag onto the image
+    image.blit(flag, 0, 0);
+
+    // return the manipulated image's buffer
+    return await image.getBufferAsync(jimp.MIME_PNG);
+  }
+
+  /**
+   * Formats a number.
+   * @param {number} x
+   */
+  formatNumber(x: number): string {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  /**
+   * Starts the bot.
+   */
   async start() {
     // connect to the database
     mongoose.connect(process.env.MONGO, {
@@ -125,8 +257,6 @@ export default class Client {
           this.logger.info(`"${command.name}" command loaded from the "${command.category}" category!`);
       }
     });
-
-    // events
 
     // error events
     this.bot.on('debug', m => this.logger.debug(m));
@@ -150,7 +280,7 @@ export default class Client {
     }
 
     // database events
-    mongoose.connection
+    this.db.connection = mongoose.connection
       .on('connected', () => this.logger.info('Connected to database!'))
       .on('error', err => this.logger.error(`The database has thrown an error - ${err}`))
       .on('disconnect', () => this.logger.info('Disconnected from the database.'));
@@ -160,85 +290,5 @@ export default class Client {
 
     // save the server for use in other methods
     this.server = this.bot.guilds.cache.get('435894444101861408');
-  }
-
-  // create an embed
-  createEmbed(options: {
-    colour?: string, // input hexadecimal
-    timestamp?: boolean, // if false, the timestamp is omitted
-    thumbnail?: boolean, // if false, the thumbnail is omitted
-    author?: boolean, // if true, the author gets automatically set to the author of the message
-  } = {
-    colour: this.const.white,
-    timestamp: false,
-    thumbnail: true,
-    author: false,
-  }, msg?: Discord.Message): Discord.MessageEmbed {
-    // create an embed and configure it accordinly
-    const embed = new Discord.MessageEmbed()
-      .setColor(options.colour || this.const.green);
-
-    if (options.timestamp) embed.setTimestamp();
-    if (options.thumbnail) embed.setThumbnail(this.server.iconURL());
-    if (msg && options.author) embed.setAuthor(msg.author.tag, msg.author.avatarURL());
-
-    return embed;
-  }
-
-  // format an emoji message
-  emojiMessage(emoji: string, msg: string) {
-    return `**${emoji}  |** ${msg}`;
-  }
-
-  // checks if a member has a staff role
-  isUser(role: StaffRole | 'Staff', user: Discord.User): boolean {
-    const member = this.server.member(user);
-    return role === 'Support' ? member.roles.cache.has(this.const.staffRoles.support.id) || member.roles.cache.has(this.const.staffRoles.heads.support.id) :
-           role === 'Engagement' ? member.roles.cache.has(this.const.staffRoles.engagement.id) || member.roles.cache.has(this.const.staffRoles.heads.engagement.id) :
-           role === 'Moderation' ? member.roles.cache.has(this.const.staffRoles.moderators.id) || member.roles.cache.has(this.const.staffRoles.heads.moderators.id) :
-           role === 'Admin' ? member.roles.cache.has(this.const.staffRoles.admins.id) :
-           role === 'Staff' ? member.roles.cache.has(this.const.staffRoles.staff.id)
-           : false;
-  }
-
-  // find a user from their id
-  async resolveUser(msg: Discord.Message, arg: string): Promise<Discord.User> {
-    const id = msg.mentions.members.first() ? msg.mentions.members.first().id : arg;
-    return await this.bot.users.fetch(id);
-  }
-
-  // find a member from their tag
-  checkForMember(msg: Discord.Message, args: string[]): Discord.GuildMember {
-    return msg.mentions.members.first() === undefined ?
-      this.server.members.cache.find(({ user }) => user.tag === args.join(' ')) :
-      msg.mentions.members.first();
-  }
-
-  // returns a user's document from the database
-  async userDoc(id: string): Promise<IUser> {
-    return await User.findOne({ id }, (err, doc) => err ? this.logger.error(err) : doc);
-  }
-
-  // converts a list of permissions to friendly names
-  friendlyPermissions(perms: Readonly<Discord.Permissions>): string[] {
-    const list = perms.toArray();
-
-    let newList: string[] = [];
-
-    for (let perm of list) {
-      newList.push(this.const.friendlyPermissions[perm]);
-    }
-
-    return newList;
-  }
-
-  // save a document
-  saveDoc(doc: mongoose.Document) {
-    doc.save().catch(err => this.logger.error(`There was an error saving that document: ${err}`));
-  }
-
-  // formats a number
-  formatNumber(n: number): string {
-    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 }

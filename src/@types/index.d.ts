@@ -4,9 +4,10 @@ import Client from '../Client';
 declare global {
     type StaffRole = 'Support' | 'Engagement' | 'Moderation' | 'Admin';
     type EmbedOptions = {
-        colour: string; // the colour of the embed. can be any hex.
-        timestamp?: boolean; // whether the timestamp appears on the embed - defaults to false
-        thumbnail?: boolean; // whether the thumbnail is automatically set to the server's icon - defaults to true
+      colour?: string, // input hexadecimal
+      timestamp?: boolean, // if false, the timestamp is omitted
+      thumbnail?: boolean, // if false, the thumbnail is omitted
+      author?: boolean, // if true, the author gets automatically set to the author of the message
     }
 
     interface Command {
@@ -38,5 +39,11 @@ declare global {
       type: ModlogType; // the type of the log
       issuer: string; // the id of the person who issued the log
       issuedAt: Date; // when the modlog was issued
+    }
+
+    interface UserBalance {
+      cash: number,
+      bank: number,
+      total: number,
     }
 }

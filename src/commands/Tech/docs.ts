@@ -13,7 +13,7 @@ export default {
 
     // if the data could not be fetched
     if (!embed) {
-      return msg.channel.send(`**${tvf.const.cross}  |**  I couldn\'t find the requested information. Ensure that \`${source}\` is an existing branch, or consider looking for something that exists next time!`);
+      return msg.channel.send(tvf.emojiMessage(tvf.const.cross, `I couldn't find the requested information. Ensure that \`${source}\` is an existing branch, or consider looking for something that exists next time!`));
     }
 
     // if the bot doesn't have permission to delete messages
