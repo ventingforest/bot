@@ -66,29 +66,31 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 
       const doc = await tvf.userDoc(member.user.id);
 
-      if (doc.stickyRoles.length > 0) {
-        doc.stickyRoles.forEach(r => member.roles.add(r, 'Sticky roles!'));
-        doc.stickyRoles = [];
+      if (doc !== null) {
+        if (doc.stickyRoles.length > 0) {
+          doc.stickyRoles.forEach(r => member.roles.add(r, 'Sticky roles!'));
+          doc.stickyRoles = [];
+        }
+  
+        // If the user was previously isolated, hide all the channels again
+        if (doc.isolation.isolated) {
+          tvf.server.channels.cache.forEach(c => {
+            if (c.type === 'text' || c.type === 'news') c.updateOverwrite(member, { VIEW_CHANNEL: false, SEND_MESSAGES: false });
+            if (c.type === 'voice') c.updateOverwrite(member, { VIEW_CHANNEL: false, CONNECT: false });
+          });
+          
+          const text = tvf.server.channels.cache.get(doc.isolation.channels.text) as Discord.TextChannel;
+          const vc = tvf.server.channels.cache.get(doc.isolation.channels.vc) as Discord.VoiceChannel;
+  
+          text.updateOverwrite(member, { VIEW_CHANNEL: true, SEND_MESSAGES: true });
+          vc.updateOverwrite(member, { VIEW_CHANNEL: true, CONNECT: true });
+  
+          tvf.const.general.send(`**${member.user.username}** is currently isolated! They may not respond to your messages for a while.`);
+          text.send(`<@!${member.id}> Welcome back to the server! You are still isolated - if you feel like you are ready to come out, please ping a member of staff.`);
+        }
+  
+        tvf.saveDoc(doc);
       }
-
-      // If the user was previously isolated, hide all the channels again
-      if (doc.isolation.isolated) {
-        tvf.server.channels.cache.forEach(c => {
-          if (c.type === 'text' || c.type === 'news') c.updateOverwrite(member, { VIEW_CHANNEL: false, SEND_MESSAGES: false });
-          if (c.type === 'voice') c.updateOverwrite(member, { VIEW_CHANNEL: false, CONNECT: false });
-        });
-        
-        const text = tvf.server.channels.cache.get(doc.isolation.channels.text) as Discord.TextChannel;
-        const vc = tvf.server.channels.cache.get(doc.isolation.channels.vc) as Discord.VoiceChannel;
-
-        text.updateOverwrite(member, { VIEW_CHANNEL: true, SEND_MESSAGES: true });
-        vc.updateOverwrite(member, { VIEW_CHANNEL: true, CONNECT: true });
-
-        tvf.const.general.send(`**${member.user.username}** is currently isolated! They may not respond to your messages for a while.`);
-        text.send(`<@!${member.id}> Welcome back to the server! You are still isolated - if you feel like you are ready to come out, please ping a member of staff.`);
-      }
-
-      tvf.saveDoc(doc);
     }
 
     // welcome the user in #the_enchanted_woods
