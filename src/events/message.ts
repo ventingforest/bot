@@ -111,18 +111,18 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			if (doc.xp >= tvf.xpFor(doc.level + 1)) {
 				doc.level++;
 				msg.author.send(`Congratulations! Your magical ability has advamced to **Level ${doc.level}** in The Venting Forest!`);
-
-				if (tvf.const.levelRoles.find(r => r.level === doc.level)) {
-					const newRole = tvf.const.levelRoles.find(r => r.level === doc.level);
-					const oldRole = tvf.const.levelRoles.find(r => r.level === doc.level - 2);
-
-					const member = msg.guild.member(msg.author.id);
-					member.roles.remove(oldRole.role, `Levelled up to ${newRole.level}!`);
-					member.roles.add(newRole.role, `Levelled up to ${newRole.level}!`);
-				}
 			}
 
 			tvf.saveDoc(doc);
+
+			if (tvf.const.levelRoles.find(r => r.level === doc.level)) {
+				const newRole = tvf.const.levelRoles.find(r => r.level === doc.level);
+				const oldRole = tvf.const.levelRoles.find(r => r.level === doc.level - 2);
+
+				const member = msg.guild.member(msg.author.id);
+				if (doc.level !== 2) member.roles.remove(oldRole.role, `Levelled up to ${newRole.level}!`);
+			 	member.roles.add(newRole.role, `Levelled up to ${newRole.level}!`);
+			}
 
 			// put them on timeout for a minute
 			tvf.talkedRecently.add(msg.author.id);
