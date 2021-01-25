@@ -69,10 +69,7 @@ export default class Client {
     const logger = winston.createLogger({
       transports: [
         new winston.transports.Console({
-          format: winston.format.combine(timestamp, this.isProduction ?
-            winston.format.printf(log => `${log.timestamp} - ${log.level}: ${log.message}`) :
-            winston.format.printf(log => winston.format.colorize().colorize(log.level, `${log.timestamp} - ${log.level}: ${log.message}`))
-          ),
+          format: winston.format.combine(winston.format.printf(log => winston.format.colorize().colorize(log.level, `${log.timestamp} - ${log.level}: ${log.message}`))),
         })
       ]
     });
