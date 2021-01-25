@@ -1,4 +1,6 @@
 import ms from 'ms';
+import si from 'systeminformation';
+import bytes from 'pretty-bytes';
 
 export default {
   name: 'about',
@@ -8,6 +10,8 @@ export default {
     const developer = tvf.const.staffRoles.hackerbeing.members.first().user;
     const members = await tvf.server.members.fetch();
     const channels = tvf.server.channels.cache;
+    const ram = await si.mem();
+    const cpu = await si.currentLoad();
 
     const embed = tvf.createEmbed()
       .setAuthor(developer.tag, developer.avatarURL())
@@ -28,11 +32,6 @@ export default {
           inline: true,
         },
         {
-          name: 'Bots',
-          value: members.filter(m => m.user.bot).size,
-          inline: true,
-        },
-        {
           name: 'Channels',
           value: channels.filter(c => c.type !== 'category').size,
           inline: true,
@@ -45,6 +44,16 @@ export default {
         {
           name: 'Voice',
           value: channels.filter(c => c.type === 'voice').size,
+          inline: true,
+        },
+        {
+          name: 'RAM Usage',
+          value: `${bytes(ram.used)}/${bytes(ram.total)}`,
+          inline: true,
+        },
+        {
+          name: 'CPU Usage',
+          value: `${Math.round(cpu.currentload)}%`,
           inline: true,
         }
       ])

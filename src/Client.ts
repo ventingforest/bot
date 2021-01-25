@@ -1,11 +1,14 @@
 import * as Discord from 'discord.js';
 import * as winston from 'winston';
+import logdnaWinston from 'logdna-winston';
 import * as fs from 'fs';
 import mongoose = require('mongoose');
 import PastebinAPI from 'pastebin-js';
 import * as jimp from 'jimp';
 import * as path from 'path';
 import axios from 'axios';
+import moment from 'moment';
+import si from 'systeminformation';
 
 import User, { IUser } from './models/user';
 import { IConstants } from './Constants';
@@ -56,48 +59,7 @@ export default class Client {
 
   // constructor
   constructor() {
-    // create the logger
-    winston.addColors({
-      error: 'bold red',
-      warn: 'bold yellow',
-      info: 'bold cyan',
-      debug: 'bold white',
-    });
-
-    const timestamp = winston.format.timestamp({ format: 'DD-MM-YYYY HH:mm '});
-
-    const logger = winston.createLogger({
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(winston.format.printf(log => winston.format.colorize().colorize(log.level, `${log.timestamp} - ${log.level}: ${log.message}`))),
-        })
-      ]
-    });
-
-    const winstonError = {
-      apply: (target: any, _: any, argumentsList: any[]) => {
-        if (
-          argumentsList.length >= 2 ||
-                  argumentsList.length <= 0 ||
-                  typeof argumentsList[0] === 'string' ||
-                  argumentsList[0] instanceof String
-        ) {
-          target.apply(logger, argumentsList);
-        }
-        else {
-          const error = argumentsList[0];
-          target.apply(logger, ['', error]);
-        }
-      },
-    };
-
-    logger.debug = new Proxy(logger.debug, winstonError);
-    logger.error = new Proxy(logger.error, winstonError);
-
-    // set properties
     this.bot = new Discord.Client();
-    this.logger = logger;
-    logger.info('Discord client and logger are both initialised');
   }
 
   /**
@@ -234,6 +196,48 @@ export default class Client {
    * Starts the bot.
    */
   async start() {
+    // create the logger
+    winston.addColors({
+      error: 'bold red',
+      warn: 'bold yellow',
+      info: 'bold cyan',
+      debug: 'bold white',
+    });
+
+    const logger = winston.createLogger({
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(winston.format.printf(log => winston.format.colorize().colorize(log.level, `${moment().format(this.moment)} - ${log.level}: ${log.message}`))),
+        })
+      ]
+    });
+
+    const winstonError = {
+      apply: (target: any, _: any, argumentsList: any[]) => {
+        if (
+          argumentsList.length >= 2 ||
+                  argumentsList.length <= 0 ||
+                  typeof argumentsList[0] === 'string' ||
+                  argumentsList[0] instanceof String
+        ) {
+          target.apply(logger, argumentsList);
+        }
+        else {
+          const error = argumentsList[0];
+          target.apply(logger, ['', error]);
+        }
+      },
+    };
+
+    logger.debug = new Proxy(logger.debug, winstonError);
+    logger.error = new Proxy(logger.error, winstonError);
+
+    const network = (await si.networkInterfaces())[0];
+
+    logger.add(new logdnaWinston({ key: process.env.LOGDNA, hostname: 'tvf-bot', ip: network.ip4, mac: network.mac, app: 'tvf-bot', env: this.isProduction ? 'Production' : 'Development', level: 'info', indexMeta: true  }))
+
+    this.logger = logger;
+
     // connect to the database
     mongoose.connect(process.env.MONGO, {
       useNewUrlParser: true,
