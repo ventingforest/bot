@@ -49,7 +49,7 @@ export default class Client {
 
   const: IConstants;
 
-  db: { user: mongoose.Model<IUser,{}>, connection: mongoose.Connection | null } = {
+  db: { user: mongoose.Model<IUser>, connection: mongoose.Connection | null } = {
     user: User,
     connection: null,
   }

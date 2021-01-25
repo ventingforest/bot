@@ -2,7 +2,7 @@ import User, { IUser } from '../../models/user';
 import { stripIndents } from 'common-tags';
 import moment from 'moment';
 import Discord from 'discord.js';
-import shortid from 'shortid';
+import { nanoid } from 'nanoid';
 import timeout from 'timeout';
 
 export default {
@@ -270,7 +270,7 @@ export default {
     else {
       await msg.delete(); // Delete the user's message
       const doc = await tvf.userDoc(msg.author.id); // Get the user's document
-      const id = shortid.generate(); // Generate an ID for later
+      const id = nanoid(5); // Generate an ID for later
       const hour = 3600000; // An hour in ms
 
       // From the message, fetch the reason

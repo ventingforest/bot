@@ -4,11 +4,6 @@ export interface IUser extends mongoose.Document {
     id: string; // the id of the user
     level: number; // the level of a user
     xp: number; // the total xp of a user
-    economy: {
-      cash: number; // the amount of money the user has in cash
-      bank: number; // the amount of money the user has in the bank
-      total: number;
-    };
     private: {
       requested: boolean; // whether the user has a pending private venting session
       id: string; // the id of the private venting session
@@ -48,20 +43,6 @@ const userSchema = new mongoose.Schema(
     xp: {
       type: Number,
       default: 0,
-    },
-    economy: {
-      cash: {
-        type: Number,
-        default: 0,
-      },
-      bank: {
-        type: Number,
-        default: 0,
-      },
-      total: {
-        type: Number,
-        default: 0,
-      },
     },
 		private: {
 			requested: Boolean,

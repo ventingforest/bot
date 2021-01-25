@@ -1,4 +1,4 @@
-import shortid from 'shortid';
+import { nanoid } from 'nanoid';
 import _ from 'lodash';
 
 export default {
@@ -8,7 +8,7 @@ export default {
 	usage: '<suggestion>',
 	run: async (tvf, msg, args) => {
 		const suggestion = args.join(' ');
-		const id = shortid.generate();
+		const id = nanoid(5);
 		
 		// post the suggestion
 		const embed = tvf.createEmbed({ timestamp: true })
