@@ -1,6 +1,7 @@
 import ms from 'ms';
 import si from 'systeminformation';
 import bytes from 'pretty-bytes';
+import pkg from '../../../package.json';
 
 export default {
   name: 'about',
@@ -27,8 +28,8 @@ export default {
           inline: true,
         },
         {
-          name: 'Users',
-          value: members.filter(m => !m.user.bot).size,
+          name: 'Online',
+          value: members.filter(g => g.user.presence.status === 'online').size,
           inline: true,
         },
         {
@@ -47,17 +48,22 @@ export default {
           inline: true,
         },
         {
-          name: 'RAM Usage',
-          value: `${bytes(ram.used)}/${bytes(ram.total)}`,
+          name: 'RAM Used',
+          value: bytes(ram.used),
           inline: true,
         },
         {
           name: 'CPU Usage',
           value: `${Math.round(cpu.currentload)}%`,
           inline: true,
-        }
+        },
+        {
+          name: 'Discord.js Version',
+          value: pkg.dependencies['discord.js'],
+          inline: true,
+        },
       ])
-      .setFooter(`Made with ❤ and Discord.js by ${developer.tag}`, tvf.bot.user.avatarURL());
+      .setFooter(`Made with ❤ by ${developer.tag}`, tvf.bot.user.avatarURL());
 
       return msg.channel.send(embed);
   }
