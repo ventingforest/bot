@@ -115,9 +115,9 @@ export default async (tvf: Client, msg: Discord.Message) => {
 
 			tvf.saveDoc(doc);
 
-			if (tvf.const.levelRoles.find(r => r.level === doc.level)) {
+			if (doc.level % 2 === 0 && doc.level <= 100) {
 				const newRole = tvf.const.levelRoles.find(r => r.level === doc.level);
-				const oldRole = tvf.const.levelRoles.find(r => r.level === doc.level - 2);
+				const oldRole = tvf.const.levelRoles[tvf.const.levelRoles.indexOf(newRole) - 1];
 
 				const member = msg.guild.member(msg.author.id);
 				if (doc.level !== 2) member.roles.remove(oldRole.role, `Levelled up to ${newRole.level}!`);
@@ -125,7 +125,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			}
 
 			// put them on timeout for a minute
-			tvf.talkedRecently.add(msg.author.id);
+			if (msg.author.id !== tvf.const.kaizen.members.first().id) tvf.talkedRecently.add(msg.author.id);
 			setTimeout(() => tvf.talkedRecently.delete(msg.author.id), 60000);
 		}
 	}

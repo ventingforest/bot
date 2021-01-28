@@ -42,8 +42,14 @@ declare global {
     }
 
     interface UserBalance {
-      cash: number,
-      bank: number,
-      total: number,
+      cash: number; // the amount of cash the user has
+      bank: number; // the amount of money in the bank the user has
+      total: number; // the total amount of money that the user has
+    }
+
+    interface LevelReward {
+      level: number; // the level that the role is associated with
+      role: Discord.Role; // the role
+      name: string; // the name of the role
     }
 }

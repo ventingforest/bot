@@ -16,7 +16,7 @@ export default {
         const xpForNextLevel = tvf.xpFor(doc.level + 1); // xp for the level the member is going to reach
 
         // register league spartan as a font
-        registerFont(`${__dirname}/../../../assets/fonts/LeagueSpartan.ttf`, { family: 'League Spartan'});
+        registerFont(`${__dirname}/../../../../assets/fonts/LeagueSpartan.ttf`, { family: 'League Spartan'});
 
         // create the image
         const canvas = createCanvas(934, 282);
@@ -59,6 +59,7 @@ export default {
         // create an attachment
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `${msg.author.username}.png`);
         
-        msg.channel.send(`You are level ${doc.level}, with ${tvf.formatNumber(doc.xp)}xp.`, attachment);
+        const nextLevelReward = doc.level === Math.ceil(doc.level / 2) * 2 ? doc.level + 2 : Math.ceil(doc.level / 2) * 2;
+        msg.channel.send(tvf.emojiMessage(tvf.const.confetti, `You are ${tvf.formatNumber(tvf.xpFor(nextLevelReward) - doc.xp)} xp away from **${tvf.const.levelRoles.find(r => r.level === nextLevelReward).name}!**`), attachment);
 	}
 } as Command;
