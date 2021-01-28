@@ -41,7 +41,7 @@ export default {
 
         // draw the user's level and rank
         ctx.font = '25px "League Spartan"';
-        ctx.fillText(`Level ${doc.level} (#${rank})`, 265, 135, 674);
+        ctx.fillText(`Level ${doc.level} (#${rank})  |  ${tvf.const.levelRoles.find(r => r.level === Math.floor(doc.level / 2) * 2).name}`, 265, 135, 674);
 
         // draw a progress bar
         ctx.fillRect(265, 175, 625, 29);
@@ -57,7 +57,7 @@ export default {
         ctx.fillRect(265, 175, 625 * percentage, 29)
 
         // create an attachment
-        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `${msg.author.username}.png`);
+        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `${msg.author.id}.png`);
         
         const nextLevelReward = doc.level === Math.ceil(doc.level / 2) * 2 ? doc.level + 2 : Math.ceil(doc.level / 2) * 2;
         msg.channel.send(tvf.emojiMessage(tvf.const.confetti, `You are ${tvf.formatNumber(tvf.xpFor(nextLevelReward) - doc.xp)} xp away from **${tvf.const.levelRoles.find(r => r.level === nextLevelReward).name}!**`), attachment);

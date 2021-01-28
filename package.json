@@ -9,7 +9,7 @@
     "scripts": {
         "dev": "cross-env NODE_ENV=development ts-nodemon",
         "beta": "npm run dev",
-        "prod": "tsc && cross-env NODE_ENV=production node build",
+        "prod": "tsc && cross-env NODE_ENV=production node build/src/index.js",
         "clean": "rimraf build"
     },
     "dependencies": {
