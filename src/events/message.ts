@@ -110,7 +110,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			// level up!
 			if (doc.xp >= tvf.xpFor(doc.level + 1)) {
 				doc.level++;
-				msg.author.send(`Congratulations! Your magical ability has advamced to **Level ${doc.level}** in The Venting Forest!`);
+				msg.author.send(`Congratulations! Your magical ability has advanced to **Level ${doc.level}** in The Venting Forest!`);
 			}
 
 			tvf.saveDoc(doc);
