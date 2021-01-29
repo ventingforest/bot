@@ -103,7 +103,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			);
 		}
 	} else {
-		if (!tvf.talkedRecently.has(msg.author.id)) {
+		if (tvf.config.levelling && !tvf.talkedRecently.has(msg.author.id)) {
 			const doc = await tvf.userDoc(msg.author.id); // get the user's document
 			doc.xp += Math.floor(Math.random() * 25) + 15; // 15-25 xp per message
 

@@ -25,6 +25,7 @@ declare global {
 
     interface BotConfig {
       botbanner: boolean; // if true, all new bots are banned from the server
+      levelling: boolean; // if true, members will gain xp and level up
     }
 
     interface Suggestion {

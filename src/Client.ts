@@ -23,6 +23,7 @@ export default class Client {
   server: Discord.Guild
   config: BotConfig = {
     botbanner: true,
+    levelling: true,
   };
   pastebin = new PastebinAPI({
     'api_dev_key': process.env.PASTEBIN_KEY,
