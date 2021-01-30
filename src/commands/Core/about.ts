@@ -11,7 +11,6 @@ export default {
     const developer = tvf.const.staffRoles.hackerbeing.members.first().user;
     const members = await tvf.server.members.fetch();
     const channels = tvf.server.channels.cache;
-    const ram = await si.mem();
     const cpu = await si.currentLoad();
 
     const embed = tvf.createEmbed()
@@ -49,7 +48,7 @@ export default {
         },
         {
           name: 'RAM Used',
-          value: bytes(ram.used),
+          value: bytes(process.memoryUsage().heapTotal),
           inline: true,
         },
         {
