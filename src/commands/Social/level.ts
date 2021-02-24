@@ -54,7 +54,7 @@ export default {
         // fill the progress bar
         const percentage = (doc.xp - xpForLevel) / (xpForNextLevel - xpForLevel);
         ctx.fillStyle = tvf.const.green;
-        ctx.fillRect(265, 175, 625 * percentage, 29)
+        ctx.fillRect(265, 175, 625 * percentage, 29);
 
         // create an attachment
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `${msg.author.id}.png`);
