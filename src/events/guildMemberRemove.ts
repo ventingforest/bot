@@ -52,7 +52,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 			// Inform the support team that the session has ended and post it in the logs 
 			const sessionEnded = tvf.createEmbed({ colour: tvf.const.red, timestamp: true, thumbnail: false })
 			  .setThumbnail(member.user.avatarURL())
-			  .setAuthor(tvf.bot.user.tag, tvf.bot.user.avatarURL())
+			  .setAuthor(tvf.user.tag, tvf.user.avatarURL())
 			  .setTitle(`${member.user.username}'s session is over!`)
 			  .setDescription('The user has left the server.')
 			  .addFields([

@@ -22,7 +22,7 @@ export default {
       // Try and find the user's document and begin updating it
       const doc = await User.findOne({ 'private.requested': true, 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
       if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.const.cross, `\`${id}\` is an invalid ID!`));
-      const user = await tvf.bot.users.fetch(doc.id);
+      const user = await tvf.users.fetch(doc.id);
 
       doc.private.requested = false;
       doc.private.startedAt = new Date();
@@ -117,7 +117,7 @@ export default {
       // Try and find the user's document
       const doc = await User.findOne({ 'private.requested': false, 'private.id': id }, (err, res) => err ? tvf.logger.error(err) : res);
       if (!doc) return msg.channel.send(tvf.emojiMessage(tvf.const.cross, `\`${id}\` is an invalid ID!`));
-      const user = await tvf.bot.users.fetch(doc.id);
+      const user = await tvf.users.fetch(doc.id);
 
       // Fetch the channels associated with the session
       const text = tvf.server.channels.cache.get(doc.private.channels.text) as Discord.TextChannel;

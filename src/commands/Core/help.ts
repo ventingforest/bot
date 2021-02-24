@@ -6,8 +6,8 @@ export default {
   allowGeneral: true,
 	run: async (tvf, msg, args) => {
 		const embed = tvf.createEmbed({ thumbnail: false, timestamp: true })
-			.setAuthor(tvf.bot.user.tag, tvf.bot.user.avatarURL())
-			.setThumbnail(tvf.bot.user.avatarURL());
+			.setAuthor(tvf.user.tag, tvf.user.avatarURL())
+			.setThumbnail(tvf.user.avatarURL());
 
 		// spread all of the commands into arrays
 		const commands = tvf.commands

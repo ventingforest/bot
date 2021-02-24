@@ -29,7 +29,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 	}
 
 	// prefix matching
-	const prefixRegex = new RegExp(`^(<@!?${tvf.bot.user.id}> |${_.escapeRegExp(tvf.prefix)})\\s*`);
+	const prefixRegex = new RegExp(`^(<@!?${tvf.user.id}> |${_.escapeRegExp(tvf.prefix)})\\s*`);
 	const prefix = msg.content.toLowerCase().match(prefixRegex) ? msg.content.toLowerCase().match(prefixRegex)[0] : null;
 
 	if (prefix) {

@@ -13,10 +13,9 @@ import si from 'systeminformation';
 import User, { IUser } from './models/user';
 import { IConstants } from './Constants';
 
-export default class Client {
+export default class Client extends Discord.Client {
   // properties
   isProduction = process.env.NODE_ENV === 'production';
-  bot: Discord.Client;
   logger: winston.Logger;
   commands: Discord.Collection<string, Command> = new Discord.Collection();
   events: Discord.Collection<string, any> = new Discord.Collection();
@@ -60,7 +59,7 @@ export default class Client {
 
   // constructor
   constructor() {
-    this.bot = new Discord.Client();
+    super();
   }
 
   /**
@@ -144,7 +143,7 @@ export default class Client {
    * @param {string} id
    */
   async resolveUser(id: string): Promise<Discord.User> {
-    return await this.bot.users.fetch(id);
+    return await this.users.fetch(id);
   }
 
   /**
@@ -261,9 +260,9 @@ export default class Client {
     });
 
     // error events
-    this.bot.on('debug', m => this.logger.debug(m));
-    this.bot.on('warn', m => this.logger.warn(m));
-    this.bot.on('error', m => this.logger.error(m));
+    this.on('debug', m => this.logger.debug(m));
+    this.on('warn', m => this.logger.warn(m));
+    this.on('error', m => this.logger.error(m));
     process.on('uncaughtException', m => this.logger.error(m));
 
     // discord events
@@ -275,7 +274,7 @@ export default class Client {
 
       // load the event
       // @ts-ignore
-      this.bot.on(name, (...args: any[]) => event(this, ...args));
+      this.on(name, (...args: any[]) => event(this, ...args));
 
       // log that the event has been loaded
       this.logger.info(`${name} event loaded.`);
@@ -288,9 +287,9 @@ export default class Client {
       .on('disconnect', () => this.logger.info('Disconnected from the database.'));
 
     // log into discord
-    await this.bot.login(this.isProduction ? process.env.STABLE : process.env.BETA);
+    await this.login(this.isProduction ? process.env.STABLE : process.env.BETA);
 
     // save the server for use in other methods
-    this.server = this.bot.guilds.cache.get('435894444101861408');
+    this.server = this.guilds.cache.get('435894444101861408');
   }
 }

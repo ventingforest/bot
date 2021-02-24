@@ -18,7 +18,7 @@ export default {
       .addFields([
         {
           name: 'Uptime',
-          value: ms(tvf.bot.uptime, { long: true }),
+          value: ms(tvf.uptime, { long: true }),
           inline: true,
         },
         {
@@ -62,7 +62,7 @@ export default {
           inline: true,
         },
       ])
-      .setFooter(`Made with ❤ by ${developer.tag}`, tvf.bot.user.avatarURL());
+      .setFooter(`Made with ❤ by ${developer.tag}`, tvf.user.avatarURL());
 
       return msg.channel.send(embed);
   }
