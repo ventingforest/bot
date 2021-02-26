@@ -27,9 +27,9 @@ export default {
 
         // Create a channel and vc for the isolated user
         const channel = await tvf.server.channels.create(`${user.username}-${user.discriminator}`, {
-          parent: tvf.const.staffChannels.isolation.category,
+          parent: tvf.const.channels.staff.isolation.category,
           type: 'text',
-          topic: `${tvf.const.tick}  |  Session started: ${moment(doc.isolation.isolatedAt).format(tvf.moment)}`,
+          topic: `${tvf.const.emojis.tick}  |  Session started: ${moment(doc.isolation.isolatedAt).format(tvf.moment)}`,
           permissionOverwrites: [
             {
               id: tvf.server.roles.everyone,
@@ -37,18 +37,18 @@ export default {
               deny: ['VIEW_CHANNEL', 'ADD_REACTIONS', 'SEND_TTS_MESSAGES'],
             },
             {
-              id: tvf.const.staffRoles.support,
+              id: tvf.const.roles.staff.support,
               allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
             },
             {
-              id: tvf.const.staffRoles.moderators,
+              id: tvf.const.roles.staff.moderators,
               allow: ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
             }
           ],
         });
 
         const vc = await tvf.server.channels.create(user.tag, {
-          parent: tvf.const.staffChannels.isolation.category,
+          parent: tvf.const.channels.staff.isolation.category,
           type: 'voice',
           permissionOverwrites: [
             {
@@ -57,11 +57,11 @@ export default {
               deny: 'VIEW_CHANNEL',
             },
             {
-              id: tvf.const.staffRoles.support,
+              id: tvf.const.roles.staff.support,
               allow: ['VIEW_CHANNEL', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'PRIORITY_SPEAKER'],
             },
             {
-              id: tvf.const.staffRoles.moderators,
+              id: tvf.const.roles.staff.moderators,
               allow: ['VIEW_CHANNEL', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'PRIORITY_SPEAKER']
             }
           ],
@@ -74,7 +74,7 @@ export default {
 
         channel.send(
           `Welcome to isolation, ${user.toString()}!`,
-          tvf.createEmbed({ colour: tvf.const.green, timestamp: true, thumbnail: false })
+          tvf.createEmbed({ colour: tvf.const.colours.green, timestamp: true, thumbnail: false })
             .setThumbnail(user.avatarURL())
             .setTitle(`Welcome to isolation, ${user.username}!`)
             .setDescription(`Hey there, ${user.username}! Welcome to isolation! You have been put here by a member of staff - but don't worry, this doesn't necessarily mean you have done something wrong. Staff put people here in order to help people calm down if you're feeling bad, or if you are harming other members of the server. Only you and the staff can see this channel, and it is completely private - feel free to talk to them.`)
@@ -99,16 +99,16 @@ export default {
         tvf.saveDoc(doc);
 
         // Inform relevant staff that the user has been isolated and post it in the logs
-        const isolated = tvf.createEmbed({ colour: tvf.const.red, thumbnail: false, author: true }, msg)
+        const isolated = tvf.createEmbed({ colour: tvf.const.colours.red, thumbnail: false, author: true }, msg)
           .setThumbnail(user.avatarURL())
           .setTitle(`${user.username} has been isolated.`)
           .setDescription(`Reason: ${reason}`)
           .setFooter(`Isolated by ${msg.author.username} at ${moment(doc.isolation.isolatedAt).format(tvf.moment)}`, msg.author.avatarURL());
 
-        tvf.const.staffChannels.moderators.chat.send(isolated);
-        tvf.const.staffChannels.moderators.modlogs.send(isolated);
-        tvf.const.staffChannels.support.send(isolated);
-        tvf.const.staffChannels.isolation.logs.send(isolated);
+        tvf.const.channels.staff.moderators.chat.send(isolated);
+        tvf.const.channels.staff.moderators.modlogs.send(isolated);
+        tvf.const.channels.staff.support.send(isolated);
+        tvf.const.channels.staff.isolation.logs.send(isolated);
       } 
       
       // Unisolating the user
@@ -147,7 +147,7 @@ export default {
           });
 
           // Inform the support and moderation teams that the isolation is over and post it in the logs 
-          const isolationEnded = tvf.createEmbed({ colour: tvf.const.red, timestamp: true, thumbnail: false, author: true }, msg)
+          const isolationEnded = tvf.createEmbed({ colour: tvf.const.colours.red, timestamp: true, thumbnail: false, author: true }, msg)
             .setThumbnail(user.avatarURL())
             .setTitle(`${user.username} has been unisolated!`)
             .setDescription(notes)
@@ -163,10 +163,10 @@ export default {
               { name: 'Pastebin', value: paste ? paste : 'Maximum daily paste upload met. Functionality will return in 24h.', inline: true },
             ]);
 
-        tvf.const.staffChannels.moderators.chat.send(isolationEnded);
-        tvf.const.staffChannels.moderators.modlogs.send(isolationEnded);
-        tvf.const.staffChannels.support.send(isolationEnded);
-        tvf.const.staffChannels.isolation.logs.send(isolationEnded);
+        tvf.const.channels.staff.moderators.chat.send(isolationEnded);
+        tvf.const.channels.staff.moderators.modlogs.send(isolationEnded);
+        tvf.const.channels.staff.support.send(isolationEnded);
+        tvf.const.channels.staff.isolation.logs.send(isolationEnded);
 
         if (tvf.server.member(user)) {
           // Give the user access to all other channels
@@ -190,7 +190,7 @@ export default {
       
         tvf.saveDoc(doc);
       } else {
-        msg.channel.send(tvf.emojiMessage(tvf.const.cross, 'Sorry, support team members can not unisolate members. Please contact a moderator.'));
+        msg.channel.send(tvf.emojiMessage(tvf.const.emojis.cross, 'Sorry, support team members can not unisolate members. Please contact a moderator.'));
       }
     }
   }

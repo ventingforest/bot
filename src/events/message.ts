@@ -7,7 +7,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 	if (msg.author.bot) return undefined;
 
  	// helper ping
-	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.const.communityRoles.helper.id && msg.channel.id != tvf.const.communityChannels.helper.id && tvf.isProduction) {
+	if (msg.mentions.roles.first() && msg.mentions.roles.first().id === tvf.const.roles.community.helper.id && msg.channel.id != tvf.const.channels.community.helper.id && tvf.isProduction) {
 		const embed = tvf.createEmbed()
 			.setTitle(`${msg.author.username} needs help!`)
 			.addFields([
@@ -21,10 +21,10 @@ export default async (tvf: Client, msg: Discord.Message) => {
 				},
 			]);
 
-		tvf.const.communityChannels.helper.send(embed);
+		tvf.const.channels.community.helper.send(embed);
 
 		return msg.reply(
-			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.const.resources}>. You can also request a one-on-one private session with a staff by using the \`tvf private\` command in any channel. If possible, please do provide a reason by typing the reason after the command.`,
+			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.const.channels.resources}>. You can also request a one-on-one private session with a staff by using the \`tvf private\` command in any channel. If possible, please do provide a reason by typing the reason after the command.`,
 		);
 	}
 
@@ -47,14 +47,14 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			command.staffAccess.forEach(role => access.push(tvf.isUser(role, msg.member)));
 
 			if (!access.includes(true)) {
-				return msg.channel.send(tvf.emojiMessage(tvf.const.cross, 'You are not allowed to run that command!'));
+				return msg.channel.send(tvf.emojiMessage(tvf.const.emojis.cross, 'You are not allowed to run that command!'));
 			}
 		}
 
 		// if a command isn't allowed to be run in general, delete the message
-		if (!command.allowGeneral && msg.channel.id === tvf.const.general.id) {
+		if (!command.allowGeneral && msg.channel.id === tvf.const.channels.general.id) {
 			await msg.delete();
-			return msg.author.send(tvf.emojiMessage(tvf.const.cross, 'You can not run that command in general!'));
+			return msg.author.send(tvf.emojiMessage(tvf.const.emojis.cross, 'You can not run that command in general!'));
 		}
 
 		// if there are certain permissions required to run a command
@@ -75,18 +75,18 @@ export default async (tvf: Client, msg: Discord.Message) => {
 					newList.push(tvf.const.friendlyPermissions[perm]);
 				}
 
-				msg.author.send(tvf.emojiMessage(tvf.const.grimacing, `You are missing these permissions in **${tvf.server.name}** to run **${command.name}**\n\`\`\`${newList.join('\n')}\`\`\``));
-				return msg.channel.send(tvf.emojiMessage(tvf.const.grimacing, 'You do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.'));
+				msg.author.send(tvf.emojiMessage(tvf.const.emojis.grimacing, `You are missing these permissions in **${tvf.server.name}** to run **${command.name}**\n\`\`\`${newList.join('\n')}\`\`\``));
+				return msg.channel.send(tvf.emojiMessage(tvf.const.emojis.grimacing, 'You do not have permission to run that command! I have sent you a DM containing all of the permissions you are missing.'));
 			}
 		}
 
 		// if the command requires arguments but hasn't been given any
 		if (command.args && args.length === 0) {
-			let reply = tvf.emojiMessage(tvf.const.cross, 'You did not provide any arguments!');
+			let reply = tvf.emojiMessage(tvf.const.emojis.cross, 'You did not provide any arguments!');
 
 			// if the usage is listed for the command, append it to the reply
 			if (command.usage) {
-				reply += `\n**${tvf.const.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
+				reply += `\n**${tvf.const.emojis.square}  |**  The correct usage would be: \`${prefix}${command.usage}\``;
 			}
 
 			return msg.channel.send(reply);
@@ -125,7 +125,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			}
 
 			// put them on timeout for a minute
-			if (msg.author.id !== tvf.const.kaizen.members.first().id) tvf.talkedRecently.add(msg.author.id);
+			if (msg.author.id !== tvf.const.roles.other.kaizen.members.first().id) tvf.talkedRecently.add(msg.author.id);
 			setTimeout(() => tvf.talkedRecently.delete(msg.author.id), 60000);
 		}
 	}

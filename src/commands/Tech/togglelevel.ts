@@ -10,9 +10,9 @@ export default {
   
       // inform the user of the change
       if (tvf.config.levelling) {
-        msg.channel.send(tvf.emojiMessage(tvf.const.confetti, 'Levelling has been enabled!'));
+        msg.channel.send(tvf.emojiMessage(tvf.const.emojis.confetti, 'Levelling has been enabled!'));
       } else {
-        msg.channel.send(tvf.emojiMessage(tvf.const.confetti, 'Levelling has been disabled!'));
+        msg.channel.send(tvf.emojiMessage(tvf.const.emojis.confetti, 'Levelling has been disabled!'));
       }
     }
   } as Command;

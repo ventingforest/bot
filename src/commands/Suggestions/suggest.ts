@@ -17,9 +17,9 @@ export default {
 			.setDescription(_.truncate(suggestion, { length: tvf.embedLimit.description }))
 			.setFooter(`Suggestion ID: ${id}`);
 
-		const message = await tvf.const.communityChannels.suggestions.send(embed);
-		await message.react(tvf.const.suggestions.upvote);
-		await message.react(tvf.const.suggestions.downvote);
+		const message = await tvf.const.channels.community.suggestions.send(embed);
+		await message.react(tvf.const.emojis.suggestions.upvote);
+		await message.react(tvf.const.emojis.suggestions.downvote);
 
 		// save the suggestion to the database
 		const userDoc = await tvf.userDoc(msg.author.id);

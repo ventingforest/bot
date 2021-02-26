@@ -27,10 +27,10 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
                 name: 'I\'m in, so now what?',
                 value: stripIndents`
                 Now that you have joined our server, there are a couple things that you should know and that you need to do.
-                First off, you must read ${tvf.const.rules.toString()}, as it contains the majority of what you need to know.
-                You can find out about our staff in ${tvf.const.meetTheStaff.toString()}.
-                When you are ready, please verify yourself in ${tvf.const.verification.toString()}!
-                You should then visit ${tvf.const.roles.toString()}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
+                First off, you must read ${tvf.const.channels.rules.toString()}, as it contains the majority of what you need to know.
+                You can find out about our staff in ${tvf.const.channels.meetTheStaff.toString()}.
+                When you are ready, please verify yourself in ${tvf.const.channels.verification.toString()}!
+                You should then visit ${tvf.const.channels.roles.toString()}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
               `,
               },
               {
@@ -85,7 +85,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
           text.updateOverwrite(member, { VIEW_CHANNEL: true, SEND_MESSAGES: true });
           vc.updateOverwrite(member, { VIEW_CHANNEL: true, CONNECT: true });
   
-          tvf.const.general.send(`**${member.user.username}** is currently isolated! They may not respond to your messages for a while.`);
+          tvf.const.channels.general.send(`**${member.user.username}** is currently isolated! They may not respond to your messages for a while.`);
           text.send(`<@!${member.id}> Welcome back to the server! You are still isolated - if you feel like you are ready to come out, please ping a member of staff.`);
         }
   
@@ -99,11 +99,11 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
       .setThumbnail(member.user.avatarURL())
       .setDescription(stripIndents`
 				This may be a somewhat large server, but we can certainly make you feel at home - that's what our **Welcome Team** is for!
-        **First of all, check out ${tvf.const.rules} as it contains much of what you need to know, and ${tvf.const.roles}, which you can self-assign.**
+        **First of all, check out ${tvf.const.channels.rules} as it contains much of what you need to know, and ${tvf.const.roles}, which you can self-assign.**
         We hope you have fun and enjoy your stay here at The Venting Forest!
 			`);
 
-    const msg = await tvf.const.general.send(`**Welcome to TVF, <@!${member.id}>!** ${member.id === '625919227651555348' || member.id === '326767126406889473' || member.user.bot ? '' : `(${tvf.const.communityRoles.welcomeTeam.toString()})`}`, welcomeEmbed);
-    msg.react(tvf.const.wave);
+    const msg = await tvf.const.channels.general.send(`**Welcome to TVF, <@!${member.id}>!** ${member.id === '625919227651555348' || member.id === '326767126406889473' || member.user.bot ? '' : `(${tvf.const.roles.community.welcomeTeam.toString()})`}`, welcomeEmbed);
+    msg.react(tvf.const.emojis.wave);
   }
 };

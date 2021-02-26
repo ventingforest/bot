@@ -11,10 +11,17 @@ export default (tvf: Client) => {
   tvf.logger.info('TVF Bot is ready.');
 
   // daily role income
-  schedule.scheduleJob({ hour: 0, minute: 0 }, () => {
-    tvf.server.members.cache.forEach(async m => {
-      const doc = await tvf.userDoc(m.id);
-      await tvf.updateBalance(m.id, { bank: doc.level * 50 });
+  if (tvf.isProduction) {
+    schedule.scheduleJob({ hour: 0, minute: 0 }, () => {
+      tvf.const.channels.staff.hooters.send('Handing out role incomes!');
+
+      tvf.server.members.cache.array().forEach(async (m, i) => {
+        setTimeout(async () => {
+          const doc = await tvf.userDoc(m.id);
+          await tvf.updateBalance(m.id, { cash: 0, bank: doc.level * 50, reason: 'Role income!' });
+          tvf.logger.info(`Increased ${m.user.tag} (Level ${doc.level})'s balance by ${doc.level * 50}!`);
+        }, i * 750);
+      });
     });
-  });
+  }
 };

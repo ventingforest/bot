@@ -50,7 +50,7 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 			});
 	  
 			// Inform the support team that the session has ended and post it in the logs 
-			const sessionEnded = tvf.createEmbed({ colour: tvf.const.red, timestamp: true, thumbnail: false })
+			const sessionEnded = tvf.createEmbed({ colour: tvf.const.colours.red, timestamp: true, thumbnail: false })
 			  .setThumbnail(member.user.avatarURL())
 			  .setAuthor(tvf.user.tag, tvf.user.avatarURL())
 			  .setTitle(`${member.user.username}'s session is over!`)
@@ -65,8 +65,8 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 			  ])
 			  .setFooter(`Session ID: ${doc.private.id}`, tvf.server.iconURL());
 	  
-			tvf.const.staffChannels.support.send(sessionEnded);
-			tvf.const.staffChannels.private.logs.send(sessionEnded);
+			tvf.const.channels.staff.support.send(sessionEnded);
+			tvf.const.channels.staff.private.logs.send(sessionEnded);
 	  
 			// Delete the channels associated with the session
 			await text.delete();
@@ -76,6 +76,6 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 		tvf.saveDoc(doc);
 
 		// send goodbye message
-		tvf.const.general.send(`**${member.user.tag}** has exited the Forest.`);
+		tvf.const.channels.general.send(`**${member.user.tag}** has exited the Forest.`);
 	}
 };

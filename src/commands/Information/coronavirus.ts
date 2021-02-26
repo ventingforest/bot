@@ -22,7 +22,7 @@ export default {
         const country = args.join(' ').toLowerCase();
         var currentData, historicalData;
         const embed = await tvf.createEmbed({ colour: '#FF6961', timestamp: true });
-        embed.setDescription(`React with ${tvf.const.graph} for a chart!`)
+        embed.setDescription(`React with ${tvf.const.emojis.graph} for a chart!`)
 
         // fetch the data
         if (!country || country === 'world') {
@@ -69,7 +69,7 @@ export default {
 
             // if the country was not found, cancel the command
             if (currentData.message && currentData.message === 'Country not found or doesn\'t have any cases') {
-                return msg.channel.send(tvf.emojiMessage(tvf.const.cross, `\`${country}\` could not be found, or it doesn't have any cases!`));
+                return msg.channel.send(tvf.emojiMessage(tvf.const.emojis.cross, `\`${country}\` could not be found, or it doesn't have any cases!`));
             }
 
             // populate the embed with data!
@@ -111,9 +111,9 @@ export default {
         }
 
         const embedMessage = await msg.channel.send(embed);
-        await embedMessage.react(tvf.const.graph);
+        await embedMessage.react(tvf.const.emojis.graph);
 
-        embedMessage.awaitReactions((r, u) => [tvf.const.graph].includes(r.emoji.name) && u.id === msg.author.id, { max: 1 })
+        embedMessage.awaitReactions((r, u) => [tvf.const.emojis.graph].includes(r.emoji.name) && u.id === msg.author.id, { max: 1 })
             .then(async collected => {
                 await embedMessage.reactions.removeAll();
                 const r = collected.first();

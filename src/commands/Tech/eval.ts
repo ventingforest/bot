@@ -29,11 +29,11 @@ export default {
       }
 
       // send a cleaned version of the result
-      if (evaled) msg.channel.send(tvf.emojiMessage(tvf.const.confetti, `\`SUCCESS\`\n\`\`\`${clean(evaled)}\`\`\``));
-      else msg.channel.send(tvf.emojiMessage(tvf.const.confetti, '`SUCCESS`'));
+      if (evaled) msg.channel.send(tvf.emojiMessage(tvf.const.emojis.confetti, `\`SUCCESS\`\n\`\`\`${clean(evaled)}\`\`\``));
+      else msg.channel.send(tvf.emojiMessage(tvf.const.emojis.confetti, '`SUCCESS`'));
     } catch (error) {
       tvf.logger.error(`Eval: ${error}`);
-      msg.channel.send(tvf.emojiMessage(tvf.const.cross, `\`ERROR\`\n\`\`\`${clean(error)}\`\`\``));
+      msg.channel.send(tvf.emojiMessage(tvf.const.emojis.cross, `\`ERROR\`\n\`\`\`${clean(error)}\`\`\``));
     }
   }
 } as Command;

@@ -53,13 +53,13 @@ export default {
 
         // fill the progress bar
         const percentage = (doc.xp - xpForLevel) / (xpForNextLevel - xpForLevel);
-        ctx.fillStyle = tvf.const.green;
+        ctx.fillStyle = tvf.const.colours.green;
         ctx.fillRect(265, 175, 625 * percentage, 29);
 
         // create an attachment
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `${msg.author.id}.png`);
         
         const nextLevelReward = doc.level === Math.ceil(doc.level / 2) * 2 ? doc.level + 2 : Math.ceil(doc.level / 2) * 2;
-        msg.channel.send(tvf.emojiMessage(tvf.const.confetti, `You are ${tvf.formatNumber(tvf.xpFor(nextLevelReward) - doc.xp)} xp away from **${tvf.const.levelRoles.find(r => r.level === nextLevelReward).name}!**`), attachment);
+        msg.channel.send(tvf.emojiMessage(tvf.const.emojis.confetti, `You are ${tvf.formatNumber(tvf.xpFor(nextLevelReward) - doc.xp)} xp away from **${tvf.const.levelRoles.find(r => r.level === nextLevelReward).name}!**`), attachment);
 	}
 } as Command;

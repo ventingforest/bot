@@ -65,9 +65,9 @@ export default {
       }
 		}
 
-		return msg.author.send(embed).then(() => msg.channel.type !== 'dm' ? msg.channel.send(tvf.emojiMessage(tvf.const.confetti, 'check your DMs!')) : null).catch(() => {
+		return msg.author.send(embed).then(() => msg.channel.type !== 'dm' ? msg.channel.send(tvf.emojiMessage(tvf.const.emojis.confetti, 'check your DMs!')) : null).catch(() => {
 			tvf.logger.error(`Couldn't send help DM to ${msg.author.tag}.`);
-			return msg.reply(tvf.emojiMessage(tvf.const.cross, 'I was unable to send a DM to you. This could be because of an error, or it could be because you do not allow messages from server members. Please check that you allow messages from server members, and if the error persists contact `newt#1234`.'));
+			return msg.reply(tvf.emojiMessage(tvf.const.emojis.cross, 'I was unable to send a DM to you. This could be because of an error, or it could be because you do not allow messages from server members. Please check that you allow messages from server members, and if the error persists contact `newt#1234`.'));
 		});
 	},
 } as Command;

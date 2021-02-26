@@ -8,18 +8,18 @@ export default {
     let embed = tvf.createEmbed({ timestamp: true });
 
     // group users by role
-    const admins = tvf.const.staffRoles.admins.members;
-    const engagement = tvf.const.staffRoles.engagement.members;
-    const support = tvf.const.staffRoles.support.members;
-    const moderators = tvf.const.staffRoles.moderators.members;
-    const staff = tvf.const.staffRoles.staff.members;
+    const admins = tvf.const.roles.staff.admins.members;
+    const engagement = tvf.const.roles.staff.engagement.members;
+    const support = tvf.const.roles.staff.support.members;
+    const moderators = tvf.const.roles.staff.moderators.members;
+    const staff = tvf.const.roles.staff.staff.members;
 
     // roles
 
     // administrators
     if (role === 'administrator' || role === 'admin' || role === 'administrators' || role === 'admins') {
       embed
-        .setColor(tvf.const.yellow)
+        .setColor(tvf.const.colours.yellow)
         .setTitle(`Administrators (${admins.size})`)
         .setDescription(admins.map(admin => `<@!${admin.user.id}>`))
         .addFields([
@@ -34,7 +34,7 @@ export default {
     // engagement
     if (role === 'engagement') {
       embed
-        .setColor(tvf.const.staffRoles.engagement.hexColor)
+        .setColor(tvf.const.roles.staff.engagement.hexColor)
         .setTitle(`Engagement (${engagement.size})`)
         .setDescription(engagement.map(e => `<@!${e.user.id}>`))
         .addFields([
@@ -49,7 +49,7 @@ export default {
     // support
     else if (role === 'support') {
       embed
-        .setColor(tvf.const.staffRoles.support.hexColor)
+        .setColor(tvf.const.roles.staff.support.hexColor)
         .setTitle(`Support (${support.size})`)
         .setDescription(support.map(s => `<@!${s.user.id}>`))
         .addFields([
@@ -64,7 +64,7 @@ export default {
     // moderators
     else if (role === 'moderator' || role === 'mod' || role === 'moderators' || role === 'moderators') {
       embed
-        .setColor(tvf.const.staffRoles.moderators.hexColor)
+        .setColor(tvf.const.roles.staff.moderators.hexColor)
         .setTitle(`Moderators (${moderators.size})`)
         .setDescription(moderators.map(mod => `<@!${mod.user.id}>`))
         .addFields([

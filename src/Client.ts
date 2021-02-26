@@ -63,12 +63,18 @@ export default class Client extends Discord.Client {
   }
 
   /**
-   * Gets a user's unbelievaboat balance.
+   * Gets a user's unbelievaboat balance. 10 requests per second.
    * @param {string} id
    */
-  async getBalance(id: string): Promise<UserBalance> {
-    const res = await axios.get(`https://unbelievaboat.com/api/v1/guilds/${this.server.id}/users/${id}`, { headers: { 'Authorization': process.env.UNBELIEVABOAT }});
-    return { cash: res.data.cash, bank: res.data.bank, total: res.data.total };
+  async userBalance(id: string): Promise<UserBalance> {
+    try {
+      const res = await axios.get(`https://unbelievaboat.com/api/v1/guilds/${this.server.id}/users/${id}`, { headers: { 'Authorization': process.env.UNBELIEVABOAT }});
+      return { cash: res.data.cash, bank: res.data.bank, total: res.data.total };
+    } catch (err) {
+      this.logger.error(`There was an error whilst trying to fetch ${this.server.members.cache.get(id).user.tag}'s balance.`, err);
+      if (err.includes('404')) { await this.updateBalance(id, { cash: 0, bank: 1, reason: 'Create balance!' }) }
+      return { cash: 0, bank: 0, total: 0 };
+    }
   }
 
   /**
@@ -76,7 +82,7 @@ export default class Client extends Discord.Client {
    * @param {string} id 
    * @param data 
    */
-  async updateBalance(id: string, data: { cash?: number, bank?: number, reason?: number }): Promise<UserBalance> {
+  async updateBalance(id: string, data: { cash?: number, bank?: number, reason?: string }): Promise<UserBalance> {
     const res = await axios.patch(`https://unbelievaboat.com/api/v1/guilds/${this.server.id}/users/${id}`, data, { headers: { 'Authorization': process.env.UNBELIEVABOAT }});
     return { cash: res.data.cash, bank: res.data.bank, total: res.data.total };
   }
@@ -103,10 +109,10 @@ export default class Client extends Discord.Client {
    * @param {EmbedOptions} options
    * @param {Discord.Message} msg 
    */
-  createEmbed(options: EmbedOptions = { colour: this.const.white, timestamp: false, thumbnail: true, author: false, }, msg?: Discord.Message): Discord.MessageEmbed {
+  createEmbed(options: EmbedOptions = { colour: this.const.colours.white, timestamp: false, thumbnail: true, author: false, }, msg?: Discord.Message): Discord.MessageEmbed {
     // create an embed and configure it accordinly
     const embed = new Discord.MessageEmbed()
-      .setColor(options.colour || this.const.green);
+      .setColor(options.colour || this.const.colours.green);
 
     if (options.timestamp) embed.setTimestamp();
     if (options.thumbnail) embed.setThumbnail(this.server.iconURL());
@@ -130,11 +136,11 @@ export default class Client extends Discord.Client {
    * @param {Discord.GuildMember} member
    */
   isUser(role: StaffRole | 'Staff', member: Discord.GuildMember): boolean {
-    return role === 'Support' ? member.roles.cache.has(this.const.staffRoles.support.id) || member.roles.cache.has(this.const.staffRoles.heads.support.id) :
-           role === 'Engagement' ? member.roles.cache.has(this.const.staffRoles.engagement.id) || member.roles.cache.has(this.const.staffRoles.heads.engagement.id) :
-           role === 'Moderation' ? member.roles.cache.has(this.const.staffRoles.moderators.id) || member.roles.cache.has(this.const.staffRoles.heads.moderators.id) :
-           role === 'Admin' ? member.roles.cache.has(this.const.staffRoles.admins.id) :
-           role === 'Staff' ? member.roles.cache.has(this.const.staffRoles.staff.id)
+    return role === 'Support' ? member.roles.cache.has(this.const.roles.staff.support.id) || member.roles.cache.has(this.const.roles.staff.heads.support.id) :
+           role === 'Engagement' ? member.roles.cache.has(this.const.roles.staff.engagement.id) || member.roles.cache.has(this.const.roles.staff.heads.engagement.id) :
+           role === 'Moderation' ? member.roles.cache.has(this.const.roles.staff.moderators.id) || member.roles.cache.has(this.const.roles.staff.heads.moderators.id) :
+           role === 'Admin' ? member.roles.cache.has(this.const.roles.staff.admins.id) :
+           role === 'Staff' ? member.roles.cache.has(this.const.roles.staff.staff.id)
            : false;
   }
 

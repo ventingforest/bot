@@ -13,7 +13,7 @@ export default {
 
     // if the data could not be fetched
     if (!embed) {
-      return msg.channel.send(tvf.emojiMessage(tvf.const.cross, `I couldn't find the requested information. Ensure that \`${source}\` is an existing branch, or consider looking for something that exists next time!`));
+      return msg.channel.send(tvf.emojiMessage(tvf.const.emojis.cross, `I couldn't find the requested information. Ensure that \`${source}\` is an existing branch, or consider looking for something that exists next time!`));
     }
 
     // if the bot doesn't have permission to delete messages
@@ -23,13 +23,13 @@ export default {
 
     // message deletion by reaction
     const msg2 = await msg.channel.send({ embed });
-    msg2.react(tvf.const.bin);
+    msg2.react(tvf.const.emojis.cross);
 
     let react: Discord.Collection<string, Discord.MessageReaction>;
 
     // listen for a reaction from the author
     try {
-      react = await msg2.awaitReactions((reaction, user): boolean => reaction.emoji.name === tvf.const.bin && user.id === msg.author.id, { max: 1, time: 10000, errors: ['time'] });
+      react = await msg2.awaitReactions((reaction, user): boolean => reaction.emoji.name === tvf.const.emojis.cross && user.id === msg.author.id, { max: 1, time: 10000, errors: ['time'] });
     } catch (error) {
       // if the author doesn't react, remove all reactions from the message
       msg2.reactions.removeAll();
