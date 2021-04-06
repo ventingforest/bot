@@ -1,6 +1,6 @@
-import Client from '../Client';
+import Client from '..';
 import Constants from '../Constants';
-import schedule from 'node-schedule';
+import { CronJob } from 'cron';
 
 export default (tvf: Client) => {
   // @ts-ignore
@@ -12,7 +12,7 @@ export default (tvf: Client) => {
 
   // daily role income
   if (tvf.isProduction) {
-    schedule.scheduleJob({ hour: 0, minute: 0 }, () => {
+    new CronJob('0 0 * * *', () => {
       tvf.const.channels.staff.hooters.send('Handing out role incomes!');
 
       tvf.server.members.cache.array().forEach(async (m, i) => {
@@ -22,6 +22,6 @@ export default (tvf: Client) => {
           tvf.logger.info(`Increased ${m.user.tag} (Level ${doc.level})'s balance by ${doc.level * 50}!`);
         }, i * 750);
       });
-    });
+    }, true, 'Europe/London');
   }
 };

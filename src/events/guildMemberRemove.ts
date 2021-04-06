@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import Client from '../Client';
+import Client from '..';
 import timeout from 'timeout';
 import moment from 'moment';
 import { stripIndents } from 'common-tags';
@@ -9,7 +9,9 @@ export default async (tvf: Client, member: Discord.GuildMember) => {
 		// get the user's document
 		const doc = await tvf.userDoc(member.id);
 
-		doc.stickyRoles = member.roles.cache.map(r => r.id).filter(r => r !== '435894444101861408');
+		// Save sticky roles
+		const staffRoles = Object.entries(tvf.const.roles.staff).map(r => r[1].id);
+		doc.stickyRoles = member.roles.cache.map(r => r.id).filter(r => ![...staffRoles, '435894444101861408'].includes(r));
 
 		// if the user has requested a pending venting session, clear the expiry timeout
 		if (doc.private.requested) {

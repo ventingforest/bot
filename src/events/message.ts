@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import Client from '../Client';
+import Client from '..';
 import _ from 'lodash';
 
 export default async (tvf: Client, msg: Discord.Message) => {
@@ -24,7 +24,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 		tvf.const.channels.community.helper.send(embed);
 
 		return msg.reply(
-			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in <#${tvf.const.channels.resources}>. You can also request a one-on-one private session with a staff by using the \`tvf private\` command in any channel. If possible, please do provide a reason by typing the reason after the command.`,
+			`Please wait, a helper will arrive shortly. If it's an emergency, call the number in ${tvf.const.channels.resources}. You can also request a one-on-one private session with a staff by using the \`tvf private\` command in any channel. If possible, please do provide a reason by typing the reason after the command.`,
 		);
 	}
 
@@ -125,7 +125,7 @@ export default async (tvf: Client, msg: Discord.Message) => {
 			}
 
 			// put them on timeout for a minute
-			if (msg.author.id !== tvf.const.roles.other.kaizen.members.first().id) tvf.talkedRecently.add(msg.author.id);
+			tvf.talkedRecently.add(msg.author.id);
 			setTimeout(() => tvf.talkedRecently.delete(msg.author.id), 60000);
 		}
 	}

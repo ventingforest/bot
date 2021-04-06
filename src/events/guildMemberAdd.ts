@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import User from '../models/user';
-import Client from '../Client';
+import Client from '..';
 import { stripIndents } from 'common-tags';
 
 export default async (tvf: Client, member: Discord.GuildMember) => {

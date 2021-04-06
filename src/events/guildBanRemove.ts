@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import Client from '../Client';
+import Client from '..';
 
 export default async (tvf: Client, _guild: Discord.Guild, user: Discord.User) => {
 	if (tvf.isProduction) {

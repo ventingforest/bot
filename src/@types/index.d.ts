@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import Client from '../Client';
+import Client from '..';
 
 declare global {
     type StaffRole = 'Support' | 'Engagement' | 'Moderation' | 'Admin';
