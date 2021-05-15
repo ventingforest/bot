@@ -7,12 +7,11 @@ class PingCommand extends Command {
 		super('ping', {
 			aliases: ['ping'],
 			category: 'Core',
-			description: 'Checks the latency between me and Discord!',
-			usage: 'ping',
-			examples: [
-				'ping',
-			]
+			description: 'Checks the latency between me and Discord!'
 		});
+
+		this.usage = 'ping';
+		this.examples = ['ping'];
 	}
 
 	exec(msg: Message) {

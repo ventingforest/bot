@@ -16,11 +16,6 @@ class EvalCommand extends Command {
 			aliases: ['eval'],
 			category: 'Developer',
 			description: 'Allows newt to evaluate code without having to make any changes to the bot!',
-            usage: 'eval <code>',
-            examples: [
-                'eval console.log(\'Hello\');',
-                'eval msg.channel.send("Let\'s goooooo!");'
-            ],
             args: [
                 {
                     id: 'code',
@@ -39,6 +34,13 @@ class EvalCommand extends Command {
             ],
             ownerOnly: true
 		});
+
+        this.usage = 'eval <code>';
+        this.examples = [
+            'eval',
+            'eval console.log(\'Hello\');',
+            'eval msg.channel.send("Let\'s goooooo!");'
+        ];
 	}
 
     public async exec(msg: Message, { code, noreturn }: { code: string, noreturn: boolean }): Promise<Message | Message[] | Promise<Message | Message[]>[]> {

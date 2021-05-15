@@ -7,11 +7,6 @@ class HelpCommand extends Command {
 			aliases: ['help'],
 			category: 'Core',
 			description: 'Get either a list of the available commands or instructions for specified commands! Specifying a command is opitional. If a command was specified, its help text will show up.',
-			usage: 'help [commandName]',
-			examples: [
-				'help',
-				'help ping',
-			],
 			args: [
 				{
 					id: 'commandName',
@@ -20,6 +15,12 @@ class HelpCommand extends Command {
 				},
 			],
 		});
+
+		this.usage = 'help [commandName]';
+		this.examples = [
+			'help',
+			'help ping',
+		];
 	}
 
 	exec(msg: Message, args) {
@@ -56,7 +57,7 @@ class HelpCommand extends Command {
 			} else {
 				embed
 					.setTitle('I could not find that command!')
-					.setDescription(`Sorry, but I could not find any information about the command \`${args.command}\``)
+					.setDescription(`Sorry, but I could not find any information about the command \`${args.commandName}\``)
 					.setColor(this.client.constants.colours.red);
 			}
 		}
