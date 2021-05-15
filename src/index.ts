@@ -5,7 +5,6 @@ import mongoose = require('mongoose');
 import PastebinAPI from 'pastebin-js';
 import * as jimp from 'jimp';
 import * as path from 'path';
-import axios from 'axios';
 import moment from 'moment';
 import si from 'systeminformation';
 import * as dotenv from 'dotenv';
