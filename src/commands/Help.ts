@@ -6,14 +6,12 @@ class HelpCommand extends Command {
 		super('help', {
 			aliases: ['help'],
 			category: 'Core',
-			description: {
-				content: 'Get either a list of the available commands or instructions for specified commands! Specifying a command is opitional. If a command was specified, its help text will show up.',
-				usage: 'help [commandName]',
-				examples: [
-					'help',
-					'help ping',
-				],
-			},
+			description: 'Get either a list of the available commands or instructions for specified commands! Specifying a command is opitional. If a command was specified, its help text will show up.',
+			usage: 'help [commandName]',
+			examples: [
+				'help',
+				'help ping',
+			],
 			args: [
 				{
 					id: 'commandName',
@@ -27,7 +25,7 @@ class HelpCommand extends Command {
 	exec(msg: Message, args) {
 		const embed = this.client.util.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())
-			.setColor('#3aa4ae')
+			.setColor(this.client.constants.colours.green)
 			.setThumbnail(this.client.user.avatarURL());
 
 		if (!args.commandName) {
@@ -45,19 +43,21 @@ class HelpCommand extends Command {
 				try {
 					embed
 						.setTitle('TVF Bot Help')
-						.setDescription(command.description.content)
-						.addField('Usage', `\`\`\`${command.description.usage}\`\`\``)
-						.addField('Examples', `\`\`\`${command.description.examples.join(', ')}\`\`\``);
+						.setDescription(command.description)
+						.addField('Usage', `\`\`\`${command.usage}\`\`\``)
+						.addField('Examples', `\`\`\`${command.examples.join(', ')}\`\`\``);
 				} catch {
 					embed.fields = [];
 					embed
 						.setTitle('That command\'s help object is not complete!')
-						.setDescription('Please let newt know and they\'ll get right to fixing it!');
+						.setDescription('Please let newt know and they\'ll get right to fixing it!')
+						.setColor(this.client.constants.colours.red);
 				}
 			} else {
 				embed
 					.setTitle('I could not find that command!')
-					.setDescription(`Sorry, but I could not find any information about the command \`${args.command}\``);
+					.setDescription(`Sorry, but I could not find any information about the command \`${args.command}\``)
+					.setColor(this.client.constants.colours.red);
 			}
 		}
 

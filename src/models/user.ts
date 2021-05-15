@@ -26,7 +26,6 @@ export interface IUser extends mongoose.Document {
     }
   }
   suggestions: Suggestion[]; // a list of suggestions
-  modlogs: Modlog[]; // a list of modlogs
   stickyRoles: string[]; // a list of roles when the user leaves
 }
 

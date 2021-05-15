@@ -1,4 +1,5 @@
 import { Listener } from 'discord-akairo';
+import Constants from '../Constants';
 
 class ReadyListener extends Listener {
 	constructor() {
@@ -9,8 +10,12 @@ class ReadyListener extends Listener {
 	}
 
 	exec() {
+		// Load Constants
+		this.client.constants = Constants(this.client.server);
+
+		// Change status
 		this.client.user.setActivity('out for you (:', { type: 'WATCHING' });
-		console.log('TVF Bot is ready!');
+		this.client.logger.info('TVF Bot is ready!');
 	}
 }
 

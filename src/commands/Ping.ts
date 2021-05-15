@@ -20,7 +20,7 @@ class PingCommand extends Command {
 	exec(msg: Message) {
 		const embed = this.client.util.embed()
 			.setTitle('pong <3')
-			.setColor('#3aa4ae')
+			.setColor(this.client.constants.colours.green)
 			.setThumbnail(msg.guild.iconURL())
 			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setDescription('Calculating ping...');

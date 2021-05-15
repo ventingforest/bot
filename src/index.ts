@@ -13,36 +13,26 @@ import {
 	AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler,
 } from 'discord-akairo';
 import User, { IUser } from './models/user';
-import { IConstants } from './Constants';
+import { default as Constants, IConstants } from './Constants';
 
 dotenv.config();
 
 class TVFClient extends AkairoClient {
 	// properties
 	isProduction = process.env.NODE_ENV === 'production';
-
-	logger: winston.Logger;
-
+	logger: Logger;
 	server: Discord.Guild;
-
 	commandHandler: CommandHandler;
-
-	inhibitorHandler: InhibitorHandler;
-
 	listenerHandler: ListenerHandler;
-
-	config: BotConfig = {
-		botbanner: true,
-		levelling: true,
-	};
-
+	inhibitorHandler: InhibitorHandler;
+	botBanner = true;
 	pastebin = new PastebinAPI({
 		api_dev_key: process.env.PASTEBIN_KEY,
 		api_user_name: process.env.PASTEBIN_USERNAME,
 		api_user_password: process.env.PASTEBIN_PASSWORD,
 	});
-
-	talkedRecently = new Set();
+	talkedRecently: Set<string> = new Set();
+	constants: IConstants;
 
 	// constants
 	moment = 'ddd, MMM Do, YYYY h:mm A';
@@ -80,66 +70,58 @@ class TVFClient extends AkairoClient {
 		super({ ownerID: ['326767126406889473'] }, { disableMentions: 'everyone' });
 
 		(async () => {
-			// create the logger
+			// Configure the logger's colour scheme
 			winston.addColors({
 				error: 'bold red',
 				warn: 'bold yellow',
 				info: 'bold cyan',
 				debug: 'bold white',
+				command: 'bold yellow',
+				db: 'bold white',
 			});
 
-			const logger = winston.createLogger({
+			// Create the logger
+			this.logger = winston.createLogger({
 				transports: [
 					new winston.transports.Console({
-						format: winston.format.combine(winston.format.printf((log) => winston.format.colorize().colorize(log.level, `${moment().format(this.moment)} - ${log.level}: ${log.message}`))),
+						format: winston.format.combine(winston.format.printf(log => winston.format.colorize().colorize(log.level, `${moment().format('ddd, MMM Do, YYYY h:mm A')} - ${log.level}: ${log.message}`))),
 					}),
 				],
-			});
-
-			const winstonError = {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				apply: (target, _, argumentsList: any[]) => {
-					if (
-						argumentsList.length >= 2
-					|| argumentsList.length <= 0
-					|| typeof argumentsList[0] === 'string'
-					|| argumentsList[0] instanceof String
-					) {
-						target.apply(logger, argumentsList);
-					} else {
-						const error = argumentsList[0];
-						target.apply(logger, ['', error]);
-					}
+				levels: {
+					debug: 0,
+					command: 1,
+					db: 2,
+					info: 3,
+					warn: 4,
+					error: 5,
 				},
-			};
+			}) as Logger;
 
-			logger.debug = new Proxy(logger.debug, winstonError);
-			logger.error = new Proxy(logger.error, winstonError);
-
+			// Add LogDNA transport to logger
 			const network = (await si.networkInterfaces())[0];
-			logger.add(new logdnaWinston({
+			this.logger.add(new logdnaWinston({
 				key: process.env.LOGDNA, hostname: 'tvf-bot', ip: network.ip4, mac: network.mac, app: 'tvf-bot', env: this.isProduction ? 'Production' : 'Development', level: 'info', indexMeta: true,
 			}));
-			this.logger = logger;
+
 			this.logger.info('Logger initialised!');
 
-			// error events
+			// Error events
 			this.on('debug', (m) => this.logger.debug(m));
 			this.on('warn', (m) => this.logger.warn(m));
 			this.on('error', (m) => this.logger.error(m));
 			process.on('uncaughtException', (m) => this.logger.error(m));
 
-			// connect to the database
+			// Connect to the database
 			mongoose.connect(process.env.MONGO, {
 				useNewUrlParser: true,
 				useUnifiedTopology: true,
 			});
 
-			// database events
+			// Database events
 			this.db.connection = mongoose.connection
-				.on('connected', () => this.logger.info('Connected to database!'))
+				.on('connected', () => this.logger.db('Connected to database!'))
 				.on('error', (err) => this.logger.error(`The database has thrown an error - ${err}`))
-				.on('disconnect', () => this.logger.info('Disconnected from the database.'));
+				.on('disconnect', () => this.logger.db('Disconnected from the database.'));
 
 			// Set up Akairo listeners
 			this.commandHandler = new CommandHandler(this, {
@@ -166,37 +148,14 @@ class TVFClient extends AkairoClient {
 			this.listenerHandler.loadAll();
 			this.logger.info('Listeners bound to command handler and loaded!');
 
-			// log into discord
+			// Log into discord
 			await this.login(this.isProduction ? process.env.STABLE : process.env.BETA);
+			this.logger.info('Logged into Discord!');
 
-			// save the server for use in other methods
+			// Save the server for use in other methods
 			this.server = this.guilds.cache.get('435894444101861408');
+			this.logger.info('Saved server to Client!');
 		})();
-	}
-
-	/**
-	 * Gets a user's unbelievaboat balance. 10 requests per second.
-	 * @param {string} id
-	 */
-	async userBalance(id: string): Promise<UserBalance> {
-		try {
-			const res = await axios.get(`https://unbelievaboat.com/api/v1/guilds/${this.server.id}/users/${id}`, { headers: { Authorization: process.env.UNBELIEVABOAT } });
-			return { cash: res.data.cash, bank: res.data.bank, total: res.data.total };
-		} catch (err) {
-			this.logger.error(`There was an error whilst trying to fetch ${this.server.members.cache.get(id).user.tag}'s balance.`, err);
-			if (err.includes('404')) { await this.updateBalance(id, { cash: 0, bank: 1, reason: 'Create balance!' }); }
-			return { cash: 0, bank: 0, total: 0 };
-		}
-	}
-
-	/**
-	 * Updates a user's unbelievaboat balance.
-	 * @param {string} id
-	 * @param data
-	 */
-	async updateBalance(id: string, data: { cash?: number, bank?: number, reason?: string }): Promise<UserBalance> {
-		const res = await axios.patch(`https://unbelievaboat.com/api/v1/guilds/${this.server.id}/users/${id}`, data, { headers: { Authorization: process.env.UNBELIEVABOAT } });
-		return { cash: res.data.cash, bank: res.data.bank, total: res.data.total };
 	}
 
 	/**
@@ -217,53 +176,17 @@ class TVFClient extends AkairoClient {
 	}
 
 	/**
-	 * Generates an embed that satisfies the provided options.
-	 * @param {EmbedOptions} options
-	 * @param {Discord.Message} msg
-	 */
-	createEmbed(options: EmbedOptions = {
-		colour: this.const.colours.white, timestamp: false, thumbnail: true, author: false,
-	}, msg?: Discord.Message): Discord.MessageEmbed {
-		// create an embed and configure it accordinly
-		const embed = new Discord.MessageEmbed()
-			.setColor(options.colour || this.const.colours.green);
-
-		if (options.timestamp) embed.setTimestamp();
-		if (options.thumbnail) embed.setThumbnail(this.server.iconURL());
-		if (msg && options.author) embed.setAuthor(msg.author.tag, msg.author.avatarURL());
-
-		return embed;
-	}
-
-	/**
-	 * Generates a string formatted with an emoji and a message.
-	 * @param {string} emoji
-	 * @param {string} msg
-	 */
-	emojiMessage(emoji: string, msg: string): string {
-		return `**${emoji}	|** ${msg}`;
-	}
-
-	/**
 	 * Checks if a user has a staff role.
 	 * @param {StaffRole | 'Staff'} role
 	 * @param {Discord.GuildMember} member
 	 */
-	isUser(role: StaffRole | 'Staff', member: Discord.GuildMember): boolean {
+	isUser(role: StaffRole, member: Discord.GuildMember): boolean {
 		return role === 'Support' ? member.roles.cache.has(this.const.roles.staff.support.id) || member.roles.cache.has(this.const.roles.staff.supportHead.id)
 			: role === 'Engagement' ? member.roles.cache.has(this.const.roles.staff.engagement.id) || member.roles.cache.has(this.const.roles.staff.engagementHead.id)
 				: role === 'Moderation' ? member.roles.cache.has(this.const.roles.staff.moderators.id) || member.roles.cache.has(this.const.roles.staff.modHead.id)
 					: role === 'Admin' ? member.roles.cache.has(this.const.roles.staff.admins.id)
 						: role === 'Staff' ? member.roles.cache.has(this.const.roles.staff.staff.id)
 							: false;
-	}
-
-	/**
-	 * Gets a user based on their ID. Used to fetch User objects for members that have left the server.
-	 * @param {string} id
-	 */
-	async resolveUser(id: string): Promise<Discord.User> {
-		return this.users.fetch(id);
 	}
 
 	/**
@@ -313,5 +236,4 @@ class TVFClient extends AkairoClient {
 	}
 }
 
-module.exports = new TVFClient();
-export default TVFClient;
+export default new TVFClient();
