@@ -233,6 +233,52 @@ class TVFClient extends AkairoClient {
 	formatNumber(x: number): string {
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 	}
+
+	/**
+	 * Calculate the join position of a member based on their ID.
+	 * @param {string} id
+	 */
+	joinPosition(id: string): number {
+		if (!this.server.member(id)) return;
+
+		const arr = this.server.members.cache.array();
+		arr.sort((a, b) => {
+			const newA = Date.UTC(a.joinedAt.getFullYear(), a.joinedAt.getMonth(), a.joinedAt.getDate());
+			const newB = Date.UTC(b.joinedAt.getFullYear(), b.joinedAt.getMonth(), b.joinedAt.getDate())
+			return newA - newB;
+		});
+
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i].id === id) return i + 1;
+		}
+	}
+
+	/**
+	 * Send a DM to a member!
+	 * @param {Discord.User} user
+	 * @param {MessageContent} content
+	 */
+	async sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message> {
+		return user.send(content).catch(err => {
+			const embed = this.util.embed()
+				.setTitle('Sorry, I was unable to DM you!')
+				.setDescription('I tried to send you a DM, but there was an issue! This may be because you are not accepting DMs from server members. Please check if you have got it enabled, as shown below!')
+				.setThumbnail(this.server.iconURL())
+				.setImage('https://i.imgur.com/iY7a8RO.png');
+
+			this.constants.channels.community.discussion.send(embed);
+		}) as Promise<Discord.Message>;
+	}
+
+	/**
+     * Sends a formatted emoji message to the channel specified.
+     * @param {string} emoji
+     * @param {string} msg
+     * @param {Channels} channel
+     */
+	emojiMessage(emoji: string, msg: string, channel: Channels): Promise<Discord.Message> {
+        return channel.send(`**${emoji}  |**  ${msg}`);
+    }
 }
 
 export default new TVFClient();

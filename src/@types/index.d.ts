@@ -7,6 +7,7 @@ import mongoose = require('mongoose');
 
 declare module 'discord-akairo' {
   interface AkairoClient {
+    isProduction: boolean;
     logger: Logger;
     server: Discord.Guild;
     commandHandler: CommandHandler;
@@ -24,6 +25,9 @@ declare module 'discord-akairo' {
     saveDoc(doc: mongoose.Document): void;
     pridePfp(user: Discord.User, type: string, opacity: number): Promise<Buffer>;
     formatNumber(x: number): string;
+    joinPosition(id: string): number;
+    sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message>;
+    emojiMessage(emoji: string, msg: string, channel: Channels): Promise<Discord.Message>;
   }
 
   interface CommandOptions {
@@ -40,19 +44,14 @@ declare module 'discord-akairo' {
 }
 
 declare global {
+  type MessageContent = Discord.APIMessageContentResolvable | (Discord.MessageOptions & { split?: false }) | Discord.MessageAdditions;
+  type Channels = Discord.TextChannel | Discord.DMChannel | Discord.NewsChannel;
+  type StaffRole = 'Support' | 'Engagement' | 'Moderation' | 'Admin' | 'Staff';
+
     interface Logger extends winston.Logger {
       command: winston.LeveledLogMethod;
       db: winston.LeveledLogMethod;
     }
-
-    type StaffRole = 'Support' | 'Engagement' | 'Moderation' | 'Admin' | 'Staff';
-
-    type EmbedOptions = {
-      colour?: string, // input hexadecimal
-      timestamp?: boolean, // if false, the timestamp is omitted
-      thumbnail?: boolean, // if false, the thumbnail is omitted
-      author?: boolean, // if true, the author gets automatically set to the author of the message
-    };
 
     interface Suggestion {
       id: string; // the id of the suggestion
