@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as winston from 'winston';
 import logdnaWinston from 'logdna-winston';
-import * as fs from 'fs';
 import mongoose = require('mongoose');
 import PastebinAPI from 'pastebin-js';
 import * as jimp from 'jimp';
@@ -12,16 +11,18 @@ import si from 'systeminformation';
 import User, { IUser } from './models/user';
 import { IConstants } from './Constants';
 import * as dotenv from 'dotenv';
+import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from 'discord-akairo';
 
 dotenv.config();
 
-class TVFClient extends Discord.Client {
+class TVFClient extends AkairoClient {
   // properties
   isProduction = process.env.NODE_ENV === 'production';
   logger: winston.Logger;
-  commands: Discord.Collection<string, Command> = new Discord.Collection();
-  events: Discord.Collection<string, any> = new Discord.Collection();
-  server: Discord.Guild
+  server: Discord.Guild;
+  commandHandler: CommandHandler;
+  inhibitorHandler: InhibitorHandler;
+  listenerHandler: ListenerHandler;
   config: BotConfig = {
     botbanner: true,
     levelling: true,
@@ -61,7 +62,7 @@ class TVFClient extends Discord.Client {
 
   // constructor
   constructor() {
-    super();
+    super({ ownerID: [ '326767126406889473' ], }, { disableMentions: 'everyone' });
 
     (async()=>{
       // create the logger
@@ -103,42 +104,13 @@ class TVFClient extends Discord.Client {
       const network = (await si.networkInterfaces())[0];
       logger.add(new logdnaWinston({ key: process.env.LOGDNA, hostname: 'tvf-bot', ip: network.ip4, mac: network.mac, app: 'tvf-bot', env: this.isProduction ? 'Production' : 'Development', level: 'info', indexMeta: true  }));
       this.logger = logger;
-
-      // get all of the files in the event folder and command folders
-      const eventFiles = fs.readdirSync(`${__dirname}/events/`).filter(f => f.endsWith('.js'));
-      const categories = fs.readdirSync(`${__dirname}/commands/`).filter(f => !f.endsWith('.js'));
-
-      categories.forEach(category => {
-        const files = fs.readdirSync(`${__dirname}/commands/${category}/`).filter(f => f.endsWith('.js'));
-
-        for (const file of files) {
-            let { default: command }: { default: Command } = require(`./commands/${category}/${file}`);
-            command.category = category;
-            this.commands.set(command.name, command);
-            this.logger.info(`"${command.name}" command loaded from the "${command.category}" category!`);
-        }
-      });
+      this.logger.info('Logger initialised!');
 
       // error events
       this.on('debug', m => this.logger.debug(m));
       this.on('warn', m => this.logger.warn(m));
       this.on('error', m => this.logger.error(m));
       process.on('uncaughtException', m => this.logger.error(m));
-
-      // discord events
-      for (const file of eventFiles) {
-        // get the event file and add it to the collection
-        const name = file.substring(0, file.length - 3);
-        const { default: event } = require(`./events/${file}`);
-        this.events.set(name, event);
-
-        // load the event
-        // @ts-ignore
-        this.on(name, (...args: any[]) => event(this, ...args));
-
-        // log that the event has been loaded
-        this.logger.info(`${name} event loaded.`);
-      }
 
       // connect to the database
       mongoose.connect(process.env.MONGO, {
@@ -151,6 +123,31 @@ class TVFClient extends Discord.Client {
         .on('connected', () => this.logger.info('Connected to database!'))
         .on('error', err => this.logger.error(`The database has thrown an error - ${err}`))
         .on('disconnect', () => this.logger.info('Disconnected from the database.'));
+
+      // Set up Akairo listeners
+      this.commandHandler = new CommandHandler(this, {
+        directory: path.join(__dirname, 'commands'),
+        prefix: this.prefix
+      });
+
+      this.commandHandler.loadAll();
+      this.logger.info('Commands loaded!');
+
+      this.inhibitorHandler = new InhibitorHandler(this, {
+        directory: path.join(__dirname, 'inhibitors')
+      });
+
+      this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
+      this.inhibitorHandler.loadAll();
+      this.logger.info('Inhibitors bound to command handler and loaded!');
+
+      this.listenerHandler = new ListenerHandler(this, {
+        directory: path.join(__dirname, 'listeners')
+      });
+
+      this.commandHandler.useListenerHandler(this.listenerHandler);
+      this.listenerHandler.loadAll();
+      this.logger.info('Listeners bound to command handler and loaded!');
 
       // log into discord
       await this.login(this.isProduction ? process.env.STABLE : process.env.BETA);
