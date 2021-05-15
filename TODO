@@ -1,0 +1,2 @@
+- Factor out usage of .emojiMessage in favour of embeds
+- Start logging command usage using Logger.command
