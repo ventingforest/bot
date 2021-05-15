@@ -2,4 +2,3 @@ node_modules
 build
 .env
 yarn-*.log
-levels.txt

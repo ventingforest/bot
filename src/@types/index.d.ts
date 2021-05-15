@@ -8,7 +8,7 @@ declare global {
       timestamp?: boolean, // if false, the timestamp is omitted
       thumbnail?: boolean, // if false, the thumbnail is omitted
       author?: boolean, // if true, the author gets automatically set to the author of the message
-    }
+    };
 
     interface Command {
       run(tvf: Client, msg: Discord.Message, args: string[], other: { prefix: string }): void; // method containing the command's code

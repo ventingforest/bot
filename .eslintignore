@@ -1,0 +1,4 @@
+node_modules
+build
+src/_commands
+src/_events
