@@ -23,7 +23,6 @@ declare module 'discord-akairo' {
     isUser(role: StaffRole, member: Discord.GuildMember): boolean;
     userDoc(id: string): Promise<IUser>
     saveDoc(doc: mongoose.Document): void;
-    pridePfp(user: Discord.User, type: string, opacity: number): Promise<Buffer>;
     formatNumber(x: number): string;
     joinPosition(id: string): number;
     sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message>;

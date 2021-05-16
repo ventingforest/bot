@@ -1,9 +1,10 @@
 import { Command } from 'discord-akairo';
-import { Message, MessageAttachment } from 'discord.js';
-import fs from 'fs';
-import path from 'path';
+import { Message, MessageAttachment, User } from 'discord.js';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as jimp from 'jimp';
 
-const flags = fs.readdirSync(path.join(__dirname, `..${path.sep}..${path.sep}`, 'assets', 'pride'))
+const flags = fs.readdirSync(path.join(__dirname, '..', '..', 'assets', 'pride'))
     .map(f => f.slice(0, f.length - 4));
 
 class PrideCommand extends Command {
@@ -47,8 +48,30 @@ class PrideCommand extends Command {
         if (opacity > 1 || opacity < 0) return this.client.emojiMessage(this.client.constants.emojis.cross, 'The provided opacity has to be between 0 and 100%!', msg.channel);
 
         // Send the new profile picture!
-        const attachment = new MessageAttachment(await this.client.pridePfp(msg.author, flag, opacity));
+        const attachment = new MessageAttachment(await this.pridePfp(msg.author, flag, opacity));
         msg.channel.send(attachment);
+	}
+
+    /**
+	 * Overlays a pride flag over a user's profile picture.
+	 * @param {User} user
+	 * @param {string} type
+	 * @param {number} opacity
+	 */
+	async pridePfp(user: User, type: string, opacity: number): Promise<Buffer> {
+		// load the necessary images
+		const image = await jimp.read(user.avatarURL({ size: 512, format: 'png' }));
+		const flag = await jimp.read(path.resolve(`assets/pride/${type}.png`));
+
+		// resize the flag and set opacity to 50%
+		flag.resize(image.getWidth(), image.getHeight());
+		flag.opacity(opacity);
+
+		// overlay the flag onto the image
+		image.blit(flag, 0, 0);
+
+		// return the manipulated image's buffer
+		return image.getBufferAsync(jimp.MIME_PNG);
 	}
 }
 
