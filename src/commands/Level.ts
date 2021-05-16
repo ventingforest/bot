@@ -1,9 +1,9 @@
 import { createCanvas, registerFont, loadImage } from 'canvas';
 import { Command } from 'discord-akairo';
-import { Message, MessageAttachment, GuildMember } from 'discord.js';
+import { Message, GuildMember } from 'discord.js';
 import * as path from 'path';
 
-class PingCommand extends Command {
+class LevelCommand extends Command {
 	constructor() {
 		super('level', {
 			aliases: ['level', 'rank'],
@@ -26,7 +26,6 @@ class PingCommand extends Command {
 	}
 
 	async exec(msg: Message, { argMember }: { argMember: GuildMember }) {
-		console.log(argMember);
 		const member = argMember || msg.member;
 		const doc = await this.client.userDoc(member.id);
 		const rank = await this.client.rankInServer(member.id);
@@ -69,7 +68,7 @@ class PingCommand extends Command {
 		ctx.drawImage(avatar, 35, 50, 170, 170);
 
 		// Create an attachment
-		const attachment = new MessageAttachment(canvas.toBuffer(), `${msg.author.username}.png`);
+		const attachment = this.client.util.attachment(canvas.toBuffer(), `${msg.author.username}.png`);
 		const currentLevelReward = this.client.constants.levelRoles.find(r => r.level === Math.floor(doc.level / 2) * 2).name;
 		const nextLevelReward = doc.level === Math.ceil(doc.level / 2) * 2 ? doc.level + 2 : Math.ceil(doc.level / 2) * 2;
                 
@@ -77,4 +76,4 @@ class PingCommand extends Command {
 	}
 }
 
-module.exports = PingCommand;
+module.exports = LevelCommand;

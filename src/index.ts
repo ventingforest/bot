@@ -23,7 +23,6 @@ class TVFClient extends AkairoClient {
 	commandHandler: CommandHandler;
 	listenerHandler: ListenerHandler;
 	inhibitorHandler: InhibitorHandler;
-	botBanner = true;
 	pastebin = new PastebinAPI({
 		api_dev_key: process.env.PASTEBIN_KEY,
 		api_user_name: process.env.PASTEBIN_USERNAME,
@@ -31,33 +30,8 @@ class TVFClient extends AkairoClient {
 	});
 	talkedRecently: Set<string> = new Set();
 	constants: IConstants;
-
-	// constants
-	moment = 'ddd, MMM Do, YYYY h:mm A';
-
-	blankField: Discord.EmbedFieldData = { name: '\u200B', value: '\u200B' };
-
-	invite = 'https://discord.gg/RS69ssj';
-
-	banAppeal = 'https://forms.gle/EoUp6hxmNvuAJXJfA';
-
 	prefix = this.isProduction ? 'tvf ' : 'tvf beta ';
-
-	privateTimeout = 21600000;
-
-	embedLimit = {
-		title: 256,
-		description: 2048,
-		footer: 2048,
-		author: 256,
-		field: {
-			title: 256,
-			value: 1024,
-		},
-	};
-
-	const: IConstants;
-
+	botBanner = true;
 	db: { user: mongoose.Model<IUser>, connection: mongoose.Connection | null } = {
 		user: User,
 		connection: null,
@@ -179,11 +153,11 @@ class TVFClient extends AkairoClient {
 	 * @param {Discord.GuildMember} member
 	 */
 	isUser(role: StaffRole, member: Discord.GuildMember): boolean {
-		return role === 'Support' ? member.roles.cache.has(this.const.roles.staff.support.id) || member.roles.cache.has(this.const.roles.staff.supportHead.id)
-			: role === 'Engagement' ? member.roles.cache.has(this.const.roles.staff.engagement.id) || member.roles.cache.has(this.const.roles.staff.engagementHead.id)
-				: role === 'Moderation' ? member.roles.cache.has(this.const.roles.staff.moderators.id) || member.roles.cache.has(this.const.roles.staff.modHead.id)
-					: role === 'Admin' ? member.roles.cache.has(this.const.roles.staff.admins.id)
-						: role === 'Staff' ? member.roles.cache.has(this.const.roles.staff.staff.id)
+		return role === 'Support' ? member.roles.cache.has(this.constants.roles.staff.support.id) || member.roles.cache.has(this.constants.roles.staff.supportHead.id)
+			: role === 'Engagement' ? member.roles.cache.has(this.constants.roles.staff.engagement.id) || member.roles.cache.has(this.constants.roles.staff.engagementHead.id)
+				: role === 'Moderation' ? member.roles.cache.has(this.constants.roles.staff.moderators.id) || member.roles.cache.has(this.constants.roles.staff.modHead.id)
+					: role === 'Admin' ? member.roles.cache.has(this.constants.roles.staff.admins.id)
+						: role === 'Staff' ? member.roles.cache.has(this.constants.roles.staff.staff.id)
 							: false;
 	}
 
@@ -245,16 +219,6 @@ class TVFClient extends AkairoClient {
 
 			this.constants.channels.community.discussion.send(embed);
 		}) as Promise<Discord.Message>;
-	}
-
-	/**
-     * Sends a formatted emoji message to the channel specified.
-     * @param {string} emoji
-     * @param {string} msg
-     * @param {Channels} channel
-     */
-	emojiMessage(emoji: string, msg: string, channel: Channels): Promise<Discord.Message> {
-		return channel.send(`**${emoji}  |**  ${msg}`);
 	}
 }
 

@@ -41,11 +41,16 @@ class PrideCommand extends Command {
 	async exec(msg: Message, { flag, opacity }: { flag: string, opacity: number }) {
 		opacity = opacity / 100 || 0.5; // Convert from percentage to decimal
 
+		const error = this.client.util.embed()
+			.setTitle('There was an error whilst generating your pride pfp!')
+			.setColor(this.client.constants.colours.red)
+			.setThumbnail(this.client.server.iconURL());
+
 		// Ensure that the specified flag is valid
-		if (!flags.includes(flag)) return this.client.emojiMessage(this.client.constants.emojis.cross, 'The provided flag does not exist/is not supported!', msg.channel);
+		if (!flags.includes(flag)) return msg.channel.send(error.setDescription('The provided flag does not exist/is not supported!'));
 
 		// If the opacity is greater than 100%
-		if (opacity > 1 || opacity < 0) return this.client.emojiMessage(this.client.constants.emojis.cross, 'The provided opacity has to be between 0 and 100%!', msg.channel);
+		if (opacity > 1 || opacity < 0) return msg.channel.send(error.setDescription('The provided opacity has to be between 0 and 100%!'));
 
 		// Send the new profile picture!
 		const attachment = new MessageAttachment(await this.pridePfp(msg.author, flag, opacity));

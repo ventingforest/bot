@@ -122,6 +122,9 @@ export interface IConstants {
     MANAGE_EMOJIS: string;
   };
   levelRoles: LevelReward[];
+  moment: string;
+  privateTimeout: number;
+  blankField: Discord.EmbedFieldData;
 }
 
 export default (server: Discord.Guild): IConstants => {
@@ -299,5 +302,8 @@ export default (server: Discord.Guild): IConstants => {
 			{ level: 98, role: server.roles.cache.get('799084638936367155'), name: 'Gandalf' }, // gandalf
 			{ level: 100, role: server.roles.cache.get('801520799189958676'), name: 'how?' }, // how?
 		],
+		moment: 'ddd, MMM Do, YYYY h:mm A',
+		privateTimeout: 21600000,
+		blankField:  { name: '\u200B', value: '\u200B' }
 	}
 }

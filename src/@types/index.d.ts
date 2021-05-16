@@ -13,10 +13,15 @@ declare module 'discord-akairo' {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
     inhibitorHandler: InhibitorHandler;
-    botBanner: boolean;
     pastebin: PastebinAPI;
     talkedRecently: Set<string>;
     constants: IConstants;
+    prefix: string;
+    botBanner: boolean;
+    db: {
+      user: mongoose.Model<IUser>,
+      connection: mongoose.Connection | null
+    };
 
     xpFor(x: number): number;
     rankInServer(id: string): Promise<number>;
@@ -26,7 +31,6 @@ declare module 'discord-akairo' {
     formatNumber(x: number): string;
     joinPosition(id: string): number;
     sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message>;
-    emojiMessage(emoji: string, msg: string, channel: Channels): Promise<Discord.Message>;
   }
 
   interface CommandOptions {
