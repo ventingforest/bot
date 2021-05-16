@@ -3,7 +3,6 @@ import * as winston from 'winston';
 import logdnaWinston from 'logdna-winston';
 import mongoose = require('mongoose');
 import PastebinAPI from 'pastebin-js';
-import * as jimp from 'jimp';
 import * as path from 'path';
 import moment from 'moment';
 import si from 'systeminformation';
@@ -12,7 +11,7 @@ import {
 	AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler,
 } from 'discord-akairo';
 import User, { IUser } from './models/user';
-import { default as Constants, IConstants } from './Constants';
+import { IConstants } from './Constants';
 
 dotenv.config();
 
@@ -237,7 +236,7 @@ class TVFClient extends AkairoClient {
 	 * @param {MessageContent} content
 	 */
 	async sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message> {
-		return user.send(content).catch(err => {
+		return user.send(content).catch(() => {
 			const embed = this.util.embed()
 				.setTitle('Sorry, I was unable to DM you!')
 				.setDescription('I tried to send you a DM, but there was an issue! This may be because you are not accepting DMs from server members. Please check if you have got it enabled, as shown below!')
@@ -255,8 +254,8 @@ class TVFClient extends AkairoClient {
      * @param {Channels} channel
      */
 	emojiMessage(emoji: string, msg: string, channel: Channels): Promise<Discord.Message> {
-        return channel.send(`**${emoji}  |**  ${msg}`);
-    }
+		return channel.send(`**${emoji}  |**  ${msg}`);
+	}
 }
 
 export default new TVFClient();
