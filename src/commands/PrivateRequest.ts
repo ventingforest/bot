@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { stripIndents } from 'common-tags';
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
@@ -8,7 +7,7 @@ import timeout from 'timeout';
 class PrivateRequestCommand extends Command {
 	constructor() {
 		super('privateRequest', {
-			aliases: ['private', 'pv', 'privatevent', 'privateventing'],
+			aliases: ['private', 'pv'],
 			category: 'Venting',
 			description: 'Allows you to request a private venting session!',
 			args: [
@@ -69,7 +68,7 @@ class PrivateRequestCommand extends Command {
 			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setTitle(`${msg.author.username} has requested a private venting session!`)
 			.setThumbnail(msg.author.avatarURL())
-			.setDescription(`Begin the session by typing \`${this.handler.prefix}pvs start ${doc.private.id}\` in this channel!`)
+			.setDescription(`Begin the session by typing \`${this.handler.prefix}pvs ${doc.private.id}\` in this channel!`)
 			.addField('Reason', doc.private.reason)
 			.addField('Venter ID', msg.author.id, true)
 			.setFooter(`Session ID: ${doc.private.id}`, this.client.server.iconURL());
