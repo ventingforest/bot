@@ -10,7 +10,7 @@
         "dev": "cross-env NODE_ENV=development ts-nodemon",
         "beta": "npm run dev",
         "prod": "cross-env NODE_ENV=production ts-nodemon",
-        "pm2": "NODE_ENV=production pm2 start node build/src/index.js",
+        "pm2": "NODE_ENV=production pm2 start node build/index.js",
         "build": "tsc",
         "clean": "rimraf build",
         "lint": "eslint src --ext .ts",
