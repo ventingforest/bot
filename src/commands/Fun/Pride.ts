@@ -3,6 +3,7 @@ import { Message, MessageAttachment, User } from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as jimp from 'jimp';
+import request from 'request';
 
 const flags = fs.readdirSync(path.join(__dirname, '..', '..', '..', 'assets', 'pride'))
 	.map(f => f.slice(0, f.length - 4));
@@ -52,23 +53,51 @@ class Pride extends Command {
 		// If the opacity is greater than 100%
 		if (opacity > 1 || opacity < 0) return msg.channel.send(error.setDescription('The provided opacity has to be between 0 and 100%!'));
 
-		// Send the new profile picture!
-		const attachment = new MessageAttachment(await this.pridePfp(msg.author, flag, opacity));
-		msg.channel.send(attachment);
+		// Send the new picture!
+		if (msg.attachments.size > 0) {
+			request({
+				url: msg.attachments.first().url,
+				method: 'get',
+				encoding: null
+			}, async (err, _res, body) => {
+				if (err) {
+					error
+						.setDescription('There was an issue with fetching your attachment. Sorry! Please report this to newt if you would like further help.');
+					return msg.channel.send(error);
+				}
+				const attachment = this.client.util.attachment(await this.pride(body, flag, opacity), `${msg.author.username}-${msg.attachments.first().name}.png`);
+				msg.channel.send(attachment);
+			});
+		}
+		else {
+			request({
+				url: msg.author.avatarURL({ size: 512, format: 'png' }),
+				method: 'get',
+				encoding: null
+			}, async (err, _res, body) => {
+				if (err) {
+					error
+						.setDescription('There was an issue with fetching your profile picture. Sorry! Please report this to newt if you would like further help.');
+					return msg.channel.send(error);
+				}
+				const attachment = this.client.util.attachment(await this.pride(body, flag, opacity), `${msg.author.username}-${flag}.png`);
+				msg.channel.send(attachment);
+			});
+		}
 	}
 
 	/**
-	 * Overlays a pride flag over a user's profile picture.
-	 * @param {User} user
+	 * Overlays a pride flag over an image buffer.
+	 * @param {Buffer} buffer
 	 * @param {string} type
 	 * @param {number} opacity
 	 */
-	async pridePfp(user: User, type: string, opacity: number): Promise<Buffer> {
+	async pride(buffer: Buffer, type: string, opacity: number): Promise<Buffer> {
 		// load the necessary images
-		const image = await jimp.read(user.avatarURL({ size: 512, format: 'png' }));
+		const image = await jimp.read(buffer);
 		const flag = await jimp.read(path.resolve(`assets/pride/${type}.png`));
 
-		// resize the flag and set opacity to 50%
+		// resize the flag and set opacity
 		flag.resize(image.getWidth(), image.getHeight());
 		flag.opacity(opacity);
 

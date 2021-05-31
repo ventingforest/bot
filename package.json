@@ -45,7 +45,9 @@
         "nanoid": "3.1.20",
         "ordinal": "^1.0.3",
         "pastebin-js": "1.0.6",
+        "pluralize": "^8.0.0",
         "pretty-bytes": "5.5.0",
+        "request": "^2.88.2",
         "systeminformation": "4.34.9",
         "timeout": "0.2.1",
         "winston": "3.3.3"
