@@ -4,14 +4,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as jimp from 'jimp';
 
-const flags = fs.readdirSync(path.join(__dirname, '..', '..', 'assets', 'pride'))
+const flags = fs.readdirSync(path.join(__dirname, '..', '..', '..', 'assets', 'pride'))
 	.map(f => f.slice(0, f.length - 4));
 
-class PrideCommand extends Command {
+class Pride extends Command {
 	constructor() {
 		super('pride', {
 			aliases: ['pride'],
-			category: 'Events',
+			category: 'Fun',
 			description: `Overlay a pride flag over your profile picture! Choose from the following:\n\`\`\`${flags.join(', ')}\n\`\`\``,
 			args: [
 				{
@@ -80,4 +80,4 @@ class PrideCommand extends Command {
 	}
 }
 
-module.exports = PrideCommand;
+module.exports = Pride;

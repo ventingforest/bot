@@ -7,7 +7,7 @@ import { stripIndents } from 'common-tags';
 const NL = '!!NL!!';
 const NL_PATTERN = new RegExp(NL, 'g');
 
-class EvalCommand extends Command {
+class Eval extends Command {
 	public hrStart: [number, number] | undefined;
 	public lastResult: any = null;
 	private readonly _sensitivePattern!: any;
@@ -45,10 +45,12 @@ class EvalCommand extends Command {
 	}
 
 	public async exec(msg: Message, { code, noreturn }: { code: string, noreturn: boolean }): Promise<Message | Message[] | Promise<Message | Message[]>[]> {
+		this.client.deletePrompts(msg);
 		let hrDiff;
 		try {
 			const hrStart = process.hrtime();
 			this.lastResult = eval(code.replace('tvf', 'this.client'));
+			console.log(this.lastResult)
 			hrDiff = process.hrtime(hrStart);
 		} catch (error) {
 			return msg.channel.send(`Error while evaluating: \`${error}\``);
@@ -100,4 +102,4 @@ class EvalCommand extends Command {
 	}
 }
 
-module.exports = EvalCommand;
+module.exports = Eval;

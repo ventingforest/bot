@@ -4,7 +4,7 @@ import { GuildMember, VoiceChannel, TextChannel } from 'discord.js';
 import User from '../models/user';
 import ordinal from 'ordinal';
 
-class MemberJoinListener extends Listener {
+class MemberJoin extends Listener {
 	constructor() {
 		super('memberJoin', {
 			emitter: 'client',
@@ -111,4 +111,4 @@ class MemberJoinListener extends Listener {
 	}
 }
 
-module.exports = MemberJoinListener;
+module.exports = MemberJoin;

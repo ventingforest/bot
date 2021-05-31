@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 
 class GeneralInhibitor extends Inhibitor {
 	constructor() {
-		super('generalChat', {
+		super('general', {
 			reason: 'Commands can not be run in general!',
 		});
 	}

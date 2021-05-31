@@ -4,7 +4,7 @@ import { Message } from 'discord.js';
 import { nanoid } from 'nanoid';
 import timeout from 'timeout';
 
-class PrivateRequestCommand extends Command {
+class PrivateRequest extends Command {
 	constructor() {
 		super('privateRequest', {
 			aliases: ['private', 'pv'],
@@ -150,4 +150,4 @@ class PrivateRequestCommand extends Command {
 	}
 }
 
-module.exports = PrivateRequestCommand;
+module.exports = PrivateRequest;

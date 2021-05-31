@@ -1,11 +1,11 @@
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 
-class BotBannerCommand extends Command {
+class BotBanner extends Command {
 	constructor() {
 		super('botBanner', {
 			aliases: ['botbanner', 'botban', 'bot'],
-			category: 'Developer',
+			category: 'Admin',
 			description: 'Toggles TVF Bot\'s inbuilt bot banner!'
 		});
 
@@ -37,4 +37,4 @@ class BotBannerCommand extends Command {
 	}
 }
 
-module.exports = BotBannerCommand;
+module.exports = BotBanner;

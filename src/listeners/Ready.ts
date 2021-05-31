@@ -1,7 +1,7 @@
 import { Listener } from 'discord-akairo';
 import Constants from '../Constants';
 
-class ReadyListener extends Listener {
+class Ready extends Listener {
 	constructor() {
 		super('ready', {
 			emitter: 'client',
@@ -19,4 +19,4 @@ class ReadyListener extends Listener {
 	}
 }
 
-module.exports = ReadyListener;
+module.exports = Ready;

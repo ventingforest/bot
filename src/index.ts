@@ -99,6 +99,8 @@ class TVFClient extends AkairoClient {
 			this.commandHandler = new CommandHandler(this, {
 				directory: path.join(__dirname, 'commands'),
 				prefix: this.prefix,
+				commandUtil: true,
+				storeMessages: true,
 			});
 
 			this.commandHandler.loadAll();
@@ -136,6 +138,15 @@ class TVFClient extends AkairoClient {
 	 */
 	xpFor(x: number): number {
 		return Math.floor(5 / 6 * x * (2 * x ** 2 + 27 * x + 91));
+	}
+
+	/**
+	 * Finds the level reward for a given level!
+	 * @param {number} level
+	 */
+	levelReward(level: number): LevelReward {
+		const levelIndex = this.constants.levelRoles.findIndex(l => level % 2 === 0 ? l.level === level : l.level === level - 1);
+		return this.constants.levelRoles[levelIndex];
 	}
 
 	/**
@@ -219,6 +230,14 @@ class TVFClient extends AkairoClient {
 
 			this.constants.channels.community.discussion.send(embed);
 		}) as Promise<Discord.Message>;
+	}
+
+	/**
+	 * Clean up prompts!
+	 * @param {Discord.Message} msg
+	 */
+	deletePrompts(msg: Discord.Message) {
+		if (msg.util.messages.size > 0) msg.util.messages.forEach(m => m.delete({ reason: 'Cleaning prompts.' }));
 	}
 }
 

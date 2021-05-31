@@ -3,7 +3,7 @@ import { Command } from 'discord-akairo';
 import { Message, GuildMember } from 'discord.js';
 import * as path from 'path';
 
-class LevelCommand extends Command {
+class Level extends Command {
 	constructor() {
 		super('level', {
 			aliases: ['level', 'rank'],
@@ -69,11 +69,11 @@ class LevelCommand extends Command {
 
 		// Create an attachment
 		const attachment = this.client.util.attachment(canvas.toBuffer(), `${msg.author.username}.png`);
-		const currentLevelReward = this.client.constants.levelRoles.find(r => r.level === Math.floor(doc.level / 2) * 2).name;
-		const nextLevelReward = doc.level === Math.ceil(doc.level / 2) * 2 ? doc.level + 2 : Math.ceil(doc.level / 2) * 2;
+		const currentLevelReward = this.client.levelReward(doc.level);
+		const nextLevelReward = this.client.constants.levelRoles[this.client.constants.levelRoles.indexOf(currentLevelReward) + 1];
                 
-		msg.channel.send(`**${this.client.constants.emojis.confetti}  |**  You are ${this.client.formatNumber(this.client.xpFor(nextLevelReward) - doc.xp)} xp away from **${this.client.constants.levelRoles.find(r => r.level === nextLevelReward).name}!** You are currently a **${currentLevelReward}**.`, attachment);
+		msg.channel.send(`**${this.client.constants.emojis.confetti}  |**  You are ${this.client.formatNumber(this.client.xpFor(nextLevelReward.level) - doc.xp)} xp away from **${nextLevelReward.name}!** You are currently a **${currentLevelReward.name}**.`, attachment);
 	}
 }
 
-module.exports = LevelCommand;
+module.exports = Level;

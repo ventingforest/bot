@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const animals = ['bird', 'cat', 'dog', 'fox'];
 
-class CuteCommand extends Command {
+class Cute extends Command {
 	constructor() {
 		super('cute', {
 			aliases: ['cute', 'animal'],
@@ -73,4 +73,4 @@ class CuteCommand extends Command {
 	}
 }
 
-module.exports = CuteCommand;
+module.exports = Cute;

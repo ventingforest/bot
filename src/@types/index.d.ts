@@ -24,6 +24,7 @@ declare module 'discord-akairo' {
     };
 
     xpFor(x: number): number;
+    levelReward(level: number): LevelReward;
     rankInServer(id: string): Promise<number>;
     isUser(role: StaffRole, member: Discord.GuildMember): boolean;
     userDoc(id: string): Promise<IUser>
@@ -31,6 +32,7 @@ declare module 'discord-akairo' {
     formatNumber(x: number): string;
     joinPosition(id: string): number;
     sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message>;
+    deletePrompts(msg: Discord.Message): void;
   }
 
   interface CommandOptions {

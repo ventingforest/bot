@@ -1,10 +1,10 @@
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
-import User, { IUser } from '../models/user';
+import User, { IUser } from '../../models/user';
 import timeout from 'timeout';
 import { stripIndents } from 'common-tags';
 
-class PrivateCancelCommand extends Command {
+class PrivateCancel extends Command {
 	constructor() {
 		super('privateCancel', {
 			aliases: ['privatecancel', 'pvc'],
@@ -115,4 +115,4 @@ class PrivateCancelCommand extends Command {
 	}
 }
 
-module.exports = PrivateCancelCommand;
+module.exports = PrivateCancel;

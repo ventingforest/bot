@@ -4,7 +4,7 @@ import bytes from 'pretty-bytes';
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 
-class AboutCommand extends Command {
+class About extends Command {
     constructor() {
         super('about', {
             aliases: ['about', 'stats'],
@@ -43,4 +43,4 @@ class AboutCommand extends Command {
     }
 }
 
-module.exports = AboutCommand;
+module.exports = About;

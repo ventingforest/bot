@@ -1,7 +1,7 @@
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 
-class HelpCommand extends Command {
+class Help extends Command {
 	constructor() {
 		super('help', {
 			aliases: ['help'],
@@ -66,4 +66,4 @@ class HelpCommand extends Command {
 	}
 }
 
-module.exports = HelpCommand;
+module.exports = Help;
