@@ -1,7 +1,7 @@
 import { Inhibitor } from 'discord-akairo';
 import { Message } from 'discord.js';
 
-class GeneralInhibitor extends Inhibitor {
+class General extends Inhibitor {
 	constructor() {
 		super('general', {
 			reason: 'Commands can not be run in general!',
@@ -14,4 +14,4 @@ class GeneralInhibitor extends Inhibitor {
 	}
 }
 
-module.exports = GeneralInhibitor;
+module.exports = General;

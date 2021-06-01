@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as winston from 'winston';
-import PastebinAPI from 'pastebin-js';
-import { IConstants } from '../Constants';
+import { PastebinClient } from '@catte_/pastebin.js';
+import TVFConstants from '../Constants';
 import { IUser } from '../models/user';
 import mongoose = require('mongoose');
 
@@ -13,9 +13,9 @@ declare module 'discord-akairo' {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
     inhibitorHandler: InhibitorHandler;
-    pastebin: PastebinAPI;
+    pastebin: PastebinClient;
     talkedRecently: Set<string>;
-    constants: IConstants;
+    constants: ReturnType<typeof TVFConstants>;
     prefix: string;
     botBanner: boolean;
     db: {

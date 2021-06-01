@@ -1,7 +1,7 @@
 import { Inhibitor, Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 
-class AdminInhibitor extends Inhibitor {
+class Admin extends Inhibitor {
 	constructor() {
 		super('admin', {
 			reason: 'This command is restricted to admins only!'
@@ -9,8 +9,8 @@ class AdminInhibitor extends Inhibitor {
 	}
 
 	exec(msg: Message, command: Command) {
-		return command.categoryID === 'Admin';
+		return command.categoryID === 'Admin' && msg.member.roles.cache.has(this.client.constants.roles.staff.admins.id);
 	}
 }
 
-module.exports = AdminInhibitor;
+module.exports = Admin;

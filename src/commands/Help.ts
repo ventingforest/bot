@@ -67,3 +67,4 @@ class Help extends Command {
 }
 
 module.exports = Help;
+export default Help;

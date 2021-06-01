@@ -151,3 +151,4 @@ class PrivateRequest extends Command {
 }
 
 module.exports = PrivateRequest;
+export default PrivateRequest;

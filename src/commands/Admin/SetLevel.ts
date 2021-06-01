@@ -49,3 +49,4 @@ class SetLevel extends Command {
 }
 
 module.exports = SetLevel;
+export default SetLevel;

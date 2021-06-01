@@ -44,3 +44,4 @@ class About extends Command {
 }
 
 module.exports = About;
+export default About;

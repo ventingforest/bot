@@ -13,7 +13,7 @@ class Pride extends Command {
 		super('pride', {
 			aliases: ['pride'],
 			category: 'Fun',
-			description: `Overlay a pride flag over your profile picture! Choose from the following:\n\`\`\`${flags.join(', ')}\n\`\`\``,
+			description: `Put a pride flag over your profile picture, or a picture of your choice! If no attachment is provided, your profile picture will be used. Choose a flag from the following:\n\`\`\`${flags.join(', ')}\n\`\`\``,
 			args: [
 				{
 					id: 'flag',
@@ -43,12 +43,12 @@ class Pride extends Command {
 		opacity = opacity / 100 || 0.5; // Convert from percentage to decimal
 
 		const error = this.client.util.embed()
-			.setTitle('There was an error whilst generating your pride pfp!')
+			.setTitle('There was an error whilst generating your pride image!')
 			.setColor(this.client.constants.colours.red)
 			.setThumbnail(this.client.server.iconURL());
 
 		// Ensure that the specified flag is valid
-		if (!flags.includes(flag)) return msg.channel.send(error.setDescription('The provided flag does not exist/is not supported!'));
+		if (!flags.includes(flag)) return msg.channel.send(error.setDescription(`The provided flag is not supported! Please select one of the following, or send newt a DM asking them to add your requested flag!\`\`\`${flags.join(', ')}\`\`\``));
 
 		// If the opacity is greater than 100%
 		if (opacity > 1 || opacity < 0) return msg.channel.send(error.setDescription('The provided opacity has to be between 0 and 100%!'));
@@ -110,3 +110,4 @@ class Pride extends Command {
 }
 
 module.exports = Pride;
+export default Pride;

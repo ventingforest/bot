@@ -77,3 +77,4 @@ class Level extends Command {
 }
 
 module.exports = Level;
+export default Level;

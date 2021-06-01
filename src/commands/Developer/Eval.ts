@@ -103,3 +103,4 @@ class Eval extends Command {
 }
 
 module.exports = Eval;
+export default Eval;

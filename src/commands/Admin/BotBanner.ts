@@ -38,3 +38,4 @@ class BotBanner extends Command {
 }
 
 module.exports = BotBanner;
+export default BotBanner;

@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-nocheck REMOVE ME
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 
@@ -20,3 +20,4 @@ class Name extends Command {
 }
 
 module.exports = Name;
+export default Name;

@@ -22,7 +22,7 @@ class PrivateStart extends Command {
             ]
 		});
 
-		this.usage = 'privatecancel [id] [reason]';
+		this.usage = 'privateend <id>';
 		this.examples = [
 			'privatestart',
 			'privatestart ci1de'
@@ -36,7 +36,7 @@ class PrivateStart extends Command {
 			const error = this.client.util.embed()
 				.setColor(this.client.constants.colours.red)
 				.setTitle('There was an error trying to start that private venting session!')
-				.setDescription(`A private venting session could not be found with the ID \`${id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
+				.setDescription(`An active private venting session could not be found with the ID \`${id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
 			return msg.channel.send(error);
 		}
 		const user = await this.client.users.fetch(doc.id); // Find the user associated with the private venting session
@@ -116,3 +116,4 @@ class PrivateStart extends Command {
 }
 
 module.exports = PrivateStart;
+export default PrivateStart;

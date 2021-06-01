@@ -24,14 +24,16 @@ class Say extends Command {
 	}
 
 	exec(msg: Message, { message }: { message: string }) {
-		// Clean up
-		msg.delete();
+		msg.delete(); // Clean up
 
 		// Repeat the message
 		if (message) {
 			msg.channel.send(message);
+		} else {
+			this.client.sendDM(msg.author, `You did not specify anything for me to say!`);
 		}
 	}
 }
 
 module.exports = Say;
+export default Say;

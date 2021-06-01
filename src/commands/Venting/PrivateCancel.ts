@@ -31,6 +31,35 @@ class PrivateCancel extends Command {
 		];
 	}
 
+    /**
+     * Clears all related timeouts.
+     * @param doc 
+     */
+    clearTimeouts(doc: IUser) {
+        // Clear all related timeouts
+        timeout.timeout(doc.private.id, null);
+        timeout.timeout(`${doc.private.id}1`, null);
+        timeout.timeout(`${doc.private.id}2`, null);
+        timeout.timeout(`${doc.private.id}3`, null);
+        timeout.timeout(`${doc.private.id}4`, null);
+        timeout.timeout(`${doc.private.id}5`, null);
+    }
+
+    /**
+     * Cancels a private venting session.
+     * @param doc 
+     */
+    cancelSession(doc: IUser) {
+        // Update the venter's document
+        doc.private.requested = false;
+        doc.private.id = null;
+        doc.private.reason = null;
+        doc.private.requestedAt = null;
+        doc.private.startedAt = null;
+        doc.private.channels.text = null;
+        doc.private.channels.vc = null;
+    }
+
 	async exec(msg: Message, { id, reason }: { id: string, reason: string }) {
         await msg.delete(); // Delete the user's message for anynomity
         var doc: IUser;
@@ -94,25 +123,11 @@ class PrivateCancel extends Command {
         this.client.constants.channels.staff.private.logs.send(cancelledEmbed);
 
         // Cancel the session
-
-        // Clear the expiry reminders
-        timeout.timeout(doc.private.id, null);
-        timeout.timeout(`${doc.private.id}1`, null);
-        timeout.timeout(`${doc.private.id}2`, null);
-        timeout.timeout(`${doc.private.id}3`, null);
-        timeout.timeout(`${doc.private.id}4`, null);
-        timeout.timeout(`${doc.private.id}5`, null);
-
-        // Update the venter's document
-        doc.private.requested = false;
-        doc.private.id = null;
-        doc.private.reason = null;
-        doc.private.requestedAt = null;
-        doc.private.startedAt = null;
-        doc.private.channels.text = null;
-        doc.private.channels.vc = null;
+        this.clearTimeouts(doc);
+        this.cancelSession(doc);
         this.client.saveDoc(doc);
 	}
 }
 
 module.exports = PrivateCancel;
+export default PrivateCancel;

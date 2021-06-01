@@ -1,16 +1,16 @@
-import { Inhibitor } from 'discord-akairo';
+import { Inhibitor, Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 
-class NameInhibitor extends Inhibitor {
+class Name extends Inhibitor {
 	constructor() {
 		super('id', {
 			reason: '',
 		});
 	}
 
-	exec(msg: Message) {
+	exec(msg: Message, command: Command) {
 		return true; // ignore message
 	}
 }
 
-module.exports = NameInhibitor;
+module.exports = Name;

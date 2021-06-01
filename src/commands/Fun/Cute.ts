@@ -37,31 +37,44 @@ class Cute extends Command {
 			.setAuthor(msg.author.username, msg.author.avatarURL());
 
 		switch (animal) {
-		case 'bird' || 'birb':
-			fact = (await axios.get('https://some-random-api.ml/facts/bird')).data.fact;
-			image = (await axios.get('https://some-random-api.ml/img/birb')).data.link;
-			embed.setTitle('Chirp! 🐦');
-			break;
-		case 'cat' || 'catto' || 'kitty':
-			fact = (await axios.get('https://some-random-api.ml/facts/cat')).data.fact;
-			image = (await axios.get('https://some-random-api.ml/img/cat')).data.link;
-			embed.setTitle('Meow! 🐈');
-			break;
-		case 'dog' || 'doggo' || 'puppy' || 'pupper':
-			fact = (await axios.get('https://some-random-api.ml/facts/dog')).data.fact;
-			image = (await axios.get('https://some-random-api.ml/img/dog')).data.link;
-			embed.setTitle('Woof! 🐶');
-			break;
-		case 'fox' || 'foxxo' || 'foxy':
-			fact = (await axios.get('https://some-random-api.ml/facts/fox')).data.fact;
-			image = (await axios.get('https://some-random-api.ml/img/fox')).data.link;
-			embed.setTitle('Chirp! 🐦');
-			break;
+			case 'bird':
+			case 'birb':
+				fact = (await axios.get('https://some-random-api.ml/facts/bird')).data.fact;
+				image = (await axios.get('https://some-random-api.ml/img/birb')).data.link;
+				embed.setTitle('Chirp! 🐦');
+				break;
+
+			case 'cat':
+			case 'catto':
+			case 'kitty':
+				fact = (await axios.get('https://some-random-api.ml/facts/cat')).data.fact;
+				image = (await axios.get('https://some-random-api.ml/img/cat')).data.link;
+				embed.setTitle('Meow! 🐈');
+				break;
+
+			case 'dog':
+			case 'doggo':
+			case 'puppy':
+			case 'pupper':
+				fact = (await axios.get('https://some-random-api.ml/facts/dog')).data.fact;
+				image = (await axios.get('https://some-random-api.ml/img/dog')).data.link;
+				embed.setTitle('Woof! 🐶');
+				break;
+
+			case 'fox':
+				fact = (await axios.get('https://some-random-api.ml/facts/fox')).data.fact;
+				image = (await axios.get('https://some-random-api.ml/img/fox')).data.link;
+				embed.setTitle('Chirp! 🐦');
+				break;
 		}
 
-		if (fact) embed.setDescription(fact)
-		if (image) embed.setImage(image);
-		else {
+		if (fact) {
+			embed.setDescription(fact);
+		}
+		
+		if (image) {
+			embed.setImage(image);
+		} else {
 			embed  
 				.setColor(this.client.constants.colours.red)
 				.setTitle('There was an error fetching your cute picture!')
@@ -74,3 +87,4 @@ class Cute extends Command {
 }
 
 module.exports = Cute;
+export default Cute;

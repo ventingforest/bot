@@ -2,8 +2,8 @@ import * as Discord from 'discord.js';
 import * as winston from 'winston';
 import logdnaWinston from 'logdna-winston';
 import mongoose = require('mongoose');
-import PastebinAPI from 'pastebin-js';
-import * as path from 'path';
+import { PastebinClient } from '@catte_/pastebin.js';
+import * as path from 'path';	
 import moment from 'moment';
 import si from 'systeminformation';
 import * as dotenv from 'dotenv';
@@ -11,7 +11,7 @@ import {
 	AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler,
 } from 'discord-akairo';
 import User, { IUser } from './models/user';
-import { IConstants } from './Constants';
+import Constants from './Constants';
 
 dotenv.config();
 
@@ -23,13 +23,9 @@ class TVFClient extends AkairoClient {
 	commandHandler: CommandHandler;
 	listenerHandler: ListenerHandler;
 	inhibitorHandler: InhibitorHandler;
-	pastebin = new PastebinAPI({
-		api_dev_key: process.env.PASTEBIN_KEY,
-		api_user_name: process.env.PASTEBIN_USERNAME,
-		api_user_password: process.env.PASTEBIN_PASSWORD,
-	});
+	pastebin = new PastebinClient(process.env.PASTEBIN_KEY, process.env.PASTEBIN_USERNAME, process.env.PASTEBIN_PASSWORD);
 	talkedRecently: Set<string> = new Set();
-	constants: IConstants;
+	constants: ReturnType<typeof Constants>;
 	prefix = this.isProduction ? 'tvf ' : 'tvf beta ';
 	botBanner = true;
 	db: { user: mongoose.Model<IUser>, connection: mongoose.Connection | null } = {
@@ -129,6 +125,9 @@ class TVFClient extends AkairoClient {
 			// Save the server for use in other methods
 			this.server = this.guilds.cache.get('435894444101861408');
 			this.logger.info('Saved server to Client!');
+
+			// Log into pastebin
+			await this.pastebin.login();
 		})();
 	}
 
