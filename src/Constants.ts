@@ -62,7 +62,7 @@ export default (tvf: Discord.Guild) => {
 		colours: {
 			red: '#ff6961',
 			green: '#3aa4ae',
-			orange: 'ffb861',
+			orange: '#ffb861',
 			yellow: '#ffc600',
 			white: '#ffffff'
 		},

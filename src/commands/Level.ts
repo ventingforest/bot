@@ -40,39 +40,34 @@ class Level extends Command {
 		const ctx = canvas.getContext('2d');
 
 		// Draw the template
-		const template = await loadImage(path.join(__dirname, '..', '..', 'assets', 'levels', 'template.png'));
+		const template = await loadImage(path.join(__dirname, '..', '..', 'assets', 'levels', 'rank.png'));
 		ctx.drawImage(template, 0, 0, 934, 282);
 
 		// Add the user's name
-		ctx.font = '53px "League Spartan"';
+		ctx.font = '72px "League Spartan"';
 		ctx.fillStyle = '#ffffff';
-		ctx.fillText(member.user.username, 218, 100, 405);
+		ctx.fillText(member.user.username, 287.3, 112, 687);
 
 		// Add the user's level and rank
-		ctx.font = '33px "League Spartan"';
-		ctx.fillText(`Level ${doc.level} (#${rank})`, 218, 150, 405)
+		ctx.font = '36px "League Spartan"';
+		ctx.fillText(`Level ${doc.level} (#${rank})`, 287.3, 173, 687)
 
 		// Fill the progress bar
 		const percentage = (doc.xp - xpForLevel) / (xpForNext - xpForLevel);
 		ctx.fillStyle = this.client.constants.colours.green;
-		ctx.fillRect(218, 180, 405 * percentage, 43);
+		ctx.fillRect(287.12, 205.19, 400 * percentage, 31.35);
 
-		// Add the user's profile picture
+		// Add the user's profile picture					
 		const avatar = await loadImage(member.user.avatarURL({ format: 'jpg' }));
-
-		ctx.beginPath();
-		ctx.arc(120, 135, 85, 0, Math.PI * 2, true);
-		ctx.closePath();
-		ctx.clip();
-
-		ctx.drawImage(avatar, 35, 50, 170, 170);
+		ctx.drawImage(avatar, 37.35, 46.35, 193.65, 189.99);
 
 		// Create an attachment
 		const attachment = this.client.util.attachment(canvas.toBuffer(), `${msg.author.username}.png`);
 		const currentLevelReward = this.client.levelReward(doc.level);
 		const nextLevelReward = this.client.constants.levelRoles[this.client.constants.levelRoles.indexOf(currentLevelReward) + 1];
-                
-		msg.channel.send(`**${this.client.constants.emojis.confetti}  |**  You are ${this.client.formatNumber(this.client.xpFor(nextLevelReward.level) - doc.xp)} xp away from **${nextLevelReward.name}!** You are currently a **${currentLevelReward.name}**.`, attachment);
+		const beginning = member === msg.member ? 'You are' : `${member.user.username} is`;
+
+		msg.channel.send(`**${this.client.constants.emojis.confetti}  |** ${nextLevelReward ? ` ${beginning} ${this.client.formatNumber(this.client.xpFor(nextLevelReward.level) - doc.xp)} xp away from **${nextLevelReward.name}!**` : ''} ${beginning} currently a **${currentLevelReward.name}**.`, attachment);
 	}
 }
 
