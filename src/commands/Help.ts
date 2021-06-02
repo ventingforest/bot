@@ -34,8 +34,10 @@ class Help extends Command {
 				.setTitle('TVF Bot Commands')
 				.setDescription(`For detailed information run \`${this.handler.prefix}help <commandName>\``);
 
+			console.log(this.handler.categories.size)
 			this.handler.categories.forEach((category) => {
 				embed.addField(category, category.map((cmd) => cmd.aliases[0]).join(', '));
+				console.log(category.array().length)
 			});
 		} else {
 			const command = this.handler.findCommand(args.commandName);
@@ -46,8 +48,8 @@ class Help extends Command {
 						.setTitle('TVF Bot Help')
 						.setDescription(command.description)
 						.addField('Usage', `\`\`\`${command.usage}\`\`\``)
-						.addField('Examples', `\`\`\`${command.examples.join(', ')}\`\`\``);
-				} catch {
+						.addField('Examples', `\`\`\`${command.examples.join('\n')}\`\`\``)
+				} catch {;
 					embed.fields = [];
 					embed
 						.setTitle('That command\'s help object is not complete!')

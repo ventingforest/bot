@@ -6,7 +6,7 @@ class Staff extends Command {
 	constructor() {
 		super('staff', {
 			aliases: ['staff'],
-			category: '',
+			category: 'Core',
 			description: 'Allows you to view stats about our wonderful staff! <3',
             args: [
                 {

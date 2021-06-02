@@ -1,4 +1,4 @@
-import { createCanvas, registerFont, loadImage } from 'canvas';
+import { createCanvas, registerFont, loadImage, Canvas } from 'canvas';
 import { Command } from 'discord-akairo';
 import { Message, GuildMember } from 'discord.js';
 import * as path from 'path';
@@ -25,6 +25,16 @@ class Level extends Command {
 		];
 	}
 
+	applyText(canvas: Canvas, fontSize: number, text: string) {
+		const context = canvas.getContext('2d');
+	
+		do {
+			context.font = `${fontSize -= 5}px League Spartan`;
+		} while (context.measureText(text).width > canvas.width - 475);
+
+		return context.font;
+	};
+
 	async exec(msg: Message, { argMember }: { argMember: GuildMember }) {
 		const member = argMember || msg.member;
 		const doc = await this.client.userDoc(member.id);
@@ -44,13 +54,14 @@ class Level extends Command {
 		ctx.drawImage(template, 0, 0, 934, 282);
 
 		// Add the user's name
-		ctx.font = '72px "League Spartan"';
 		ctx.fillStyle = '#ffffff';
-		ctx.fillText(member.user.username, 287.3, 112, 687);
+		ctx.font = this.applyText(canvas, 72, member.user.username);
+		ctx.fillText(member.user.username, 287.3, 112);
 
 		// Add the user's level and rank
-		ctx.font = '36px "League Spartan"';
-		ctx.fillText(`Level ${doc.level} (#${rank})`, 287.3, 173, 687)
+		const levelText = `Level ${doc.level} (#${rank})`;
+		ctx.font = this.applyText(canvas, 36, levelText);
+		ctx.fillText(levelText, 287.3, 173);
 
 		// Fill the progress bar
 		const percentage = (doc.xp - xpForLevel) / (xpForNext - xpForLevel);

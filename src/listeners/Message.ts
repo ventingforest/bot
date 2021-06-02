@@ -2,6 +2,7 @@ import { Listener } from 'discord-akairo';
 import { Message } from 'discord.js';
 import { createCanvas, registerFont, loadImage } from 'canvas';
 import * as path from 'path';
+import Level from '../commands/Level';
 
 class MessageListener extends Listener {
 	constructor() {
@@ -36,9 +37,10 @@ class MessageListener extends Listener {
 				ctx.drawImage(avatar, 37.35, 46.35, 193.65, 189.99);
 
 				// Add level
-				ctx.font = '36px "League Spartan"';
+				const levelText = `You are now Level ${doc.level}!`;
+				ctx.font = Level.prototype.applyText(canvas, 36, levelText);
 				ctx.fillStyle = '#ffffff';
-				ctx.fillText(`You are now Level ${doc.level}!`, 287.2, 203.8, 470);
+				ctx.fillText(levelText, 287.2, 203.8);
 
 				const attachment = this.client.util.attachment(canvas.toBuffer(), `${msg.author.username}.png`);
 				const currentLevelReward = this.client.levelReward(doc.level) || this.client.constants.levelRoles[this.client.constants.levelRoles.length - 1];

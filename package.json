@@ -9,7 +9,7 @@
     "scripts": {
         "dev": "cross-env NODE_ENV=development ts-nodemon",
         "beta": "npm run dev",
-        "prod": "cross-env NODE_ENV=production ts-nodemon",
+        "prod": "npm run build && npm run pm2:start",
         "pm2:start": "NODE_ENV=production pm2 start node build/index.js",
         "pm2:pause": "pm2 stop",
         "pm2:stop": "pm2 delete",
