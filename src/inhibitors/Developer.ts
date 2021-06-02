@@ -9,7 +9,9 @@ class Developer extends Inhibitor {
 	}
 
 	exec(msg: Message, command: Command) {
-		return command.categoryID === 'Developer' && this.client.isOwner(msg.author);
+		if (command.categoryID === 'Developer') {
+			return !this.client.isOwner(msg.author);
+		}
 	}
 }
 

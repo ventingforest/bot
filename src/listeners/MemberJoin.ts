@@ -3,6 +3,7 @@ import { Listener } from 'discord-akairo';
 import { GuildMember, VoiceChannel, TextChannel } from 'discord.js';
 import User from '../models/user';
 import ordinal from 'ordinal';
+import Isolate from '../commands/Support/Isolate';
 
 class MemberJoin extends Listener {
 	constructor() {
@@ -13,7 +14,7 @@ class MemberJoin extends Listener {
 	}
 
 	async exec(member: GuildMember) {
-		if (this.client.isProduction) {
+		if (!this.client.isProduction) {
 			let hereBefore = true;
 
 			if (this.client.botBanner && member.user.bot) return member.ban({ reason: 'Bot banner is enabled (:' });
@@ -72,19 +73,7 @@ class MemberJoin extends Listener {
 
 					// If the user was previously isolated, put them back into isolation
 					if (doc.isolation.isolated) {
-						this.client.server.channels.cache.forEach(c => {
-							if (c.type === 'text' || c.type === 'news') c.updateOverwrite(member, { VIEW_CHANNEL: false, SEND_MESSAGES: false });
-							if (c.type === 'voice') c.updateOverwrite(member, { VIEW_CHANNEL: false, CONNECT: false });
-						});
-                          
-						const text = this.client.server.channels.cache.get(doc.isolation.channels.text) as TextChannel;
-						const vc = this.client.server.channels.cache.get(doc.isolation.channels.vc) as VoiceChannel;
-                  
-						text.updateOverwrite(member, { VIEW_CHANNEL: true, SEND_MESSAGES: true });
-						vc.updateOverwrite(member, { VIEW_CHANNEL: true, CONNECT: true });
-                  
-						this.client.constants.channels.general.send(`**${member.user.username}** is currently isolated! They may not respond to your messages for a while.`);
-						text.send(`<@!${member.id}> Welcome back to the server! You are still isolated - if you feel like you are ready to come out, please ping a member of staff.`);
+						Isolate.prototype.isolate(member, this.client.user, 'Automatic reisolation!', doc.isolation.channels.text, doc.isolation.channels.vc, doc, this.client);
 					}
 
 					// Save the document again
@@ -99,7 +88,7 @@ class MemberJoin extends Listener {
 				.setDescription(stripIndents`
                     This may be a somewhat large server, but we can certainly make you feel at home - that's what our **Welcome Team** is for!
                     **First of all, check out ${this.client.constants.channels.rules.toString()} as it contains much of what you need to know, and ${this.client.constants.channels.roles.toString()}, which you can self-assign.**
-                    We hope you have fun and enjoy your stay here at The Venting Forest!
+                    We hope you have fun and enjoy your stay here at The Venting Forest! ${hereBefore ? 'We missed you <3' : ''}
                 `);
             
 			if (hereBefore) welcome.setTitle(`Welcome back to TVF, ${member.user.username}!`)

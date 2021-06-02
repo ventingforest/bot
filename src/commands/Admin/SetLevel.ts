@@ -11,7 +11,7 @@ class SetLevel extends Command {
                 {
                     id: 'member',
                     type: 'member',
-                    match: 'rest',
+                    index: 0,
                     prompt: {
 						start: (msg: Message): string => `${msg.author}, who would you like to update the level of?`
 					}

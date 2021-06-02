@@ -9,7 +9,9 @@ class Support extends Inhibitor {
 	}
 
 	exec(msg: Message, command: Command) {
-		return command.categoryID === 'Support' && (msg.member.roles.cache.has(this.client.constants.roles.staff.support.id) || msg.member.roles.cache.has(this.client.constants.roles.staff.moderators.id));
+		if (command.categoryID === 'Support') {
+			return !(msg.member.roles.cache.has(this.client.constants.roles.staff.support.id) || msg.member.roles.cache.has(this.client.constants.roles.staff.moderators.id) || msg.member.roles.cache.has(this.client.constants.roles.staff.admins.id));
+		}
 	}
 }
 

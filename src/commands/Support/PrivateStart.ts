@@ -35,6 +35,7 @@ class PrivateStart extends Command {
 		if (!doc) {
 			const error = this.client.util.embed()
 				.setColor(this.client.constants.colours.red)
+				.setThumbnail(this.client.server.iconURL())
 				.setTitle('There was an error trying to start that private venting session!')
 				.setDescription(`An active private venting session could not be found with the ID \`${id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
 			return msg.channel.send(error);
