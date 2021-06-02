@@ -114,6 +114,12 @@ class TVFClient extends AkairoClient {
 				directory: path.join(__dirname, 'listeners'),
 			});
 
+			this.listenerHandler.setEmitters({
+				commandHandler: this.commandHandler,
+				inhibitorHandler: this.inhibitorHandler,
+				listenerHandler: this.listenerHandler
+			});
+
 			this.commandHandler.useListenerHandler(this.listenerHandler);
 			this.listenerHandler.loadAll();
 			this.logger.info('Listeners bound to command handler and loaded!');
