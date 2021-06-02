@@ -8,7 +8,7 @@ class Isolate extends Command {
 		super('isolate', {
 			aliases: ['isolate'],
 			category: 'Support',
-			description: 'Allows staff to isolate or unisolate a user!',
+			description: 'Allows staff to isolate a user!',
             args: [
                 {
                     id: 'member',
@@ -35,9 +35,13 @@ class Isolate extends Command {
 
     /**
      * Isolates a user
-     * @param member
+     * @param isolated
      * @param isolator
      * @param reason
+     * @param textID
+     * @param voiceID
+     * @param doc
+     * @param client
      */
     async isolate(isolated: GuildMember, isolator: User, reason: string, textID: string, voiceID: string, doc: IUser, client: AkairoClient) {
         const text = client.server.channels.cache.get(textID) as TextChannel;
@@ -108,6 +112,7 @@ class Isolate extends Command {
 
 	async exec(msg: Message, { member, reason }: { member: GuildMember, reason: string }) {
         this.client.deletePrompts(msg);
+        msg.delete();
         if (!reason) reason = 'No reason specified.';
         const { user } = member;
         const doc = await this.client.userDoc(user.id);

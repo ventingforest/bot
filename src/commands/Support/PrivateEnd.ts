@@ -48,7 +48,7 @@ class PrivateEnd extends Command {
         const voice = this.client.server.channels.cache.get(doc.private.channels.vc) as VoiceChannel;
         const startedAt = moment(doc.private.startedAt).format(this.client.constants.moment);
         const endedAt = moment().format(this.client.constants.moment);
-        const messages = text.messages.cache;
+        // const messages = text.messages.cache;
         const user = await this.client.users.fetch(doc.id);
 
         // Upload the message history to pastebin

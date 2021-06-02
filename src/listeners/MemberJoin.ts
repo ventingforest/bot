@@ -1,6 +1,6 @@
 import { stripIndents } from 'common-tags';
 import { Listener } from 'discord-akairo';
-import { GuildMember, VoiceChannel, TextChannel } from 'discord.js';
+import { GuildMember } from 'discord.js';
 import User from '../models/user';
 import ordinal from 'ordinal';
 import Isolate from '../commands/Support/Isolate';
@@ -14,7 +14,7 @@ class MemberJoin extends Listener {
 	}
 
 	async exec(member: GuildMember) {
-		if (!this.client.isProduction) {
+		if (this.client.isProduction) {
 			let hereBefore = true;
 
 			if (this.client.botBanner && member.user.bot) return member.ban({ reason: 'Bot banner is enabled (:' });
