@@ -19,7 +19,8 @@ class PrivateCancel extends Command {
                 {
                     id: 'reason',
                     type: 'string',
-                    match: 'rest'
+                    match: 'rest',
+                    default: 'No reason specified.'
                 }
             ]
 		});
@@ -65,15 +66,6 @@ class PrivateCancel extends Command {
         var doc: IUser;
         const cancelledEmbed = this.client.util.embed()
             .setColor(this.client.constants.colours.red);
-        
-        // Ensure that there is a specified reason
-        if (reason) {
-            // @ts-ignore
-            reason = reason.split(' '); // @ts-ignore
-            reason.shift() // @ts-ignore
-            reason = reason.join(' ');
-        }
-        else reason = 'No reason specified!';
         
         // Check if the user wants to cancel another person's session
         if (id && this.client.isUser('Support', msg.member)) {

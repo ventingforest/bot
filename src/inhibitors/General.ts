@@ -10,7 +10,8 @@ class General extends Inhibitor {
 
 	exec(msg: Message) {
 		const channels = this.client.constants.channels;
-		return this.client.isUser('Staff', msg.member) ? false : [channels.general.id, channels.tw.id].includes(msg.channel.id);
+		if (this.client.isUser('Staff', msg.member)) return false;
+		else return [channels.general.id, channels.tw.id].includes(msg.channel.id);
 	}
 }
 

@@ -4,7 +4,7 @@ import { Message } from 'discord.js';
 class BotBanner extends Command {
 	constructor() {
 		super('botBanner', {
-			aliases: ['botbanner', 'botban', 'bot'],
+			aliases: ['botbanner', 'botban'],
 			category: 'Admin',
 			description: 'Toggles TVF Bot\'s inbuilt bot banner!'
 		});

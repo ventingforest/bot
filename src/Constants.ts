@@ -73,7 +73,7 @@ export default (tvf: Discord.Guild) => {
 			grimacing: '😬',
 			square: '▫',
 			cross: '❌',
-			confetti: '🎊',
+			confetti: '🎉',
 			graph: '📈',
 			suggestions: {
 				upvote: tvf.emojis.cache.get('760820779344068609') ,

@@ -50,7 +50,6 @@ class Eval extends Command {
 		try {
 			const hrStart = process.hrtime();
 			this.lastResult = eval(code.replace('tvf', 'this.client'));
-			console.log(this.lastResult)
 			hrDiff = process.hrtime(hrStart);
 		} catch (error) {
 			return msg.channel.send(`Error while evaluating: \`${error}\``);

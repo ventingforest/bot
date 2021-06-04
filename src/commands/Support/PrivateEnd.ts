@@ -25,7 +25,8 @@ class PrivateEnd extends Command {
                 {
                     id: 'notes',
                     type: 'string',
-                    match: 'rest'
+                    match: 'rest',
+                    default: 'No notes provided.'
                 }
             ]
 		});
@@ -48,11 +49,11 @@ class PrivateEnd extends Command {
         const voice = this.client.server.channels.cache.get(doc.private.channels.vc) as VoiceChannel;
         const startedAt = moment(doc.private.startedAt).format(this.client.constants.moment);
         const endedAt = moment().format(this.client.constants.moment);
-        // const messages = text.messages.cache;
+        const messages = text.messages.cache;
         const user = await this.client.users.fetch(doc.id);
 
         // Upload the message history to pastebin
-        /* const paste = await this.client.pastebin.pastes.create(stripIndents`
+        const paste = await this.client.pastebin.pastes.create(stripIndents`
             Venter: ${user.tag} (${user.id})
             Reason for vent: ${doc.private.reason}
             Started at: ${startedAt}
@@ -63,7 +64,7 @@ class PrivateEnd extends Command {
         `, {
             title: `Private Venting: ${user.tag} // ${endedAt}`,
             privacy: 1
-        }); */
+        });
 
         // Announce
         const embed = this.client.util.embed()
@@ -75,7 +76,7 @@ class PrivateEnd extends Command {
             .addField('Open for', ms(moment().diff(moment(doc.private.startedAt), 'ms'), { long: true }))
             .addField('Started at', startedAt, true)
             .addField('Ended at', endedAt, true)
-            // .addField('Pastebin', paste.url ? paste.url : 'Max daily paste upload limit met ):', true);
+            .addField('Pastebin', paste.url ? paste.url : 'Max daily paste upload limit met ):', true);
 
         this.client.constants.channels.staff.support.send(embed);
         this.client.constants.channels.staff.private.logs.send(embed);
@@ -99,7 +100,6 @@ class PrivateEnd extends Command {
 				.setDescription(`An active private venting session could not be found with the ID \`${id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
 			return msg.channel.send(error);
 		}
-        if (!notes) notes = 'No notes provided.'
 
         // End the session
         await this.endSession(doc, notes);

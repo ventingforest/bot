@@ -133,7 +133,7 @@ class TVFClient extends AkairoClient {
 			this.logger.info('Saved server to Client!');
 
 			// Log into pastebin
-			// await this.pastebin.login();
+			await this.pastebin.login();
 		})();
 	}
 
