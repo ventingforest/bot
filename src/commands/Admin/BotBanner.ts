@@ -4,13 +4,13 @@ import { Message } from 'discord.js';
 class BotBanner extends Command {
 	constructor() {
 		super('botBanner', {
-			aliases: ['botbanner', 'botban'],
+			aliases: ['bot-banner', 'bot-ban'],
 			category: 'Admin',
 			description: 'Toggles TVF Bot\'s inbuilt bot banner!'
 		});
 
-		this.usage = 'botbanner';
-		this.examples = ['botbanner'];
+		this.usage = 'bot-banner';
+		this.examples = ['bot-banner'];
 	}
 
 	exec(msg: Message) {

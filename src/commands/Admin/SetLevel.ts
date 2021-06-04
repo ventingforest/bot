@@ -4,7 +4,7 @@ import { Message, GuildMember } from 'discord.js';
 class SetLevel extends Command {
 	constructor() {
 		super('setLevel', {
-			aliases: ['setlevel', 'setrank'],
+			aliases: ['set-level', 'set-rank'],
 			category: 'Admin',
 			description: 'Updates the level of a member!',
             args: [
@@ -27,8 +27,8 @@ class SetLevel extends Command {
             ]
 		});
 
-		this.usage = 'setlevel <@user> <level>';
-		this.examples = ['setlevel @newt <3#1234'];
+		this.usage = 'set-level <@user> <level>';
+		this.examples = ['set-level @newt <3#1234'];
 	}
 
 	async exec(msg: Message, { member, level }: { member: GuildMember, level: number }) {

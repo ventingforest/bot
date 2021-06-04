@@ -10,7 +10,7 @@ import { IUser } from '../../models/user';
 class PrivateEnd extends Command {
 	constructor() {
 		super('privateEnd', {
-			aliases: ['privateend', 'pve', 'privateclose'],
+			aliases: ['private-end', 'pve'],
 			category: 'Support',
 			description: 'Allows members of staff to end a private venting session!',
             args: [
@@ -31,11 +31,11 @@ class PrivateEnd extends Command {
             ]
 		});
 
-		this.usage = 'privateend <id> [notes]';
+		this.usage = 'private-end <id> [notes]';
 		this.examples = [
-			'privateend',
-			'privateend ci1de',
-            'privateend ci1de Something important to remember about the session for next time might go here - this will not be saved, just displayed in the ending embed.'
+			'private-end',
+			'private-end ci1de',
+            'private-end ci1de Something important to remember about the session for next time might go here - this will not be saved, just displayed in the ending embed.'
 		];
 	}
 

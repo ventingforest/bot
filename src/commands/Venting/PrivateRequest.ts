@@ -7,7 +7,7 @@ import timeout from 'timeout';
 class PrivateRequest extends Command {
 	constructor() {
 		super('privateRequest', {
-			aliases: ['private', 'pv'],
+			aliases: ['private', 'pv', 'private-request', 'pvr'],
 			category: 'Venting',
 			description: 'Allows you to request a private venting session!',
 			args: [

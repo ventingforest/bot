@@ -97,6 +97,29 @@ class TVFClient extends AkairoClient {
 				prefix: this.prefix,
 				commandUtil: true,
 				storeMessages: true,
+				argumentDefaults: {
+					prompt: {
+						modifyStart: (msg: Discord.Message, text: string) => `${msg.author}, ${text}\nType cancel to cancel this command!`,
+						timeout: (msg: Discord.Message) => {
+							this.deletePrompts(msg);
+							return 'Time ran out, command has been cancelled!';
+						},
+						ended: (msg: Discord.Message) => {
+							this.deletePrompts(msg);
+							return 'Too many retries, command has been cancelled!';
+						},
+						cancel: (msg: Discord.Message) => {
+							this.deletePrompts(msg);
+							return 'Command cancelled!';
+						},
+						retries: 4,
+						time: 30000
+					}
+				},
+				aliasReplacement: /-/g,
+    			allowMention: true,
+				defaultCooldown: 1000,
+				ignoreCooldown: this.ownerID
 			});
 
 			this.commandHandler.loadAll();
@@ -124,6 +147,10 @@ class TVFClient extends AkairoClient {
 			this.listenerHandler.loadAll();
 			this.logger.info('Listeners bound to command handler and loaded!');
 
+			// Log into pastebin
+			await this.pastebin.login();
+			this.logger.info('Logged into Pastebin!');
+
 			// Log into discord
 			await this.login(this.isProduction ? process.env.STABLE : process.env.BETA);
 			this.logger.info('Logged into Discord!');
@@ -131,9 +158,6 @@ class TVFClient extends AkairoClient {
 			// Save the server for use in other methods
 			this.server = this.guilds.cache.get('435894444101861408');
 			this.logger.info('Saved server to Client!');
-
-			// Log into pastebin
-			await this.pastebin.login();
 		})();
 	}
 

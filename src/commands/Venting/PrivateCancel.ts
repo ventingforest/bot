@@ -7,7 +7,7 @@ import { stripIndents } from 'common-tags';
 class PrivateCancel extends Command {
 	constructor() {
 		super('privateCancel', {
-			aliases: ['privatecancel', 'pvc'],
+			aliases: ['private-cancel', 'pvc'],
 			category: 'Venting',
 			description: 'Allows you to cancel a private venting session! If you are staff, you may pass an ID to cancel another person\'s session.',
             args: [
@@ -25,10 +25,10 @@ class PrivateCancel extends Command {
             ]
 		});
 
-		this.usage = 'privatecancel [id] [reason]';
+		this.usage = 'private-cancel [id] [reason]';
 		this.examples = [
-			'privatecancel',
-			'privatecancel ci1de'
+			'private-cancel',
+			'private-cancel ci1de'
 		];
 	}
 

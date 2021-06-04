@@ -2,6 +2,7 @@ import { Command } from 'discord-akairo';
 import { Message, GuildMember, TextChannel, VoiceChannel } from 'discord.js';
 import moment from 'moment';
 import ms from 'ms';
+import { stripIndents } from 'common-tags';
 
 class Unisolate extends Command {
     constructor() {
@@ -46,7 +47,7 @@ class Unisolate extends Command {
         const messages = text.messages.cache;
 
         // Upload the message history to pastebin
-        /* const paste = await this.client.pastebin.pastes.create(stripIndents`
+        const paste = await this.client.pastebin.pastes.create(stripIndents`
             User isolated: ${user.tag} (${user.id})
             Reason for vent: ${doc.isolation.reason}
             Isolated at: ${isolatedAt}
@@ -55,9 +56,9 @@ class Unisolate extends Command {
             ---------------------------------------------
             ${messages.map(msg => `${moment(msg.createdTimestamp).format('D/M/YYYY HH:MM')} ${msg.author.tag}: ${msg.content}`).join('\n')}
         `, {
-            title: `Isolation: ${user.tag} // ${endedAt}`,
+            title: `Isolation: ${user.tag} // ${unisolatedAt}`,
             privacy: 1
-        }); */
+        });
 
         // Give the user access to all the rest of the channels
         this.client.server.channels.cache.forEach(c => {
@@ -83,7 +84,7 @@ class Unisolate extends Command {
             .addField('Isolated by', this.client.server.member(doc.isolation.isolatedBy).user.username, true)
             .addField('Unisolated by', msg.author.username, true)
             .addField('Recorded message count', messages.size, true)
-            // .addField('Pastebin', paste.url ? paste.url : 'Max daily paste upload limit met ):', true)
+            .addField('Pastebin', paste.url ? paste.url : 'Max daily paste upload limit met ):', true)
             .addField('Reason for isolation', doc.isolation.reason)
             .addField('Notes', notes);
 

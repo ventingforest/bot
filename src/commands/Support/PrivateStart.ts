@@ -7,7 +7,7 @@ import moment from 'moment';
 class PrivateStart extends Command {
 	constructor() {
 		super('privateStart', {
-			aliases: ['privatestart', 'pvs'],
+			aliases: ['private-start', 'pvs'],
 			category: 'Support',
 			description: 'Allows members of staff to start a private venting session!',
             args: [
@@ -22,10 +22,10 @@ class PrivateStart extends Command {
             ]
 		});
 
-		this.usage = 'privateend <id>';
+		this.usage = 'private-start <id>';
 		this.examples = [
-			'privatestart',
-			'privatestart ci1de'
+			'private-start',
+			'private-start ci1de'
 		];
 	}
 
