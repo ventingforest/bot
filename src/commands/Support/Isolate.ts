@@ -7,7 +7,6 @@ class Isolate extends Command {
     constructor() {
 		super('isolate', {
 			aliases: ['isolate'],
-			category: 'Support',
 			description: 'Allows staff to isolate a user!',
             args: [
                 {
@@ -55,6 +54,7 @@ class Isolate extends Command {
         // Inform staff
         const isolatedEmbed = client.util.embed()
             .setColor(client.constants.colours.red)
+            .setAuthor(isolator.username, isolator.avatarURL())
             .setThumbnail(user.avatarURL());
         
         if (doc.isolation.isolated) {
@@ -168,6 +168,7 @@ class Isolate extends Command {
         });
 
         this.isolate(member, msg.author, reason, text.id, voice.id, doc, this.client);
+        this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just isolated ${this.client.userLogCompiler(member.user)} for ${reason}.`);
 	}
 }
 

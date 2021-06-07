@@ -12,7 +12,6 @@ class Pride extends Command {
 	constructor() {
 		super('pride', {
 			aliases: ['pride'],
-			category: 'Fun',
 			description: `Put a pride flag over your profile picture, or a picture of your choice! If no attachment is provided, your profile picture will be used. Choose a flag from the following:\n\`\`\`${flags.join(', ')}\n\`\`\``,
 			args: [
 				{
@@ -39,60 +38,13 @@ class Pride extends Command {
 		];
 	}
 
-	async exec(msg: Message, { flag, opacity }: { flag: string, opacity: number }) {
-		opacity = opacity / 100 || 0.5; // Convert from percentage to decimal
-
-		const error = this.client.util.embed()
-			.setTitle('There was an error whilst generating your pride image!')
-			.setColor(this.client.constants.colours.red)
-			.setThumbnail(this.client.server.iconURL());
-
-		// Ensure that the specified flag is valid
-		if (!flags.includes(flag)) return msg.channel.send(error.setDescription(`The provided flag is not supported! Please select one of the following, or send newt a DM asking them to add your requested flag!\`\`\`${flags.join(', ')}\`\`\``));
-
-		// If the opacity is greater than 100%
-		if (opacity > 1 || opacity < 0) return msg.channel.send(error.setDescription('The provided opacity has to be between 0 and 100%!'));
-
-		// Send the new picture!
-		if (msg.attachments.size > 0) {
-			request({
-				url: msg.attachments.first().url,
-				method: 'get',
-				encoding: null
-			}, async (err, _res, body) => {
-				if (err) {
-					error
-						.setDescription('There was an issue with fetching your attachment. Sorry! Please report this to newt if you would like further help.');
-					return msg.channel.send(error);
-				}
-				const attachment = this.client.util.attachment(await this.pride(body, flag, opacity), `${msg.author.username}-${msg.attachments.first().name}.png`);
-				msg.channel.send(attachment);
-			});
-		}
-		else {
-			request({
-				url: msg.author.avatarURL({ size: 512, format: 'png' }),
-				method: 'get',
-				encoding: null
-			}, async (err, _res, body) => {
-				if (err) {
-					error
-						.setDescription('There was an issue with fetching your profile picture. Sorry! Please report this to newt if you would like further help.');
-					return msg.channel.send(error);
-				}
-				const attachment = this.client.util.attachment(await this.pride(body, flag, opacity), `${msg.author.username}-${flag}.png`);
-				msg.channel.send(attachment);
-			});
-		}
-	}
-
 	/**
 	 * Overlays a pride flag over an image buffer.
 	 * @param {Buffer} buffer
 	 * @param {string} type
 	 * @param {number} opacity
 	 */
-	async pride(buffer: Buffer, type: string, opacity: number): Promise<Buffer> {
+	 async pride(buffer: Buffer, type: string, opacity: number): Promise<Buffer> {
 		// load the necessary images
 		const image = await jimp.read(buffer);
 		const flag = await jimp.read(path.resolve(`assets/pride/${type}.png`));
@@ -106,6 +58,47 @@ class Pride extends Command {
 
 		// return the manipulated image's buffer
 		return image.getBufferAsync(jimp.MIME_PNG);
+	}
+
+	async exec(msg: Message, { flag, opacity }: { flag: string, opacity: number }) {
+		const error = this.client.util.embed()
+			.setTitle('There was an error whilst generating your pride image!')
+			.setColor(this.client.constants.colours.red)
+			.setAuthor(msg.author.username, msg.author.avatarURL())
+			.setThumbnail(msg.author.avatarURL());
+		opacity = opacity / 100; // Convert from percentage to decimal
+
+		// Ensure that the specified flag is valid
+		if (!flags.includes(flag)) return msg.channel.send(error.setDescription(`The provided flag is not supported! Please select one of the following, or send newt a DM asking them to add your requested flag!\`\`\`${flags.join(', ')}\`\`\``));
+
+		// If the opacity is greater than 100%
+		if (opacity > 1 || opacity < 0) return msg.channel.send(error.setDescription('The provided opacity has to be between 0 and 100%!'));
+
+		// Work out whether we are working on an attachment or a profile picture
+		const hasAttachment = msg.attachments.size > 0;
+		const type = hasAttachment ? 'attachment' : 'profile picture';
+
+		// Request the image (stored in body)
+		request({
+			url: hasAttachment ? msg.attachments.first().url : msg.author.avatarURL({ size: 512, format: 'png' }),
+			method: 'get',
+			encoding: null
+		}, async (err, _res, body) => {
+			// If there is a problem, report it
+			if (err) {
+				error
+					.setDescription(`There was an issue with fetching your ${type}. Sorry! Please report this to newt if you would like further help.`);
+
+				this.client.logger.error(`pride: There was a problem fetching ${this.client.userLogCompiler(msg.author)}'s ${type}: ${err}`);
+				return msg.channel.send(error);
+			}
+
+			// Create the new attachment and send it to the server!
+			const attachment = this.client.util.attachment(await this.pride(body, flag, opacity), `${msg.author.username}-${msg.attachments.first().name}.png`);
+			msg.channel.send(attachment);
+		});
+
+		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just requested that their ${type} has a ${flag} blitted over it at ${opacity} opacity.`);
 	}
 }
 

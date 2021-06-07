@@ -8,7 +8,6 @@ class PrivateStart extends Command {
 	constructor() {
 		super('privateStart', {
 			aliases: ['private-start', 'pvs'],
-			category: 'Support',
 			description: 'Allows members of staff to start a private venting session!',
             args: [
                 {
@@ -31,18 +30,24 @@ class PrivateStart extends Command {
 
 	async exec(msg: Message, { id }: { id: string }) {
         this.client.deletePrompts(msg); // Delete any prompts
-		const doc = await User.findOne({ 'private.requested': true, 'private.id': id }, (err, res) => err ? this.client.logger.error(err) : res); // Get the user's document
+
+		// Get the user's document
+		const doc = await User.findOne({ 'private.requested': true, 'private.id': id }, (err, res) => err ? this.client.logger.error(err) : res);
+
 		if (!doc) {
 			const error = this.client.util.embed()
 				.setColor(this.client.constants.colours.red)
 				.setThumbnail(this.client.server.iconURL())
+				.setAuthor(msg.author.username, msg.author.avatarURL())
 				.setTitle('There was an error trying to start that private venting session!')
 				.setDescription(`An active private venting session could not be found with the ID \`${id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
 			return msg.channel.send(error);
 		}
-		const user = await this.client.users.fetch(doc.id); // Find the user associated with the private venting session
+
 		doc.private.startedAt = new Date(); // Consider the session started
+		const user = await this.client.users.fetch(doc.id); // Find the user associated with the private venting session
 		const embed = this.client.util.embed()
+			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setColor(this.client.constants.colours.green)
 			.setThumbnail(user.avatarURL());
 
@@ -113,6 +118,8 @@ class PrivateStart extends Command {
 		timeout.timeout(`${doc.private.id}3`, null);
 		timeout.timeout(`${doc.private.id}4`, null);
 		timeout.timeout(`${doc.private.id}5`, null);
+
+		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just started ${this.client.userLogCompiler(user)}'s private venting session (${doc.private.id})`);
 	}
 }
 

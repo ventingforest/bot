@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Command } from 'discord-akairo';
 import { Message, Util } from 'discord.js';
 import * as util from 'util';
@@ -15,7 +14,6 @@ class Eval extends Command {
 	constructor() {
 		super('eval', {
 			aliases: ['eval'],
-			category: 'Developer',
 			description: 'Allows newt to evaluate code without having to make any changes to the bot!',
 			args: [
 				{
@@ -49,8 +47,11 @@ class Eval extends Command {
 		let hrDiff;
 		try {
 			const hrStart = process.hrtime();
-			this.lastResult = eval(code.replace('tvf', 'this.client'));
+			code = code.replace('tvf', 'this.client');
+			this.lastResult = eval(code);
 			hrDiff = process.hrtime(hrStart);
+
+			this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just evaluated the following code: ${code}`);
 		} catch (error) {
 			return msg.channel.send(`Error while evaluating: \`${error}\``);
 		}

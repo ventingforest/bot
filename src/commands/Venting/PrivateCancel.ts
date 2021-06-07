@@ -8,7 +8,6 @@ class PrivateCancel extends Command {
 	constructor() {
 		super('privateCancel', {
 			aliases: ['private-cancel', 'pvc'],
-			category: 'Venting',
 			description: 'Allows you to cancel a private venting session! If you are staff, you may pass an ID to cancel another person\'s session.',
             args: [
                 {
@@ -65,6 +64,7 @@ class PrivateCancel extends Command {
         await msg.delete(); // Delete the user's message for anynomity
         var doc: IUser;
         const cancelledEmbed = this.client.util.embed()
+            .setAuthor(msg.author.username, msg.author.avatarURL())
             .setColor(this.client.constants.colours.red);
         
         // Check if the user wants to cancel another person's session
@@ -91,23 +91,34 @@ class PrivateCancel extends Command {
                 Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please consider investigating this.
                 If you believe this has been done in error, don't hesitate to contact a member of staff - or request a new session!
             `));
+
+            this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just cancelled ${this.client.userLogCompiler(venter.user)}'s private venting session (${doc.private.id})`);
         }
 
         // If the user wants to cancel their own session
         else {
             doc = await this.client.userDoc(msg.author.id);
-            const requestedEmbed = this.client.util.embed()
-                .setColor(this.client.constants.colours.red)
-                .setThumbnail(this.client.server.iconURL())
-                .setTitle('You do not have a private venting session to cancel!')
-                .setDescription('You currently do not have a pending private venting session, so no action has been taken (:');
-            if (!doc.private.requested) return this.client.sendDM(msg.author, requestedEmbed);
+
+            // If the user does not have a requested session
+            if (!doc.private.requested) {
+                const requestedEmbed = this.client.util.embed()
+                    .setColor(this.client.constants.colours.red)
+                    .setThumbnail(this.client.server.iconURL())
+                    .setAuthor(msg.author.username, msg.author.avatarURL())
+                    .setTitle('You do not have a private venting session to cancel!')
+                    .setDescription('You currently do not have a pending private venting session, so no action has been taken (:');
+
+                return this.client.sendDM(msg.author, requestedEmbed);
+            }
 
             cancelledEmbed
                 .setThumbnail(msg.author.avatarURL())
+                .setAuthor(msg.author.username, msg.author.avatarURL())
                 .setTitle(`${msg.author.username} has cancelled their private venting session!`)
                 .addField('Venter ID', msg.author.id, true)
                 .setFooter(`Session ID: ${doc.private.id}`, this.client.server.iconURL());
+
+            this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just cancelled their private venting session (${doc.private.id})`);
         }
 
         // Post the embed

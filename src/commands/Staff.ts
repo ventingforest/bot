@@ -83,6 +83,8 @@ class Staff extends Command {
         } else {
             msg.channel.send(fullList);
         }
+
+        this.client.logger.command(`${this.client.userLogCompiler(msg.author)} requested a list of staff.`);
 	}
 }
 

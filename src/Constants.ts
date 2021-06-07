@@ -135,6 +135,16 @@ export default (tvf: Discord.Guild) => {
 			{ level: 100, role: tvf.roles.cache.get('801520799189958676'), name: 'how?' }
 		],
 
+		// voiceID: textID
+		vcLink: {
+			'435894444584075267': '452308488064991243', // Treehouse
+			'451348503034200095': '435916285944266763', // Music
+			'435917093070700584': '593171690205478913', // Chillax
+			'506157687713693697': '506195134854070290', // Karaoke
+			'597100763583479818': '632090740410810378', // Gaming
+			'435917223098580992': '508412490539991040' // Venting
+		},
+
 		moment: 'ddd, MMM Do, YYYY h:mm A',
 		privateTimeout: 21600000,
 		blankField:  { name: '\u200B', value: '\u200B' }

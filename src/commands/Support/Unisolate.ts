@@ -8,7 +8,6 @@ class Unisolate extends Command {
     constructor() {
 		super('unisolate', {
 			aliases: ['unisolate'],
-			category: 'Support',
 			description: 'Allows staff to unisolate a user!',
             args: [
                 {
@@ -77,6 +76,7 @@ class Unisolate extends Command {
             .setColor(this.client.constants.colours.red)
             .setThumbnail(user.avatarURL())
             .setTitle(`${user.username} has been unisolated!`)
+            .setAuthor(msg.author.username, msg.author.avatarURL())
             .setDescription(notes)
             .addField('Time isolated', ms(moment().diff(moment(doc.isolation.isolatedAt), 'ms'), { long: true}), true)
             .addField('Isolated at', isolatedAt, true)
@@ -102,6 +102,8 @@ class Unisolate extends Command {
         doc.isolation.channels.vc = null;
       
         this.client.saveDoc(doc);
+
+        this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just unisolated ${this.client.userLogCompiler(member.user)}.`);
 	}
 }
 

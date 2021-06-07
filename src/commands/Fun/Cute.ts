@@ -8,7 +8,6 @@ class Cute extends Command {
 	constructor() {
 		super('cute', {
 			aliases: ['cute', 'animal'],
-			category: 'Fun',
 			description: `Recieve a picture of a cute animal, paired alongside an interesting fact! :3\nChoose from the list below: \`\`\`${animals.join(', ')}\`\`\``,
 			args: [
 				{
@@ -30,8 +29,7 @@ class Cute extends Command {
 	}
 
 	async exec(msg: Message, { animal }: { animal: string }) {
-		let fact: string;
-		let image: string;
+		let fact: string, image: string;
 		const embed = this.client.util.embed()
 			.setColor(this.client.constants.colours.green)
 			.setAuthor(msg.author.username, msg.author.avatarURL());
@@ -83,6 +81,7 @@ class Cute extends Command {
 		}
 
 		msg.channel.send(embed);
+		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just requested a cute ${animal}!`);
 	}
 }
 

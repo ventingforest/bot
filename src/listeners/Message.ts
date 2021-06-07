@@ -13,6 +13,24 @@ class MessageListener extends Listener {
 	}
 
 	async exec(msg: Message) {
+		// Helper ping and relay
+		if (msg.content.includes(this.client.constants.roles.community.helper.toString())) {
+			// Relay
+			const helperEmbed = this.client.util.embed()
+				.setColor(this.client.constants.colours.yellow)
+				.setThumbnail(this.client.server.iconURL())
+				.setTitle(`${msg.author.username} needs help!`)
+				.addField('Where?', msg.channel)
+				.addField('Message', msg.content)
+				.setTimestamp(new Date());
+
+			this.client.constants.channels.community.helper.send(helperEmbed);
+
+			// Helper ping message
+			msg.channel.send(`${msg.author} - please wait, a helper will arrive shortly. If it's an emergency, call the number in ${this.client.constants.channels.resources}. You can also request a one-on-one private session with a staff by typing ${this.client.prefix}private in any channel.`)
+		}
+
+		// Levelling system		
 		if (!this.client.talkedRecently.has(msg.author.id) && this.client.user) {
 			const doc = await this.client.userDoc(msg.author.id); // Get the user's document
 			doc.xp += Math.floor(Math.random() * 25) + 15; // 15-25 xp per message

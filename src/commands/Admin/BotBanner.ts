@@ -5,7 +5,6 @@ class BotBanner extends Command {
 	constructor() {
 		super('botBanner', {
 			aliases: ['bot-banner', 'bot-ban'],
-			category: 'Admin',
 			description: 'Toggles TVF Bot\'s inbuilt bot banner!'
 		});
 
@@ -18,22 +17,27 @@ class BotBanner extends Command {
 		this.client.botBanner = !this.client.botBanner;
 
 		// Inform the user
-		const res = this.client.util.embed()
-			.setThumbnail(this.client.server.iconURL());
+		const embed = this.client.util.embed()
+			.setThumbnail(this.client.server.iconURL())
+			.setAuthor(msg.author.username, msg.author.avatarURL());
 
 		if (this.client.botBanner) {
-			res
+			embed
 				.setTitle('Bot Banner Enabled!')
 				.setDescription('Begone bots!')
 				.setColor(this.client.constants.colours.green);
 		} else {
-			res
+			embed
 				.setTitle('Bot Banner Disabled!')
 				.setDescription('They are safe... for now!')
 				.setColor(this.client.constants.colours.red);
 		}
 
-		msg.channel.send(res);
+		msg.channel.send(embed);
+		this.client.constants.channels.staff.moderators.chat.send(embed);
+		this.client.constants.channels.staff.moderators.modlogs.send(embed);
+		
+		this.client.logger.command(`The bot banner has been ${this.client.botBanner ? 'enabled' : 'disabled'} by ${this.client.userLogCompiler(msg.author)}!`);
 	}
 }
 

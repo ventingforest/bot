@@ -1,6 +1,6 @@
 import { Command } from 'discord-akairo';
-import { Message, TextChannel, VoiceChannel } from 'discord.js';
-import User from '../../models/user';
+import { Message, TextChannel, VoiceChannel, User } from 'discord.js';
+import DBUser from '../../models/user';
 import { stripIndents } from 'common-tags';
 import moment from 'moment';
 import ms from 'ms';
@@ -11,7 +11,6 @@ class PrivateEnd extends Command {
 	constructor() {
 		super('privateEnd', {
 			aliases: ['private-end', 'pve'],
-			category: 'Support',
 			description: 'Allows members of staff to end a private venting session!',
             args: [
                 {
@@ -42,9 +41,10 @@ class PrivateEnd extends Command {
     /**
      * Ends a private venting session.
      * @param doc 
+     * @param staff
      * @param notes
      */
-    async endSession(doc: IUser, notes: string) {
+    async endSession(doc: IUser, staff: User, notes: string) {
         const text = this.client.server.channels.cache.get(doc.private.channels.text) as TextChannel;
         const voice = this.client.server.channels.cache.get(doc.private.channels.vc) as VoiceChannel;
         const startedAt = moment(doc.private.startedAt).format(this.client.constants.moment);
@@ -70,6 +70,7 @@ class PrivateEnd extends Command {
         const embed = this.client.util.embed()
 			.setColor(this.client.constants.colours.red)
 			.setThumbnail(user.avatarURL())
+            .setAuthor(staff.username, staff.avatarURL())
             .setTitle(`${user.username}'s session has ended (:`)
             .setDescription(notes)
             .addField('Reason for session', doc.private.reason)
@@ -85,25 +86,29 @@ class PrivateEnd extends Command {
         await text.delete();
         await voice.delete();
 
+        this.client.logger.command(`${this.client.userLogCompiler(staff)} just ended ${this.client.userLogCompiler(user)}'s private venting session (${doc.private.id})`);
+
         // Reset the document values
         PrivateCancel.prototype.cancelSession(doc);
     }
 
 	async exec(msg: Message, { id, notes }: { id: string, notes: string }) {
         this.client.deletePrompts(msg); // Delete any prompts
-		const doc = await User.findOne({ 'private.requested': true, 'private.id': id }, (err, res) => err ? this.client.logger.error(err) : res); // Get the user's document
+		const doc = await DBUser.findOne({ 'private.requested': true, 'private.id': id }, (err, res) => err ? this.client.logger.error(err) : res); // Get the user's document
 		if (!doc) {
 			const error = this.client.util.embed()
 				.setColor(this.client.constants.colours.red)
                 .setThumbnail(this.client.server.iconURL())
+                .setAuthor(msg.author.username, msg.author.avatarURL())
 				.setTitle('There was an error trying to end that private venting session!')
 				.setDescription(`An active private venting session could not be found with the ID \`${id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
+
 			return msg.channel.send(error);
 		}
 
         // End the session
-        await this.endSession(doc, notes);
-        await this.client.saveDoc(doc);
+        this.endSession(doc, msg.author, notes);
+        this.client.saveDoc(doc);
 	}
 }
 

@@ -79,6 +79,8 @@ class Level extends Command {
 		const beginning = member === msg.member ? 'You are' : `${member.user.username} is`;
 
 		msg.channel.send(`**${this.client.constants.emojis.confetti}  |** ${nextLevelReward ? ` ${beginning} ${this.client.formatNumber(this.client.xpFor(nextLevelReward.level) - doc.xp)} xp away from **${nextLevelReward.name}!**` : ''} ${beginning} currently a **${currentLevelReward.name}**.`, attachment);
+
+		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} requested ${member === msg.member ? 'their' : `${this.client.userLogCompiler(member.user)}'s`} rank card.`);
 	}
 }
 

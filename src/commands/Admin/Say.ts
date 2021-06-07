@@ -5,7 +5,6 @@ class Say extends Command {
 	constructor() {
 		super('say', {
 			aliases: ['say'],
-			category: 'Admin',
 			description: 'Repeats a message through the bot!',
 			args: [
 				{
@@ -24,7 +23,7 @@ class Say extends Command {
 	}
 
 	exec(msg: Message, { message }: { message: string }) {
-		msg.delete(); // Clean up
+		msg.delete(); // Hide the evidence >w<
 
 		// Repeat the message
 		if (message) {
@@ -32,6 +31,8 @@ class Say extends Command {
 		} else {
 			this.client.sendDM(msg.author, `You did not specify anything for me to say!`);
 		}
+
+		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} got me to say "${message}" :O`);
 	}
 }
 

@@ -75,6 +75,8 @@ class Leaderboard extends Command {
             // Send the embed
             embed.addFields([this.client.constants.blankField, ...fields]);
             msg.channel.send(embed);
+
+            this.client.logger.command(`${this.client.userLogCompiler(msg.author)} requested page ${page}/${pages} of the server level leaderboard.`);
         });
 	}
 }

@@ -27,7 +27,7 @@ class MemberLeave extends Listener {
 
             // If the user is in a private venting session, end it
             if (doc.private.startedAt && doc.private.startedAt !== null) {
-                PrivateEnd.prototype.endSession(doc, 'The user has left the server.');
+                PrivateEnd.prototype.endSession(doc, this.client.user, 'The user has left the server.');
             }
 
             this.client.saveDoc(doc);

@@ -3,12 +3,12 @@ import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 import { nanoid } from 'nanoid';
 import timeout from 'timeout';
+import PrivateCancel from './PrivateCancel';
 
 class PrivateRequest extends Command {
 	constructor() {
 		super('privateRequest', {
 			aliases: ['private', 'pv', 'private-request', 'pvr'],
-			category: 'Venting',
 			description: 'Allows you to request a private venting session!',
 			args: [
 				{
@@ -33,7 +33,6 @@ class PrivateRequest extends Command {
 			.setThumbnail(this.client.server.iconURL())
 			.setColor(this.client.constants.colours.green)
 			.setAuthor(msg.author.username, msg.author.avatarURL());
-		const hour = 1000 * 60 * 60;
 
 		// Ensure that the user hasn't already got a pending private venting session
 		if (doc.private.requested) {
@@ -94,19 +93,14 @@ class PrivateRequest extends Command {
 			.addField('The right to transfer', 'Staff reserve the right to transfer your session over to another member of staff for any given reason during your session.');
 		
 		this.client.sendDM(msg.author, userEmbed);
+		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just requested a private venting session (${doc.private.id})`);
 
 		// Begin the expiry countdown
 		timeout.timeout(doc.private.id, this.client.constants.privateTimeout, () => {
 			// Cancel the private venting session
-			doc.private.requested = false;
-			doc.private.id = null;
-			doc.private.reason = null;
-			doc.private.requestedAt = null;
-			doc.private.startedAt = null;
-			doc.private.channels.text = null;
-			doc.private.channels.vc = null;
+			PrivateCancel.prototype.cancelSession(doc);
 			this.client.saveDoc(doc);
-  
+
 			// Inform the support team that the user's session has expired
 			const expiredEmbed = this.client.util.embed()
 				.setThumbnail(this.client.server.iconURL())
@@ -116,37 +110,40 @@ class PrivateRequest extends Command {
 				.setFooter(`Session ID: ${doc.private.id}`, this.client.server.iconURL());
 
 			this.client.constants.channels.staff.support.send(expiredEmbed);
-  
+
 			// Inform the user that their session has expired
 			expiredEmbed.fields = [];
 			expiredEmbed
 				.setTitle('Your private venting session has expired!')
 				.setDescription(stripIndents`
-				  We're sorry we couldn't get to your private venting session in time ):
-				  We automatically cancel old private venting sessions so that users can request new ones if they still need help, and to unclog the system!
-				  If you would still like some help, please do not be scared to request a new session! Thanks! (:
+					We're sorry we couldn't get to your private venting session in time ):
+					We automatically cancel old private venting sessions so that users can request new ones if they still need help, and to unclog the system!
+					If you would still like some help, please do not be scared to request a new session! Thanks! (:
 				`);
 
 			msg.author.send(expiredEmbed).catch(() => this.client.constants.channels.community.discussion.send(stripIndents`
-			  ${msg.author}, your private venting session has expired!
-			  Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please look into this this and ping newt#1234 if you need any help!
-			  If you still need a session, please do not fear to open a new one! Thanks (:
+				${msg.author}, your private venting session has expired!
+				Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please look into this this and ping newt#1234 if you need any help!
+				If you still need a session, please do not fear to open a new one! Thanks (:
 			`));
-		  });
-  
-		  // Create reminders for the expiry
-		  const reminderEmbed = this.client.util.embed()
-		  	.setColor(this.client.constants.colours.orange)
-			.setThumbnail(msg.author.avatarURL())
-			.setDescription(`Reason: ${reason}`)
-			.addField('Venter ID', msg.author.id)
-			.setFooter(`Session ID: ${doc.private.id}`, this.client.server.iconURL());
-  
-		  timeout.timeout(`${doc.private.id}1`, hour, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in five hours!`)));
-		  timeout.timeout(`${doc.private.id}2`, hour * 2, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in four hours!`)));
-		  timeout.timeout(`${doc.private.id}3`, hour * 3, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in three hours!`)));
-		  timeout.timeout(`${doc.private.id}4`, hour * 4, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in two hours!`)));
-		  timeout.timeout(`${doc.private.id}5`, hour * 5, () => this.client.constants.channels.staff.support.send(this.client.isProduction ? this.client.constants.roles.staff.support.toString() : '', reminderEmbed.setTitle(`${msg.author.username}'s session will expire in one hour!`)));
+			});
+
+			this.client.logger.command(`${this.client.userLogCompiler(msg.author)}'s private venting session (${doc.private.id}) has just expired.`);
+
+			// Create reminders for the expiry
+			const reminderEmbed = this.client.util.embed()
+				.setColor(this.client.constants.colours.orange)
+				.setThumbnail(msg.author.avatarURL())
+				.setDescription(`Reason: ${reason}`)
+				.addField('Venter ID', msg.author.id)
+				.setFooter(`Session ID: ${doc.private.id}`, this.client.server.iconURL());
+			const interval = ((this.client.constants.privateTimeout / 1000) / 60) / 60;
+
+			timeout.timeout(`${doc.private.id}1`, interval, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in five hours!`)));
+			timeout.timeout(`${doc.private.id}2`, interval * 2, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in four hours!`)));
+			timeout.timeout(`${doc.private.id}3`, interval * 3, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in three hours!`)));
+			timeout.timeout(`${doc.private.id}4`, interval * 4, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in two hours!`)));
+			timeout.timeout(`${doc.private.id}5`, interval * 5, () => this.client.constants.channels.staff.support.send(this.client.isProduction ? this.client.constants.roles.staff.support.toString() : '', reminderEmbed.setTitle(`${msg.author.username}'s session will expire in one hour!`)));
 	}
 }
 

@@ -5,7 +5,6 @@ class Breathe extends Command {
 	constructor() {
 		super('breathe', {
 			aliases: ['breathe', 'breathing'],
-			category: 'Venting',
 			description: 'Deep breaths, everything is going to be alright <3'
 		});
 

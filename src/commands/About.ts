@@ -31,15 +31,18 @@ class About extends Command {
             .setAuthor(msg.author.username, msg.author.avatarURL())
             .setThumbnail(this.client.server.iconURL())
             .setFooter(`Made with ❤ by ${dev.tag}`, dev.avatarURL())
+            .addField('RAM Used', ramUsed, true)
+            .addField('CPU Usage', `${Math.round(cpu.currentload)}%`, true)
             .addField('Uptime', ms(this.client.uptime, { long: true }), true)
-            .addField('Members', members.size, true)
-            .addField('Online', online.size, true)
             .addField('Channels', channels.size, true)
             .addField('Text', textChannels.size, true)
             .addField('Voice', voiceChannels.size, true)
-            .addField('RAM Used', ramUsed, true)
-            .addField('CPU Usage', `${Math.round(cpu.currentload)}%`, true)
+            .addField('Members', members.size, true)
+            .addField('Online', online.size, true)
+            .addField('Bots', members.filter(m => m.user.bot).size, true);
+
         msg.channel.send(embed);
+        this.client.logger.command(`${this.client.userLogCompiler(msg.author)} requested information about both the bot and the server!`);
     }
 }
 
