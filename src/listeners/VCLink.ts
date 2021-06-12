@@ -39,7 +39,7 @@ class VCLink extends Listener {
 				}
 				
 				// If the user has left the voice channel
-				else {
+				else if (!newChannel && typeof oldChannel == 'string') {
 					this.leaveChannel(oldChannel, oldState);
 				}
 			}

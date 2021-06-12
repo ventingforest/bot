@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "private": true,
     "main": "dist/index.js",
-    "author": "newt",
+    "author": "newtykins",
     "license": "GLP-3.0",
     "scripts": {
         "dev": "cross-env NODE_ENV=development NODE_TLS_REJECT_UNAUTHORIZED=0 ts-nodemon",
@@ -34,6 +34,7 @@
         "@catte_/pastebin.js": "^2.0.1",
         "axios": "0.21.1",
         "canvas": "2.6.1",
+        "colorthief": "^2.3.2",
         "common-tags": "1.8.0",
         "cron": "^1.8.2",
         "cross-env": "7.0.3",
