@@ -61,6 +61,8 @@ class Pride extends Command {
 	}
 
 	async exec(msg: Message, { flag, opacity }: { flag: string, opacity: number }) {
+		this.client.deletePrompts(msg);
+
 		const error = this.client.util.embed()
 			.setTitle('There was an error whilst generating your pride image!')
 			.setColor(this.client.constants.colours.red)
@@ -75,12 +77,13 @@ class Pride extends Command {
 		if (opacity > 1 || opacity < 0) return msg.channel.send(error.setDescription('The provided opacity has to be between 0 and 100%!'));
 
 		// Work out whether we are working on an attachment or a profile picture
-		const hasAttachment = msg.attachments.size > 0;
+		const attachment = msg.attachments.first();
+		const hasAttachment = msg.attachments.first() !== undefined;
 		const type = hasAttachment ? 'attachment' : 'profile picture';
 
 		// Request the image (stored in body)
 		request({
-			url: hasAttachment ? msg.attachments.first().url : msg.author.avatarURL({ size: 512, format: 'png' }),
+			url: hasAttachment ? attachment.url : msg.author.avatarURL({ size: 512, format: 'png' }),
 			method: 'get',
 			encoding: null
 		}, async (err, _res, body) => {
@@ -94,7 +97,7 @@ class Pride extends Command {
 			}
 
 			// Create the new attachment and send it to the server!
-			const attachment = this.client.util.attachment(await this.pride(body, flag, opacity), `${msg.author.username}-${msg.attachments.first().name}.png`);
+			const attachment = this.client.util.attachment(await this.pride(body, flag, opacity), `${msg.author.username}.png`);
 			msg.channel.send(attachment);
 		});
 

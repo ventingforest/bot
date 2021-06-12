@@ -35,7 +35,27 @@ class TVFClient extends AkairoClient {
 
 	// constructor
 	constructor() {
-		super({ ownerID: ['326767126406889473'] }, { disableMentions: 'everyone', ws: { intents: [ 'GUILDS', 'GUILD_MEMBERS', 'GUILD_PRESENCES', 'GUILD_BANS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES', 'DIRECT_MESSAGES' ] }});
+		super({ ownerID: ['326767126406889473'] }, {
+			disableMentions: 'everyone', 
+			ws: { 
+				intents: [ 
+					'GUILDS', 
+					'GUILD_MEMBERS',
+					'GUILD_PRESENCES', 
+					'GUILD_BANS', 
+					'GUILD_MESSAGES', 
+					'GUILD_VOICE_STATES', 
+					'DIRECT_MESSAGES'
+				] 
+			},
+			presence: {
+				activity: {
+					name: 'out for you <3',
+					type: 'WATCHING'
+				},
+				status: 'idle'
+			}
+		});
 
 		(async () => {
 			// Configure the logger's colour scheme
@@ -68,7 +88,7 @@ class TVFClient extends AkairoClient {
 			// Add LogDNA transport to logger
 			const network = (await si.networkInterfaces())[0];
 			this.logger.add(new logdnaWinston({
-				key: process.env.LOGDNA, hostname: 'tvf-bot', ip: network.ip4, mac: network.mac, app: 'tvf-bot', env: this.isProduction ? 'Production' : 'Development', level: 'info', indexMeta: true,
+				key: process.env.LOGDNA, hostname: 'tvf-bot', ip: network.ip4, mac: network.mac, app: this.isProduction ? 'tvf-bot' : 'tvf-bot-beta', env: this.isProduction ? 'Production' : 'Development', level: 'info', indexMeta: true,
 			}));
 
 			this.logger.info('Logger initialised!');

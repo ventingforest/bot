@@ -10,11 +10,8 @@ class Ready extends Listener {
 	}
 
 	exec() {
-		// Load Constants
+		// Load constants
 		this.client.constants = Constants(this.client.server);
-
-		// Change status
-		this.client.user.setActivity('out for you (:', { type: 'WATCHING' });
 		this.client.logger.info('TVF Bot is ready!');
 	}
 }
