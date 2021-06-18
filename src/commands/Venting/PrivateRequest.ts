@@ -137,7 +137,7 @@ class PrivateRequest extends Command {
 				.setDescription(`Reason: ${reason}`)
 				.addField('Venter ID', msg.author.id)
 				.setFooter(`Session ID: ${doc.private.id}`, this.client.server.iconURL());
-			const interval = ((this.client.constants.privateTimeout / 1000) / 60) / 60;
+			const interval = this.client.constants.privateTimeout / 6;
 
 			timeout.timeout(`${doc.private.id}1`, interval, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in five hours!`)));
 			timeout.timeout(`${doc.private.id}2`, interval * 2, () => this.client.constants.channels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in four hours!`)));

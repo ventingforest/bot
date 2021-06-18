@@ -41,7 +41,7 @@ class Staff extends Command {
         const admins = this.client.constants.roles.staff.admins.members;
         const engagement = this.client.constants.roles.staff.engagement.members;
         const support = this.client.constants.roles.staff.support.members;
-        const moderators = this.client.constants.roles.staff.support.members;
+        const moderators = this.client.constants.roles.staff.moderators.members;
         const staff = this.client.constants.roles.staff.staff.members;
 
         const fullList = this.client.util.embed()
