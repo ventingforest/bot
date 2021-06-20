@@ -52,7 +52,7 @@ declare module 'discord-akairo' {
 declare global {
   type MessageContent = Discord.APIMessageContentResolvable | (Discord.MessageOptions & { split?: false }) | Discord.MessageAdditions;
   type Channels = Discord.TextChannel | Discord.DMChannel | Discord.NewsChannel;
-  type StaffRole = 'Support' | 'Engagement' | 'Moderation' | 'Admin' | 'Staff';
+  type StaffRole = 'Support' | 'Moderation' | 'Admin' | 'Staff';
 
     interface Logger extends winston.Logger {
       command: winston.LeveledLogMethod;

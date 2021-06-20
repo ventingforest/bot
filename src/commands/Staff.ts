@@ -39,7 +39,6 @@ class Staff extends Command {
 	exec(msg: Message, { position }: { position: string }) {
         // Roles and their members
         const admins = this.client.constants.roles.staff.admins.members;
-        const engagement = this.client.constants.roles.staff.engagement.members;
         const support = this.client.constants.roles.staff.support.members;
         const moderators = this.client.constants.roles.staff.moderators.members;
         const staff = this.client.constants.roles.staff.staff.members;
@@ -50,7 +49,6 @@ class Staff extends Command {
             .setThumbnail(this.client.server.iconURL())
             .addField(`Administrators (${admins.size})`, admins.map(a => a.user), true)
             .addField(`Forest Keepers (${moderators.size})`, moderators.map(m => m.user), true)
-            .addField(`Engagement (${engagement.size})`, engagement.map(e => e.user), true)
             .addField(`Support (${support.size})`, support.map(s => s.user), true)
             .addField('Online', staff.filter(s => s.user.presence.status !== 'offline').size);
 
@@ -59,10 +57,6 @@ class Staff extends Command {
                 case 'administrators':
                 case 'admins': 
                     msg.channel.send(this.generateEmbed(admins, this.client.constants.colours.yellow, 'Administrators'));
-                    break;
-
-                case 'engagements':
-                    msg.channel.send(this.generateEmbed(engagement, this.client.constants.roles.staff.engagement.hexColor, 'Engagement'));
                     break;
 
                 case 'supports':

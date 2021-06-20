@@ -215,11 +215,10 @@ class TVFClient extends AkairoClient {
 	 */
 	isUser(role: StaffRole, member: Discord.GuildMember): boolean {
 		return role === 'Support' ? member.roles.cache.has(this.constants.roles.staff.support.id) || member.roles.cache.has(this.constants.roles.staff.supportHead.id) || member.roles.cache.has(this.constants.roles.staff.admins.id)
-			: role === 'Engagement' ? member.roles.cache.has(this.constants.roles.staff.engagement.id) || member.roles.cache.has(this.constants.roles.staff.engagementHead.id) || member.roles.cache.has(this.constants.roles.staff.admins.id)
-				: role === 'Moderation' ? member.roles.cache.has(this.constants.roles.staff.moderators.id) || member.roles.cache.has(this.constants.roles.staff.modHead.id) || member.roles.cache.has(this.constants.roles.staff.admins.id)
-					: role === 'Admin' ? member.roles.cache.has(this.constants.roles.staff.admins.id)
-						: role === 'Staff' ? member.roles.cache.has(this.constants.roles.staff.staff.id)
-							: false;
+			: role === 'Moderation' ? member.roles.cache.has(this.constants.roles.staff.moderators.id) || member.roles.cache.has(this.constants.roles.staff.modHead.id) || member.roles.cache.has(this.constants.roles.staff.admins.id)
+				: role === 'Admin' ? member.roles.cache.has(this.constants.roles.staff.admins.id)
+					: role === 'Staff' ? member.roles.cache.has(this.constants.roles.staff.staff.id)
+						: false;
 	}
 
 	/**
