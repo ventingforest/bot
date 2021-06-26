@@ -6,7 +6,6 @@ class Name extends Command {
 	constructor() {
 		super('id', {
 			aliases: ['name'],
-			category: '',
 			description: ''
 		});
 

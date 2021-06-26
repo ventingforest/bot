@@ -25,7 +25,6 @@ export interface IUser extends mongoose.Document {
       vc: string; // the id of the vc
     }
   }
-  suggestions: Suggestion[]; // a list of suggestions
   stickyRoles: string[]; // a list of roles when the user leaves
 }
 
@@ -63,10 +62,6 @@ const userSchema = new mongoose.Schema(
 				text: String,
 				vc: String,
 			},
-		},
-		suggestions: {
-			type: Array,
-			default: [],
 		},
 		stickyRoles: {
 			type: Array,

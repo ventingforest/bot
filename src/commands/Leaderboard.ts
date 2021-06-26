@@ -33,7 +33,7 @@ class Leaderboard extends Command {
             // Calculate some stats
             const filteredDocs = docs.filter(user => this.client.server.member(user.id) !== null);
             const authorDoc = filteredDocs.find(doc => doc.id === msg.author.id);
-            const authorRank = docs.indexOf(authorDoc) + 1;
+            const authorRank = filteredDocs.indexOf(authorDoc) + 1;
             const pages = Math.ceil(filteredDocs.length / 10);
 
             // Ensure that the provided page is in range
@@ -73,7 +73,7 @@ class Leaderboard extends Command {
             }));
 
             // Send the embed
-            embed.addFields([this.client.constants.blankField, ...fields]);
+            embed.addFields([{ name: this.client.constants.blank, value: this.client.constants.blank }, ...fields]);
             msg.channel.send(embed);
 
             this.client.logger.command(`${this.client.userLogCompiler(msg.author)} requested page ${page}/${pages} of the server level leaderboard.`);

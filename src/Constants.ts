@@ -73,10 +73,6 @@ export default (tvf: Discord.Guild) => {
 			cross: '❌',
 			confetti: '🎉',
 			graph: '📈',
-			suggestions: {
-				upvote: tvf.emojis.cache.get('760820779344068609') ,
-				downvote: tvf.emojis.cache.get('760820793507971093'),
-			},
 			question: '❓'
 		},
 
@@ -145,6 +141,6 @@ export default (tvf: Discord.Guild) => {
 
 		moment: 'ddd, MMM Do, YYYY h:mm A',
 		privateTimeout: 21600000,
-		blankField:  { name: '\u200B', value: '\u200B' }
+		blank: '\u200B'
 	}
 }

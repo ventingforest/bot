@@ -12,7 +12,7 @@ class SetLevel extends Command {
                     type: 'member',
                     index: 0,
                     prompt: {
-						start: (msg: Message): string => `${msg.author}, who would you like to update the level of?`
+						start: (msg: Message): string => `${msg.author}, whose level would you like to update?`
 					}
                 },
                 {
@@ -50,7 +50,7 @@ class SetLevel extends Command {
             .setColor(this.client.constants.colours.green)
             .setThumbnail(member.user.avatarURL())
             .setAuthor(msg.author.username, msg.author.avatarURL())
-            .setDescription(`This means that they are now a ${levelReward.name} - they were previously a ${oldLevelReward}!`);
+            .setDescription(`This means that they are now a ${levelReward.name} - ${oldLevelReward ? `they were previously a ${oldLevelReward.name}!` : ''}`);
 
         msg.channel.send(embed);
         this.client.logger.command(`${this.client.userLogCompiler(msg.author)} made ${this.client.userLogCompiler(member.user)} level ${doc.level}!`);
