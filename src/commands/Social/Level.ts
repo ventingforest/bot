@@ -21,26 +21,17 @@ class Level extends Command {
 		this.usage = 'level [@user]';
 		this.examples = [
 			'level',
-			'level @newt <3#1234'
+			'level @newt guillén <3'
 		];
 	}
 
-	applyText(canvas: Canvas, fontSize: number, text: string) {
-		const context = canvas.getContext('2d');
-	
-		do {
-			context.font = `${fontSize -= 5}px League Spartan`;
-		} while (context.measureText(text).width > canvas.width - 475);
-
-		return context.font;
-	};
-
 	async exec(msg: Message, { argMember }: { argMember: GuildMember }) {
 		const member = argMember || msg.member;
-		const doc = await this.client.userDoc(member.id);
-		const rank = await this.client.rankInServer(member.id);
-		const xpForLevel = this.client.xpFor(doc.level);
-		const xpForNext = this.client.xpFor(doc.level + 1);
+		const users = await this.client.db.user.findMany({ orderBy: { xp: 'desc' }});
+		const user = users.find(u => u.id === member.id);
+		const rank = users.map(d => d.xp).indexOf(user.xp) + 1;
+		const xpForLevel = this.client.social.xpFor(user.level);
+		const xpForNext = this.client.social.xpFor(user.level + 1);
 
 		// Register the font
 		registerFont(path.join(__dirname, '..', '..', 'assets', 'levels', 'LeagueSpartan.ttf'), { family: 'League Spartan' });
@@ -55,16 +46,16 @@ class Level extends Command {
 
 		// Add the user's name
 		ctx.fillStyle = '#ffffff';
-		ctx.font = this.applyText(canvas, 72, member.user.username);
+		ctx.font = this.client.utils.applyText(canvas, 72, member.user.username);
 		ctx.fillText(member.user.username, 287.3, 112);
 
 		// Add the user's level and rank
-		const levelText = `Level ${doc.level} (#${rank})`;
-		ctx.font = this.applyText(canvas, 36, levelText);
+		const levelText = `Level ${user.level} (#${rank})`;
+		ctx.font = this.client.utils.applyText(canvas, 36, levelText);
 		ctx.fillText(levelText, 287.3, 173);
 
 		// Fill the progress bar
-		const percentage = (doc.xp - xpForLevel) / (xpForNext - xpForLevel);
+		const percentage = (user.xp - xpForLevel) / (xpForNext - xpForLevel);
 		ctx.fillStyle = this.client.constants.colours.green;
 		ctx.fillRect(287.12, 205.19, 400 * percentage, 31.35);
 
@@ -73,12 +64,12 @@ class Level extends Command {
 		ctx.drawImage(avatar, 37.35, 46.35, 193.65, 189.99);
 
 		// Create an attachment
-		const attachment = this.client.util.attachment(canvas.toBuffer(), `${msg.author.username}.png`);
-		const currentLevelReward = this.client.levelReward(doc.level);
+		const attachment = this.client.utils.attachment(canvas.toBuffer(), `${msg.author.username}.png`);
+		const currentLevelReward = this.client.social.levelReward(user.level);
 		const nextLevelReward = this.client.constants.levelRoles[this.client.constants.levelRoles.indexOf(currentLevelReward) + 1];
 		const beginning = member === msg.member ? 'You are' : `${member.user.username} is`;
 
-		msg.channel.send(`**${this.client.constants.emojis.confetti}  |** ${nextLevelReward ? ` ${beginning} ${this.client.formatNumber(this.client.xpFor(nextLevelReward.level) - doc.xp)} xp away from **${nextLevelReward.name}!**` : ''} ${beginning} currently a **${currentLevelReward.name}**.`, attachment);
+		msg.channel.send(`**${this.client.constants.emojis.confetti}  |** ${nextLevelReward ? ` ${beginning} ${(this.client.social.xpFor(nextLevelReward.level) - user.xp).toLocaleString()} xp away from **${nextLevelReward.name}!**` : ''} ${beginning} currently a **${currentLevelReward.name}**.`, attachment);
 
 		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} requested ${member === msg.member ? 'their' : `${this.client.userLogCompiler(member.user)}'s`} rank card.`);
 	}

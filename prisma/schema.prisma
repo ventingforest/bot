@@ -1,0 +1,30 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES")
+}
+
+model Blacklist {
+  id     String  @id
+  reason String?
+}
+
+model User {
+  id          String   @id
+  level       Int      @default(1)
+  xp          Int      @default(1)
+  stickyRoles String[]
+}
+
+model Private {
+  id          String    @id
+  reason      String?
+  requestedAt DateTime? @db.Date
+  startedAt   DateTime? @db.Date
+  textID      String?
+  voiceID     String?
+}

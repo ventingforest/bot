@@ -10,8 +10,8 @@ class MemberUnban extends Listener {
 	}
 
 	exec(_guild: Guild, user: User) {
-		if (this.client.isProduction) {
-            this.client.constants.channels.general.send(`**${user.tag}** has been unbanned from the Forest.`);
+		if (this.client.production) {
+            this.client.tvfChannels.general.send(`**${user.tag}** has been unbanned from the Forest.`);
         }
 	}
 }

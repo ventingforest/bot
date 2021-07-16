@@ -27,33 +27,35 @@ class SetLevel extends Command {
 		});
 
 		this.usage = 'set-level <@user> <level>';
-		this.examples = ['set-level @newt <3#1234'];
+		this.examples = ['set-level @newt guillén <3'];
 	}
 
 	async exec(msg: Message, { member, level }: { member: GuildMember, level: number }) {
-        this.client.deletePrompts(msg); // Clean any prompts
-        const doc = await this.client.userDoc(member.id); // Get the member's document
-        const oldLevelReward = this.client.levelReward(doc.level); // Find the old level reward
-        doc.level = level; // Update their level
-        doc.xp = this.client.xpFor(doc.level); // Update their xp
-        const levelReward = this.client.levelReward(doc.level); // Find the level reward
+        this.client.utils.deletePrompts(msg); // Clean any prompts
+        let userDoc = await this.client.db.getUser(member.id); // Get the member's document
+        const oldLevelReward = this.client.social.levelReward(userDoc.level); // Find the old level reward
+        const levelReward = this.client.social.levelReward(level); // Find the new level reward
 
-        this.client.saveDoc(doc); // Save the document
+        // Update them
+        userDoc = await this.client.db.updateUser(member.id, {
+            level,
+            xp: this.client.social.xpFor(level)
+        });
 
         // Remove any level role the member may have, and replace it with the new one
-        this.client.constants.levelRoles.forEach(r => member.roles.cache.has(r.role.id) ? member.roles.remove(r.role.id) : null);
-        member.roles.add(levelReward.role);
+        this.client.constants.levelRoles.forEach(r => member.roles.cache.has(r.roleID) ? member.roles.remove(r.roleID) : null);
+        member.roles.add(levelReward.roleID);
 
         // Finished!
-        const embed = this.client.util.embed()
-            .setTitle(`${member.user.username} is now level ${doc.level!}`)
+        const embed = this.client.utils.embed()
+            .setTitle(`${member.user.username} is now level ${userDoc.level!}`)
             .setColor(this.client.constants.colours.green)
             .setThumbnail(member.user.avatarURL())
             .setAuthor(msg.author.username, msg.author.avatarURL())
             .setDescription(`This means that they are now a ${levelReward.name} - ${oldLevelReward ? `they were previously a ${oldLevelReward.name}!` : ''}`);
 
         msg.channel.send(embed);
-        this.client.logger.command(`${this.client.userLogCompiler(msg.author)} made ${this.client.userLogCompiler(member.user)} level ${doc.level}!`);
+        this.client.logger.command(`${this.client.userLogCompiler(msg.author)} made ${this.client.userLogCompiler(member.user)} level ${userDoc.level}!`);
     }
 }
 

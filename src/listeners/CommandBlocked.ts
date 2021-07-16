@@ -4,7 +4,7 @@ import { Message } from 'discord.js';
 class CommandBlocked extends Listener {
 	constructor() {
 		super('commandBlocked', {
-			emitter: 'commandHandler',
+			emitter: 'commands',
             event: 'commandBlocked'
 		});
 	}
@@ -13,7 +13,7 @@ class CommandBlocked extends Listener {
 		msg.delete();
 
 		if (reason === 'Commands can not be run in general!') {
-			this.client.sendDM(msg.author, `**${this.client.constants.emojis.cross}  |** Sorry, but you are not allowed to run commands in the general chats!`)
+			this.client.utils.sendDM(msg.author, `**${this.client.constants.emojis.cross}  |** Sorry, but you are not allowed to run commands in the general chats!`)
 		} else {
 			msg.channel.send(`**${this.client.constants.emojis.cross}  |** Sorry, but you are not allowed to run that command!`);
 		}

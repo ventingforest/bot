@@ -22,7 +22,7 @@ class VCLink extends Listener {
 	}
 
 	exec(oldState: VoiceState, newState: VoiceState) {
-		if (this.client.isProduction) {
+		if (this.client.production) {
 			const oldChannel = oldState.channelID;
 			const newChannel = newState.channelID;
 

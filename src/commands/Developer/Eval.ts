@@ -43,7 +43,7 @@ class Eval extends Command {
 	}
 
 	public async exec(msg: Message, { code, noreturn }: { code: string, noreturn: boolean }): Promise<Message | Message[] | Promise<Message | Message[]>[]> {
-		this.client.deletePrompts(msg);
+		this.client.utils.deletePrompts(msg);
 		let hrDiff;
 		try {
 			const hrStart = process.hrtime();

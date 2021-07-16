@@ -1,8 +1,7 @@
 import { Command } from 'discord-akairo';
-import { Message, MessageAttachment, User } from 'discord.js';
+import { Message } from 'discord.js';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as jimp from 'jimp';
 import request from 'request';
 
 const flags = fs.readdirSync(path.join(__dirname, '..', '..', '..', 'assets', 'pride'))
@@ -38,32 +37,10 @@ class Pride extends Command {
 		];
 	}
 
-	/**
-	 * Overlays a pride flag over an image buffer.
-	 * @param {Buffer} buffer
-	 * @param {string} type
-	 * @param {number} opacity
-	 */
-	 async pride(buffer: Buffer, type: string, opacity: number): Promise<Buffer> {
-		// load the necessary images
-		const image = await jimp.read(buffer);
-		const flag = await jimp.read(path.resolve(`assets/pride/${type}.png`));
-
-		// resize the flag and set opacity
-		flag.resize(image.getWidth(), image.getHeight());
-		flag.opacity(opacity);
-
-		// overlay the flag onto the image
-		image.blit(flag, 0, 0);
-
-		// return the manipulated image's buffer
-		return image.getBufferAsync(jimp.MIME_PNG);
-	}
-
 	async exec(msg: Message, { flag, opacity }: { flag: string, opacity: number }) {
-		this.client.deletePrompts(msg);
+		this.client.utils.deletePrompts(msg);
 
-		const error = this.client.util.embed()
+		const error = this.client.utils.embed()
 			.setTitle('There was an error whilst generating your pride image!')
 			.setColor(this.client.constants.colours.red)
 			.setAuthor(msg.author.username, msg.author.avatarURL())
@@ -97,7 +74,7 @@ class Pride extends Command {
 			}
 
 			// Create the new attachment and send it to the server!
-			const attachment = this.client.util.attachment(await this.pride(body, flag, opacity), `${msg.author.username}.png`);
+			const attachment = this.client.utils.attachment(await this.client.utils.pride(body, flag, opacity), `${msg.author.username}.png`);
 			msg.channel.send(attachment);
 		});
 

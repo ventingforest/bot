@@ -10,7 +10,7 @@ class Admin extends Inhibitor {
 
 	exec(msg: Message, command: Command) {
 		if (command.categoryID === 'Admin') {
-			return !msg.member.roles.cache.has(this.client.constants.roles.staff.admins.id);
+			return !msg.member.roles.cache.has(this.client.tvfRoles.staff.admins.id);
 		}
 	}
 }

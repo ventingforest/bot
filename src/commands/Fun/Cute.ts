@@ -30,7 +30,7 @@ class Cute extends Command {
 
 	async exec(msg: Message, { animal }: { animal: string }) {
 		let fact: string, image: string;
-		const embed = this.client.util.embed()
+		const embed = this.client.utils.embed()
 			.setColor(this.client.constants.colours.green)
 			.setAuthor(msg.author.username, msg.author.avatarURL());
 

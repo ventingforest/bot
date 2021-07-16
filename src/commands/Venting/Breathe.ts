@@ -13,7 +13,7 @@ class Breathe extends Command {
 	}
 
 	exec(msg: Message) {
-        const attachment = this.client.util.attachment('https://media.giphy.com/media/krP2NRkLqnKEg/giphy.gif');
+        const attachment = this.client.utils.attachment('https://media.giphy.com/media/krP2NRkLqnKEg/giphy.gif');
         msg.channel.send('Deep breaths, everything is going to be alright <3', attachment);
 	}
 }

@@ -13,58 +13,46 @@ class ViewDoc extends Command {
                     type: 'member',
                     index: 0,
                     prompt: {
-						start: (msg: Message): string => `${msg.author}, whose document would you like to render?`
+						start: (msg: Message): string => `Whose document would you like to render?`
 					}
                 },
 			]
 		});
 
 		this.usage = 'viewDoc <@user>';
-		this.examples = ['viewDoc @newt <3#1234'];
+		this.examples = ['viewDoc @newt guillén <3'];
 	}
 
 	async exec(msg: Message, { member }: { member: GuildMember }) {
-		const doc = await this.client.userDoc(member.id);
-		const embed = this.client.util.embed()
+		const doc = await this.client.db.getUser(member.id);
+		const privateVent = await this.client.db.getPrivate(member.id);
+		const embed = this.client.utils.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setTitle(member.user.tag)
 			.setThumbnail(member.user.avatarURL())
 			.setColor(this.client.constants.colours.green)
 			.addField('ID', doc.id, true)
-			.addField('Level', this.client.formatNumber(doc.level), true)
-			.addField('XP', this.client.formatNumber(doc.xp), true)
-			.addField('Private Vent Requested?', doc.private.requested ? 'True' : 'False', true);
+			.addField('Level', doc.level.toLocaleString(), true)
+			.addField('XP', doc.xp.toLocaleString(), true)
+			.addField('Private Vent?', privateVent ? 'True' : 'False', true);
 
-		if (doc.private.requested) {
-			const requestedAt = moment(doc.private.requestedAt).format(this.client.constants.moment);
-			const startedAt = moment(doc.private.startedAt).format(this.client.constants.moment);
-			const text = this.client.server.channels.cache.get(doc.private.channels.text);
-			const voice = this.client.server.channels.cache.get(doc.private.channels.vc);
+		// If the user has a private venting session
+		if (privateVent) {
+			const requestedAt = moment(privateVent.requestedAt).format(this.client.constants.moment);
+			const startedAt = moment(privateVent.startedAt).format(this.client.constants.moment);
+			const text = this.client.server.channels.cache.get(privateVent.textID);
+			const voice = this.client.server.channels.cache.get(privateVent.voiceID);
 
 			embed
-				.addField('Private Vent ID', doc.private.id, true)
-				.addField('Private Vent Requested At', doc.private.requestedAt ? requestedAt : 'Unavailable.', true)
-				.addField('Private Vent Started At', doc.private.startedAt ? startedAt : 'Unavailable.', true)
+				.addField('Private Vent ID', privateVent.id, true)
+				.addField('Private Vent Requested At', privateVent.requestedAt ? requestedAt : 'Unavailable.', true)
+				.addField('Private Vent Started At', privateVent.startedAt ? startedAt : 'Unavailable.', true)
 				.addField('Private Vent Text', text, true)
 				.addField('Private Vent Voice', voice, true)
-				.addField('Private Vent Reason', doc.private.reason);
-		}
-		
-		embed.addField('Isolated?', doc.isolation.isolated ? 'True' : 'False', true);
-
-		if (doc.isolation.isolated) {
-			const isolatedAt = moment(doc.isolation.isolatedAt).format(this.client.constants.moment);
-			const text = this.client.server.channels.cache.get(doc.isolation.channels.text);
-			const voice = this.client.server.channels.cache.get(doc.isolation.channels.vc);
-
-			embed
-				.addField('Isolated At', doc.isolation.isolatedAt ? isolatedAt : 'Unavailable.', true)
-				.addField('Isolated by', this.client.server.member(doc.isolation.isolatedBy).user.tag, true)
-				.addField('Isolation Text', text, true)
-				.addField('Isolation Voice', voice, true)
-				.addField('Isolation Reason', doc.isolation.reason, true);
+				.addField('Private Vent Reason', privateVent.reason);
 		}
 
+		// If the user has sticky roles
 		if (doc.stickyRoles.length > 0) {
 			embed.addField('Sticky Roles', doc.stickyRoles.map(r => this.client.server.roles.cache.get(r)));
 		}

@@ -28,7 +28,7 @@ class Staff extends Command {
     private generateEmbed(members: Collection<string, GuildMember>, colour: string, name: string) {
         const online = members.filter(m => m.user.presence.status !== 'offline').size;
 
-        return this.client.util.embed()
+        return this.client.utils.embed()
             .setColor(colour)
             .setThumbnail(this.client.server.iconURL())
             .setTitle(`${name} (${members.size})`)
@@ -38,12 +38,12 @@ class Staff extends Command {
 
 	exec(msg: Message, { position }: { position: string }) {
         // Roles and their members
-        const admins = this.client.constants.roles.staff.admins.members;
-        const support = this.client.constants.roles.staff.support.members;
-        const moderators = this.client.constants.roles.staff.moderators.members;
-        const staff = this.client.constants.roles.staff.staff.members;
+        const admins = this.client.tvfRoles.staff.admins.members;
+        const support = this.client.tvfRoles.staff.support.members;
+        const moderators = this.client.tvfRoles.staff.moderators.members;
+        const staff = this.client.tvfRoles.staff.staff.members;
 
-        const fullList = this.client.util.embed()
+        const fullList = this.client.utils.embed()
             .setColor(this.client.constants.colours.green)
             .setTitle(`Staff (${staff.size})`)
             .setThumbnail(this.client.server.iconURL())
@@ -60,14 +60,14 @@ class Staff extends Command {
                     break;
 
                 case 'supports':
-                    msg.channel.send(this.generateEmbed(support, this.client.constants.roles.staff.support.hexColor, 'Support'));
+                    msg.channel.send(this.generateEmbed(support, this.client.tvfRoles.staff.support.hexColor, 'Support'));
                     break;
 
                 case 'forest keepers':
                 case 'moderators':
                 case 'mods':
                 case 'fks':
-                    msg.channel.send(this.generateEmbed(moderators, this.client.constants.roles.staff.moderators.hexColor, 'Forest Keepers'));
+                    msg.channel.send(this.generateEmbed(moderators, this.client.tvfRoles.staff.moderators.hexColor, 'Forest Keepers'));
                     break;
 
                 default:

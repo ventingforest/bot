@@ -15,7 +15,7 @@ class Ping extends Command {
 	}
 
 	exec(msg: Message) {
-		const embed = this.client.util.embed()
+		const embed = this.client.utils.embed()
 			.setTitle('pong <3')
 			.setColor(this.client.constants.colours.green)
 			.setThumbnail(msg.guild.iconURL())

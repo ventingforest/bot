@@ -17,7 +17,7 @@ class BotBanner extends Command {
 		this.client.botBanner = !this.client.botBanner;
 
 		// Inform the user
-		const embed = this.client.util.embed()
+		const embed = this.client.utils.embed()
 			.setThumbnail(this.client.server.iconURL())
 			.setAuthor(msg.author.username, msg.author.avatarURL());
 
@@ -34,8 +34,8 @@ class BotBanner extends Command {
 		}
 
 		msg.channel.send(embed);
-		this.client.constants.channels.staff.moderators.chat.send(embed);
-		this.client.constants.channels.staff.moderators.modlogs.send(embed);
+		this.client.tvfChannels.staff.moderators.chat.send(embed);
+		this.client.tvfChannels.staff.moderators.modlogs.send(embed);
 		
 		this.client.logger.command(`The bot banner has been ${this.client.botBanner ? 'enabled' : 'disabled'} by ${this.client.userLogCompiler(msg.author)}!`);
 	}

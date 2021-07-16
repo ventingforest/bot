@@ -2,44 +2,35 @@ import * as Discord from 'discord.js';
 import * as winston from 'winston';
 import { PastebinClient } from '@catte_/pastebin.js';
 import TVFConstants from '../Constants';
-import { IUser } from '../models/user';
-import mongoose = require('mongoose');
+import TVFRoles from '../TVFRoles';
+import TVFChannels from '../TVFChannels';
+import TVFDB from '../struct/TVFDB';
+import TVFSocial from '../struct/TVFSocial';
+import TVFUtils from '../struct/TVFUtils';
 
 declare module 'discord-akairo' {
   interface AkairoClient {
-    isProduction: boolean;
+    production: boolean;
     logger: Logger;
     server: Discord.Guild;
-    commandHandler: CommandHandler;
+    commands: CommandHandler;
     listenerHandler: ListenerHandler;
-    inhibitorHandler: InhibitorHandler;
+    inhibitors: InhibitorHandler;
     pastebin: PastebinClient;
-    talkedRecently: Set<string>;
-    constants: ReturnType<typeof TVFConstants>;
+    constants: typeof TVFConstants;
+    tvfRoles: ReturnType<typeof TVFRoles>;
+    tvfChannels: ReturnType<typeof TVFChannels>;
+    db: TVFDB;
+    social: TVFSocial;
+    utils: TVFUtils;
     prefix: string;
     botBanner: boolean;
-    db: {
-      user: mongoose.Model<IUser>,
-      connection: mongoose.Connection | null
-    };
 
-    xpFor(x: number): number;
-    levelReward(level: number): LevelReward;
-    rankInServer(id: string): Promise<number>;
     isUser(role: StaffRole, member: Discord.GuildMember): boolean;
-    userDoc(id: string): Promise<IUser>
-    saveDoc(doc: mongoose.Document): void;
-    formatNumber(x: number): string;
     joinPosition(id: string): number;
     sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message>;
     deletePrompts(msg: Discord.Message): void;
     userLogCompiler(u: Discord.User): string;
-  }
-
-  interface CommandOptions {
-    usage?: string;
-    examples?: string[];
-    allowGeneral?: boolean;
   }
 
   interface Command {
@@ -53,27 +44,19 @@ declare global {
   type MessageContent = Discord.APIMessageContentResolvable | (Discord.MessageOptions & { split?: false }) | Discord.MessageAdditions;
   type Channels = Discord.TextChannel | Discord.DMChannel | Discord.NewsChannel;
   type StaffRole = 'Support' | 'Moderation' | 'Admin' | 'Staff';
+  type LogType = 'user' | 'guild' | 'channel';
+  type Optional<T> = {
+		[P in keyof T]?: T[P];
+	}
 
     interface Logger extends winston.Logger {
       command: winston.LeveledLogMethod;
       db: winston.LeveledLogMethod;
     }
 
-    interface Suggestion {
-      id: string; // the id of the suggestion
-      suggestion: string; // the suggestion
-      messageID: string; // the id of the message
-    }
-
     interface LevelReward {
-      level: number; // the level that the role is associated with
-      role: Discord.Role; // the role
-      name: string; // the name of the role
-    }
-
-    interface UserBalance {
-      cash: number; // the amount of cash the user has
-      bank: number; // the amount of money in the bank the user has
-      total: number; // the total amount of money that the user has
+      level: number;
+      roleID: string;
+      name: string;
     }
 }

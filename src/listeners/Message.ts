@@ -2,7 +2,6 @@ import { Listener } from 'discord-akairo';
 import { Message } from 'discord.js';
 import { createCanvas, registerFont, loadImage } from 'canvas';
 import * as path from 'path';
-import Level from '../commands/Level';
 
 class MessageListener extends Listener {
 	constructor() {
@@ -14,9 +13,9 @@ class MessageListener extends Listener {
 
 	async exec(msg: Message) {
 		// Helper ping and relay
-		if (msg.content.includes(this.client.constants.roles.community.helper.toString())) {
+		if (msg.content.includes(this.client.tvfRoles.community.helper.toString())) {
 			// Relay
-			const helperEmbed = this.client.util.embed()
+			const helperEmbed = this.client.utils.embed()
 				.setColor(this.client.constants.colours.yellow)
 				.setThumbnail(this.client.server.iconURL())
 				.setTitle(`${msg.author.username} needs help!`)
@@ -24,20 +23,21 @@ class MessageListener extends Listener {
 				.addField('Message', msg.content)
 				.setTimestamp(new Date());
 
-			this.client.constants.channels.community.helper.send(helperEmbed);
+			this.client.tvfChannels.community.helper.send(helperEmbed);
 
 			// Helper ping message
-			msg.channel.send(`${msg.author} - please wait, a helper will arrive shortly. If it's an emergency, call the number in ${this.client.constants.channels.resources}. You can also request a one-on-one private session with a staff by typing ${this.client.prefix}private in any channel.`)
+			msg.channel.send(`${msg.author} - please wait, a helper will arrive shortly. If it's an emergency, call the number in ${this.client.tvfChannels.resources}. You can also request a one-on-one private session with a staff by typing ${this.client.prefix}private in any channel.`)
 		}
 
 		// Levelling system		
-		if (!this.client.talkedRecently.has(msg.author.id) && this.client.user) {
-			const doc = await this.client.userDoc(msg.author.id); // Get the user's document
-			doc.xp += Math.floor(Math.random() * 25) + 15; // 15-25 xp per message
+		if (!this.client.social.xpCooldown.has(msg.author.id) && this.client.user) {
+			const doc = await this.client.db.getUser(msg.author.id); // Get the user's row
+			const newXp = Math.floor(Math.random() * 25) + 15; // 15-25 xp per message
+			let level = doc.level;
 
 			// Level up!
-			if (doc.xp >= this.client.xpFor(doc.level + 1)) {
-				doc.level++;
+			if (newXp >= this.client.social.xpFor(level + 1)) {
+				level++;
 
 				// Register the font
 				registerFont(path.join(__dirname, '..', '..', 'assets', 'levels', 'LeagueSpartan.ttf'), { family: 'League Spartan' });
@@ -56,35 +56,38 @@ class MessageListener extends Listener {
 
 				// Add level
 				const levelText = `You are now Level ${doc.level}!`;
-				ctx.font = Level.prototype.applyText(canvas, 36, levelText);
+				ctx.font = this.client.utils.applyText(canvas, 36, levelText);
 				ctx.fillStyle = '#ffffff';
 				ctx.fillText(levelText, 287.2, 203.8);
 
-				const attachment = this.client.util.attachment(canvas.toBuffer(), `${msg.author.username}.png`);
-				const currentLevelReward = this.client.levelReward(doc.level) || this.client.constants.levelRoles[this.client.constants.levelRoles.length - 1];
+				const attachment = this.client.utils.attachment(canvas.toBuffer(), `${msg.author.username}.png`);
+				const currentLevelReward = this.client.social.levelReward(doc.level) || this.client.constants.levelRoles[this.client.constants.levelRoles.length - 1];
 				const nextLevelReward = this.client.constants.levelRoles[this.client.constants.levelRoles.indexOf(currentLevelReward) + 1];
 
 				if (doc.level % 2 === 0) {
-					msg.author.send(`**${this.client.constants.emojis.confetti}  |** Congratulations! Your magical ability has advanced to **Level ${doc.level}** in The Venting Forest! You are now a **${currentLevelReward.name}**${nextLevelReward ? `, and are ${this.client.xpFor(nextLevelReward.level) - this.client.xpFor(currentLevelReward.level)} xp from becoming a **${nextLevelReward.name}**` : ''}!`, attachment);
+					msg.author.send(`**${this.client.constants.emojis.confetti}  |** Congratulations! Your magical ability has advanced to **Level ${doc.level}** in The Venting Forest! You are now a **${currentLevelReward.name}**${nextLevelReward ? `, and are ${this.client.social.xpFor(nextLevelReward.level) - this.client.social.xpFor(currentLevelReward.level)} xp from becoming a **${nextLevelReward.name}**` : ''}!`, attachment);
 				} else {
-					msg.author.send(`**${this.client.constants.emojis.confetti}  |** Congratulations! Your magical ability has advanced to **Level ${doc.level}** in The Venting Forest!${nextLevelReward ? ` You are now ${this.client.xpFor(nextLevelReward.level) - this.client.xpFor(currentLevelReward.level)} xp from becoming a **${nextLevelReward.name}**!` : ''} You are currently a **${currentLevelReward.name}**.`, attachment);
+					msg.author.send(`**${this.client.constants.emojis.confetti}  |** Congratulations! Your magical ability has advanced to **Level ${doc.level}** in The Venting Forest!${nextLevelReward ? ` You are now ${this.client.social.xpFor(nextLevelReward.level) - this.client.social.xpFor(currentLevelReward.level)} xp from becoming a **${nextLevelReward.name}**!` : ''} You are currently a **${currentLevelReward.name}**.`, attachment);
 				}
 			}
 
-			this.client.saveDoc(doc);
+			this.client.db.updateUser(doc.id, {
+				xp: newXp,
+				level
+			});
 
-			if (doc.level % 2 === 0 && doc.level <= 100) {
+			if (level % 2 === 0 && level <= 100) {
 				const newRole = this.client.constants.levelRoles.find(r => r.level === doc.level);
 				const oldRole = this.client.constants.levelRoles[this.client.constants.levelRoles.indexOf(newRole) - 1];
 				const member = msg.guild.member(msg.author.id);
 				
-				if (doc.level !== 2) member.roles.remove(oldRole.role, `Levelled up to ${newRole.level}!`);
-				member.roles.add(newRole.role, `Levelled up to ${newRole.level}!`);
+				if (doc.level !== 2) member.roles.remove(oldRole.roleID, `Levelled up to ${newRole.level}!`);
+				member.roles.add(newRole.roleID, `Levelled up to ${newRole.level}!`);
 			}
 
 			// Put them on timeout for a minute
-			this.client.talkedRecently.add(msg.author.id);
-			setTimeout(() => this.client.talkedRecently.delete(msg.author.id), 60000);
+			this.client.social.xpCooldown.add(msg.author.id);
+			setTimeout(() => this.client.social.xpCooldown.delete(msg.author.id), 60000);
 		}
 	}
 }

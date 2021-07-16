@@ -24,7 +24,7 @@ class Help extends Command {
 	}
 
 	exec(msg: Message, { commandName }: { commandName: string }) {
-		const embed = this.client.util.embed()
+		const embed = this.client.utils.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setColor(this.client.constants.colours.green)
 			.setThumbnail(this.client.user.avatarURL());

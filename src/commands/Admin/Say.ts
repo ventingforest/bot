@@ -29,7 +29,7 @@ class Say extends Command {
 		if (message) {
 			msg.channel.send(message);
 		} else {
-			this.client.sendDM(msg.author, `You did not specify anything for me to say!`);
+			this.client.utils.sendDM(msg.author, `You did not specify anything for me to say!`);
 		}
 
 		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} got me to say "${message}" :O`);

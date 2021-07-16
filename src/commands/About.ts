@@ -25,14 +25,14 @@ class About extends Command {
         const voiceChannels = channels.filter(c => c.type === 'voice');
         const ramUsed = bytes(process.memoryUsage().heapTotal);
         const cpu = await si.currentLoad();
-        const embed = this.client.util.embed()
+        const embed = this.client.utils.embed()
             .setColor(this.client.constants.colours.green)
             .setTitle('About! (:')
             .setAuthor(msg.author.username, msg.author.avatarURL())
             .setThumbnail(this.client.server.iconURL())
             .setFooter(`Made with ❤ by ${dev.tag}`, dev.avatarURL())
             .addField('RAM Used', ramUsed, true)
-            .addField('CPU Usage', `${Math.round(cpu.currentload)}%`, true)
+            .addField('CPU Usage', `${Math.round(cpu.currentLoad)}%`, true)
             .addField('Uptime', ms(this.client.uptime, { long: true }), true)
             .addField('Channels', channels.size, true)
             .addField('Text', textChannels.size, true)

@@ -9,8 +9,8 @@ class General extends Inhibitor {
 	}
 
 	exec(msg: Message) {
-		const channels = this.client.constants.channels;
-		if (this.client.isUser('Staff', msg.member)) return false;
+		const channels = this.client.tvfChannels;
+		if (this.client.utils.isUser('Staff', msg.member)) return false;
 		else return [channels.general.id, channels.tw.id].includes(msg.channel.id);
 	}
 }
