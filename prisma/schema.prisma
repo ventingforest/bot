@@ -23,8 +23,8 @@ model User {
 model Private {
   id          String    @id
   reason      String?
-  requestedAt DateTime? @db.Date
-  startedAt   DateTime? @db.Date
+  requestedAt DateTime? @db.Timestamptz(6)
+  startedAt   DateTime? @db.Timestamptz(6)
   textID      String?
   voiceID     String?
 }

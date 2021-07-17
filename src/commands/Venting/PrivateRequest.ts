@@ -1,8 +1,10 @@
+import { Private } from '@prisma/client';
 import { stripIndents } from 'common-tags';
 import { Command } from 'discord-akairo';
-import { Message } from 'discord.js';
+import { Message, User } from 'discord.js';
+import moment from 'moment';
 import timeout from 'timeout';
-import PrivateCancel from './PrivateCancel';
+import TVFClient from '../../struct/TVFClient';
 
 class PrivateRequest extends Command {
 	constructor() {
@@ -23,6 +25,64 @@ class PrivateRequest extends Command {
 			'private Anxiety',
 			'private Feeling overwhelmed'
 		];
+	}
+
+	/**
+	 * Sets up the timeouts for private venting sessions
+	 * @param privateVent The private venting session
+	 * @param venter The owner of the session 
+	 * @param ms The amount of ms until the vent must expire
+	 * @param client An instance of TVF Bot
+	 */
+	privateTimeouts(privateVent: Private, venter: User, ms: number, client: TVFClient) {
+		// Begin the expiry countdown
+		timeout.timeout(privateVent.id, ms, () => {
+			// Cancel the private venting session
+			client.db.deletePrivate(privateVent.id);
+
+			// Inform the support team that the user's session has expired
+			const expiredEmbed = client.utils.embed()
+				.setThumbnail(client.server.iconURL())
+				.setColor(client.constants.colours.red)
+				.setTitle(`${venter.username}'s private venting session has expired!`)
+				.addField('Venter ID', venter.id, true)
+				.setFooter(`Session ID: ${privateVent.id}`, client.server.iconURL());
+
+			client.tvfChannels.staff.support.send(expiredEmbed);
+
+			// Inform the user that their session has expired
+			expiredEmbed.fields = [];
+			expiredEmbed
+				.setTitle('Your private venting session has expired!')
+				.setDescription(stripIndents`
+					We're sorry we couldn't get to your private venting session in time ):
+					We automatically cancel old private venting sessions so that users can request new ones if they still need help, and to unclog the system!
+					If you would still like some help, please do not be scared to request a new session! Thanks! (:
+				`);
+
+			venter.send(expiredEmbed).catch(() => client.tvfChannels.community.discussion.send(stripIndents`
+				${venter}, your private venting session has expired!
+				Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please look into this this and ping newt#1234 if you need any help!
+				If you still need a session, please do not fear to open a new one! Thanks (:
+			`));
+
+			client.logger.command(`${client.userLogCompiler(venter)}'s private venting session (${privateVent.id}) has just expired.`);
+		});
+
+		// Create reminders for the expiry
+		const reminderEmbed = client.utils.embed()
+			.setColor(client.constants.colours.orange)
+			.setThumbnail(venter.avatarURL())
+			.setDescription(`Reason: ${privateVent.reason}`)
+			.addField('Venter ID', venter.id)
+			.setFooter(`Session ID: ${privateVent.id}`, client.server.iconURL());
+		const interval = ms / 6;
+
+		timeout.timeout(`${privateVent.id}1`, interval, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in five hours!`)));
+		timeout.timeout(`${privateVent.id}2`, interval * 2, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in four hours!`)));
+		timeout.timeout(`${privateVent.id}3`, interval * 3, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in three hours!`)));
+		timeout.timeout(`${privateVent.id}4`, interval * 4, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in two hours!`)));
+		timeout.timeout(`${privateVent.id}5`, interval * 5, () => client.tvfChannels.staff.support.send(client.production ? client.tvfRoles.staff.support.toString() : '', reminderEmbed.setTitle(`${venter.username}'s session will expire in one hour!`)));
 	}
 
 	async exec(msg: Message, { reason }: { reason: string }) {
@@ -93,54 +153,7 @@ class PrivateRequest extends Command {
 			this.client.utils.sendDM(msg.author, userEmbed);
 			this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just requested a private venting session (${privateVent.id})`);
 
-			// Begin the expiry countdown
-			timeout.timeout(privateVent.id, this.client.constants.privateTimeout, () => {
-				// Cancel the private venting session
-				this.client.db.deletePrivate(privateVent.id);
-
-				// Inform the support team that the user's session has expired
-				const expiredEmbed = this.client.utils.embed()
-					.setThumbnail(this.client.server.iconURL())
-					.setColor(this.client.constants.colours.red)
-					.setTitle(`${msg.author.username}'s private venting session has expired!`)
-					.addField('Venter ID', msg.author.id, true)
-					.setFooter(`Session ID: ${privateVent.id}`, this.client.server.iconURL());
-
-				this.client.tvfChannels.staff.support.send(expiredEmbed);
-
-				// Inform the user that their session has expired
-				expiredEmbed.fields = [];
-				expiredEmbed
-					.setTitle('Your private venting session has expired!')
-					.setDescription(stripIndents`
-						We're sorry we couldn't get to your private venting session in time ):
-						We automatically cancel old private venting sessions so that users can request new ones if they still need help, and to unclog the system!
-						If you would still like some help, please do not be scared to request a new session! Thanks! (:
-					`);
-
-				msg.author.send(expiredEmbed).catch(() => this.client.tvfChannels.community.discussion.send(stripIndents`
-					${msg.author}, your private venting session has expired!
-					Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please look into this this and ping newt#1234 if you need any help!
-					If you still need a session, please do not fear to open a new one! Thanks (:
-				`));
-				});
-
-				this.client.logger.command(`${this.client.userLogCompiler(msg.author)}'s private venting session (${privateVent.id}) has just expired.`);
-
-				// Create reminders for the expiry
-				const reminderEmbed = this.client.utils.embed()
-					.setColor(this.client.constants.colours.orange)
-					.setThumbnail(msg.author.avatarURL())
-					.setDescription(`Reason: ${reason}`)
-					.addField('Venter ID', msg.author.id)
-					.setFooter(`Session ID: ${privateVent.id}`, this.client.server.iconURL());
-				const interval = this.client.constants.privateTimeout / 6;
-
-				timeout.timeout(`${privateVent.id}1`, interval, () => this.client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in five hours!`)));
-				timeout.timeout(`${privateVent.id}2`, interval * 2, () => this.client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in four hours!`)));
-				timeout.timeout(`${privateVent.id}3`, interval * 3, () => this.client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in three hours!`)));
-				timeout.timeout(`${privateVent.id}4`, interval * 4, () => this.client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${msg.author.username}'s session will expire in two hours!`)));
-				timeout.timeout(`${privateVent.id}5`, interval * 5, () => this.client.tvfChannels.staff.support.send(this.client.production ? this.client.tvfRoles.staff.support.toString() : '', reminderEmbed.setTitle(`${msg.author.username}'s session will expire in one hour!`)));
+			this.privateTimeouts(privateVent, msg.author, this.client.constants.privateTimeout, this.client as TVFClient);
 		}
 	}
 }

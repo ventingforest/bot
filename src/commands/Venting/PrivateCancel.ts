@@ -47,13 +47,13 @@ class PrivateCancel extends Command {
 
 	async exec(msg: Message, { memberTag, reason }: { memberTag: GuildMember, reason: string }) {
         await msg.delete(); // Delete the user's message for anynomity
-        const privateVent = await this.client.db.getPrivate(memberTag.id);
+        const privateVent = await this.client.db.getPrivate(memberTag ? memberTag.id : msg.author.id);
         const cancelledEmbed = this.client.utils.embed()
             .setAuthor(msg.author.username, msg.author.avatarURL())
             .setColor(this.client.constants.colours.red);
         
         // Check if the user wants to cancel another person's session
-        if (memberTag.id && this.client.utils.isUser('Support', msg.member)) {
+        if ((memberTag && memberTag.id) && this.client.utils.isUser('Support', msg.member)) {
             const venter = this.client.server.members.cache.get(privateVent.id);
 
             cancelledEmbed

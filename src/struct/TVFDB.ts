@@ -20,8 +20,7 @@ export default class TVFDB extends PrismaClient {
 	 */
 	async getUser(id: string): Promise<User> {
 		const user = await this.user.findUnique({ where: { id }});
-		console.log(user);
-		const discUser = this.client.users.cache.get(user.id);
+		const discUser = this.client.users.cache.get(id);
 
 		if (!user) {
 			return await this.user.create({

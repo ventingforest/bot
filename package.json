@@ -19,7 +19,8 @@
 		"lint": "eslint src --ext .ts",
 		"lint:fix": "eslint src --ext .ts --fix",
 		"prisma:pull": "prisma db pull",
-		"prisma:generate": "prisma generate"
+		"prisma:generate": "prisma generate",
+		"prisma": "npm run prisma:pull && npm run prisma:generate"
 	},
 	"husky": {
 		"hooks": {
