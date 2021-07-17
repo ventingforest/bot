@@ -21,10 +21,11 @@ model User {
 }
 
 model Private {
-  id          String    @id
+  ownerID     String    @unique
   reason      String?
   requestedAt DateTime? @db.Timestamptz(6)
   startedAt   DateTime? @db.Timestamptz(6)
   textID      String?
   voiceID     String?
+  id          Int       @id @default(autoincrement())
 }

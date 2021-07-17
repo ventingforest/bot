@@ -36,9 +36,9 @@ class PrivateRequest extends Command {
 	 */
 	privateTimeouts(privateVent: Private, venter: User, ms: number, client: TVFClient) {
 		// Begin the expiry countdown
-		timeout.timeout(privateVent.id, ms, () => {
+		timeout.timeout(privateVent.id.toString(), ms, () => {
 			// Cancel the private venting session
-			client.db.deletePrivate(privateVent.id);
+			client.db.deletePrivate(privateVent.ownerID);
 
 			// Inform the support team that the user's session has expired
 			const expiredEmbed = client.utils.embed()
@@ -87,7 +87,7 @@ class PrivateRequest extends Command {
 
 	async exec(msg: Message, { reason }: { reason: string }) {
         await msg.delete(); // Delete the user's message for anynomity
-		let privateVent = await this.client.db.getPrivate(msg.author.id); // Get the private venting session
+		let privateVent = await this.client.db.getPrivate({ ownerID: msg.author.id }); // Get the private venting session
 		const embed = this.client.utils.embed()
 			.setThumbnail(this.client.server.iconURL())
 			.setColor(this.client.constants.colours.green)
@@ -114,7 +114,7 @@ class PrivateRequest extends Command {
 
 			// Request the session - start by updating the user's document
 			privateVent = await this.client.db.private.create({ data: {
-				id: msg.author.id,
+				ownerID: msg.author.id,
 				reason,
 				requestedAt: new Date()
 			}});

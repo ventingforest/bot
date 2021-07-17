@@ -10,11 +10,11 @@ class PrivateStart extends Command {
 			description: 'Allows members of staff to start a private venting session!',
             args: [
                 {
-					id: 'memberTag',
-					type: 'member',
+					id: 'id',
+					type: 'number',
 					index: 0,
                     prompt: {
-                        start: (msg: Message): string => `${msg.author}, what is the ID of the user whose session you would like to start?`
+                        start: (msg: Message): string => `${msg.author}, what is the ID of the session you would like to start?`
                     }
                 }
             ]
@@ -27,9 +27,9 @@ class PrivateStart extends Command {
 		];
 	}
 
-	async exec(msg: Message, { memberTag }: { memberTag: GuildMember }) {
+	async exec(msg: Message, { id }: { id: number }) {
         this.client.utils.deletePrompts(msg); // Delete any prompts
-		const privateVent = await this.client.db.getPrivate(memberTag.id); // Get the user's document
+		const privateVent = await this.client.db.getPrivate({ id }); // Get the user's document
 		const startedAt = new Date();
 
 		if (!privateVent) {
@@ -38,11 +38,11 @@ class PrivateStart extends Command {
 				.setThumbnail(this.client.server.iconURL())
 				.setAuthor(msg.author.username, msg.author.avatarURL())
 				.setTitle('There was an error trying to start that private venting session!')
-				.setDescription(`An active private venting session could not be found with the ID \`${memberTag.id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
+				.setDescription(`An active private venting session could not be found with the ID \`${id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
 			return msg.channel.send(error);
 		}
 
-		const user = await this.client.users.fetch(privateVent.id); // Find the user associated with the private venting session
+		const user = await this.client.users.fetch(privateVent.ownerID); // Find the user associated with the private venting session
 		const embed = this.client.utils.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setColor(this.client.constants.colours.green)
@@ -105,15 +105,15 @@ class PrivateStart extends Command {
 		this.client.tvfChannels.staff.private.logs.send(embed);
 
 		// Clear expiry reminders
-		timeout.timeout(privateVent.id, null);
-		timeout.timeout(`${privateVent.id}1`, null);
-		timeout.timeout(`${privateVent.id}2`, null);
-		timeout.timeout(`${privateVent.id}3`, null);
-		timeout.timeout(`${privateVent.id}4`, null);
-		timeout.timeout(`${privateVent.id}5`, null);
+		timeout.timeout(`${privateVent.id}+0`, null);
+		timeout.timeout(`${privateVent.id}+1`, null);
+		timeout.timeout(`${privateVent.id}+2`, null);
+		timeout.timeout(`${privateVent.id}+3`, null);
+		timeout.timeout(`${privateVent.id}+4`, null);
+		timeout.timeout(`${privateVent.id}+5`, null);
 
 		// Update the private vent
-		this.client.db.updatePrivate(privateVent.id, {
+		this.client.db.updatePrivate(privateVent.ownerID, {
 			startedAt,
 			textID: text.id,
 			voiceID: voice.id

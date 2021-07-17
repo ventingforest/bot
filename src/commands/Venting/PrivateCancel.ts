@@ -11,8 +11,8 @@ class PrivateCancel extends Command {
 			description: 'Allows you to cancel a private venting session! If you are staff, you may pass an ID to cancel another person\'s session.',
             args: [
                 {
-                    id: 'memberTag',
-					type: 'member',
+                    id: 'id',
+					type: 'number',
 					index: 0
                 },
                 {
@@ -37,24 +37,25 @@ class PrivateCancel extends Command {
      */
     clearTimeouts(privateVent: Private) {
         // Clear all related timeouts
-        timeout.timeout(privateVent.id, null);
-        timeout.timeout(`${privateVent.id}1`, null);
-        timeout.timeout(`${privateVent.id}2`, null);
-        timeout.timeout(`${privateVent.id}3`, null);
-        timeout.timeout(`${privateVent.id}4`, null);
-        timeout.timeout(`${privateVent.id}5`, null);
+        timeout.timeout(`${privateVent.id}+0`, null);
+        timeout.timeout(`${privateVent.id}+1`, null);
+        timeout.timeout(`${privateVent.id}+2`, null);
+        timeout.timeout(`${privateVent.id}+3`, null);
+        timeout.timeout(`${privateVent.id}+4`, null);
+        timeout.timeout(`${privateVent.id}+5`, null);
     }
 
-	async exec(msg: Message, { memberTag, reason }: { memberTag: GuildMember, reason: string }) {
+	async exec(msg: Message, { id, reason }: { id: number, reason: string }) {
         await msg.delete(); // Delete the user's message for anynomity
-        const privateVent = await this.client.db.getPrivate(memberTag ? memberTag.id : msg.author.id);
+        let privateVent: Private;
         const cancelledEmbed = this.client.utils.embed()
             .setAuthor(msg.author.username, msg.author.avatarURL())
             .setColor(this.client.constants.colours.red);
         
         // Check if the user wants to cancel another person's session
-        if ((memberTag && memberTag.id) && this.client.utils.isUser('Support', msg.member)) {
-            const venter = this.client.server.members.cache.get(privateVent.id);
+        if (id && this.client.utils.isUser('Support', msg.member)) {
+            privateVent = await this.client.db.getPrivate({ id });
+            const venter = this.client.server.members.cache.get(privateVent.ownerID);
 
             cancelledEmbed
                 .setThumbnail(venter.user.avatarURL())
@@ -81,6 +82,7 @@ class PrivateCancel extends Command {
 
         // If the user wants to cancel their own session
         else {
+            privateVent = await this.client.db.getPrivate({ ownerID: msg.author.id });
             // If the user does not have a requested session
             if (!privateVent) {
                 const requestedEmbed = this.client.utils.embed()
@@ -109,7 +111,7 @@ class PrivateCancel extends Command {
 
         // Cancel the session
         this.clearTimeouts(privateVent);
-        this.client.db.deletePrivate(privateVent.id);
+        this.client.db.deletePrivate(privateVent.ownerID);
 	}
 }
 

@@ -25,7 +25,7 @@ class ViewDoc extends Command {
 
 	async exec(msg: Message, { member }: { member: GuildMember }) {
 		const doc = await this.client.db.getUser(member.id);
-		const privateVent = await this.client.db.getPrivate(member.id);
+		const privateVent = await this.client.db.getPrivate({ ownerID: member.id });
 		const embed = this.client.utils.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setTitle(member.user.tag)

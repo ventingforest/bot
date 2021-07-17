@@ -26,7 +26,7 @@ class Ready extends Listener {
 		vents.forEach(v => {
 			const expiresAt = moment(v.requestedAt).add(this.client.constants.privateTimeout, 'ms');
 			const ms = expiresAt.diff(moment(), 'ms');
-			const user = this.client.users.cache.get(v.id);
+			const user = this.client.users.cache.get(v.ownerID);
 
 			console.log(user.tag, expiresAt.format(this.client.constants.moment), ms)
 

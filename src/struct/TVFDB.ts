@@ -1,6 +1,11 @@
 import { PrismaClient, User, Private } from '@prisma/client';
 import TVFClient from './TVFClient';
 
+interface PrivateWhere {
+	ownerID?: string;
+	id?: number;
+}
+
 export default class TVFDB extends PrismaClient {
 	private client: TVFClient;
 
@@ -55,8 +60,8 @@ export default class TVFDB extends PrismaClient {
 	 * @param id The ID of the user
 	 * @returns The user's private venting session, if it exists
 	 */
-	async getPrivate(id: string): Promise<Private> {
-		const privateVent = await this.private.findUnique({ where: { id }});
+	async getPrivate(where: PrivateWhere): Promise<Private> {
+		const privateVent = await this.private.findUnique({ where });
 		return privateVent;
 	}
 
@@ -68,7 +73,7 @@ export default class TVFDB extends PrismaClient {
 	 */
 	async updatePrivate(id: string, data: Optional<Private>) {
 		return await this.private.update({
-			where: { id },
+			where: { ownerID: id },
 			data: data
 		});
 	}
@@ -79,6 +84,6 @@ export default class TVFDB extends PrismaClient {
 	 * @returns The deleted private venting session
 	 */
 	async deletePrivate(id: string) {
-		return await this.private.delete({ where: { id }});
+		return await this.private.delete({ where: { ownerID: id }});
 	}
 }

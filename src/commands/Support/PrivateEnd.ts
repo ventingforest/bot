@@ -12,11 +12,11 @@ class PrivateEnd extends Command {
 			description: 'Allows members of staff to end a privateVent venting session!',
             args: [
                 {
-					id: 'memberTag',
-					type: 'member',
+					id: 'id',
+					type: 'number',
 					index: 0,
                     prompt: {
-                        start: (msg: Message): string => `${msg.author}, what is the ID of the user whose session you would like to end?`
+                        start: (msg: Message): string => `${msg.author}, what is the ID of the session you would like to end?`
                     }
 				},
                 {
@@ -43,12 +43,14 @@ class PrivateEnd extends Command {
      * @param notes Notes to end the session with
      */
     async endSession(privateVent: Private, staff: User, notes: string) {
+        notes = notes.replace(privateVent.id.toString(), '');
+
         const text = this.client.server.channels.cache.get(privateVent.textID) as TextChannel;
         const voice = this.client.server.channels.cache.get(privateVent.voiceID) as VoiceChannel;
         const startedAt = moment(privateVent.startedAt).format(this.client.constants.moment);
         const endedAt = moment().format(this.client.constants.moment);
         const messages = text.messages.cache;
-        const user = await this.client.users.fetch(privateVent.id);
+        const user = await this.client.users.fetch(privateVent.ownerID);
 
         // Upload the message history to pastebin
         const paste = await this.client.pastebin.pastes.create(stripIndents`
@@ -57,6 +59,7 @@ class PrivateEnd extends Command {
             Started at: ${startedAt}
             Ended at: ${endedAt}
             Recorded message count: ${messages.size}
+            ID: ${privateVent.id}
             ---------------------------------------------
             ${messages.map(msg => `${moment(msg.createdTimestamp).format('D/M/YYYY HH:MM')} ${msg.author.tag}: ${msg.content}`).join('\n')}
         `, {
@@ -85,14 +88,14 @@ class PrivateEnd extends Command {
         await voice.delete();
 
         // Delete the private venting session
-        this.client.db.deletePrivate(privateVent.id);
+        this.client.db.deletePrivate(privateVent.ownerID);
 
         this.client.logger.command(`${this.client.userLogCompiler(staff)} just ended ${this.client.userLogCompiler(user)}'s privateVent venting session (${privateVent.id})`);
     }
 
-	async exec(msg: Message, { memberTag, notes }: { memberTag: GuildMember, notes: string }) {
+	async exec(msg: Message, { id, notes }: { id: number, notes: string }) {
         this.client.utils.deletePrompts(msg); // Delete any prompts
-		const privateVent = await this.client.db.private.findUnique({ where: { id: memberTag.id }}); // Get the user's document
+		const privateVent = await this.client.db.private.findUnique({ where: { id }}); // Get the user's document
 
 		if (!privateVent) {
 			const error = this.client.utils.embed()
@@ -100,7 +103,7 @@ class PrivateEnd extends Command {
                 .setThumbnail(this.client.server.iconURL())
                 .setAuthor(msg.author.username, msg.author.avatarURL())
 				.setTitle('There was an error trying to end that privateVent venting session!')
-				.setDescription(`An active privateVent venting session could not be found with the ID \`${memberTag.id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
+				.setDescription(`An active privateVent venting session could not be found with the ID \`${id}\`. Please check that you have entered it exactly as shown in the request, and try again (IDs are cAsE sensitive!)`);
 
 			return msg.channel.send(error);
 		}
