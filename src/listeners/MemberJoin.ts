@@ -19,7 +19,7 @@ class MemberJoin extends Listener {
 			else {
 				const prefix = this.client.commands.prefix;
 				// Try and find a document for the member
-				const userRow = await this.client.db.getUser(member.id);
+				const userRow = await this.client.db.user.findUnique({ where: { id: member.id }});
 				if (!userRow) {
 					hereBefore = false;
 
