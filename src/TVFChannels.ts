@@ -7,7 +7,7 @@ export default (tvf: Guild) => {
 		resources: tvf.channels.cache.get('435923980336234516') as TextChannel,
 		rules: tvf.channels.cache.get('481124133606916096') as TextChannel,
 		roles: tvf.channels.cache.get('481131558296616961') as TextChannel,
-		verification: tvf.channels.cache.get('760809680598990878') as TextChannel,
+		verification: tvf.channels.cache.get('847212872949563453') as TextChannel,
 		meetTheStaff: tvf.channels.cache.get('479744966575390733') as TextChannel,
 		announcements: tvf.channels.cache.get('435910303864061962') as TextChannel,
 		botCommands: tvf.channels.cache.get('464655374050656256') as TextChannel,

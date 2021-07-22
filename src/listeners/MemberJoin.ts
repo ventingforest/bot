@@ -17,7 +17,7 @@ class MemberJoin extends Listener {
 
 			if (this.client.botBanner && member.user.bot) return member.ban({ reason: 'Bot banner is enabled (:' });
 			else {
-				const prefix = this.client.commands.prefix;
+				const { prefix } = this.client.commands;
 				// Try and find a document for the member
 				const userRow = await this.client.db.user.findUnique({ where: { id: member.id }});
 				if (!userRow) {
