@@ -28,9 +28,7 @@ class Ready extends Listener {
 				const expiresAt = moment(v.requestedAt).add(this.client.constants.privateTimeout, 'ms');
 				const ms = expiresAt.diff(moment(), 'ms');
 				const user = this.client.users.cache.get(v.ownerID);
-
-				console.log(user.tag, expiresAt.format(this.client.constants.moment), ms)
-
+				
 				PrivateRequest.prototype.privateTimeouts(v, user, ms, this.client as TVFClient);
 				this.client.logger.db(`Loaded Vent ${v.id} for User ${this.client.userLogCompiler(user)}!`)
 			});

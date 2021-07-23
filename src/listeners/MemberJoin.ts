@@ -12,7 +12,7 @@ class MemberJoin extends Listener {
 	}
 
 	async exec(member: GuildMember) {
-		if (!this.client.production) {
+		if (this.client.production) {
 			let hereBefore = true;
 
 			if (this.client.botBanner && member.user.bot) return member.ban({ reason: 'Bot banner is enabled (:' });
@@ -20,7 +20,6 @@ class MemberJoin extends Listener {
 				const { prefix } = this.client.commands;
 				// Try and find a document for the member
 				let userRow = await this.client.db.user.findUnique({ where: { id: member.id }});
-				console.log(userRow);
 
 				if (!userRow) {
 					this.client.logger.info(`${member.user.tag} joined the server for the first time!`);
@@ -28,7 +27,6 @@ class MemberJoin extends Listener {
 
 					// Create a document for them
 					userRow = await this.client.db.user.create({ data: { id: member.user.id }});
-					console.log(userRow);
 
 					// Send a DM welcoming the user
 					const dm = this.client.utils.embed()
