@@ -13,7 +13,7 @@ class MemberLeave extends Listener {
 
 	async exec(member: GuildMember) {
 		if (this.client.production) {
-            const user = await this.client.db.getUser(member.id); // Get the user's row
+            const user = await this.client.db.user.findUnique({ where: { id: member.id }}); // Get the user's row
             const privateVent = await this.client.db.getPrivate({ ownerID: member.id }); // Get the user's pv session
 
             // Save sticky roles

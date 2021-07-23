@@ -20,7 +20,9 @@ class MemberJoin extends Listener {
 				const { prefix } = this.client.commands;
 				// Try and find a document for the member
 				const userRow = await this.client.db.user.findUnique({ where: { id: member.id }});
+
 				if (!userRow) {
+					this.client.logger.info(`${member.user.tag} joined the server for the first time!`);
 					hereBefore = false;
 
 					// Create a document for them
@@ -57,6 +59,8 @@ class MemberJoin extends Listener {
 
 					this.client.utils.sendDM(member.user, dm);
 				} else {
+					this.client.logger.info(`${member.user.tag} rejoined the server!`);
+
 					// If there is sticky roles, add them back
 					if (userRow.stickyRoles && userRow.stickyRoles.length > 0) {
 						userRow.stickyRoles.forEach(r => member.roles.add(r, 'Adding back sticky roles...'));
