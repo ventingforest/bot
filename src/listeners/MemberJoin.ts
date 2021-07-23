@@ -12,26 +12,28 @@ class MemberJoin extends Listener {
 	}
 
 	async exec(member: GuildMember) {
-		if (this.client.production) {
+		if (!this.client.production) {
 			let hereBefore = true;
 
 			if (this.client.botBanner && member.user.bot) return member.ban({ reason: 'Bot banner is enabled (:' });
 			else {
 				const { prefix } = this.client.commands;
 				// Try and find a document for the member
-				const userRow = await this.client.db.user.findUnique({ where: { id: member.id }});
+				let userRow = await this.client.db.user.findUnique({ where: { id: member.id }});
+				console.log(userRow);
 
 				if (!userRow) {
 					this.client.logger.info(`${member.user.tag} joined the server for the first time!`);
 					hereBefore = false;
 
 					// Create a document for them
-					this.client.db.user.create({ data: { id: member.user.id }});
+					userRow = await this.client.db.user.create({ data: { id: member.user.id }});
+					console.log(userRow);
 
 					// Send a DM welcoming the user
 					const dm = this.client.utils.embed()
 						.setTitle('Welcome to The Venting Forest!')
-						.setDescription(`Welcome to TVF! You are our **${ordinal(this.client.social.joinPosition(member.id))}** member! We are a relatively large venting server that have been operating since the 17th April 2018, and we want to try our best to make you feel right at home! <3`)
+						.setDescription(`Welcome to TVF! We are a relatively large venting server that have been operating since the 17th April 2018, and we want to try our best to make you feel right at home! <3`)
 						.setColor(this.client.constants.colours.green)
 						.setThumbnail(this.client.server.iconURL())
 						.addField('I\'m in... so now what?', stripIndents`

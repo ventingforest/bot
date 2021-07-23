@@ -18,21 +18,23 @@ class Ready extends Listener {
 		this.client.tvfRoles = TVFRoles(this.client.server);
 		this.client.tvfChannels = TVFChannels(this.client.server);
 
-		// Ensure all documents exist
-		this.client.server.members.cache.forEach(async member => member.user.bot ? null : await this.client.db.getUser(member.id));		
+		if (this.client.production) {
+			// Ensure all documents exist
+			this.client.server.members.cache.forEach(async member => member.user.bot ? null : await this.client.db.getUser(member.id));		
 
-		// Ensure all private vents are ticking
-		const vents = await this.client.db.private.findMany();
-		vents.forEach(v => {
-			const expiresAt = moment(v.requestedAt).add(this.client.constants.privateTimeout, 'ms');
-			const ms = expiresAt.diff(moment(), 'ms');
-			const user = this.client.users.cache.get(v.ownerID);
+			// Ensure all private vents are ticking
+			const vents = await this.client.db.private.findMany();
+			vents.forEach(v => {
+				const expiresAt = moment(v.requestedAt).add(this.client.constants.privateTimeout, 'ms');
+				const ms = expiresAt.diff(moment(), 'ms');
+				const user = this.client.users.cache.get(v.ownerID);
 
-			console.log(user.tag, expiresAt.format(this.client.constants.moment), ms)
+				console.log(user.tag, expiresAt.format(this.client.constants.moment), ms)
 
-			PrivateRequest.prototype.privateTimeouts(v, user, ms, this.client as TVFClient);
-			this.client.logger.db(`Loaded Vent ${v.id} for User ${this.client.userLogCompiler(user)}!`)
-		});
+				PrivateRequest.prototype.privateTimeouts(v, user, ms, this.client as TVFClient);
+				this.client.logger.db(`Loaded Vent ${v.id} for User ${this.client.userLogCompiler(user)}!`)
+			});
+		}
 
 		this.client.logger.info('TVF Bot is ready!');
 	}
