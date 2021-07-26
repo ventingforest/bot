@@ -23,11 +23,11 @@ class MemberLeave extends Listener {
             if (privateVent) {
                 PrivateCancel.prototype.clearTimeouts(privateVent);
                 this.client.db.deletePrivate(privateVent.ownerID);
-            }
 
-            // If the user is in a private venting session, end it
-            if (privateVent.startedAt && privateVent.startedAt !== null) {
-                PrivateEnd.prototype.endSession(privateVent, this.client.user, 'The user has left the server.');
+                // If the user is in a private venting session, end it
+                if (privateVent.startedAt && privateVent.startedAt !== null) {
+                    PrivateEnd.prototype.endSession(privateVent, this.client.user, 'The user has left the server.');
+                }
             }
 
             this.client.db.updateUser(user.id, {
