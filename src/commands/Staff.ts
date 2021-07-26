@@ -39,9 +39,12 @@ class Staff extends Command {
 	exec(msg: Message, { position }: { position: string }) {
         // Roles and their members
         const admins = this.client.tvfRoles.staff.admins.members;
-        const support = this.client.tvfRoles.staff.support.members;
-        const moderators = this.client.tvfRoles.staff.moderators.members;
+        let support = this.client.tvfRoles.staff.support.members;
+        let moderators = this.client.tvfRoles.staff.moderators.members;
         const staff = this.client.tvfRoles.staff.staff.members;
+
+        support = support.filter(m => !support.intersect(admins).has(m.id)).filter(m => !moderators.intersect(support).has(m.id));
+        moderators = moderators.filter(m => !moderators.intersect(admins).has(m.id));
 
         const fullList = this.client.utils.embed()
             .setColor(this.client.constants.colours.green)
