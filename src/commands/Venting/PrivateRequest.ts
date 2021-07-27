@@ -36,7 +36,7 @@ class PrivateRequest extends Command {
 	 */
 	privateTimeouts(privateVent: Private, venter: User, ms: number, client: TVFClient) {
 		// Begin the expiry countdown
-		timeout.timeout(privateVent.id.toString(), ms, () => {
+		timeout.timeout(`${privateVent.id}+0`, ms, () => {
 			// Cancel the private venting session
 			client.db.deletePrivate(privateVent.ownerID);
 
@@ -78,11 +78,11 @@ class PrivateRequest extends Command {
 			.setFooter(`Session ID: ${privateVent.id}`, client.server.iconURL());
 		const interval = ms / 6;
 
-		timeout.timeout(`${privateVent.id}1`, interval, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in five hours!`)));
-		timeout.timeout(`${privateVent.id}2`, interval * 2, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in four hours!`)));
-		timeout.timeout(`${privateVent.id}3`, interval * 3, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in three hours!`)));
-		timeout.timeout(`${privateVent.id}4`, interval * 4, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in two hours!`)));
-		timeout.timeout(`${privateVent.id}5`, interval * 5, () => client.tvfChannels.staff.support.send(client.production ? client.tvfRoles.staff.support.toString() : '', reminderEmbed.setTitle(`${venter.username}'s session will expire in one hour!`)));
+		timeout.timeout(`${privateVent.id}+1`, interval, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in five hours!`)));
+		timeout.timeout(`${privateVent.id}+2`, interval * 2, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in four hours!`)));
+		timeout.timeout(`${privateVent.id}+3`, interval * 3, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in three hours!`)));
+		timeout.timeout(`${privateVent.id}+4`, interval * 4, () => client.tvfChannels.staff.support.send(reminderEmbed.setTitle(`${venter.username}'s session will expire in two hours!`)));
+		timeout.timeout(`${privateVent.id}+5`, interval * 5, () => client.tvfChannels.staff.support.send(client.production ? client.tvfRoles.staff.support.toString() : '', reminderEmbed.setTitle(`${venter.username}'s session will expire in one hour!`)));
 	}
 
 	async exec(msg: Message, { reason }: { reason: string }) {

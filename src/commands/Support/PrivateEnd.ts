@@ -4,6 +4,7 @@ import { stripIndents } from 'common-tags';
 import moment from 'moment';
 import ms from 'ms';
 import { Private } from '@prisma/client';
+import PrivateCancel from '../Venting/PrivateCancel';
 
 class PrivateEnd extends Command {
 	constructor() {
@@ -88,6 +89,7 @@ class PrivateEnd extends Command {
         await voice.delete();
 
         // Delete the private venting session
+        PrivateCancel.prototype.clearTimeouts(privateVent);
         this.client.db.deletePrivate(privateVent.ownerID);
 
         this.client.logger.command(`${this.client.userLogCompiler(staff)} just ended ${this.client.userLogCompiler(user)}'s privateVent venting session (${privateVent.id})`);
