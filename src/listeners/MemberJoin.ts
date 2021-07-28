@@ -38,7 +38,6 @@ class MemberJoin extends Listener {
 							Now that you have joined our server, there are a couple things that you should know and that you need to do.
 							First off, you must read ${this.client.tvfChannels.rules.toString()}, as it contains the majority of what you need to know.
 							You can find out about our staff in ${this.client.tvfChannels.meetTheStaff.toString()}.
-							When you are ready, please verify yourself in ${this.client.tvfChannels.verification.toString()}!
 							You should then visit ${this.client.tvfChannels.roles.toString()}, where you can assign some cool roles to yourself that will allow you to access hidden channels.
 						`)
 						.addField('What is private venting?', stripIndents`
