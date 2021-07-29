@@ -3,7 +3,7 @@ import { GuildMember } from 'discord.js';
 import PrivateEnd from '../commands/Support/PrivateEnd';
 import PrivateCancel from '../commands/Venting/PrivateCancel';
 
-class MemberLeave extends Listener {
+class Leave extends Listener {
 	constructor() {
 		super('memberLeave', {
 			emitter: 'client',
@@ -40,4 +40,4 @@ class MemberLeave extends Listener {
     }
 }
 
-module.exports = MemberLeave;
+module.exports = Leave;

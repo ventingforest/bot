@@ -29,3 +29,10 @@ model Private {
   voiceID     String?
   id          Int       @id @default(autoincrement())
 }
+
+model Suggestion {
+  id     Int    @id @default(autoincrement())
+  author String
+  text   String
+  status Int?   @default(1)
+}

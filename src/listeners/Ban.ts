@@ -1,7 +1,7 @@
 import { Listener } from 'discord-akairo';
 import { Guild, User } from 'discord.js';
 
-class MemberBan extends Listener {
+class Ban extends Listener {
 	constructor() {
 		super('memberBan', {
 			emitter: 'client',
@@ -30,4 +30,4 @@ class MemberBan extends Listener {
 	}
 }
 
-module.exports = MemberBan;
+module.exports = Ban;
