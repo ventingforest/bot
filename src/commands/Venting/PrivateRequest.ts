@@ -38,7 +38,10 @@ class PrivateRequest extends Command {
 		// Begin the expiry countdown
 		timeout.timeout(`${privateVent.id}+0`, ms, async () => {
 			// Cancel the private venting session
-			await client.db.private.delete({ where: { id: privateVent.id }});
+			await client.db.user.update({
+				where: { privateID: privateVent.id },
+				data: { privateID: null }
+			});
 
 			// Inform the support team that the user's session has expired
 			const expiredEmbed = client.utils.embed()

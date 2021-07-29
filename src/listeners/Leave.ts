@@ -22,7 +22,6 @@ class Leave extends Listener {
             // If the user has a pending venting session, clear the expiries and cancel the session
             if (privateVent) {
                 PrivateCancel.prototype.clearTimeouts(privateVent);
-                await this.client.db.private.delete({ where: { id: privateVent.id }});
 
                 // If the user is in a private venting session, end it
                 if (privateVent.startedAt && privateVent.startedAt !== null) {

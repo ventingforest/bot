@@ -29,6 +29,7 @@ model Private {
   textID      String?
   voiceID     String?
   id          String    @id
+  pastebin    String?   @unique
   User        User      @relation(fields: [id], references: [privateID])
 }
 

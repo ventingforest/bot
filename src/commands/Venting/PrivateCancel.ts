@@ -110,7 +110,6 @@ class PrivateCancel extends Command {
 
         // Cancel the session
         this.clearTimeouts(privateVent);
-        await this.client.db.private.delete({ where: { id: privateVent.id }});
         await this.client.db.user.update({
             where: { id: user.id },
             data: { privateID: null }
