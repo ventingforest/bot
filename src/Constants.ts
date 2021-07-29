@@ -15,7 +15,9 @@ export default {
 		cross: '❌',
 		confetti: '🎉',
 		graph: '📈',
-		question: '❓'
+		question: '❓',
+		upvote: '760820779344068609',
+		downvote: '760820793507971093'
 	},
 
 	levelRoles: [

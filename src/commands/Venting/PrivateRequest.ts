@@ -2,9 +2,9 @@ import { Private } from '@prisma/client';
 import { stripIndents } from 'common-tags';
 import { Command } from 'discord-akairo';
 import { Message, User } from 'discord.js';
-import moment from 'moment';
 import timeout from 'timeout';
 import TVFClient from '../../struct/TVFClient';
+import { hri as id } from 'human-readable-ids';
 
 class PrivateRequest extends Command {
 	constructor() {
@@ -13,14 +13,14 @@ class PrivateRequest extends Command {
 			description: 'Allows you to request a private venting session!',
 			args: [
 				{
-					id: 'reason',
+					id: 'topic',
 					type: 'string',
 					match: 'rest'
 				}
 			]
 		});
 
-		this.usage = 'private <reason>';
+		this.usage = 'private <session topic>';
 		this.examples = [
 			'private Anxiety',
 			'private Feeling overwhelmed'
@@ -36,9 +36,12 @@ class PrivateRequest extends Command {
 	 */
 	privateTimeouts(privateVent: Private, venter: User, ms: number, client: TVFClient) {
 		// Begin the expiry countdown
-		timeout.timeout(`${privateVent.id}+0`, ms, () => {
+		timeout.timeout(`${privateVent.id}+0`, ms, async () => {
 			// Cancel the private venting session
-			client.db.deletePrivate(privateVent.ownerID);
+			await client.db.user.update({
+				where: { privateID: privateVent.id },
+				data: { privateID: null }
+			});
 
 			// Inform the support team that the user's session has expired
 			const expiredEmbed = client.utils.embed()
@@ -73,7 +76,7 @@ class PrivateRequest extends Command {
 		const reminderEmbed = client.utils.embed()
 			.setColor(client.constants.colours.orange)
 			.setThumbnail(venter.avatarURL())
-			.setDescription(`Reason: ${privateVent.reason}`)
+			.setDescription(`Topic: ${privateVent.topic}`)
 			.addField('Venter ID', venter.id)
 			.setFooter(`Session ID: ${privateVent.id}`, client.server.iconURL());
 		const interval = ms / 6;
@@ -85,9 +88,10 @@ class PrivateRequest extends Command {
 		timeout.timeout(`${privateVent.id}+5`, interval * 5, () => client.tvfChannels.staff.support.send(client.production ? client.tvfRoles.staff.support.toString() : '', reminderEmbed.setTitle(`${venter.username}'s session will expire in one hour!`)));
 	}
 
-	async exec(msg: Message, { reason }: { reason: string }) {
-        await msg.delete(); // Delete the user's message for anynomity
-		let privateVent = await this.client.db.getPrivate({ ownerID: msg.author.id }); // Get the private venting session
+	async exec(msg: Message, { topic }: { topic: string }) {
+        await msg.delete();
+		const user = await this.client.db.user.findFirst({ where: { id: msg.author.id }});
+		let privateVent = await this.client.db.private.findFirst({ where: { id: user.privateID ? user.privateID : undefined }});
 		const embed = this.client.utils.embed()
 			.setThumbnail(this.client.server.iconURL())
 			.setColor(this.client.constants.colours.green)
@@ -102,22 +106,32 @@ class PrivateRequest extends Command {
 
 			return this.client.utils.sendDM(msg.author, embed);
 		} else {
-			// If the reason has not been provided
-			if (!reason) {
+			// If the topic has not been provided
+			if (!topic) {
 				embed
-					.setTitle('You must provide a reason for your private venting seesion!')
-					.setDescription('Please try requesting again with a reason!')
+					.setTitle('You must provide a topic for your private venting seesion!')
+					.setDescription('Please try requesting again with a topic!')
 					.setColor(this.client.constants.colours.red);
 				
 				return this.client.utils.sendDM(msg.author, embed);
 			}
 
-			// Request the session - start by updating the user's document
-			privateVent = await this.client.db.private.create({ data: {
-				ownerID: msg.author.id,
-				reason,
-				requestedAt: new Date()
-			}});
+			const ventID = id.random();
+
+			// Store the ID in the user's database
+			await this.client.db.user.update({
+				where: { id: msg.author.id },
+				data: { privateID: ventID }
+			});
+
+			// Make a vent document for the user
+			privateVent = await this.client.db.private.create({
+				data: {
+					id: ventID,
+					topic,
+					requestedAt: new Date()
+				}
+			});
 
 			// Alert the support team
 			const supportEmbed = this.client.utils.embed()
@@ -126,7 +140,7 @@ class PrivateRequest extends Command {
 				.setTitle(`${msg.author.username} has requested a private venting session!`)
 				.setThumbnail(msg.author.avatarURL())
 				.setDescription(`Begin the session by typing \`${this.handler.prefix}pvs ${privateVent.id}\` in this channel!`)
-				.addField('Reason', privateVent.reason)
+				.addField('Session topic', privateVent.topic)
 				.addField('Venter ID', msg.author.id, true)
 				.setFooter(`Session ID: ${privateVent.id}`, this.client.server.iconURL());
 

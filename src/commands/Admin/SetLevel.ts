@@ -32,14 +32,17 @@ class SetLevel extends Command {
 
 	async exec(msg: Message, { member, level }: { member: GuildMember, level: number }) {
         this.client.utils.deletePrompts(msg); // Clean any prompts
-        let userDoc = await this.client.db.getUser(member.id); // Get the member's document
+        let userDoc = await this.client.db.user.findFirst({ where: { id: member.id }}); // Get the member's document
         const oldLevelReward = this.client.social.levelReward(userDoc.level); // Find the old level reward
         const levelReward = this.client.social.levelReward(level); // Find the new level reward
 
         // Update them
-        userDoc = await this.client.db.updateUser(member.id, {
-            level,
-            xp: this.client.social.xpFor(level)
+        userDoc = await this.client.db.user.update({
+            where: { id: userDoc.id },
+            data: {
+                level,
+                xp: this.client.social.xpFor(level)
+            }
         });
 
         // Remove any level role the member may have, and replace it with the new one

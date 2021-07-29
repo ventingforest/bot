@@ -1,5 +1,7 @@
 import TVFClient from './TVFClient';
 import moment from 'moment';
+import { Suggestion } from '@prisma/client';
+import { MessageEmbed } from 'discord.js';
 
 export default class TVFSocial {
 	private client: TVFClient;
@@ -29,5 +31,20 @@ export default class TVFSocial {
 	levelReward(level: number): LevelReward {
 		const levelIndex = this.client.constants.levelRoles.findIndex(l => level % 2 === 0 ? l.level === level : l.level === level - 1);
 		return this.client.constants.levelRoles[levelIndex];
+	}
+
+	/**
+	 * Generates an embed for a suggestion
+	 * @param {Suggestion} suggestion The suggestion
+	 */
+	suggestionEmbed(suggestion: Suggestion): MessageEmbed {
+		const author = this.client.users.cache.get(suggestion.authorID);
+
+		return this.client.utils.embed()
+			.setTitle(`New suggestion from ${author.username}!`)
+			.setThumbnail(author.avatarURL())
+			.setDescription(suggestion.text)
+			.setFooter(`Suggestion ID: ${suggestion.id}`, this.client.server.iconURL())
+			.setColor(this.client.constants.colours.white);
 	}
 }

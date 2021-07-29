@@ -11,9 +11,9 @@ import {
 import Constants from '../Constants';
 import TVFRoles from '../TVFRoles';
 import TVFChannels from '../TVFChannels';
-import TVFDB from './TVFDB';
 import TVFSocial from './TVFSocial';
 import TVFUtils from './TVFUtils';
+import { PrismaClient } from '@prisma/client';
 
 export default class TVFClient extends AkairoClient {
 	production = process.env.NODE_ENV === 'production';
@@ -26,7 +26,7 @@ export default class TVFClient extends AkairoClient {
 	constants: typeof Constants;
 	tvfRoles: ReturnType<typeof TVFRoles>;
     tvfChannels: ReturnType<typeof TVFChannels>;
-	db: TVFDB;
+	db: PrismaClient;
 	social: TVFSocial;
 	utils: TVFUtils;
 	prefix = this.production ? 'tvf ' : 'tvf beta ';
@@ -104,7 +104,7 @@ export default class TVFClient extends AkairoClient {
 
 		// Update class properties
 		this.logger = logger;
-		this.db = new TVFDB(this);
+		this.db = new PrismaClient();
 		this.utils = new TVFUtils(this);
 		this.social = new TVFSocial(this);
 
@@ -124,15 +124,15 @@ export default class TVFClient extends AkairoClient {
 				prompt: {
 					modifyStart: (msg: Discord.Message, text: string) => `${msg.author}, ${text}\nType cancel to cancel this command!`,
 					timeout: (msg: Discord.Message) => {
-						this.deletePrompts(msg);
+						this.utils.deletePrompts(msg);
 						return 'Time ran out, command has been cancelled!';
 					},
 					ended: (msg: Discord.Message) => {
-						this.deletePrompts(msg);
+						this.utils.deletePrompts(msg);
 						return 'Too many retries, command has been cancelled!';
 					},
 					cancel: (msg: Discord.Message) => {
-						this.deletePrompts(msg);
+						this.utils.deletePrompts(msg);
 						return 'Command cancelled!';
 					},
 					retries: 4,

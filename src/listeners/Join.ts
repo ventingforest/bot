@@ -1,9 +1,8 @@
 import { stripIndents } from 'common-tags';
 import { Listener } from 'discord-akairo';
 import { GuildMember } from 'discord.js';
-import ordinal from 'ordinal';
 
-class MemberJoin extends Listener {
+class Join extends Listener {
 	constructor() {
 		super('memberJoin', {
 			emitter: 'client',
@@ -64,8 +63,11 @@ class MemberJoin extends Listener {
 					if (userRow.stickyRoles && userRow.stickyRoles.length > 0) {
 						userRow.stickyRoles.forEach(r => member.roles.add(r, 'Adding back sticky roles...'));
 						
-						this.client.db.updateUser(userRow.id, {
-							stickyRoles: null
+						await this.client.db.user.update({
+							where: { id: userRow.id },
+							data: {
+								stickyRoles: null
+							}
 						});
 					}
 				}
@@ -90,4 +92,4 @@ class MemberJoin extends Listener {
 	}
 }
 
-module.exports = MemberJoin;
+module.exports = Join;

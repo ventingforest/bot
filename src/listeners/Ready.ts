@@ -20,14 +20,20 @@ class Ready extends Listener {
 
 		if (this.client.production) {
 			// Ensure all documents exist
-			this.client.server.members.cache.forEach(async member => member.user.bot ? null : await this.client.db.getUser(member.id));		
+			this.client.server.members.cache.forEach(async member => {
+				if (!member.user.bot) { 
+					const user = await this.client.db.user.findUnique({ where: { id: member.id }});
+					if (!user) await this.client.db.user.create({ data: { id: member.id }})
+				}
+			});
 
 			// Ensure all private vents are ticking
 			const vents = await this.client.db.private.findMany();
-			vents.forEach(v => {
+			vents.forEach(async v => {
 				const expiresAt = moment(v.requestedAt).add(this.client.constants.privateTimeout, 'ms');
 				const ms = expiresAt.diff(moment(), 'ms');
-				const user = this.client.users.cache.get(v.ownerID);
+				const owner = await this.client.db.user.findUnique({ where: { privateID: v.id }});
+				const user = this.client.users.cache.get(owner.id);
 				
 				if (!v.startedAt) {
 					PrivateRequest.prototype.privateTimeouts(v, user, ms, this.client as TVFClient);

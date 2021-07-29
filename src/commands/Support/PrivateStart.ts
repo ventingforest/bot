@@ -11,7 +11,7 @@ class PrivateStart extends Command {
             args: [
                 {
 					id: 'id',
-					type: 'number',
+					type: 'string',
 					index: 0,
                     prompt: {
                         start: (msg: Message): string => `${msg.author}, what is the ID of the session you would like to start?`
@@ -27,9 +27,9 @@ class PrivateStart extends Command {
 		];
 	}
 
-	async exec(msg: Message, { id }: { id: number }) {
-        this.client.utils.deletePrompts(msg); // Delete any prompts
-		const privateVent = await this.client.db.getPrivate({ id }); // Get the user's document
+	async exec(msg: Message, { id }: { id: string }) {
+        this.client.utils.deletePrompts(msg);
+		const privateVent = await this.client.db.private.findFirst({ where: { id } });
 		const startedAt = new Date();
 
 		if (!privateVent) {
@@ -42,7 +42,8 @@ class PrivateStart extends Command {
 			return msg.channel.send(error);
 		}
 
-		const user = await this.client.users.fetch(privateVent.ownerID); // Find the user associated with the private venting session
+		const dbUser = await this.client.db.user.findFirst({ where: { privateID: privateVent.id }});
+		const user = await this.client.users.fetch(dbUser.id); // Find the user associated with the private venting session
 		const embed = this.client.utils.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setColor(this.client.constants.colours.green)
@@ -95,7 +96,7 @@ class PrivateStart extends Command {
 			.setTitle(`Welcome to your private venting session, ${user.username}!`)
 			.addField('Session opened by', msg.author.username)
 			.addField('Session started', moment(startedAt).format(this.client.constants.moment))
-			.addField('Reason for session', privateVent.reason)
+			.addField('Session topic', privateVent.topic)
 			.setFooter(`Session ID: ${privateVent.id}`, this.client.server.iconURL());
 		text.send(`Welcome ${user} <3`, embed);
 
@@ -113,10 +114,13 @@ class PrivateStart extends Command {
 		timeout.timeout(`${privateVent.id}+5`, null);
 
 		// Update the private vent
-		this.client.db.updatePrivate(privateVent.ownerID, {
-			startedAt,
-			textID: text.id,
-			voiceID: voice.id
+		await this.client.db.private.update({
+			where: { id: privateVent.id },
+			data: {
+				startedAt,
+				textID: text.id,
+				voiceID: voice.id
+			}
 		});
 
 		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} just started ${this.client.userLogCompiler(user)}'s private venting session (${privateVent.id})`);

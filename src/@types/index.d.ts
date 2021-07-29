@@ -4,9 +4,9 @@ import { PastebinClient } from '@catte_/pastebin.js';
 import TVFConstants from '../Constants';
 import TVFRoles from '../TVFRoles';
 import TVFChannels from '../TVFChannels';
-import TVFDB from '../struct/TVFDB';
 import TVFSocial from '../struct/TVFSocial';
 import TVFUtils from '../struct/TVFUtils';
+import { PrismaClient } from '@prisma/client';
 
 declare module 'discord-akairo' {
   interface AkairoClient {
@@ -20,16 +20,12 @@ declare module 'discord-akairo' {
     constants: typeof TVFConstants;
     tvfRoles: ReturnType<typeof TVFRoles>;
     tvfChannels: ReturnType<typeof TVFChannels>;
-    db: TVFDB;
+    db: PrismaClient;
     social: TVFSocial;
     utils: TVFUtils;
     prefix: string;
     botBanner: boolean;
 
-    isUser(role: StaffRole, member: Discord.GuildMember): boolean;
-    joinPosition(id: string): number;
-    sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message>;
-    deletePrompts(msg: Discord.Message): void;
     userLogCompiler(u: Discord.User): string;
   }
 
