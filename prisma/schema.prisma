@@ -9,25 +9,27 @@ datasource db {
 }
 
 model Blacklist {
-  id     String  @id
+  id     String  @id @unique
   reason String?
 }
 
 model User {
-  id          String   @id
+  id          String   @id @unique
   level       Int      @default(1)
   xp          Int      @default(1)
   stickyRoles String[]
+  privateID   String?  @unique
+  Private     Private?
 }
 
 model Private {
-  ownerID     String    @unique
-  reason      String?
+  topic       String?
   requestedAt DateTime? @db.Timestamptz(6)
   startedAt   DateTime? @db.Timestamptz(6)
   textID      String?
   voiceID     String?
-  id          Int       @id @default(autoincrement())
+  id          String    @id
+  User        User      @relation(fields: [id], references: [privateID])
 }
 
 model Suggestion {

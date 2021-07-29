@@ -9,10 +9,10 @@ class Ban extends Listener {
 		});
 	}
 
-	exec(_guild: Guild, user: User) {
+	async exec(_guild: Guild, user: User) {
 		if (this.client.production) {
             // Delete the user's document from the database - it is likely they will never return anyway
-            this.client.db.user.delete({ where: { id: user.id }})
+            await this.client.db.user.delete({ where: { id: user.id }})
                 .then(() => this.client.logger.db(`${user.tag}'s (${user.id}) document has been removed from the database! Reason: Banned`));
 
             // Send the ban message

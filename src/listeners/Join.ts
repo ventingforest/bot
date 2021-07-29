@@ -63,8 +63,11 @@ class Join extends Listener {
 					if (userRow.stickyRoles && userRow.stickyRoles.length > 0) {
 						userRow.stickyRoles.forEach(r => member.roles.add(r, 'Adding back sticky roles...'));
 						
-						this.client.db.updateUser(userRow.id, {
-							stickyRoles: null
+						await this.client.db.user.update({
+							where: { id: userRow.id },
+							data: {
+								stickyRoles: null
+							}
 						});
 					}
 				}

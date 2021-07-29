@@ -13,7 +13,7 @@ class Levelling extends Listener {
 
 	async exec(msg: Message) {
 		if (this.client.production && !this.client.social.xpCooldown.has(msg.author.id)) {
-			const user = await this.client.db.getUser(msg.author.id);
+			const user = await this.client.db.user.findFirst({ where: { id: msg.author.id }});
 			const newXp = Math.floor(Math.random() * 25) + 15;
 			let level = user.level;
 
@@ -53,9 +53,12 @@ class Levelling extends Listener {
 				}
 			}
 
-			this.client.db.updateUser(user.id, {
-				xp: newXp,
-				level
+			await this.client.db.user.update({
+				where: { id: user.id }, 
+				data: {
+					xp: newXp,
+					level
+				}
 			});
 
 			if (level % 2 === 0 && level <= 100) {
