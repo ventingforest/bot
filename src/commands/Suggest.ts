@@ -31,12 +31,7 @@ class Suggest extends Command {
 		});
 
 		// Post it
-		const embed = this.client.utils.embed()
-			.setTitle(`New suggestion from ${msg.author.username}!`)
-			.setThumbnail(msg.author.avatarURL())
-			.setDescription(suggestion.text)
-			.setFooter(`Suggestion ID: ${suggestion.id}`, this.client.server.iconURL())
-			.setColor(this.client.constants.colours.white);
+		const embed = this.client.social.suggestionEmbed(suggestion);
 
 		const message = await this.client.tvfChannels.community.suggestions.send(embed);
 		const upvote = this.client.server.emojis.cache.get(this.client.constants.emojis.upvote);
@@ -44,6 +39,12 @@ class Suggest extends Command {
 
 		await message.react(upvote);
 		await message.react(downvote);
+
+		// Update the suggestion to include the message ID
+		await this.client.db.suggestion.update({ 
+			where: { id: suggestion.id },
+			data: { messageID: message.id }
+		})
 
 		// Mark the message as read
 		await msg.react(this.client.constants.emojis.tick);

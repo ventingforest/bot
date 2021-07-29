@@ -34,8 +34,10 @@ model Private {
 }
 
 model Suggestion {
-  id       Int    @id @default(autoincrement())
-  authorID String
-  text     String
-  status   Int?   @default(1)
+  id        Int     @id @default(autoincrement())
+  authorID  String
+  text      String
+  status    Int?    @default(1)
+  messageID String? @unique
+  comment   String?
 }
