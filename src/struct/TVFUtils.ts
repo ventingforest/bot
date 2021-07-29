@@ -40,7 +40,7 @@ export default class TVFUtils extends ClientUtil {
 				.setThumbnail(this.client.server.iconURL())
 				.setImage('https://i.imgur.com/iY7a8RO.png');
 
-			this.client.tvfChannels.community.discussion.send(embed);
+			this.client.tvfChannels.community.discussion.send(user, embed);
 		}) as Promise<Message>;
 	}
 

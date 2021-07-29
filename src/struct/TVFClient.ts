@@ -124,15 +124,15 @@ export default class TVFClient extends AkairoClient {
 				prompt: {
 					modifyStart: (msg: Discord.Message, text: string) => `${msg.author}, ${text}\nType cancel to cancel this command!`,
 					timeout: (msg: Discord.Message) => {
-						this.deletePrompts(msg);
+						this.utils.deletePrompts(msg);
 						return 'Time ran out, command has been cancelled!';
 					},
 					ended: (msg: Discord.Message) => {
-						this.deletePrompts(msg);
+						this.utils.deletePrompts(msg);
 						return 'Too many retries, command has been cancelled!';
 					},
 					cancel: (msg: Discord.Message) => {
-						this.deletePrompts(msg);
+						this.utils.deletePrompts(msg);
 						return 'Command cancelled!';
 					},
 					retries: 4,

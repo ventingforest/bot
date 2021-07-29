@@ -26,10 +26,6 @@ declare module 'discord-akairo' {
     prefix: string;
     botBanner: boolean;
 
-    isUser(role: StaffRole, member: Discord.GuildMember): boolean;
-    joinPosition(id: string): number;
-    sendDM(user: Discord.User, content: MessageContent): Promise<Discord.Message>;
-    deletePrompts(msg: Discord.Message): void;
     userLogCompiler(u: Discord.User): string;
   }
 
