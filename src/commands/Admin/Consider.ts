@@ -1,11 +1,11 @@
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 
-class Approve extends Command {
+class Consider extends Command {
 	constructor() {
-		super('approve', {
-			aliases: ['approve'],
-			description: 'Approves a suggestion',
+		super('consider', {
+			aliases: ['consider'],
+			description: 'Considers a suggestion',
 			args: [
 				{
 					id: 'id',
@@ -20,10 +20,10 @@ class Approve extends Command {
 			]
 		});
 
-		this.usage = 'approve <id> [comment]';
+		this.usage = 'consider <id> [comment]';
 		this.examples = [
-			'approve 1',
-			'approve 2 This is a really cool idea!'
+			'consider 1',
+			'consider 2 This is a really cool idea!'
 		];
 	}
 
@@ -34,18 +34,18 @@ class Approve extends Command {
 		const embed = this.client.social.suggestionEmbed(suggestion);
 		if (comment) comment = comment.split(id.toString())[1].trim();
 
-		// Update the status of the embed to approved and add the comment to the DB if it exists
+		// Update the status of the embed to considered and add the comment to the DB if it exists
 		await this.client.db.suggestion.update({
 			where: { id: suggestion.id },
 			data: {
-				status: 1,
+				status: 3,
 				comment: comment ? comment : null
 			}
 		});
 		
 		embed
-			.setColor(this.client.constants.colours.green)
-			.setTitle(`Suggestion by ${suggester.username} has been approved!`);
+			.setColor(this.client.constants.colours.yellow)
+			.setTitle(`Suggestion by ${suggester.username} has been considered!`);
 
 		// If the comment exists, add it to the embed
 		if (comment) {
@@ -60,5 +60,5 @@ class Approve extends Command {
 	}
 }
 
-module.exports = Approve;
-export default Approve;
+module.exports = Consider;
+export default Consider;
