@@ -10,9 +10,8 @@ class CommandBlocked extends Listener {
 	}
 
 	exec(msg: Message, _command, reason: string) {
-		msg.delete();
-
 		if (reason === 'Commands can not be run in general!') {
+			msg.delete();
 			this.client.utils.sendDM(msg.author, `**${this.client.constants.emojis.cross}  |** Sorry, but you are not allowed to run commands in the general chats!`)
 		} else {
 			msg.channel.send(`**${this.client.constants.emojis.cross}  |** Sorry, but you are not allowed to run that command!`);

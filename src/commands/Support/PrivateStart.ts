@@ -29,7 +29,7 @@ class PrivateStart extends Command {
 
 	async exec(msg: Message, { id }: { id: string }) {
         this.client.utils.deletePrompts(msg);
-		const privateVent = await this.client.db.private.findFirst({ where: { id } });
+		const privateVent = await this.client.db.private.findUnique({ where: { id } });
 		const startedAt = new Date();
 
 		if (!privateVent) {
@@ -42,7 +42,7 @@ class PrivateStart extends Command {
 			return msg.channel.send(error);
 		}
 
-		const dbUser = await this.client.db.user.findFirst({ where: { privateID: privateVent.id }});
+		const dbUser = await this.client.db.user.findUnique({ where: { privateID: privateVent.id }});
 		const user = await this.client.users.fetch(dbUser.id); // Find the user associated with the private venting session
 		const embed = this.client.utils.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())

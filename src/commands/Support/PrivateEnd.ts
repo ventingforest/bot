@@ -51,7 +51,7 @@ class PrivateEnd extends Command {
         const startedAt = moment(privateVent.startedAt).format(this.client.constants.moment);
         const endedAt = moment().format(this.client.constants.moment);
         const messages = text.messages.cache;
-        const owner = await this.client.db.user.findFirst({ where: { privateID: privateVent.id }});
+        const owner = await this.client.db.user.findUnique({ where: { privateID: privateVent.id }});
         const user = await this.client.users.fetch(owner.id);
 
         // Upload the message history to pastebin

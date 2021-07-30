@@ -90,8 +90,8 @@ class PrivateRequest extends Command {
 
 	async exec(msg: Message, { topic }: { topic: string }) {
         await msg.delete();
-		const user = await this.client.db.user.findFirst({ where: { id: msg.author.id }});
-		let privateVent = await this.client.db.private.findFirst({ where: { id: user.privateID ? user.privateID : undefined }});
+		const user = await this.client.db.user.findUnique({ where: { id: msg.author.id }});
+		let privateVent = await this.client.db.private.findUnique({ where: { id: user.privateID ? user.privateID : undefined }});
 		const embed = this.client.utils.embed()
 			.setThumbnail(this.client.server.iconURL())
 			.setColor(this.client.constants.colours.green)

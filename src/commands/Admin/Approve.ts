@@ -28,7 +28,7 @@ class Approve extends Command {
 	}
 
 	async exec(msg: Message, { id, comment }: { id: number, comment: string }) {
-		const suggestion = await this.client.db.suggestion.findFirst({ where: { id }});
+		const suggestion = await this.client.db.suggestion.findUnique({ where: { id }});
 		const suggester = this.client.users.cache.get(suggestion.authorID);
 		const message = await this.client.tvfChannels.community.suggestions.messages.fetch(suggestion.messageID);
 		const embed = this.client.social.suggestionEmbed(suggestion);

@@ -4,3 +4,4 @@ build
 yarn-*.log
 dist
 .idea
+_*

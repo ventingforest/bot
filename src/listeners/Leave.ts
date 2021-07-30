@@ -14,7 +14,7 @@ class Leave extends Listener {
 	async exec(member: GuildMember) {
 		if (this.client.production) {
             const user = await this.client.db.user.findUnique({ where: { id: member.id }});
-            const privateVent = await this.client.db.private.findFirst({ where: { id: user.privateID }});
+            const privateVent = await this.client.db.private.findUnique({ where: { id: user.privateID }});
 
             // Save sticky roles
             const staffRoles = Object.entries(this.client.tvfRoles.staff).map(r => r[1].id);

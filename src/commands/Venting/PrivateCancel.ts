@@ -49,7 +49,7 @@ class PrivateCancel extends Command {
         
         // Check if the user wants to cancel another person's session
         if (id && this.client.utils.isUser('Support', msg.member)) {
-            privateVent = await this.client.db.private.findFirst({ where: { id }});
+            privateVent = await this.client.db.private.findUnique({ where: { id }});
             user = await this.client.db.user.findUnique({ where: { privateID: privateVent.id }});
             const venter = this.client.server.members.cache.get(user.id);
             embed.setThumbnail(venter.user.avatarURL());
@@ -84,7 +84,7 @@ class PrivateCancel extends Command {
         // If the user wants to cancel their own session
         else {
             user = await this.client.db.user.findUnique({ where: { id: msg.author.id }});
-            privateVent = await this.client.db.private.findFirst({ where: { id: user.privateID } });
+            privateVent = await this.client.db.private.findUnique({ where: { id: user.privateID } });
 
             // If the user does not have a requested session
             if (!privateVent || (privateVent && privateVent.startedAt)) {
