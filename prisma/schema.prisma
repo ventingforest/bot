@@ -19,7 +19,6 @@ model User {
   xp          Int      @default(1)
   stickyRoles String[]
   privateID   String?  @unique
-  Private     Private?
 }
 
 model Private {
@@ -30,14 +29,13 @@ model Private {
   voiceID     String?
   id          String    @id
   pastebin    String?   @unique
-  User        User      @relation(fields: [id], references: [privateID])
 }
 
 model Suggestion {
   id        Int     @id @default(autoincrement())
   authorID  String
   text      String
-  status    Int?    @default(1)
+  status    Int?    @default(0)
   messageID String? @unique
   comment   String?
 }
