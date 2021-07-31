@@ -47,9 +47,9 @@ class Levelling extends Listener {
 				const nextLevelReward = this.client.constants.levelRoles[this.client.constants.levelRoles.indexOf(currentLevelReward) + 1];
 
 				if (user.level % 2 === 0) {
-					msg.author.send(`**${this.client.constants.emojis.confetti}  |** Congratulations! Your magical ability has advanced to **Level ${user.level}** in The Venting Forest! You are now a **${currentLevelReward.name}**${nextLevelReward ? `, and are ${this.client.social.xpFor(nextLevelReward.level) - this.client.social.xpFor(currentLevelReward.level)} xp from becoming a **${nextLevelReward.name}**` : ''}!`, attachment);
+					msg.author.send(`**${this.client.constants.Emojis.Confetti}  |** Congratulations! Your magical ability has advanced to **Level ${user.level}** in The Venting Forest! You are now a **${currentLevelReward.name}**${nextLevelReward ? `, and are ${this.client.social.xpFor(nextLevelReward.level) - this.client.social.xpFor(currentLevelReward.level)} xp from becoming a **${nextLevelReward.name}**` : ''}!`, attachment);
 				} else {
-					msg.author.send(`**${this.client.constants.emojis.confetti}  |** Congratulations! Your magical ability has advanced to **Level ${user.level}** in The Venting Forest!${nextLevelReward ? ` You are now ${this.client.social.xpFor(nextLevelReward.level) - this.client.social.xpFor(currentLevelReward.level)} xp from becoming a **${nextLevelReward.name}**!` : ''} You are currently a **${currentLevelReward.name}**.`, attachment);
+					msg.author.send(`**${this.client.constants.Emojis.Confetti}  |** Congratulations! Your magical ability has advanced to **Level ${user.level}** in The Venting Forest!${nextLevelReward ? ` You are now ${this.client.social.xpFor(nextLevelReward.level) - this.client.social.xpFor(currentLevelReward.level)} xp from becoming a **${nextLevelReward.name}**!` : ''} You are currently a **${currentLevelReward.name}**.`, attachment);
 				}
 			}
 

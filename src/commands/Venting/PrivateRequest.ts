@@ -46,7 +46,7 @@ class PrivateRequest extends Command {
 			// Inform the support team that the user's session has expired
 			const expiredEmbed = client.utils.embed()
 				.setThumbnail(client.server.iconURL())
-				.setColor(client.constants.colours.red)
+				.setColor(client.constants.Colours.Red)
 				.setTitle(`${venter.username}'s private venting session has expired!`)
 				.addField('Venter ID', venter.id, true)
 				.setFooter(`Session ID: ${privateVent.id}`, client.server.iconURL());
@@ -74,7 +74,7 @@ class PrivateRequest extends Command {
 
 		// Create reminders for the expiry
 		const reminderEmbed = client.utils.embed()
-			.setColor(client.constants.colours.orange)
+			.setColor(client.constants.Colours.Orange)
 			.setThumbnail(venter.avatarURL())
 			.setDescription(`Topic: ${privateVent.topic}`)
 			.addField('Venter ID', venter.id)
@@ -94,7 +94,7 @@ class PrivateRequest extends Command {
 		let privateVent = await this.client.db.private.findUnique({ where: { id: user.privateID ? user.privateID : undefined }});
 		const embed = this.client.utils.embed()
 			.setThumbnail(this.client.server.iconURL())
-			.setColor(this.client.constants.colours.green)
+			.setColor(this.client.constants.Colours.Green)
 			.setAuthor(msg.author.username, msg.author.avatarURL());
 
 		// Ensure that the user hasn't already got a pending private venting session
@@ -102,7 +102,7 @@ class PrivateRequest extends Command {
 			embed
 				.setTitle('You already have a pending private venting session!')
 				.setDescription('Please try requesting again later!')
-				.setColor(this.client.constants.colours.red);
+				.setColor(this.client.constants.Colours.Red);
 
 			return this.client.utils.sendDM(msg.author, embed);
 		} else {
@@ -111,7 +111,7 @@ class PrivateRequest extends Command {
 				embed
 					.setTitle('You must provide a topic for your private venting seesion!')
 					.setDescription('Please try requesting again with a topic!')
-					.setColor(this.client.constants.colours.red);
+					.setColor(this.client.constants.Colours.Red);
 				
 				return this.client.utils.sendDM(msg.author, embed);
 			}
@@ -135,7 +135,7 @@ class PrivateRequest extends Command {
 
 			// Alert the support team
 			const supportEmbed = this.client.utils.embed()
-				.setColor(this.client.constants.colours.green)
+				.setColor(this.client.constants.Colours.Green)
 				.setAuthor(msg.author.username, msg.author.avatarURL())
 				.setTitle(`${msg.author.username} has requested a private venting session!`)
 				.setThumbnail(msg.author.avatarURL())
@@ -150,7 +150,7 @@ class PrivateRequest extends Command {
 			// Alert the user
 			const userEmbed = this.client.utils.embed()
 				.setThumbnail(this.client.server.iconURL())
-				.setColor(this.client.constants.colours.green)
+				.setColor(this.client.constants.Colours.Green)
 				.setAuthor(msg.author.username, msg.author.avatarURL())
 				.setTitle('Your private venting session has been requested!')
 				.setDescription(stripIndents`

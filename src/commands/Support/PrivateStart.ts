@@ -34,7 +34,7 @@ class PrivateStart extends Command {
 
 		if (!privateVent) {
 			const error = this.client.utils.embed()
-				.setColor(this.client.constants.colours.red)
+				.setColor(this.client.constants.Colours.Red)
 				.setThumbnail(this.client.server.iconURL())
 				.setAuthor(msg.author.username, msg.author.avatarURL())
 				.setTitle('There was an error trying to start that private venting session!')
@@ -46,14 +46,14 @@ class PrivateStart extends Command {
 		const user = await this.client.users.fetch(dbUser.id); // Find the user associated with the private venting session
 		const embed = this.client.utils.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())
-			.setColor(this.client.constants.colours.green)
+			.setColor(this.client.constants.Colours.Green)
 			.setThumbnail(user.avatarURL());
 
 		// Create the private venting channels for the session
 		const text = await this.client.server.channels.create(`${user.username}-${user.discriminator}`, {
 			parent: this.client.tvfChannels.staff.private.category,
 			type: 'text',
-			topic: `${this.client.constants.emojis.tick} | Session started: ${moment(startedAt).format(this.client.constants.moment)} (id: ${privateVent.id})`,
+			topic: `${this.client.constants.Emojis.Tick} | Session started: ${moment(startedAt).format(this.client.constants.moment)} (id: ${privateVent.id})`,
 			permissionOverwrites: [
 				{
 					id: this.client.server.roles.everyone,

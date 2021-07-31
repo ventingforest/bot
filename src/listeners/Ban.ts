@@ -18,7 +18,7 @@ class Ban extends Listener {
             // Send the ban message
             if (this.client.botBanner && user.bot) {
                 const embed = this.client.utils.embed()
-                    .setColor(this.client.constants.colours.red)
+                    .setColor(this.client.constants.Colours.Red)
                     .setTitle('Begone Bot!');
 
                 this.client.tvfChannels.general.send(embed.setDescription(`${user.tag} was banned from the server - pesky bot!`));

@@ -44,7 +44,7 @@ export default class TVFSocial {
 			.setThumbnail(author.avatarURL())
 			.setDescription(suggestion.text)
 			.setFooter(`Suggestion ID: ${suggestion.id}`, this.client.server.iconURL())
-			.setColor(this.client.constants.colours.white);
+			.setColor(this.client.constants.Colours.White);
 	}
 
 	async updateSuggestionStatus(suggestionID: number, newStatus: number, admin: User, comment?: string) {
@@ -75,26 +75,26 @@ export default class TVFSocial {
 		switch (suggestion.status) {
 			case this.client.constants.SuggestionStatus.Approved:
 				embed
-					.setColor(this.client.constants.colours.green)
+					.setColor(this.client.constants.Colours.Green)
 					.setTitle(`Suggestion by ${suggester.username} has been approved!`);
 				suggesterNotification
-					.setColor(this.client.constants.colours.green)
+					.setColor(this.client.constants.Colours.Green)
 					.setTitle(`One of your suggestions has been approved!`);
 				break;
 			case this.client.constants.SuggestionStatus.Denied:
 				embed
-					.setColor(this.client.constants.colours.red)
+					.setColor(this.client.constants.Colours.Red)
 					.setTitle(`Suggestion by ${suggester.username} has been denied!`);
 				suggesterNotification
-					.setColor(this.client.constants.colours.red)
+					.setColor(this.client.constants.Colours.Red)
 					.setTitle(`One of your suggestions has been denied!`);
 				break;
 			case this.client.constants.SuggestionStatus.Considered:
 				embed
-					.setColor(this.client.constants.colours.yellow)
+					.setColor(this.client.constants.Colours.Yellow)
 					.setTitle(`Suggestion by ${suggester.username} has been considered!`);
 				suggesterNotification
-					.setColor(this.client.constants.colours.yellow)
+					.setColor(this.client.constants.Colours.Yellow)
 					.setTitle(`One of your suggestions has been considered!`);
 				break;
 		}

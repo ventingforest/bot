@@ -34,8 +34,8 @@ class Suggest extends Command {
 		const embed = this.client.social.suggestionEmbed(suggestion);
 
 		const message = await this.client.tvfChannels.community.suggestions.send(embed);
-		const upvote = this.client.server.emojis.cache.get(this.client.constants.emojis.upvote);
-		const downvote = this.client.server.emojis.cache.get(this.client.constants.emojis.downvote);
+		const upvote = this.client.server.emojis.cache.get(this.client.constants.Emojis.Upvote);
+		const downvote = this.client.server.emojis.cache.get(this.client.constants.Emojis.Downvote);
 
 		await message.react(upvote);
 		await message.react(downvote);
@@ -47,7 +47,7 @@ class Suggest extends Command {
 		})
 
 		// Mark the message as read
-		await msg.react(this.client.constants.emojis.tick);
+		await msg.react(this.client.constants.Emojis.Tick);
 	}
 }
 

@@ -47,7 +47,7 @@ class Staff extends Command {
         moderators = moderators.filter(m => !moderators.intersect(admins).has(m.id));
 
         const fullList = this.client.utils.embed()
-            .setColor(this.client.constants.colours.green)
+            .setColor(this.client.constants.Colours.Green)
             .setTitle(`Staff (${staff.size})`)
             .setThumbnail(this.client.server.iconURL())
             .addField(`Administrators (${admins.size})`, admins.map(a => a.user), true)
@@ -59,7 +59,7 @@ class Staff extends Command {
             switch (pluralise(position)) {
                 case 'administrators':
                 case 'admins': 
-                    msg.channel.send(this.generateEmbed(admins, this.client.constants.colours.yellow, 'Administrators'));
+                    msg.channel.send(this.generateEmbed(admins, this.client.constants.Colours.Yellow, 'Administrators'));
                     break;
 
                 case 'supports':

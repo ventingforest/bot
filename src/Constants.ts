@@ -1,3 +1,20 @@
+enum Colours {
+	Red = 0xFF6961,
+	Green = 0x3AA4AE,
+	Orange = 0xFFB861,
+	Yellow = 0xFFC600,
+	White = 0xFFFFFF
+}
+
+enum Emojis {
+	Wave = '👋',
+	Tick = '✅',
+	Cross = '❌',
+	Confetti = '🎉',
+	Upvote = '760820779344068609',
+	Downvote = '760820793507971093'
+}
+
 enum SuggestionStatus {
 	Suggested = 0,
 	Approved = 1,
@@ -6,26 +23,9 @@ enum SuggestionStatus {
 }
 
 export default {
-	colours: {
-		red: '#ff6961',
-		green: '#3aa4ae',
-		orange: '#ffb861',
-		yellow: '#ffc600',
-		white: '#ffffff'
-	},
-
-	emojis: {
-		wave: '👋',
-		tick: '✅',
-		grimacing: '😬',
-		square: '▫',
-		cross: '❌',
-		confetti: '🎉',
-		graph: '📈',
-		question: '❓',
-		upvote: '760820779344068609',
-		downvote: '760820793507971093'
-	},
+	Colours,
+	Emojis,
+	SuggestionStatus,
 
 	levelRoles: [
 		{ level: 2, roleID: '441943660016173058', name: 'Elf' },
@@ -92,6 +92,5 @@ export default {
 
 	moment: 'ddd, MMM Do, YYYY h:mm A',
 	privateTimeout: 21600000,
-	blank: '\u200B',
-	SuggestionStatus
+	blank: '\u200B'
 };

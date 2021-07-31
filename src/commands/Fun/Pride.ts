@@ -42,7 +42,7 @@ class Pride extends Command {
 
 		const error = this.client.utils.embed()
 			.setTitle('There was an error whilst generating your pride image!')
-			.setColor(this.client.constants.colours.red)
+			.setColor(this.client.constants.Colours.Red)
 			.setAuthor(msg.author.username, msg.author.avatarURL())
 			.setThumbnail(msg.author.avatarURL());
 		opacity = opacity / 100; // Convert from percentage to decimal

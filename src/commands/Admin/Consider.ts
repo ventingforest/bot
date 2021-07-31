@@ -32,7 +32,7 @@ class Consider extends Command {
 		this.client.social.updateSuggestionStatus(id, this.client.constants.SuggestionStatus.Considered, msg.author, comment);
 
 		// Mark the message as seen
-		await msg.react(this.client.constants.emojis.tick);
+		await msg.react(this.client.constants.Emojis.Tick);
 	}
 }
 

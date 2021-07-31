@@ -26,7 +26,7 @@ class Help extends Command {
 	exec(msg: Message, { commandName }: { commandName: string }) {
 		const embed = this.client.utils.embed()
 			.setAuthor(msg.author.username, msg.author.avatarURL())
-			.setColor(this.client.constants.colours.green)
+			.setColor(this.client.constants.Colours.Green)
 			.setThumbnail(this.client.user.avatarURL());
 
 		if (!commandName) {
@@ -58,7 +58,7 @@ class Help extends Command {
 					embed
 						.setTitle('That command\'s help object is not complete!')
 						.setDescription('Please let newt know and they\'ll get right to fixing it!')
-						.setColor(this.client.constants.colours.red);
+						.setColor(this.client.constants.Colours.Red);
 
 					this.client.logger.error(`${commandName}'s help object is incomplete - woops!`);
 				}
@@ -66,7 +66,7 @@ class Help extends Command {
 				embed
 					.setTitle('I could not find that command!')
 					.setDescription(`Sorry, but I could not find any information about the command \`${commandName}\``)
-					.setColor(this.client.constants.colours.red);
+					.setColor(this.client.constants.Colours.Red);
 			}
 		}
 

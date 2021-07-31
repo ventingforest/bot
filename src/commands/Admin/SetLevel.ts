@@ -52,7 +52,7 @@ class SetLevel extends Command {
         // Finished!
         const embed = this.client.utils.embed()
             .setTitle(`${member.user.username} is now level ${userDoc.level!}`)
-            .setColor(this.client.constants.colours.green)
+            .setColor(this.client.constants.Colours.Green)
             .setThumbnail(member.user.avatarURL())
             .setAuthor(msg.author.username, msg.author.avatarURL())
             .setDescription(`This means that they are now a ${levelReward.name} - ${oldLevelReward ? `they were previously a ${oldLevelReward.name}!` : ''}`);

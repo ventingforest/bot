@@ -71,7 +71,7 @@ class PrivateEnd extends Command {
 
         // Announce
         const embed = this.client.utils.embed()
-			.setColor(this.client.constants.colours.red)
+			.setColor(this.client.constants.Colours.Red)
 			.setThumbnail(user.avatarURL())
             .setAuthor(staff.username, staff.avatarURL())
             .setTitle(`${user.username}'s session has ended (:`)
@@ -114,7 +114,7 @@ class PrivateEnd extends Command {
 
 		if (!privateVent) {
 			const error = this.client.utils.embed()
-				.setColor(this.client.constants.colours.red)
+				.setColor(this.client.constants.Colours.Red)
                 .setThumbnail(this.client.server.iconURL())
                 .setAuthor(msg.author.username, msg.author.avatarURL())
 				.setTitle('There was an error trying to end that privateVent venting session!')

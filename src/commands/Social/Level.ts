@@ -56,7 +56,7 @@ class Level extends Command {
 
 		// Fill the progress bar
 		const percentage = (user.xp - xpForLevel) / (xpForNext - xpForLevel);
-		ctx.fillStyle = this.client.constants.colours.green;
+		ctx.fillStyle = this.client.constants.Colours.Green;
 		ctx.fillRect(287.12, 205.19, 400 * percentage, 31.35);
 
 		// Add the user's profile picture					
@@ -69,7 +69,7 @@ class Level extends Command {
 		const nextLevelReward = this.client.constants.levelRoles[this.client.constants.levelRoles.indexOf(currentLevelReward) + 1];
 		const beginning = member === msg.member ? 'You are' : `${member.user.username} is`;
 
-		msg.channel.send(`**${this.client.constants.emojis.confetti}  |** ${nextLevelReward ? ` ${beginning} ${(this.client.social.xpFor(nextLevelReward.level) - user.xp).toLocaleString()} xp away from **${nextLevelReward.name}!**` : ''} ${beginning} currently a **${currentLevelReward.name}**.`, attachment);
+		msg.channel.send(`**${this.client.constants.Emojis.Confetti}  |** ${nextLevelReward ? ` ${beginning} ${(this.client.social.xpFor(nextLevelReward.level) - user.xp).toLocaleString()} xp away from **${nextLevelReward.name}!**` : ''} ${beginning} currently a **${currentLevelReward.name}**.`, attachment);
 
 		this.client.logger.command(`${this.client.userLogCompiler(msg.author)} requested ${member === msg.member ? 'their' : `${this.client.userLogCompiler(member.user)}'s`} rank card.`);
 	}

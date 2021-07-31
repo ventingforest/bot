@@ -25,12 +25,12 @@ class BotBanner extends Command {
 			embed
 				.setTitle('Bot Banner Enabled!')
 				.setDescription('Begone bots!')
-				.setColor(this.client.constants.colours.green);
+				.setColor(this.client.constants.Colours.Green);
 		} else {
 			embed
 				.setTitle('Bot Banner Disabled!')
 				.setDescription('They are safe... for now!')
-				.setColor(this.client.constants.colours.red);
+				.setColor(this.client.constants.Colours.Red);
 		}
 
 		msg.channel.send(embed);

@@ -36,7 +36,7 @@ class Leaderboard extends Command {
             const error = this.client.utils.embed()
                 .setTitle(`Page ${page} is out of range!`)
                 .setDescription(`There is a grand total of ${pages} pages that can be viewed. Please try again with a valid page number.`)
-                .setColor(this.client.constants.colours.red)
+                .setColor(this.client.constants.Colours.Red)
                 .setThumbnail(this.client.server.iconURL());
             return msg.channel.send(error);
         }
@@ -44,7 +44,7 @@ class Leaderboard extends Command {
         // Create the embed
         const embed = this.client.utils.embed()
             .setAuthor(`${this.client.server.name} Leaderboard`, this.client.server.iconURL())
-            .setColor(this.client.constants.colours.green)
+            .setColor(this.client.constants.Colours.Green)
             .setThumbnail(this.client.server.iconURL())
             .setDescription(`Displaying data for ranks ${(page * 10) - 9} to ${page * 10}...`)
             .setFooter(`Page ${page}/${pages} • Your leaderboard rank: ${authorRank}`, msg.author.avatarURL());

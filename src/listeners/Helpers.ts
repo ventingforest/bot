@@ -12,7 +12,7 @@ class Helpers extends Listener {
 	async exec(msg: Message) {
 		if (this.client.production && msg.content.includes(this.client.tvfRoles.community.helper.toString())) {
 			const helperEmbed = this.client.utils.embed()
-				.setColor(this.client.constants.colours.yellow)
+				.setColor(this.client.constants.Colours.Yellow)
 				.setThumbnail(this.client.server.iconURL())
 				.setTitle(`${msg.author.username} needs help!`)
 				.setDescription(`[Jump to the message.](${msg.url})`)

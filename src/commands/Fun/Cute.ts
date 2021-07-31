@@ -31,7 +31,7 @@ class Cute extends Command {
 	async exec(msg: Message, { animal }: { animal: string }) {
 		let fact: string, image: string;
 		const embed = this.client.utils.embed()
-			.setColor(this.client.constants.colours.green)
+			.setColor(this.client.constants.Colours.Green)
 			.setAuthor(msg.author.username, msg.author.avatarURL());
 
 		switch (animal) {
@@ -74,7 +74,7 @@ class Cute extends Command {
 			embed.setImage(image);
 		} else {
 			embed  
-				.setColor(this.client.constants.colours.red)
+				.setColor(this.client.constants.Colours.Red)
 				.setTitle('There was an error fetching your cute picture!')
 				.setDescription(`\`${animal}\` is not a valid animal. Please select one from the list below:\`\`\`${animals.join(', ')}\`\`\``)
 				.setThumbnail(this.client.server.iconURL());

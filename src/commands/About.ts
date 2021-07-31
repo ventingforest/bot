@@ -26,7 +26,7 @@ class About extends Command {
         const ramUsed = bytes(process.memoryUsage().heapTotal);
         const cpu = await si.currentLoad();
         const embed = this.client.utils.embed()
-            .setColor(this.client.constants.colours.green)
+            .setColor(this.client.constants.Colours.Green)
             .setTitle('About! (:')
             .setAuthor(msg.author.username, msg.author.avatarURL())
             .setThumbnail(this.client.server.iconURL())

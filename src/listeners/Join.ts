@@ -31,7 +31,7 @@ class Join extends Listener {
 					const dm = this.client.utils.embed()
 						.setTitle('Welcome to The Venting Forest!')
 						.setDescription(`Welcome to TVF! We are a relatively large venting server that have been operating since the 17th April 2018, and we want to try our best to make you feel right at home! <3`)
-						.setColor(this.client.constants.colours.green)
+						.setColor(this.client.constants.Colours.Green)
 						.setThumbnail(this.client.server.iconURL())
 						.addField('I\'m in... so now what?', stripIndents`
 							Now that you have joined our server, there are a couple things that you should know and that you need to do.
@@ -76,7 +76,7 @@ class Join extends Listener {
 			// Welcome the user to the server
 			const welcome = this.client.utils.embed()
 				.setThumbnail(member.user.avatarURL())
-				.setColor(this.client.constants.colours.green)
+				.setColor(this.client.constants.Colours.Green)
 				.setDescription(stripIndents`
                     This may be a somewhat large server, but we can certainly make you feel at home - that's what our **Welcome Team** is for!
                     **First of all, check out ${this.client.tvfChannels.rules.toString()} as it contains much of what you need to know, and ${this.client.tvfChannels.roles.toString()}, which you can self-assign.**
@@ -87,7 +87,7 @@ class Join extends Listener {
 			else welcome.setTitle(`Welcome to TVF, ${member.user.username}!`)
 
 			const msg = await this.client.tvfChannels.general.send(`**Welcome ${hereBefore ? 'back' : ''} to TVF, <@!${member.id}>!** ${member.id === '625919227651555348' || member.id === '326767126406889473' || member.user.bot ? '' : `(${this.client.tvfRoles.community.welcomeTeam.toString()})`}`, welcome);
-			msg.react(this.client.constants.emojis.wave);
+			msg.react(this.client.constants.Emojis.Wave);
 		}
 	}
 }

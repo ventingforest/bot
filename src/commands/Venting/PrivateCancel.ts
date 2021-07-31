@@ -45,7 +45,7 @@ class PrivateCancel extends Command {
         let user: User;
         const embed = this.client.utils.embed()
             .setAuthor(msg.author.username, msg.author.avatarURL())
-            .setColor(this.client.constants.colours.red);
+            .setColor(this.client.constants.Colours.Red);
         
         // Check if the user wants to cancel another person's session
         if (id && this.client.utils.isUser('Support', msg.member)) {
@@ -61,7 +61,7 @@ class PrivateCancel extends Command {
                     .setFooter(`Session ID: ${privateVent.id}`, this.client.server.iconURL());
 
                 const userEmbed = this.client.utils.embed()
-                    .setColor(this.client.constants.colours.red)
+                    .setColor(this.client.constants.Colours.Red)
                     .setThumbnail(this.client.server.iconURL())
                     .setTitle('A member of the support team has cancelled your private venting session.')
                     .setDescription('If you believe this has been done in error, please do not hesitate to contact a member of the support team - or request a new session!');
@@ -89,7 +89,7 @@ class PrivateCancel extends Command {
             // If the user does not have a requested session
             if (!privateVent || (privateVent && privateVent.startedAt)) {
                 const requestedEmbed = this.client.utils.embed()
-                    .setColor(this.client.constants.colours.red)
+                    .setColor(this.client.constants.Colours.Red)
                     .setThumbnail(this.client.server.iconURL())
                     .setAuthor(msg.author.username, msg.author.avatarURL())
                     .setTitle('You do not have a private venting session to cancel!')
