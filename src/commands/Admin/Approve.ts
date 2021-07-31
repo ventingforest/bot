@@ -28,32 +28,8 @@ class Approve extends Command {
 	}
 
 	async exec(msg: Message, { id, comment }: { id: number, comment: string }) {
-		const suggestion = await this.client.db.suggestion.findUnique({ where: { id }});
-		const suggester = this.client.users.cache.get(suggestion.authorID);
-		const message = await this.client.tvfChannels.community.suggestions.messages.fetch(suggestion.messageID);
-		const embed = this.client.social.suggestionEmbed(suggestion);
-		if (comment) comment = comment.split(id.toString())[1].trim();
-
-		// Update the status of the embed to approved and add the comment to the DB if it exists
-		await this.client.db.suggestion.update({
-			where: { id: suggestion.id },
-			data: {
-				status: 1,
-				comment: comment ? comment : null
-			}
-		});
-		
-		embed
-			.setColor(this.client.constants.colours.green)
-			.setTitle(`Suggestion by ${suggester.username} has been approved!`);
-
-		// If the comment exists, add it to the embed
-		if (comment) {
-			embed.addField('Comment from the admins!', comment);
-		}
-
-		// Update the embed
-		await message.edit(embed);
+		// Update the suggestion status
+		this.client.social.updateSuggestionStatus(id, this.client.constants.SuggestionStatus.Approved, msg.author, comment);
 
 		// Mark the message as seen
 		await msg.react(this.client.constants.emojis.tick);

@@ -29,7 +29,6 @@ class Ready extends Listener {
 
 			// Ensure all private vents are ticking
 			const vents = await this.client.db.private.findMany();
-			console.log(vents);
 			vents.forEach(async v => {
 				const expiresAt = moment(v.requestedAt).add(this.client.constants.privateTimeout, 'ms');
 				const ms = expiresAt.diff(moment(), 'ms');

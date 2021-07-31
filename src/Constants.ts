@@ -1,3 +1,10 @@
+enum SuggestionStatus {
+	Suggested = 0,
+	Approved = 1,
+	Denied = 2,
+	Considered = 3
+}
+
 export default {
 	colours: {
 		red: '#ff6961',
@@ -85,5 +92,6 @@ export default {
 
 	moment: 'ddd, MMM Do, YYYY h:mm A',
 	privateTimeout: 21600000,
-	blank: '\u200B'
+	blank: '\u200B',
+	SuggestionStatus
 };
