@@ -1,15 +1,16 @@
 import ms from 'ms';
 import si from 'systeminformation';
 import bytes from 'pretty-bytes';
-import { Command } from 'discord-akairo';
+import TVFCommand from '../struct/TVFCommand';
 import { Message } from 'discord.js';
 
-class About extends Command {
+class About extends TVFCommand {
     constructor() {
         super('about', {
             aliases: ['about', 'stats'],
             category: 'Core',
-            description: 'Displays information about both the bot and the server!'
+            description:
+                'Displays information about both the bot and the server!',
         });
 
         this.usage = 'about';
@@ -19,13 +20,18 @@ class About extends Command {
     async exec(msg: Message) {
         const dev = this.client.server.member(this.client.ownerID[0]).user;
         const members = await this.client.server.members.fetch();
-        const channels = this.client.server.channels.cache.filter(c => c.type !== 'category');
-        const online = members.filter(m => m.user.presence.status === 'online');
-        const textChannels = channels.filter(c => c.type === 'text');
-        const voiceChannels = channels.filter(c => c.type === 'voice');
+        const channels = this.client.server.channels.cache.filter(
+            (c) => c.type !== 'category',
+        );
+        const online = members.filter(
+            (m) => m.user.presence.status === 'online',
+        );
+        const textChannels = channels.filter((c) => c.type === 'text');
+        const voiceChannels = channels.filter((c) => c.type === 'voice');
         const ramUsed = bytes(process.memoryUsage().heapTotal);
         const cpu = await si.currentLoad();
-        const embed = this.client.utils.embed()
+        const embed = this.client.utils
+            .embed()
             .setColor(this.client.constants.Colours.Green)
             .setTitle('About! (:')
             .setAuthor(msg.author.username, msg.author.avatarURL())
@@ -39,10 +45,14 @@ class About extends Command {
             .addField('Voice', voiceChannels.size, true)
             .addField('Members', members.size, true)
             .addField('Online', online.size, true)
-            .addField('Bots', members.filter(m => m.user.bot).size, true);
+            .addField('Bots', members.filter((m) => m.user.bot).size, true);
 
         msg.channel.send(embed);
-        this.client.logger.command(`${this.client.userLogCompiler(msg.author)} requested information about both the bot and the server!`);
+        this.client.logger.command(
+            `${this.client.userLogCompiler(
+                msg.author,
+            )} requested information about both the bot and the server!`,
+        );
     }
 }
 

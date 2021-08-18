@@ -40,7 +40,7 @@
 
 **Level 40:** Behemoth
 
-**Level 42:** Eldritch Being 
+**Level 42:** Eldritch Being
 
 **Level 44:** Banshee
 

@@ -1,16 +1,16 @@
 import { Listener } from 'discord-akairo';
 
 class Name extends Listener {
-	constructor() {
-		super('id', {
-			emitter: '',
-			event: '',
-		});
-	}
+    constructor() {
+        super('id', {
+            emitter: '',
+            event: '',
+        });
+    }
 
-	exec() {
-		// code here
-	}
+    exec() {
+        // code here
+    }
 }
 
 module.exports = Name;

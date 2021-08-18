@@ -1,21 +1,19 @@
 // @ts-nocheck REMOVE ME
-import { Command } from 'discord-akairo';
+import TVFCommand from '../../struct/TVFCommand';
 import { Message } from 'discord.js';
 
-class Name extends Command {
-	constructor() {
-		super('id', {
-			aliases: ['name'],
-			description: ''
-		});
+class Name extends TVFCommand {
+    constructor() {
+        super('id', {
+            aliases: ['name'],
+            description: '',
+        });
 
-		this.usage = '';
-		this.examples = [''];
-	}
+        this.usage = '';
+        this.examples = [''];
+    }
 
-	exec(msg: Message) {
-        
-	}
+    exec(msg: Message) {}
 }
 
 module.exports = Name;
