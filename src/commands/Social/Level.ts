@@ -38,7 +38,7 @@ class Level extends TVFCommand {
             .setAvatar(avatar)
             .setLevel(user.level)
             .setCurrentXP(user.xp - this.client.social.xpFor(user.level))
-            .setRequiredXP(this.client.social.xpFor(user.level + 1) - user.xp)
+            .setRequiredXP(this.client.social.xpFor(user.level + 1) - this.client.social.xpFor(user.level))
             .setRank(rank)
             // @ts-ignore
             .setStatus(discUser.presence.status.toString(), false)
@@ -73,7 +73,7 @@ class Level extends TVFCommand {
                               nextLevelReward.name
                           }!**`
                         : ''
-                }${currentLevelReward ? `${beginning} currently a **${currentLevelReward.name}**.` : ''}`,
+                } ${currentLevelReward ? `${beginning} currently a **${currentLevelReward.name}**.` : ''}`,
                 attachment,
             );
         });
