@@ -51,6 +51,7 @@ class Level extends TVFCommand {
             const currentLevelReward = this.client.social.levelReward(
                 user.level,
             );
+
             const nextLevelReward =
                 this.client.constants.levelRoles[
                     this.client.constants.levelRoles.indexOf(
@@ -72,7 +73,7 @@ class Level extends TVFCommand {
                               nextLevelReward.name
                           }!**`
                         : ''
-                } ${beginning} currently a **${currentLevelReward.name}**.`,
+                }${currentLevelReward ? `${beginning} currently a **${currentLevelReward.name}**.` : ''}`,
                 attachment,
             );
         });

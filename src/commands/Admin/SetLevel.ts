@@ -36,7 +36,6 @@ class SetLevel extends TVFCommand {
         msg: Message,
         { member, level }: { member: GuildMember; level: number },
     ) {
-        this.client.utils.deletePrompts(msg); // Clean any prompts
         let userDoc = await this.client.db.user.findUnique({
             where: { id: member.id },
         }); // Get the member's document
@@ -59,7 +58,8 @@ class SetLevel extends TVFCommand {
                 ? member.roles.remove(r.roleID)
                 : null,
         );
-        member.roles.add(levelReward.roleID);
+
+        if (levelReward) member.roles.add(levelReward.roleID);
 
         // Finished!
         const embed = this.client.utils
@@ -68,8 +68,8 @@ class SetLevel extends TVFCommand {
             .setColor(this.client.constants.Colours.Green)
             .setThumbnail(member.user.avatarURL())
             .setAuthor(msg.author.username, msg.author.avatarURL())
-            .addField('From', `${oldLevel} (${oldLevelReward.name})`, true)
-            .addField('To', `${level} (${levelReward.name})`, true);
+            .addField('From', `${oldLevel}${oldLevelReward ? ` (${oldLevelReward.name})` : ''}`, true)
+            .addField('To', `${level}${levelReward ? ` (${levelReward.name})` : ''}`, true);
 
         msg.channel.send(embed);
         this.client.logger.command(
