@@ -17,11 +17,14 @@ class Levelling extends Listener {
             const user = await this.client.db.user.findUnique({
                 where: { id: msg.author.id },
             });
-            const newXp = Math.floor(Math.random() * 25) + 15;
-            let level = user.level;
+
+            let { xp, level } = user;
+
+            xp += Math.floor(Math.random() * 25) + 15;
+            level = user.level;
 
             // Level up!
-            if (newXp >= this.client.social.xpFor(level + 1)) {
+            if (xp >= this.client.social.xpFor(level + 1)) {
                 level++;
 
                 const currentLevelReward =
@@ -88,7 +91,7 @@ class Levelling extends Listener {
             await this.client.db.user.update({
                 where: { id: user.id },
                 data: {
-                    xp: newXp,
+                    xp,
                     level,
                 },
             });
