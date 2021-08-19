@@ -13,7 +13,8 @@ class Levelling extends Listener {
     async exec(msg: Message) {
         if (
             this.client.production &&
-            !this.client.social.xpCooldown.has(msg.author.id)
+            !this.client.social.xpCooldown.has(msg.author.id) &&
+            !msg.author.bot
         ) {
             const user = await this.client.db.user.findUnique({
                 where: { id: msg.author.id },
