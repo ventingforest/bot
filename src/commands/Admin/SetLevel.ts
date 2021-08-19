@@ -12,8 +12,8 @@ class SetLevel extends TVFCommand {
                     type: 'member',
                     index: 0,
                     prompt: {
-                        start: (msg: Message): string =>
-                            `${msg.author}, whose level would you like to update?`,
+                        start: (): string =>
+                            'whose level would you like to update?',
                     },
                 },
                 {
@@ -21,8 +21,8 @@ class SetLevel extends TVFCommand {
                     type: 'number',
                     index: 1,
                     prompt: {
-                        start: (msg: Message): string =>
-                            `${msg.author}, what level would you like to make them now?`,
+                        start: (): string =>
+                            'what level would you like to make them now?',
                     },
                 },
             ],
@@ -40,7 +40,8 @@ class SetLevel extends TVFCommand {
         let userDoc = await this.client.db.user.findUnique({
             where: { id: member.id },
         }); // Get the member's document
-        const oldLevelReward = this.client.social.levelReward(userDoc.level); // Find the old level reward
+        const oldLevel = userDoc.level;
+        const oldLevelReward = this.client.social.levelReward(oldLevel); // Find the old level reward
         const levelReward = this.client.social.levelReward(level); // Find the new level reward
 
         // Update them
@@ -67,13 +68,8 @@ class SetLevel extends TVFCommand {
             .setColor(this.client.constants.Colours.Green)
             .setThumbnail(member.user.avatarURL())
             .setAuthor(msg.author.username, msg.author.avatarURL())
-            .setDescription(
-                `This means that they are now a ${levelReward.name} - ${
-                    oldLevelReward
-                        ? `they were previously a ${oldLevelReward.name}!`
-                        : ''
-                }`,
-            );
+            .addField('From', `${oldLevel} (${oldLevelReward.name})`, true)
+            .addField('To', `${level} (${levelReward.name})`, true);
 
         msg.channel.send(embed);
         this.client.logger.command(

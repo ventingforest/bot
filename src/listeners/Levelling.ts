@@ -1,3 +1,4 @@
+import { stripIndents } from 'common-tags';
 import { Listener } from 'discord-akairo';
 import { Message } from 'discord.js';
 
@@ -27,65 +28,28 @@ class Levelling extends Listener {
             if (xp >= this.client.social.xpFor(level + 1)) {
                 level++;
 
-                const currentLevelReward =
-                    this.client.social.levelReward(user.level) ||
-                    this.client.constants.levelRoles[
-                        this.client.constants.levelRoles.length - 1
-                    ];
-                const nextLevelReward =
-                    this.client.constants.levelRoles[
-                        this.client.constants.levelRoles.indexOf(
-                            currentLevelReward,
-                        ) + 1
-                    ];
+                const currentLevelRole = this.client.social.levelReward(level) || this.client.constants.levelRoles[this.client.constants.levelRoles.length - 1];
 
-                if (user.level % 2 === 0) {
-                    this.client.tvfChannels.community.levelUp.send(
-                        `**${
-                            this.client.constants.Emojis.Confetti
-                        }  |** Congratulations, ${
-                            msg.author
-                        }! Your magical ability has advanced to **Level ${
-                            user.level
-                        }** in The Venting Forest! You are now a **${
-                            currentLevelReward.name
-                        }**${
-                            nextLevelReward
-                                ? `, and are ${
-                                      this.client.social.xpFor(
-                                          nextLevelReward.level,
-                                      ) -
-                                      this.client.social.xpFor(
-                                          currentLevelReward.level,
-                                      )
-                                  } xp from becoming a **${
-                                      nextLevelReward.name
-                                  }**`
-                                : ''
-                        }!`,
-                    );
-                } else {
-                    this.client.tvfChannels.community.levelUp.send(
-                        `**${
-                            this.client.constants.Emojis.Confetti
-                        }  |** Congratulations! Your magical ability has advanced to **Level ${
-                            user.level
-                        }** in The Venting Forest!${
-                            nextLevelReward
-                                ? ` You are now ${
-                                      this.client.social.xpFor(
-                                          nextLevelReward.level,
-                                      ) -
-                                      this.client.social.xpFor(
-                                          currentLevelReward.level,
-                                      )
-                                  } xp from becoming a **${
-                                      nextLevelReward.name
-                                  }**!`
-                                : ''
-                        } You are currently a **${currentLevelReward.name}**.`,
-                    );
+                const levelUp = this.client.utils.embed()
+                    .setTitle('Level Up!')
+                    .setColor(this.client.constants.Colours.Green)
+                    .setThumbnail(msg.author.avatarURL());
+                
+                var description = `Congratulations  ${this.client.constants.Emojis.Confetti}\n\nYour magical ability has advanced to **Level ${level}**`;
+
+                if (level > this.client.constants.levelRoles[this.client.constants.levelRoles.length - 1].level) {
+                    description = description;
                 }
+                else if (level % 2 === 0) {
+                    description += `\nYou are now a ${currentLevelRole.name} <3`;
+                } else {
+                    const nextLevelRole = this.client.constants.levelRoles[this.client.constants.levelRoles.indexOf(currentLevelRole) + 1];
+                    const xpAway = this.client.social.xpFor(nextLevelRole.level) - this.client.social.xpFor(currentLevelRole.level);
+                    description += `\nYou are now ${xpAway.toLocaleString()} xp from becoming a ${nextLevelRole.name} <3`;
+                }
+
+                levelUp.setDescription(description);
+                msg.channel.send(msg.author, levelUp);
             }
 
             await this.client.db.user.update({

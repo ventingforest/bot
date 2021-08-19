@@ -61,10 +61,7 @@ export default (tvf: Guild) => {
             discussion: tvf.channels.cache.get(
                 '458009085829316609',
             ) as TextChannel,
-            helper: tvf.channels.cache.get('471799568015818762') as TextChannel,
-            levelUp: tvf.channels.cache.get(
-                '877328461700661308',
-            ) as TextChannel,
+            helper: tvf.channels.cache.get('471799568015818762') as TextChannel
         },
     };
 };
