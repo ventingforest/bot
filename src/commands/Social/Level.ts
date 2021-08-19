@@ -26,8 +26,9 @@ class Level extends TVFCommand {
         const users = await this.client.db.user.findMany({
             orderBy: { xp: 'desc' },
         });
+        const filteredUsers = users.filter((user) => this.client.server.member(user.id) !== null);
         const user = users.find((u) => u.id === member.id);
-        const rank = users.map((d) => d.xp).indexOf(user.xp) + 1;
+        const rank = filteredUsers.map((d) => d.xp).indexOf(user.xp) + 1;
         const discUser = this.client.users.cache.get(user.id);
         const avatar = discUser.avatarURL({ format: 'jpg' });
         let color = member.roles.highest.hexColor;
