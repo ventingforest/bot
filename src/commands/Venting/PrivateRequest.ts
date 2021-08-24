@@ -15,9 +15,9 @@ class PrivateRequest extends TVFCommand {
                 {
                     id: 'topic',
                     type: 'string',
-                    match: 'rest',
-                },
-            ],
+                    match: 'rest'
+                }
+            ]
         });
 
         this.usage = 'private <session topic>';
@@ -35,14 +35,14 @@ class PrivateRequest extends TVFCommand {
         privateVent: Private,
         venter: User,
         ms: number,
-        client: TVFClient,
+        client: TVFClient
     ) {
         // Begin the expiry countdown
         timeout.timeout(`${privateVent.id}+0`, ms, async () => {
             // Cancel the private venting session
             await client.db.user.update({
                 where: { privateID: privateVent.id },
-                data: { privateID: null },
+                data: { privateID: null }
             });
 
             // Inform the support team that the user's session has expired
@@ -51,12 +51,12 @@ class PrivateRequest extends TVFCommand {
                 .setThumbnail(client.server.iconURL())
                 .setColor(client.constants.Colours.Red)
                 .setTitle(
-                    `${venter.username}'s private venting session has expired!`,
+                    `${venter.username}'s private venting session has expired!`
                 )
                 .addField('Venter ID', venter.id, true)
                 .setFooter(
                     `Session ID: ${privateVent.id}`,
-                    client.server.iconURL(),
+                    client.server.iconURL()
                 );
 
             client.tvfChannels.staff.support.send(expiredEmbed);
@@ -75,13 +75,13 @@ class PrivateRequest extends TVFCommand {
 				${venter}, your private venting session has expired!
 				Normally this message would be sent in DMs, but the bot couldn't DM you for some reason - please look into this this and ping newt#1234 if you need any help!
 				If you still need a session, please do not fear to open a new one! Thanks (:
-			`),
+			`)
             );
 
             client.logger.command(
                 `${client.userLogCompiler(venter)}'s private venting session (${
                     privateVent.id
-                }) has just expired.`,
+                }) has just expired.`
             );
         });
 
@@ -94,37 +94,37 @@ class PrivateRequest extends TVFCommand {
             .addField('Venter ID', venter.id)
             .setFooter(
                 `Session ID: ${privateVent.id}`,
-                client.server.iconURL(),
+                client.server.iconURL()
             );
         const interval = ms / 6;
 
         timeout.timeout(`${privateVent.id}+1`, interval, () =>
             client.tvfChannels.staff.support.send(
                 reminderEmbed.setTitle(
-                    `${venter.username}'s session will expire in five hours!`,
-                ),
-            ),
+                    `${venter.username}'s session will expire in five hours!`
+                )
+            )
         );
         timeout.timeout(`${privateVent.id}+2`, interval * 2, () =>
             client.tvfChannels.staff.support.send(
                 reminderEmbed.setTitle(
-                    `${venter.username}'s session will expire in four hours!`,
-                ),
-            ),
+                    `${venter.username}'s session will expire in four hours!`
+                )
+            )
         );
         timeout.timeout(`${privateVent.id}+3`, interval * 3, () =>
             client.tvfChannels.staff.support.send(
                 reminderEmbed.setTitle(
-                    `${venter.username}'s session will expire in three hours!`,
-                ),
-            ),
+                    `${venter.username}'s session will expire in three hours!`
+                )
+            )
         );
         timeout.timeout(`${privateVent.id}+4`, interval * 4, () =>
             client.tvfChannels.staff.support.send(
                 reminderEmbed.setTitle(
-                    `${venter.username}'s session will expire in two hours!`,
-                ),
-            ),
+                    `${venter.username}'s session will expire in two hours!`
+                )
+            )
         );
         timeout.timeout(`${privateVent.id}+5`, interval * 5, () =>
             client.tvfChannels.staff.support.send(
@@ -132,19 +132,16 @@ class PrivateRequest extends TVFCommand {
                     ? client.tvfRoles.staff.support.toString()
                     : '',
                 reminderEmbed.setTitle(
-                    `${venter.username}'s session will expire in one hour!`,
-                ),
-            ),
+                    `${venter.username}'s session will expire in one hour!`
+                )
+            )
         );
     }
 
     async exec(msg: Message, { topic }: { topic: string }) {
         await msg.delete();
         const user = await this.client.db.user.findUnique({
-            where: { id: msg.author.id },
-        });
-        let privateVent = await this.client.db.private.findUnique({
-            where: { id: user.privateID ? user.privateID : undefined },
+            where: { id: msg.author.id }
         });
         const embed = this.client.utils
             .embed()
@@ -153,116 +150,114 @@ class PrivateRequest extends TVFCommand {
             .setAuthor(msg.author.username, msg.author.avatarURL());
 
         // Ensure that the user hasn't already got a pending private venting session
-        if (privateVent) {
+        if (user.privateID) {
             embed
                 .setTitle('You already have a pending private venting session!')
                 .setDescription('Please try requesting again later!')
                 .setColor(this.client.constants.Colours.Red);
 
             return this.client.utils.sendAndDelete(embed, msg.channel);
-        } else {
-            // If the topic has not been provided
-            if (!topic) {
-                embed
-                    .setTitle(
-                        'You must provide a topic for your private venting seesion!',
-                    )
-                    .setDescription('Please try requesting again with a topic!')
-                    .setColor(this.client.constants.Colours.Red);
-
-                return this.client.utils.sendAndDelete(embed, msg.channel);
-            }
-
-            const ventID = id.random();
-
-            // Store the ID in the user's database
-            await this.client.db.user.update({
-                where: { id: msg.author.id },
-                data: { privateID: ventID },
-            });
-
-            // Make a vent document for the user
-            privateVent = await this.client.db.private.create({
-                data: {
-                    id: ventID,
-                    topic,
-                    requestedAt: new Date(),
-                },
-            });
-
-            // Alert the support team
-            const supportEmbed = this.client.utils
-                .embed()
-                .setColor(this.client.constants.Colours.Green)
-                .setAuthor(msg.author.username, msg.author.avatarURL())
-                .setTitle(
-                    `${msg.author.username} has requested a private venting session!`,
-                )
-                .setThumbnail(msg.author.avatarURL())
-                .setDescription(
-                    `Begin the session by typing \`${this.handler.prefix}pvs ${privateVent.id}\` in this channel!`,
-                )
-                .addField('Session topic', privateVent.topic)
-                .addField('Venter ID', msg.author.id, true)
-                .setFooter(
-                    `Session ID: ${privateVent.id}`,
-                    this.client.server.iconURL(),
-                );
-
-            this.client.tvfChannels.staff.support.send(
-                this.client.production
-                    ? this.client.tvfRoles.staff.support.toString()
-                    : '',
-                supportEmbed,
-            );
-            this.client.tvfChannels.staff.private.logs.send(supportEmbed);
-
-            // Alert the user
-            const userEmbed = this.client.utils
-                .embed()
-                .setThumbnail(this.client.server.iconURL())
-                .setColor(this.client.constants.Colours.Green)
-                .setAuthor(msg.author.username, msg.author.avatarURL())
-                .setTitle('Your private venting session has been requested!')
-                .setDescription(
-                    stripIndents`
-					Your session may begin quickly, or it may take some time - it depends on how busy we are, how many staff are available, and whether any staff are comfortable with taking it.
-					Please remain online until your session begins. You\'ll recieve a ping from the server when we\'re ready for you. A few things to note before we start...
-				`,
-                )
-                .addField(
-                    'Our staff are not councellors or medical professionals',
-                    'They can not offer you medical or deep life advice.',
-                )
-                .addField(
-                    'Who can view your session',
-                    stripIndents`
-					Your session may only be viewed by the Support Team and the Administrators. Private Venting sessions are 100% confidential, and staff are not allowed to share the contents elsewhere.
-					They are only permitted to do so if it is determined that you or another person are at serious risk, or if you disclose something illegal or TOS-breaking.
-				`,
-                )
-                .addField(
-                    'The right to transfer',
-                    'Staff reserve the right to transfer your session over to another member of staff for any given reason during your session.',
-                );
-
-            msg.author.send(userEmbed);
-
-            this.client.logger.command(
-                `${this.client.userLogCompiler(
-                    msg.author,
-                )} just requested a private venting session (${
-                    privateVent.id
-                })`,
-            );
-
-            this.privateTimeouts(
-                privateVent,
-                msg.author,
-                this.client.constants.privateTimeout,
-                this.client as TVFClient,
-            );
         }
+
+        // If the topic has not been provided
+        if (!topic) {
+            embed
+                .setTitle(
+                    'You must provide a topic for your private venting session!'
+                )
+                .setDescription('Please try requesting again with a topic!')
+                .setColor(this.client.constants.Colours.Red);
+
+            return this.client.utils.sendAndDelete(embed, msg.channel);
+        }
+
+        const ventID = id.random();
+
+        // Store the ID in the user's database
+        await this.client.db.user.update({
+            where: { id: msg.author.id },
+            data: { privateID: ventID }
+        });
+
+        // Make a vent document for the user
+        const privateVent = await this.client.db.private.create({
+            data: {
+                id: ventID,
+                topic,
+                requestedAt: new Date()
+            }
+        });
+
+        // Alert the support team
+        const supportEmbed = this.client.utils
+            .embed()
+            .setColor(this.client.constants.Colours.Green)
+            .setAuthor(msg.author.username, msg.author.avatarURL())
+            .setTitle(
+                `${msg.author.username} has requested a private venting session!`
+            )
+            .setThumbnail(msg.author.avatarURL())
+            .setDescription(
+                `Begin the session by typing \`${this.handler.prefix}pvs ${privateVent.id}\` in this channel!`
+            )
+            .addField('Session topic', privateVent.topic)
+            .addField('Venter ID', msg.author.id, true)
+            .setFooter(
+                `Session ID: ${privateVent.id}`,
+                this.client.server.iconURL()
+            );
+
+        this.client.tvfChannels.staff.support.send(
+            this.client.production
+                ? this.client.tvfRoles.staff.support.toString()
+                : '',
+            supportEmbed
+        );
+        this.client.tvfChannels.staff.private.logs.send(supportEmbed);
+
+        // Alert the user
+        const userEmbed = this.client.utils
+            .embed()
+            .setThumbnail(this.client.server.iconURL())
+            .setColor(this.client.constants.Colours.Green)
+            .setAuthor(msg.author.username, msg.author.avatarURL())
+            .setTitle('Your private venting session has been requested!')
+            .setDescription(
+                stripIndents`
+                Your session may begin quickly, or it may take some time - it depends on how busy we are, how many staff are available, and whether any staff are comfortable with taking it.
+                Please remain online until your session begins. You\'ll recieve a ping from the server when we\'re ready for you. A few things to note before we start...
+            `
+            )
+            .addField(
+                'Our staff are not councellors or medical professionals',
+                'They can not offer you medical or deep life advice.'
+            )
+            .addField(
+                'Who can view your session',
+                stripIndents`
+                Your session may only be viewed by the Support Team and the Administrators. Private Venting sessions are 100% confidential, and staff are not allowed to share the contents elsewhere.
+                They are only permitted to do so if it is determined that you or another person are at serious risk, or if you disclose something illegal or TOS-breaking.
+            `
+            )
+            .addField(
+                'The right to transfer',
+                'Staff reserve the right to transfer your session over to another member of staff for any given reason during your session.'
+            );
+
+        msg.author.send(userEmbed);
+
+        this.client.logger.command(
+            `${this.client.userLogCompiler(
+                msg.author
+            )} just requested a private venting session (${privateVent.id})`
+        );
+
+        this.privateTimeouts(
+            privateVent,
+            msg.author,
+            this.client.constants.privateTimeout,
+            this.client as TVFClient
+        );
     }
 }
 
