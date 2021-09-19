@@ -1,6 +1,6 @@
 import TVFCommand from '../../struct/TVFCommand';
 import { Message, GuildMember, MessageAttachment } from 'discord.js';
-import { Rank } from 'canvacord';
+import { RankCard } from '@ayanobot/rankcard';
 
 class Level extends TVFCommand {
     constructor() {
@@ -12,9 +12,9 @@ class Level extends TVFCommand {
                 {
                     id: 'argMember',
                     type: 'member',
-                    index: 0,
-                },
-            ],
+                    index: 0
+                }
+            ]
         });
 
         this.usage = 'level [@user]';
@@ -24,39 +24,34 @@ class Level extends TVFCommand {
     async exec(msg: Message, { argMember }: { argMember: GuildMember }) {
         const member = argMember || msg.member;
         const users = await this.client.db.user.findMany({
-            orderBy: { xp: 'desc' },
+            orderBy: { xp: 'desc' }
         });
-        const filteredUsers = users.filter((user) => this.client.server.member(user.id) !== null);
+        const filteredUsers = users.filter(
+            (user) => this.client.server.member(user.id) !== null
+        );
         const user = users.find((u) => u.id === member.id);
         const rank = filteredUsers.map((d) => d.xp).indexOf(user.xp) + 1;
-        const discUser = this.client.users.cache.get(user.id);
-        const avatar = discUser.avatarURL({ format: 'jpg' });
         let color = member.roles.highest.hexColor;
         if (color === '#000000') color = '#ffffff';
 
         // Build the rank card
-        const rankCard = new Rank()
-            .setAvatar(avatar)
-            .setLevel(user.level)
-            .setCurrentXP(user.xp - this.client.social.xpFor(user.level))
-            .setRequiredXP(this.client.social.xpFor(user.level + 1) - this.client.social.xpFor(user.level))
-            .setRank(rank)
-            // @ts-ignore
-            .setStatus(discUser.presence.status.toString(), false)
-            .setProgressBar(color, 'COLOR')
-            .setUsername(discUser.username)
-            .setDiscriminator(discUser.discriminator);
+        const rankCard = new RankCard({
+            level: user.level,
+            xpForLevel: this.client.social.xpFor,
+            user: member,
+            rank
+        });
 
-        rankCard.build({}).then((data) => {
+        rankCard.build().then((data) => {
             const attachment = new MessageAttachment(data, 'RankCard.png');
             const currentLevelReward = this.client.social.levelReward(
-                user.level,
+                user.level
             );
 
             const nextLevelReward =
                 this.client.constants.levelRoles[
                     this.client.constants.levelRoles.indexOf(
-                        currentLevelReward,
+                        currentLevelReward
                     ) + 1
                 ];
             const beginning =
@@ -74,8 +69,12 @@ class Level extends TVFCommand {
                               nextLevelReward.name
                           }!**`
                         : ''
-                } ${currentLevelReward ? `${beginning} currently a **${currentLevelReward.name}**.` : ''}`,
-                attachment,
+                } ${
+                    currentLevelReward
+                        ? `${beginning} currently a **${currentLevelReward.name}**.`
+                        : ''
+                }`,
+                attachment
             );
         });
 
@@ -84,7 +83,7 @@ class Level extends TVFCommand {
                 member === msg.member
                     ? 'their'
                     : `${this.client.userLogCompiler(member.user)}'s`
-            } rank card.`,
+            } rank card.`
         );
     }
 }

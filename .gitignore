@@ -5,3 +5,8 @@ yarn-*.log
 dist
 .idea
 _*
+
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*
