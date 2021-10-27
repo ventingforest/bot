@@ -9,14 +9,14 @@ class Ready extends Listener {
     constructor() {
         super('ready', {
             emitter: 'client',
-            event: 'ready',
+            event: 'ready'
         });
     }
 
     async exec() {
         // Load constants
         this.client.tvfRoles = TVFRoles(this.client.server);
-        this.client.tvfChannels = TVFChannels(this.client.server);
+        this.client.tvfChannels = TVFChannels(this.client as TVFClient);
 
         if (!this.client.production) {
             // Ensure all documents exist
@@ -25,17 +25,17 @@ class Ready extends Listener {
             members.forEach(async (member) => {
                 if (!member.user.bot) {
                     const user = await this.client.db.user.findUnique({
-                        where: { id: member.id },
+                        where: { id: member.id }
                     });
 
                     if (!user) {
                         await this.client.db.user.create({
-                            data: { id: member.id },
+                            data: { id: member.id }
                         });
                         this.client.logger.db(
                             `Made ${this.client.userLogCompiler(
-                                member.user,
-                            )} a document!`,
+                                member.user
+                            )} a document!`
                         );
                     }
                 }
@@ -46,11 +46,11 @@ class Ready extends Listener {
             vents.forEach(async (v) => {
                 const expiresAt = moment(v.requestedAt).add(
                     this.client.constants.privateTimeout,
-                    'ms',
+                    'ms'
                 );
                 const ms = expiresAt.diff(moment(), 'ms');
                 const owner = await this.client.db.user.findUnique({
-                    where: { privateID: v.id },
+                    where: { privateID: v.id }
                 });
                 const user = this.client.users.cache.get(owner.id);
 
@@ -59,12 +59,12 @@ class Ready extends Listener {
                         v,
                         user,
                         ms,
-                        this.client as TVFClient,
+                        this.client as TVFClient
                     );
                     this.client.logger.db(
                         `Loaded Vent ${
                             v.id
-                        } for User ${this.client.userLogCompiler(user)}!`,
+                        } for User ${this.client.userLogCompiler(user)}!`
                     );
                 }
             });
