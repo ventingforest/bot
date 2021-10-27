@@ -19,14 +19,14 @@
         "prisma": "prisma db pull && prisma generate"
     },
     "dependencies": {
-        "@ayanobot/rankcard": "^2.0.2",
-        "@catte_/pastebin.js": "^2.0.1",
-        "@prisma/client": "^3.0.2",
+        "@ayanobot/rankcard": "2.0.2",
+        "@catte_/pastebin.js": "2.0.1",
+        "@prisma/client": "3.0.2",
         "axios": "0.21.4",
         "common-tags": "1.8.0",
         "cron": "^1.8.2",
         "cross-env": "7.0.3",
-        "discord-akairo": "^8.1.0",
+        "discord-akairo": "8.1.0",
         "discord.js": "12.5.3",
         "dotenv": "10.0.0",
         "human-readable-ids": "^1.0.4",

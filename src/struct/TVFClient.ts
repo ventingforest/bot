@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as winston from 'winston';
-import logdnaWinston from 'logdna-winston';
 import { PastebinClient } from '@catte_/pastebin.js';
 import * as path from 'path';
 import moment from 'moment';
@@ -9,7 +8,7 @@ import {
     AkairoClient,
     CommandHandler,
     InhibitorHandler,
-    ListenerHandler,
+    ListenerHandler
 } from 'discord-akairo';
 import Constants from '../Constants';
 import TVFRoles from '../TVFRoles';
@@ -52,17 +51,17 @@ export default class TVFClient extends AkairoClient {
                         'GUILD_BANS',
                         'GUILD_MESSAGES',
                         'GUILD_VOICE_STATES',
-                        'DIRECT_MESSAGES',
-                    ],
+                        'DIRECT_MESSAGES'
+                    ]
                 },
                 presence: {
                     activity: {
                         name: 'out for you <3',
-                        type: 'WATCHING',
+                        type: 'WATCHING'
                     },
-                    status: 'idle',
-                },
-            },
+                    status: 'idle'
+                }
+            }
         );
 
         this.constants = constants;
@@ -76,12 +75,10 @@ export default class TVFClient extends AkairoClient {
             info: 'bold cyan',
             debug: 'bold white',
             command: 'bold yellow',
-            db: 'bold white',
+            db: 'bold white'
         });
 
         // Create the logger
-        const { ip4: ip, mac } = (await si.networkInterfaces())[0];
-
         const logger = winston.createLogger({
             transports: [
                 new winston.transports.Console({
@@ -92,22 +89,12 @@ export default class TVFClient extends AkairoClient {
                                 .colorize(
                                     log.level,
                                     `${moment().format(
-                                        this.constants.moment,
-                                    )} - ${log.level}: ${log.message}`,
-                                ),
-                        ),
-                    ),
-                }),
-                new logdnaWinston({
-                    key: process.env.LOGDNA,
-                    hostname: 'ayano',
-                    ip,
-                    mac,
-                    app: this.production ? 'ayano' : 'ayano-beta',
-                    env: this.production ? 'Production' : 'Development',
-                    level: 'info',
-                    indexMeta: true,
-                }),
+                                        this.constants.moment
+                                    )} - ${log.level}: ${log.message}`
+                                )
+                        )
+                    )
+                })
             ],
             levels: {
                 debug: 0,
@@ -115,8 +102,8 @@ export default class TVFClient extends AkairoClient {
                 db: 2,
                 info: 3,
                 warn: 4,
-                error: 5,
-            },
+                error: 5
+            }
         }) as Logger;
 
         // Update class properties
@@ -133,7 +120,7 @@ export default class TVFClient extends AkairoClient {
 
         // Set up Akairo listeners
         this.commands = new CommandHandler(this, {
-            directory: path.join(__dirname, '..', 'commands'),
+            directory: path.resolve(__dirname, '..', 'commands'),
             prefix: this.prefix,
             commandUtil: true,
             storeMessages: true,
@@ -154,21 +141,21 @@ export default class TVFClient extends AkairoClient {
                         return 'Command cancelled!';
                     },
                     retries: 4,
-                    time: 30000,
-                },
+                    time: 30000
+                }
             },
             aliasReplacement: /-/g,
             allowMention: true,
             defaultCooldown: 1000,
             ignoreCooldown: this.ownerID,
-            automateCategories: true,
+            automateCategories: true
         });
 
         this.commands.loadAll();
         this.logger.info('Commands loaded!');
 
         this.inhibitors = new InhibitorHandler(this, {
-            directory: path.join(__dirname, '..', 'inhibitors'),
+            directory: path.resolve(__dirname, '..', 'inhibitors')
         });
 
         this.commands.useInhibitorHandler(this.inhibitors);
@@ -176,13 +163,13 @@ export default class TVFClient extends AkairoClient {
         this.logger.info('Inhibitors bound to command handler and loaded!');
 
         this.listenerHandler = new ListenerHandler(this, {
-            directory: path.join(__dirname, '..', 'listeners'),
+            directory: path.resolve(__dirname, '..', 'listeners')
         });
 
         this.listenerHandler.setEmitters({
             commands: this.commands,
             inhibitors: this.inhibitors,
-            listenerHandler: this.listenerHandler,
+            listenerHandler: this.listenerHandler
         });
 
         this.commands.useListenerHandler(this.listenerHandler);
@@ -193,14 +180,14 @@ export default class TVFClient extends AkairoClient {
         this.pastebin = new PastebinClient(
             process.env.PASTEBIN_KEY,
             process.env.PASTEBIN_USERNAME,
-            process.env.PASTEBIN_PASSWORD,
+            process.env.PASTEBIN_PASSWORD
         );
         await this.pastebin.login();
         this.logger.info('Logged into Pastebin!');
 
         // Log into discord
         await this.login(
-            this.production ? process.env.STABLE : process.env.BETA,
+            this.production ? process.env.STABLE : process.env.BETA
         );
         this.logger.info('Logged into Discord!');
 
