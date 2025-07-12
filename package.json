@@ -4,12 +4,16 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run src/index.ts"
+    "dev": "bun run src/index.ts",
+    "fmt": "bun x prettier --write ."
   },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "discord.js": "^14.21.0"
   }
 }
