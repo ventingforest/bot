@@ -1,11 +1,12 @@
-import { Client, GatewayIntentBits, type TextBasedChannel } from "discord.js";
+import { Client, GatewayIntentBits, type GuildTextBasedChannel } from "discord.js";
+import processChannel from "./process";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
 client.once("ready", async () => {
-  console.log(`Logged in as ${client.user?.tag}!`);
+  console.log(`logged in as ${client.user?.tag}!`);
 
   const guild = await client.guilds.fetch(process.env.GUILD_ID!);
   const channels = await guild.channels
@@ -14,6 +15,7 @@ client.once("ready", async () => {
 
   for (const channel of channels.values()) {
     if (channel!.name !== "the-dungeon") continue;
+    await processChannel(channel as GuildTextBasedChannel);
   }
 });
 
