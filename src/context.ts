@@ -1,7 +1,6 @@
 import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
-import { PrismaClient } from "./generated/prisma";
+import { Client, Events, GatewayIntentBits } from "discord.js";
 import { prettyFormatter } from "@logtape/pretty";
-import { Client, Events } from "discord.js";
 
 // --- logtape ---
 await configure({
@@ -24,18 +23,9 @@ await configure({
 
 export const logger = getLogger(["bot"]);
 
-// --- prisma ---
-export const prisma = new PrismaClient({
-  log: ["info", "warn", "error"],
-});
-const prismaLogger = getLogger(["prisma"]);
-prisma.$on("info" as never, e => prismaLogger.info(e));
-prisma.$on("warn" as never, e => prismaLogger.warn(e));
-prisma.$on("error" as never, e => prismaLogger.error(e));
-
 // --- discord ---
 export const client = new Client({
-  intents: [],
+  intents: [GatewayIntentBits.GuildMembers],
 });
 const discordLogger = getLogger(["discord"]);
 client.on(Events.Debug, message => discordLogger.debug(message));
