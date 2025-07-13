@@ -1,8 +1,8 @@
-import { PrismaClient } from "./generated/prisma";
+import { PrismaClient } from "../generated/prisma";
 import { getLogger } from "@logtape/logtape";
 import type { Client } from "discord.js";
 import { guildId } from "$const";
-import type Logger from "$log";
+import type Logger from "$lib/logger";
 
 export const prisma = new PrismaClient({
   log: [

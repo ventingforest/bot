@@ -44,7 +44,13 @@ export default class Logger implements ILogger {
   }
 
   error(strings: TemplateStringsArray, ...values: readonly unknown[]): void {
-    logger.error(strings, ...values);
+    for (const value of values) {
+    if (value instanceof Error) {
+      logger.error(strings, ...values);
+      logger.error`${value.stack ?? value.message}`;
+      return;
+    }
+  }
   }
 
   fatal(strings: TemplateStringsArray, ...values: readonly unknown[]): void {

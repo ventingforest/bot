@@ -30,7 +30,7 @@
     "baseUrl": ".",
     "paths": {
       "$const": ["src/constants.ts"],
-      "$log": ["src/logger.ts"]
+      "$lib/*": ["src/lib/*"]
     }
   }
 }
