@@ -1,6 +1,6 @@
-import { Client } from "discord.js";
 import { PrismaClient } from "./generated/prisma";
 import { getLogger } from "@logtape/logtape";
+import { Client } from "discord.js";
 
 export const client = new Client({
   intents: [],

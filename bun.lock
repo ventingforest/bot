@@ -13,6 +13,7 @@
         "@types/bun": "latest",
         "prettier": "^3.6.2",
         "prettier-plugin-prisma": "^5.0.0",
+        "prettier-plugin-sort-imports": "^1.8.8",
         "prisma": "^6.11.1",
       },
       "peerDependencies": {
@@ -90,6 +91,8 @@
     "prettier": ["prettier@3.6.2", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ=="],
 
     "prettier-plugin-prisma": ["prettier-plugin-prisma@5.0.0", "", { "dependencies": { "@prisma/prisma-schema-wasm": "4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584" }, "peerDependencies": { "prettier": ">=2 || >=3" } }, "sha512-jTJV04D9+yF7ziOOMs7CJe4ijgAH7DEGjt0SAWAToGNRy1H6BEhvcKA2UQH6gC6KVW5zeeOSAvsoiDDTt9oKXg=="],
+
+    "prettier-plugin-sort-imports": ["prettier-plugin-sort-imports@1.8.8", "", { "dependencies": { "prettier": "^3.1.1" }, "peerDependencies": { "typescript": ">4.0.0" } }, "sha512-Qqzt4nGF867zyk500YnnRhO9bqyiTiYIxgA8q3Pkxoa3BEqNCA+yB9kAFv2L3B5olEV1nBsfdwYAwyORrzQUNw=="],
 
     "prisma": ["prisma@6.11.1", "", { "dependencies": { "@prisma/config": "6.11.1", "@prisma/engines": "6.11.1" }, "peerDependencies": { "typescript": ">=5.1.0" }, "optionalPeers": ["typescript"], "bin": { "prisma": "build/index.js" } }, "sha512-VzJToRlV0s9Vu2bfqHiRJw73hZNCG/AyJeX+kopbu4GATTjTUdEWUteO3p4BLYoHpMS4o8pD3v6tF44BHNZI1w=="],
 
