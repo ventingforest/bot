@@ -1,13 +1,12 @@
-import { client, logger } from "$ctx";
-import { Events } from "discord.js";
-import { synchronise } from "./db";
+import { SapphireClient } from "@sapphire/framework";
+import { GatewayIntentBits } from "discord.js";
+import Logger from "./logger";
 
-client.once(Events.ClientReady, async () => {
-  logger.info`Logged in as ${client.user?.tag}`;
-
-  if (process.env.NODE_ENV === "production") {
-    await synchronise();
-  }
+const client = new SapphireClient({
+  intents: [GatewayIntentBits.GuildMembers],
+  logger: {
+    instance: new Logger(),
+  },
 });
 
 await client.login(process.env.BOT_TOKEN!);

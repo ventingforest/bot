@@ -29,8 +29,8 @@
     // custom
     "baseUrl": ".",
     "paths": {
-      "$ctx": ["src/context.ts"],
-      "$const": ["src/constants.ts"]
+      "$const": ["src/constants.ts"],
+      "$log": ["src/logger.ts"]
     }
   }
 }

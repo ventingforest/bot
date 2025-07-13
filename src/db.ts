@@ -1,20 +1,29 @@
 import { PrismaClient } from "./generated/prisma";
 import { getLogger } from "@logtape/logtape";
-import { client, logger } from "$ctx";
+import type { Client } from "discord.js";
 import { guildId } from "$const";
+import type Logger from "$log";
 
 export const prisma = new PrismaClient({
-  log: ["info", "warn", "error"],
+  log: [
+    { level: "info", emit: "event" },
+    { level: "warn", emit: "event" },
+    { level: "error", emit: "event" },
+  ],
 });
-const prismaLogger = getLogger(["prisma"]);
-prisma.$on("info" as never, e => prismaLogger.info(e));
-prisma.$on("warn" as never, e => prismaLogger.warn(e));
-prisma.$on("error" as never, e => prismaLogger.error(e));
+
+// log prisma events
+{
+  const logger = getLogger(["db"]);
+  prisma.$on("info", ({ message }) => logger.info(message));
+  prisma.$on("warn", ({ message }) => logger.warn(message));
+  prisma.$on("error", ({ message }) => logger.error(message));
+}
 
 /**
  * Synchronises the database with the current state of the guild.
  */
-export async function synchronise() {
+export async function synchronise(client: Client, logger: Logger) {
   logger.info`Synchronising database with current guild state...`;
 
   const guild = await client.guilds.fetch(guildId);

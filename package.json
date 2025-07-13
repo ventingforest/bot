@@ -13,6 +13,7 @@
     "@logtape/logtape": "^1.0.4",
     "@logtape/pretty": "^1.0.4",
     "@prisma/client": "^6.11.1",
+    "@sapphire/framework": "^5.3.6",
     "discord.js": "^14.21.0"
   },
   "devDependencies": {
