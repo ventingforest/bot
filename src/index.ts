@@ -17,11 +17,13 @@ client.once("ready", async () => {
     .fetch()
     .then((channels) => channels.filter((channel) => channel?.isTextBased()));
 
-  for (const channel of channels.values()) {
-    console.time(`${channel!.name}`);
-    await processChannel(channel as GuildTextBasedChannel);
-    console.timeEnd(`${channel!.name}`);
-  }
+  await Promise.all(
+    Array.from(channels.values()).map(async (channel) => {
+      console.time(`${channel!.name}`);
+      await processChannel(channel as GuildTextBasedChannel);
+      console.timeEnd(`${channel!.name}`);
+    }),
+  );
 
   await client.destroy();
 });

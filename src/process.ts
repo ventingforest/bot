@@ -28,11 +28,7 @@ export default async function processChannel(channel: GuildTextBasedChannel) {
       } of messages.values()) {
         count++;
         // no deleted users
-        if (
-          !author ||
-          author.username.startsWith("Deleted User")
-        )
-          continue;
+        if (!author || author.username.startsWith("Deleted User")) continue;
         if (author.bot) continue; // no bots
         const { id } = author;
 
