@@ -11,6 +11,7 @@ export default async function processChannel(channel: GuildTextBasedChannel) {
   let before: string | undefined = undefined;
   let count = 0;
   const limiter = channelLimiters.key(channel.id);
+  const userXpMap = new Map<string, number>();
 
   while (!done) {
     try {
@@ -32,11 +33,10 @@ export default async function processChannel(channel: GuildTextBasedChannel) {
         if (author.bot) continue; // no bots
         const { id } = author;
 
-        await prisma.user.upsert({
-          where: { id },
-          update: { xp: { increment: xpForMessage(id, time, length) } },
-          create: { id },
-        });
+        const xp = xpForMessage(id, time, length);
+        if (xp > 0) {
+          userXpMap.set(id, (userXpMap.get(id) || 0) + xp);
+        }
       }
 
       before = messages.last()?.id;
@@ -45,6 +45,22 @@ export default async function processChannel(channel: GuildTextBasedChannel) {
       console.log(`failed to process #${channel.name} (${channel.id}):`, err);
       done = true;
     }
+  }
+
+  // update database in small batches to avoid overwhelming SQLite
+  const entries = Array.from(userXpMap.entries());
+  const batchSize = 5;
+  for (let i = 0; i < entries.length; i += batchSize) {
+    const batch = entries.slice(i, i + batchSize);
+    await Promise.all(
+      batch.map(([id, xp]) =>
+        prisma.user.upsert({
+          where: { id },
+          update: { xp: { increment: xp } },
+          create: { id, xp },
+        }),
+      ),
+    );
   }
 
   console.log(
