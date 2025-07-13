@@ -4,7 +4,6 @@ import {
   type GuildTextBasedChannel,
 } from "discord.js";
 import processChannel from "./process";
-import calculateXp from "./xp";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
@@ -19,13 +18,11 @@ client.once("ready", async () => {
     .then((channels) => channels.filter((channel) => channel?.isTextBased()));
 
   for (const channel of channels.values()) {
-    if (channel!.name !== "the-dungeon") continue;
     console.time(`${channel!.name}`);
     await processChannel(channel as GuildTextBasedChannel);
     console.timeEnd(`${channel!.name}`);
   }
 
-  calculateXp();
   await client.destroy();
 });
 
