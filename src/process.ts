@@ -108,11 +108,6 @@ function xpForMessage(id: string, time: number, length: number): number {
   }
   lastTime.set(id, time);
 
-  // compute xp
-  // min 5 points
-  // max 10 points
-  // 20 chars ~= 1 point
-  const xp = Math.min(10, Math.max(5, Math.floor(length / 20)));
-
-  return xp;
+  const points = Math.floor(length / 20);
+  return Math.min(5 + points, 10);
 }
