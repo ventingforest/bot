@@ -1,13 +1,14 @@
 import { SapphireClient } from "@sapphire/framework";
 import { GatewayIntentBits } from "discord.js";
 import Logger from "$lib/logger";
-import { guildId } from "$const";
 
 const client = new SapphireClient({
   intents: [
-    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+
+    GatewayIntentBits.GuildMembers,
   ],
   loadMessageCommandListeners: true,
   logger: {
@@ -16,6 +17,3 @@ const client = new SapphireClient({
 });
 
 await client.login(process.env.BOT_TOKEN!);
-
-const guild = await client.guilds.fetch(guildId);
-await client.emit("guildMemberAdd", await guild.members.fetch(client.user!.id));
