@@ -1,13 +1,23 @@
 import { Listener } from "@sapphire/framework";
 import type { Client } from "discord.js";
-import { synchronise } from "$lib/db";
+import { synchroniseGuild } from "$lib/db";
 
-export class ReadyListener extends Listener<"ready"> {
+const event = "ready";
+
+export class Ready extends Listener<typeof event> {
+  constructor(context: Listener.LoaderContext, options: Listener.Options) {
+    super(context, {
+      ...options,
+      once: true,
+      event,
+    });
+  }
+
   override async run(client: Client<true>) {
     this.container.logger.info`Logged in as ${client.user?.tag}`;
 
     if (process.env.NODE_ENV === "production") {
-      await synchronise(client, this.container.logger);
+      await synchroniseGuild();
     }
   }
 }

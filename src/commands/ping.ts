@@ -11,9 +11,9 @@ export class PingCommand extends Command {
   override registerApplicationCommands(
     registry: ApplicationCommandRegistry,
   ): Awaitable<void> {
-    registry.registerChatInputCommand(builder =>
-      builder.setName("ping").setDescription("check response times"),
-      { idHints: ["1394099133106753597"]}
+    registry.registerChatInputCommand(
+      builder => builder.setName("ping").setDescription("check response times"),
+      { idHints: ["1394099133106753597"] },
     );
   }
 

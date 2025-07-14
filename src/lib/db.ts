@@ -1,8 +1,8 @@
 import { PrismaClient } from "../generated/prisma";
 import { getLogger } from "@logtape/logtape";
-import type { Client } from "discord.js";
 import { guildId } from "$const";
-import type Logger from "$lib/logger";
+import { container } from "@sapphire/framework";
+import type { GuildMember, PartialGuildMember } from "discord.js";
 
 export const prisma = new PrismaClient({
   log: [
@@ -20,29 +20,36 @@ export const prisma = new PrismaClient({
   prisma.$on("error", ({ message }) => logger.error(message));
 }
 
+const { client, logger } = container;
+
 /**
  * Synchronises the database with the current state of the guild.
  */
-export async function synchronise(client: Client, logger: Logger) {
+export async function synchroniseGuild() {
   logger.info`Synchronising database with current guild state...`;
 
   const guild = await client.guilds.fetch(guildId);
   const members = await guild.members
     .fetch()
     .then(members => Array.from(members.values()));
-  const upserts = members.map(({ user: { id, username } }) =>
-    prisma.user.upsert({
-      where: { id },
-      update: { username, present: true },
-      create: { id, username, present: true },
-    }),
-  );
-  const markNotPresent = prisma.user.updateMany({
+  const memberUpdates = members.map(member => synchroniseMember(member));
+  const notPresent = prisma.user.updateMany({
     where: { id: { notIn: members.map(m => m.user.id) } },
     data: { present: false },
   });
 
-  await prisma.$transaction([...upserts, markNotPresent]);
+  await prisma.$transaction([...memberUpdates, notPresent]);
 
   logger.info`Database synchronised!`;
+}
+
+/**
+ * Synchronises a member's data in the database.
+ */
+export function synchroniseMember({ user: { id, username }}: GuildMember | PartialGuildMember, present = true) {
+  return prisma.user.upsert({
+      where: { id },
+      update: { username, present },
+      create: { id, username, present },
+    });
 }
