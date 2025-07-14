@@ -1,7 +1,7 @@
 import type { OmitPartialGroupDMChannel, Message } from "discord.js";
 import { Listener } from "@sapphire/framework";
 import { prisma } from "$lib/db";
-import { xp } from "$const";
+import { xp } from "$lib/const";
 
 const event = "messageCreate";
 

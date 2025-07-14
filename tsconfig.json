@@ -29,7 +29,6 @@
     // custom
     "baseUrl": ".",
     "paths": {
-      "$const": ["src/constants.ts"],
       "$lib/*": ["src/lib/*"]
     }
   }
