@@ -16,4 +16,8 @@ const client = new SapphireClient({
   },
 });
 
-await client.login(process.env.BOT_TOKEN!);
+const token =
+  process.env.NODE_ENV === "production"
+    ? process.env.PROD_TOKEN || process.env.DEV_TOKEN
+    : process.env.DEV_TOKEN || process.env.PROD_TOKEN;
+await client.login(token!);
