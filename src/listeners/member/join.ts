@@ -1,6 +1,6 @@
-import { synchroniseMember } from "$lib/db";
 import { Listener } from "@sapphire/framework";
 import type { GuildMember } from "discord.js";
+import { synchroniseMember } from "$lib/db";
 
 const event = "guildMemberAdd";
 

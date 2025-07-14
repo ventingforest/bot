@@ -1,0 +1,2 @@
+bun fmt --log-level silent
+git add .

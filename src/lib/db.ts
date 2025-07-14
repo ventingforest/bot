@@ -1,8 +1,8 @@
+import type { GuildMember, PartialGuildMember } from "discord.js";
 import { PrismaClient } from "../generated/prisma";
+import { container } from "@sapphire/framework";
 import { getLogger } from "@logtape/logtape";
 import { guildId } from "$const";
-import { container } from "@sapphire/framework";
-import type { GuildMember, PartialGuildMember } from "discord.js";
 
 export const prisma = new PrismaClient({
   log: [
@@ -46,10 +46,13 @@ export async function synchroniseGuild() {
 /**
  * Synchronises a member's data in the database.
  */
-export function synchroniseMember({ user: { id, username }}: GuildMember | PartialGuildMember, present = true) {
+export function synchroniseMember(
+  { user: { id, username } }: GuildMember | PartialGuildMember,
+  present = true,
+) {
   return prisma.user.upsert({
-      where: { id },
-      update: { username, present },
-      create: { id, username, present },
-    });
+    where: { id },
+    update: { username, present },
+    create: { id, username, present },
+  });
 }

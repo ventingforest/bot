@@ -1,6 +1,6 @@
 import { Listener } from "@sapphire/framework";
-import type { Client } from "discord.js";
 import { synchroniseGuild } from "$lib/db";
+import type { Client } from "discord.js";
 
 const event = "ready";
 
