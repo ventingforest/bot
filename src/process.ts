@@ -1,99 +1,118 @@
-import type { GuildTextBasedChannel } from "discord.js";
+import type { GuildTextBasedChannel, Message } from "discord.js";
 import { channelLimiters, globalLimiter } from "./limiter";
 import { PrismaClient } from "./generated/prisma";
 
-// --- processing ---
 const prisma = new PrismaClient();
-const batchSize = 5;
 
-export default async function processChannel(channel: GuildTextBasedChannel) {
-  console.log(`processing channel: #${channel.name} (${channel.id})`);
-  let done = false;
-  let before: string | undefined = undefined;
-  let count = 0;
-  const limiter = channelLimiters.key(channel.id);
-  const userXpMap = new Map<string, number>();
+import type { Guild } from "discord.js";
 
-  while (!done) {
-    try {
-      const messages = await limiter.schedule(() =>
-        globalLimiter.schedule(() =>
-          channel.messages.fetch({ limit: 100, before }),
-        ),
-      );
-      if (messages.size === 0) break; // no more messages to process
+export default async function processGuild(
+  guild: Guild,
+  logger: (msg: string) => Promise<void> = async () => {},
+) {
+  await logger(`processing guild: ${guild.name} (${guild.id})`);
+  let totalCount = 0;
+  const userStats: Map<string, { xp: number; username: string; present: boolean }> = new Map();
 
-      for (const {
-        author,
-        createdTimestamp: time,
-        content: { length },
-      } of messages.values()) {
-        count++;
-        if (!author) {
-          console.log(`skipped message: missing author`);
-          continue;
-        }
-        if (author.username.startsWith("Deleted User")) {
-          console.log(`skipped message: deleted user (${author.id})`);
-          continue;
-        }
-        if (author.bot) {
-          // no bots
-          continue;
-        }
-        const { id } = author;
+  // get all text channels in the guild (only those with messages)
+  const channels = guild.channels.cache.filter(
+    (ch): ch is GuildTextBasedChannel =>
+      ch.isTextBased() &&
+      !ch.isThread() &&
+      typeof (ch as GuildTextBasedChannel).messages?.fetch === "function",
+  );
 
-        const xp = xpForMessage(id, time, length);
-        if (xp > 0) {
-          userXpMap.set(id, (userXpMap.get(id) || 0) + xp);
-          console.log(
-            `awarded ${xp} XP to user ${id} for message (${length} chars)`,
+  // process channels concurrently
+  await Promise.all(
+    Array.from(channels.values()).map(async (channel) => {
+      const textChannel = channel as GuildTextBasedChannel;
+      await logger(`processing channel: #${textChannel.name} (${textChannel.id})`);
+      let before: string | undefined = undefined;
+      const limiter = channelLimiters.key(textChannel.id);
+      const allMessages: Message[] = [];
+      let fetchCount = 0;
+      const fetchStart = Date.now();
+
+      // fetch all messages in the channel, with periodic updates
+      while (true) {
+        try {
+          const messages = await limiter.schedule(() =>
+            globalLimiter.schedule(() =>
+              textChannel.messages.fetch({ limit: 100, before }),
+            ),
           );
-        } else {
-          console.log(`no XP for user ${id}: cooldown (${length} chars)`);
+          if (!messages?.size) break;
+          allMessages.push(...messages.values());
+          before = messages.last?.()?.id;
+          fetchCount += messages.size;
+          if (fetchCount % 500 === 0) {
+            await logger(`still fetching #${textChannel.name} (${textChannel.id}): ${fetchCount} messages so far...`);
+          }
+          if (!before) break;
+        } catch (err) {
+          await logger(`failed to process #${textChannel.name} (${textChannel.id}): ${err}`);
+          break;
         }
       }
+      const fetchEnd = Date.now();
 
-      before = messages.last()?.id;
-      if (!before) done = true; // no more messages to fetch
-    } catch (err) {
-      console.log(`failed to process #${channel.name} (${channel.id}):`, err);
-      done = true;
-    }
-  }
+      let count = 0;
+      const processStart = Date.now();
+      for (const msg of allMessages.reverse()) {
+        const { author, createdTimestamp: time, content } = msg;
+        // skip bots and deleted users
+        if (!author || author.bot || author.username.startsWith("Deleted User")) continue;
+        count++;
+        const xp = xpForMessage(author.id, time, content.length);
+        const prev = userStats.get(author.id);
+        // check if user is currently present in the guild
+        const member = guild.members.cache.get(author.id);
+        userStats.set(author.id, {
+          xp: (prev?.xp || 0) + (xp > 0 ? xp : 0),
+          username: author.username,
+          present: !!member,
+        });
+        if (count % 1000 === 0) {
+          await logger(`still processing #${textChannel.name} (${textChannel.id}): ${count} messages processed...`);
+        }
+      }
+      const processEnd = Date.now();
+      totalCount += count;
+      const fetchTime = ((fetchEnd - fetchStart) / 1000).toFixed(2);
+      const processTime = ((processEnd - processStart) / 1000).toFixed(2);
+      const avgTimePerMsg = count ? (Number(processTime) / count).toFixed(4) : "0";
+      await logger(`processed ${count} messages from #${textChannel.name} (${textChannel.id})`);
+      await logger(`timing for #${textChannel.name}: fetch ${fetchTime}s, process ${processTime}s, avg ${avgTimePerMsg}s/msg`);
+    })
+  );
 
-  // update database in small batches to avoid overwhelming SQLite
-  const entries = Array.from(userXpMap.entries());
-  for (let i = 0; i < entries.length; i += batchSize) {
-    const batch = entries.slice(i, i + batchSize);
-    console.log(`writing batch to database:`, batch);
-    await Promise.all(
-      batch.map(([id, xp]) =>
-        prisma.user.upsert({
-          where: { id },
-          update: { xp: { increment: xp } },
-          create: { id, xp },
-        }),
-      ),
-    );
-  }
+  // update database in a single transaction for better SQLite performance
+  // update database in a single transaction for better sqlite performance
+  await prisma.$transaction(
+    Array.from(userStats.entries()).map(([id, { xp, username, present }]) =>
+      prisma.user.upsert({
+        where: { id },
+        update: { xp: { increment: xp }, username, present },
+        create: { id, xp, username, present },
+      })
+    )
+  );
 
-  console.log(
-    `processed ${count} messages from #${channel.name} (${channel.id})`,
+  await logger(
+    `processed ${totalCount} messages from guild ${guild.name} (${guild.id})`,
   );
 
   // return summary statistics
-  const totalXp = Array.from(userXpMap.values()).reduce((a, b) => a + b, 0);
+  const totalXp = Array.from(userStats.values()).reduce((a, b) => a + b.xp, 0);
   return {
-    channelName: channel.name,
-    channelId: channel.id,
-    messageCount: count,
-    userCount: userXpMap.size,
+    guildName: guild.name,
+    guildId: guild.id,
+    messageCount: totalCount,
+    userCount: userStats.size,
     totalXp,
   };
 }
 
-// --- xp ---
 const cooldown = 1000 * 10; // 10 seconds
 
 // keeps the last time a user sent a message during computation
@@ -101,13 +120,11 @@ const lastTime = new Map<string, number>();
 
 function xpForMessage(id: string, time: number, length: number): number {
   const last = lastTime.get(id) || 0;
-
   if (time - last < cooldown) {
-    // within cooldown period, no XP
+    // within cooldown period, no xp
     return 0;
   }
   lastTime.set(id, time);
-
   const points = Math.floor(length / 20);
   return Math.min(5 + points, 10);
 }
