@@ -17,13 +17,35 @@ client.once("ready", async () => {
     .fetch()
     .then((channels) => channels.filter((channel) => channel?.isTextBased()));
 
-  await Promise.all(
-    Array.from(channels.values()).map(async (channel) => {
-      console.time(`${channel!.name}`);
-      await processChannel(channel as GuildTextBasedChannel);
-      console.timeEnd(`${channel!.name}`);
-    }),
-  );
+  const reportChannel = (await guild.channels.fetch(
+    process.env.REPORT_CHANNEL_ID!,
+  )) as GuildTextBasedChannel;
+
+  const results = [];
+  for (const channel of channels.values()) {
+    console.time(`${channel!.name}`);
+    const stats = await processChannel(channel as GuildTextBasedChannel);
+    results.push(stats);
+    console.timeEnd(`${channel!.name}`);
+    if (reportChannel) {
+      await reportChannel.send(
+        `#${stats.channelName} done\nmessages: ${stats.messageCount}\nusers: ${stats.userCount}\ntotal xp: ${stats.totalXp}`,
+      );
+    }
+  }
+
+  if (reportChannel) {
+    await reportChannel.send(
+      "all channels done.\nsummary:\n" +
+        results
+          .map(
+            (s) =>
+              `#${s.channelName}: ${s.messageCount} messages, ${s.userCount} users, ${s.totalXp} xp`,
+          )
+          .join("\n"),
+    );
+    console.log(`sent completion message to channel #${reportChannel.name}`);
+  }
 
   await client.destroy();
 });
