@@ -9,6 +9,8 @@
     "prisma": "bun x prisma db push"
   },
   "dependencies": {
+    "@logtape/logtape": "^1.0.4",
+    "@logtape/pretty": "^1.0.4",
     "@prisma/client": "^6.11.1",
     "bottleneck": "^2.19.5",
     "discord.js": "^14.21.0"
