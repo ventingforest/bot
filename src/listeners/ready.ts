@@ -1,18 +1,11 @@
+import { Events, Listener, Config } from "$lib/listener";
 import { ActivityType, type Client } from "discord.js";
-import { Listener } from "@sapphire/framework";
 import { synchroniseGuild } from "$lib/db";
 
-const event = "ready";
-
-export class Ready extends Listener<typeof event> {
-  constructor(context: Listener.LoaderContext, options: Listener.Options) {
-    super(context, {
-      ...options,
-      once: true,
-      event,
-    });
-  }
-
+@Config(Events.ClientReady, {
+  once: true,
+})
+export class Ready extends Listener<typeof Events.ClientReady> {
   override async run(client: Client<true>) {
     client.user.setActivity("over you :]", { type: ActivityType.Watching });
     this.container.logger.info`Logged in as ${client.user?.tag}`;

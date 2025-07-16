@@ -1,16 +1,10 @@
-import { Listener } from "@sapphire/framework";
+import { Events, Listener, Config } from "$lib/listener";
 import { getLogger } from "@logtape/logtape";
 
-const event = "error";
-const logger = getLogger(["discord"]);
+const logger = getLogger("discord");
 
-export class ErrorListener extends Listener<typeof event> {
-  constructor(context: Listener.LoaderContext, options: Listener.Options) {
-    super(context, {
-      ...options,
-      event,
-    });
-  }
+@Config(Events.Error)
+export class ErrorListener extends Listener<typeof Events.Error> {
   override run(error: Error) {
     logger.error(error.message, { stack: error.stack });
   }

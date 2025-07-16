@@ -1,18 +1,11 @@
-import { Listener } from "@sapphire/framework";
+import { Listener, Events, Config } from "$lib/listener";
 import type { GuildMember } from "discord.js";
 import { synchroniseMember } from "$lib/db";
 
-const event = "guildMemberAdd";
-
-export class MemberJoin extends Listener<typeof event> {
-  constructor(context: Listener.LoaderContext, options: Listener.Options) {
-    super(context, {
-      ...options,
-      event,
-      enabled: process.env.NODE_ENV === "production",
-    });
-  }
-
+@Config(Events.GuildMemberAdd, {
+  enabled: process.env.NODE_ENV === "production",
+})
+export class MemberJoin extends Listener<typeof Events.GuildMemberAdd> {
   override async run(member: GuildMember) {
     if (member.user.bot) return;
     await synchroniseMember(member);

@@ -1,17 +1,10 @@
-import { Listener } from "@sapphire/framework";
+import { Events, Listener, Config } from "$lib/listener";
 import { getLogger } from "@logtape/logtape";
 
-const event = "warn";
-const logger = getLogger(["discord"]);
+const logger = getLogger("discord");
 
-export class WarnListener extends Listener<typeof event> {
-  constructor(context: Listener.LoaderContext, options: Listener.Options) {
-    super(context, {
-      ...options,
-      event,
-    });
-  }
-
+@Config(Events.Warn)
+export class Warn extends Listener<typeof Events.Warn> {
   override run(message: string) {
     logger.warn(message);
   }

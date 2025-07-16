@@ -1,25 +1,17 @@
 import type { OmitPartialGroupDMChannel, Message } from "discord.js";
-import { Listener } from "@sapphire/framework";
+import { Events, Listener, Config } from "$lib/listener";
 import { prisma } from "$lib/db";
 import { xp } from "$lib/const";
 
-const event = "messageCreate";
-
-export class GiveXp extends Listener<typeof event> {
-  constructor(context: Listener.LoaderContext, options: Listener.Options) {
-    super(context, {
-      ...options,
-      event,
-    });
-  }
-
+@Config(Events.MessageCreate)
+export class GiveXp extends Listener<typeof Events.MessageCreate> {
   override async run(message: OmitPartialGroupDMChannel<Message<boolean>>) {
     if (message.author.bot) return; // ignore bot messages
     if (!message.guild) return; // ensure it's a guild message
 
     const xp = computeXp(message);
-    console.log(message.content.length);
-    this.container.logger.info`Giving ${xp} XP to ${message.author.username}`;
+    if (xp == 0) return; // no xp to give
+    this.container.logger.debug`giving ${xp} XP to ${message.author.username}`;
 
     if (process.env.NODE_ENV === "production") {
       await prisma.user.update({

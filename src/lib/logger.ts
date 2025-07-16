@@ -20,8 +20,11 @@ await configure({
   ],
 });
 
-const logger = getLogger(["bot"]);
+const logger = getLogger("bot");
 
+/**
+ * {@link ILogger} for Sapphire that wraps the Logtape logger.
+ */
 export default class Logger implements ILogger {
   has(_: LogLevel): boolean {
     return true;

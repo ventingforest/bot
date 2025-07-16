@@ -4,10 +4,12 @@ import Logger from "$lib/logger";
 
 const client = new SapphireClient({
   intents: [
+    // read messages
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
 
+    // see guild members
     GatewayIntentBits.GuildMembers,
   ],
   loadMessageCommandListeners: true,
