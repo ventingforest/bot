@@ -1,25 +1,16 @@
-import {
-  ApplicationCommandRegistry,
-  Command,
-  type Awaitable,
-  type ChatInputCommand,
-} from "@sapphire/framework";
-import { MessageFlags, type ChatInputCommandInteraction } from "discord.js";
 import { isMessageInstance } from "@sapphire/discord.js-utilities";
+import { ChatInput, Config } from "$lib/command";
+import { MessageFlags } from "discord.js";
 
-export class PingCommand extends Command {
-  override registerApplicationCommands(
-    registry: ApplicationCommandRegistry,
-  ): Awaitable<void> {
-    registry.registerChatInputCommand(
-      builder => builder.setName("ping").setDescription("check response times"),
-      { idHints: ["1394099133106753597"] },
-    );
-  }
-
+@Config({
+  name: "ping",
+  description: "check response times",
+  idHints: ["1394099133106753597"],
+})
+export class Ping extends ChatInput {
   override async chatInputRun(
-    interaction: ChatInputCommandInteraction,
-    _: ChatInputCommand.RunContext,
+    interaction: ChatInput.Interaction,
+    _: ChatInput.RunContext,
   ) {
     const { resource } = await interaction.reply({
       content: "ping?",

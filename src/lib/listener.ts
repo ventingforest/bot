@@ -8,7 +8,7 @@ export { Events, Listener } from "@sapphire/framework";
  */
 export function Config<E extends (typeof Events)[keyof typeof Events]>(
   event: E,
-  options?: Partial<Omit<Listener.Options, "event">>,
+  options?: Omit<Listener.Options, "event">,
 ) {
   return ApplyOptions<Listener.Options>({
     event,
