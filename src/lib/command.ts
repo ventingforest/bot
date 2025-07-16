@@ -22,6 +22,8 @@ export class ChatInput extends SapphireCommand<Args, Command.Options> {
 
 export namespace Command {
   export type Options = SapphireCommand.Options & {
+    name: string;
+    description: string;
     idHints?: string[];
   };
 }

@@ -1,4 +1,9 @@
 /**
+ * Is the bot running in production mode?
+ */
+export const isProduction = process.env.NODE_ENV === "production";
+
+/**
  * The ID of the guild the bot is in.
  */
 export const guildId = "435894444101861408";

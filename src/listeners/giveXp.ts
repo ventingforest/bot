@@ -1,7 +1,7 @@
 import type { OmitPartialGroupDMChannel, Message } from "discord.js";
 import { Events, Listener, Config } from "$lib/listener";
+import { isProduction, xp } from "$lib/data";
 import { prisma } from "$lib/db";
-import { xp } from "$lib/const";
 
 @Config(Events.MessageCreate)
 export class GiveXp extends Listener<typeof Events.MessageCreate> {
@@ -13,7 +13,7 @@ export class GiveXp extends Listener<typeof Events.MessageCreate> {
     if (xp == 0) return; // no xp to give
     this.container.logger.debug`giving ${xp} XP to ${message.author.username}`;
 
-    if (process.env.NODE_ENV === "production") {
+    if (isProduction) {
       await prisma.user.update({
         where: { id: message.author.id },
         data: { xp: { increment: xp } },

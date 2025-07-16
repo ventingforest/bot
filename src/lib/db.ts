@@ -2,7 +2,7 @@ import type { GuildMember, PartialGuildMember } from "discord.js";
 import { PrismaClient } from "../generated/prisma";
 import { container } from "@sapphire/framework";
 import { getLogger } from "@logtape/logtape";
-import { guildId } from "$lib/const";
+import { guildId } from "$lib/data";
 
 export const prisma = new PrismaClient({
   log: [

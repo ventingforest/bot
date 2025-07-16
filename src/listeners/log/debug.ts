@@ -1,7 +1,7 @@
 import { Events, Listener, Config } from "$lib/listener";
 import { getLogger } from "@logtape/logtape";
 
-const logger = getLogger("discord");
+const logger = getLogger("api");
 
 @Config(Events.Debug)
 export class Debug extends Listener<typeof Events.Debug> {

@@ -11,6 +11,7 @@
     "prisma": "prisma"
   },
   "dependencies": {
+    "@logtape/file": "^1.0.4",
     "@logtape/logtape": "^1.0.4",
     "@logtape/pretty": "^1.0.4",
     "@prisma/client": "^6.11.1",

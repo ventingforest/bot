@@ -1,9 +1,10 @@
 import type { GuildMember, PartialGuildMember } from "discord.js";
 import { Listener, Events, Config } from "$lib/listener";
 import { synchroniseMember } from "$lib/db";
+import { isProduction } from "$lib/data";
 
 @Config(Events.GuildMemberRemove, {
-  enabled: process.env.NODE_ENV === "production",
+  enabled: isProduction,
 })
 export class MemberLeave extends Listener<typeof Events.GuildMemberRemove> {
   override async run(member: GuildMember | PartialGuildMember) {
