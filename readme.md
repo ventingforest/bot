@@ -1,3 +1,5 @@
 # bot
 
 ## todo
+
+- leaderboard

@@ -4,13 +4,22 @@ import { container } from "@sapphire/framework";
 import { getLogger } from "@logtape/logtape";
 import { guildId } from "$lib/data";
 
-export const prisma = new PrismaClient({
+// connect to the database
+const prisma = new PrismaClient({
   log: [
     { level: "info", emit: "event" },
     { level: "warn", emit: "event" },
     { level: "error", emit: "event" },
   ],
 });
+
+container.db = prisma;
+
+declare module "@sapphire/pieces" {
+  interface Container {
+    db: PrismaClient;
+  }
+}
 
 // log prisma events
 {

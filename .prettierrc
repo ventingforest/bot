@@ -1,4 +1,8 @@
 {
-  "plugins": ["prettier-plugin-sort-imports", "prettier-plugin-prisma"],
-  "arrowParens": "avoid"
+  "arrowParens": "avoid",
+  "plugins": [
+    "prettier-plugin-sort-imports",
+    "prettier-plugin-sort-json",
+    "prettier-plugin-prisma"
+  ]
 }

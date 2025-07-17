@@ -9,7 +9,6 @@ import { isProduction } from "$lib/data";
 export class MemberLeave extends Listener<typeof Events.GuildMemberRemove> {
   override async run(member: GuildMember | PartialGuildMember) {
     if (member.user.bot) return;
-
     await synchroniseMember(member, false);
   }
 }

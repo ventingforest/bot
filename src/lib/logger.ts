@@ -3,13 +3,13 @@ import {
   fromAsyncSink,
   getConsoleSink,
   getLogger,
-  type LogRecord,
 } from "@logtape/logtape";
 import { container, LogLevel, type ILogger } from "@sapphire/framework";
 import { getPrettyFormatter, prettyFormatter } from "@logtape/pretty";
 import type { GuildTextBasedChannel } from "discord.js";
 import { getFileSink } from "@logtape/file";
 import { isProduction } from "./data";
+import fs from "fs/promises";
 
 let logChannel: GuildTextBasedChannel;
 
@@ -22,14 +22,14 @@ const logFileSink = (name: string) =>
     formatter: getPrettyFormatter({ colors: false, align: false }),
   });
 
+// make sure the logs directory exists
+if (!isProduction && !(await fs.exists("logs"))) await fs.mkdir("logs");
+
 await configure({
   sinks: {
     console: getConsoleSink({
       formatter: prettyFormatter,
     }),
-    botFile: logFileSink("bot"),
-    dbFile: logFileSink("db"),
-    apiFile: logFileSink("api"),
     discord: fromAsyncSink(async record => {
       if (!isProduction) return; // disable in non-production environments
       if (process.env.LOG_CHANNEL_ID === undefined) return; // disable if no channel is set
@@ -41,15 +41,28 @@ await configure({
       }
       await logChannel.send(`**${record.level}**: ${record.message}`);
     }),
+    ...(isProduction && {
+      botFile: logFileSink("bot"),
+      dbFile: logFileSink("db"),
+      apiFile: logFileSink("api"),
+    }),
   },
   loggers: [
     {
       category: "bot",
       lowestLevel: "debug",
-      sinks: ["console", "botFile", "discord"],
+      sinks: ["console", ...(isProduction ? ["botFile"] : []), "discord"],
     },
-    { category: "db", lowestLevel: "info", sinks: ["console", "dbFile"] },
-    { category: "api", lowestLevel: "debug", sinks: ["console", "apiFile"] },
+    {
+      category: "db",
+      lowestLevel: "info",
+      sinks: ["console", ...(isProduction ? ["dbFile"] : [])],
+    },
+    {
+      category: "api",
+      lowestLevel: "debug",
+      sinks: ["console", ...(isProduction ? ["apiFile"] : [])],
+    },
     {
       category: ["logtape", "meta"],
       lowestLevel: "warning",
