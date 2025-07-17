@@ -179,6 +179,44 @@ export class Level extends ChatInput {
     );
     ctx.restore();
 
+    // draw xp text with dual color for visibility
+    const xpText = `${xpInLevel.toLocaleString()} / ${xpNeeded.toLocaleString()} XP`;
+    const xpTextX = progressBarX + progressBarWidth - 12 * scale;
+    const xpTextY = progressBarY + progressBarHeight / 2;
+    ctx.font = `600 ${13 * scale}px Nunito, sans-serif`;
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+
+    // draw text in bar color, clipped to filled part
+    ctx.save();
+    roundRect(
+      ctx,
+      progressBarX,
+      progressBarY,
+      progressBarWidth * progress,
+      progressBarHeight,
+      progressBarRadius,
+    );
+    ctx.clip();
+    ctx.fillStyle = colours.base.hex;
+    ctx.fillText(xpText, xpTextX, xpTextY);
+    ctx.restore();
+
+    // draw text in normal color, clipped to unfilled part
+    ctx.save();
+    roundRect(
+      ctx,
+      progressBarX + progressBarWidth * progress,
+      progressBarY,
+      progressBarWidth * (1 - progress),
+      progressBarHeight,
+      progressBarRadius,
+    );
+    ctx.clip();
+    ctx.fillStyle = colours.text.hex;
+    ctx.fillText(xpText, xpTextX, xpTextY);
+    ctx.restore();
+
     // send
     await interaction.reply({
       flags: MessageFlags.Ephemeral,
