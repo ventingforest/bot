@@ -1,15 +1,18 @@
 import {
+  Canvas,
+  FontLibrary,
+  Image,
+  loadImage,
+  type CanvasRenderingContext2D,
+  type CanvasTextAlign,
+  type CanvasTextBaseline,
+} from "skia-canvas";
+import {
   GuildMember,
   MessageFlags,
   type ChatInputCommandInteraction,
   type PresenceStatus,
 } from "discord.js";
-import {
-  Canvas,
-  FontLibrary,
-  loadImage,
-  type CanvasRenderingContext2D,
-} from "skia-canvas";
 import type { ChatInputCommand } from "@sapphire/framework";
 import { ChatInput, Config } from "$lib/command";
 import { flavors } from "@catppuccin/palette";
@@ -18,7 +21,7 @@ import path from "path";
 
 const scale = 3;
 const {
-  mocha: { colors: colours },
+  mocha: { colors: c },
 } = flavors;
 
 FontLibrary.use("Nunito", [
@@ -30,6 +33,34 @@ FontLibrary.use("Nunito", [
     "nunito-latin-wght-normal.woff2",
   ),
 ]);
+
+const statusColours: Record<PresenceStatus, string> = {
+  online: c.green.hex,
+  idle: c.yellow.hex,
+  dnd: c.red.hex,
+  offline: c.overlay0.hex,
+  invisible: c.overlay0.hex,
+};
+
+const avatarData = {
+  x: 72 * scale,
+  y: 72 * scale,
+  radius: 48 * scale,
+  border: 6 * scale,
+};
+
+const levelBox = {
+  w: 40 * scale,
+  h: 24 * scale,
+};
+
+const progressBar = {
+  x: avatarData.x + avatarData.radius * 2,
+  y: 86 * scale,
+  w: 300 * scale,
+  h: 18 * scale,
+  r: 9 * scale,
+};
 
 @Config({
   name: "level",
@@ -45,177 +76,64 @@ export class Level extends ChatInput {
       where: { id: interaction.user.id },
     });
 
-    // create the canvas and load the avatar
-    const canvas = new Canvas(500 * scale, 144 * scale),
-      ctx = canvas.getContext("2d");
+    const canvas = new Canvas(500 * scale, 144 * scale);
+    const ctx = canvas.getContext("2d");
     const avatar = await loadImage(
       interaction.user.displayAvatarURL({ extension: "webp", size: 256 }),
     );
 
-    // draw the background
-    ctx.fillStyle = colours.mantle.hex;
+    // bacckground
+    ctx.fillStyle = c.mantle.hex;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = colours.base.hex;
-    const borderWidth = 12 * scale;
+    ctx.fillStyle = c.base.hex;
+    const border = 12 * scale;
     ctx.fillRect(
-      borderWidth,
-      borderWidth,
-      canvas.width - borderWidth * 2,
-      canvas.height - borderWidth * 2,
+      border,
+      border,
+      canvas.width - border * 2,
+      canvas.height - border * 2,
     );
 
-    // draw the avatar border based on status
-    const avatarX = 72 * scale;
-    const avatarY = 72 * scale;
-    const avatarRadius = 48 * scale;
-    const borderThickness = 6 * scale;
+    // avatar border
     const status =
       (interaction.member as GuildMember).presence?.status || "offline";
-    const statusColors: Record<PresenceStatus, string> = {
-      online: colours.green.hex,
-      idle: colours.yellow.hex,
-      dnd: colours.red.hex,
-      offline: colours.overlay0.hex,
-      invisible: colours.overlay0.hex,
-    };
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(
-      avatarX,
-      avatarY,
-      avatarRadius + borderThickness / 2,
-      0,
-      Math.PI * 2,
-      true,
+    drawCircle(
+      ctx,
+      avatarData.x,
+      avatarData.y,
+      avatarData.radius + avatarData.border / 2,
+      statusColours[status] || statusColours.offline,
+      avatarData.border,
     );
-    ctx.strokeStyle = statusColors[status] || statusColors.offline;
-    ctx.lineWidth = borderThickness;
-    ctx.stroke();
-    ctx.restore();
 
-    // draw the avatar in a circle
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(avatarX, avatarY, avatarRadius, 0, Math.PI * 2, true);
-    ctx.clip();
-    ctx.drawImage(
-      avatar,
-      avatarX - avatarRadius,
-      avatarY - avatarRadius,
-      avatarRadius * 2,
-      avatarRadius * 2,
-    );
-    ctx.restore();
+    // avatar
+    drawAvatar(ctx, avatar, avatarData);
 
-    // display the level
-    const boxWidth = 40 * scale;
-    const boxHeight = 24 * scale;
-    const boxX = avatarX + avatarRadius - (3 * boxWidth) / 4;
-    const boxY = avatarY + avatarRadius - boxHeight;
-    ctx.fillStyle = colours.mauve.hex;
-    ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
-
-    const currentLevel = calculateLevel(user?.xp ?? 0);
-    ctx.font = `800 ${18 * scale}px Nunito, sans-serif`;
-    ctx.fillStyle = colours.base.hex;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(
-      currentLevel.toString(),
-      boxX + boxWidth / 2,
-      boxY + boxHeight / 2,
-    );
+    // level box
+    const level = calculateLevel(user?.xp ?? 0);
+    drawLevelBox(ctx, level, avatarData);
 
     // username
-    ctx.font = `850 ${30 * scale}px Nunito, sans-serif`;
-    ctx.fillStyle = colours.text.hex;
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.fillText(
+    drawText(
+      ctx,
       interaction.user.username,
-      avatarX + avatarRadius * 2,
+      avatarData.x + avatarData.radius * 2,
       20 * scale,
+      `850 ${30 * scale}px Nunito, sans-serif`,
+      c.text.hex,
+      "left",
+      "top",
     );
 
     // progress bar
-    const progressBarX = avatarX + avatarRadius * 2;
-    const progressBarY = 86 * scale;
-    const progressBarWidth = 300 * scale;
-    const progressBarHeight = 18 * scale;
-    const progressBarRadius = progressBarHeight / 2;
-    const nextLevel = currentLevel + 1;
-    const xpForCurrent = 120 * currentLevel ** 2;
-    const xpForNext = 120 * nextLevel ** 2;
+    const nextLevel = level + 1;
+    const xpForCurrent = xpForLevel(level);
+    const xpForNext = xpForLevel(nextLevel);
     const xpInLevel = (user?.xp ?? 0) - xpForCurrent;
     const xpNeeded = xpForNext - xpForCurrent;
     const progress = Math.max(0, Math.min(1, xpInLevel / xpNeeded));
 
-    ctx.fillStyle = colours.surface0.hex;
-    roundRect(
-      ctx,
-      progressBarX,
-      progressBarY,
-      progressBarWidth,
-      progressBarHeight,
-      progressBarRadius,
-    );
-    ctx.fill();
-    ctx.save();
-    roundRect(
-      ctx,
-      progressBarX,
-      progressBarY,
-      progressBarWidth,
-      progressBarHeight,
-      progressBarRadius,
-    );
-    ctx.clip();
-    ctx.fillStyle = colours.green.hex;
-    ctx.fillRect(
-      progressBarX,
-      progressBarY,
-      progressBarWidth * progress,
-      progressBarHeight,
-    );
-    ctx.restore();
-
-    // draw xp text with dual color for visibility
-    const xpText = `${xpInLevel.toLocaleString()} / ${xpNeeded.toLocaleString()} XP`;
-    const xpTextX = progressBarX + progressBarWidth - 12 * scale;
-    const xpTextY = progressBarY + progressBarHeight / 2;
-    ctx.font = `600 ${13 * scale}px Nunito, sans-serif`;
-    ctx.textAlign = "right";
-    ctx.textBaseline = "middle";
-
-    // draw text in bar color, clipped to filled part
-    ctx.save();
-    roundRect(
-      ctx,
-      progressBarX,
-      progressBarY,
-      progressBarWidth * progress,
-      progressBarHeight,
-      progressBarRadius,
-    );
-    ctx.clip();
-    ctx.fillStyle = colours.base.hex;
-    ctx.fillText(xpText, xpTextX, xpTextY);
-    ctx.restore();
-
-    // draw text in normal color, clipped to unfilled part
-    ctx.save();
-    roundRect(
-      ctx,
-      progressBarX + progressBarWidth * progress,
-      progressBarY,
-      progressBarWidth * (1 - progress),
-      progressBarHeight,
-      progressBarRadius,
-    );
-    ctx.clip();
-    ctx.fillStyle = colours.text.hex;
-    ctx.fillText(xpText, xpTextX, xpTextY);
-    ctx.restore();
+    drawProgressBar(ctx, progress, xpInLevel, xpNeeded);
 
     // send
     await interaction.reply({
@@ -230,12 +148,120 @@ export class Level extends ChatInput {
   }
 }
 
-function calculateLevel(xp: number): number {
+function calculateLevel(xp: number) {
   return Math.floor(Math.sqrt(xp / 120));
 }
 
-function xpForLevel(level: number): number {
-  return Math.floor(120 * level * level);
+function xpForLevel(level: number) {
+  return 120 * level * level;
+}
+
+function drawCircle(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  radius: number,
+  color: string,
+  lineWidth: number,
+) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawAvatar(
+  ctx: CanvasRenderingContext2D,
+  avatar: Image,
+  { x, y, radius }: typeof avatarData,
+) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.drawImage(avatar, x - radius, y - radius, radius * 2, radius * 2);
+  ctx.restore();
+}
+
+function drawLevelBox(
+  ctx: CanvasRenderingContext2D,
+  level: number,
+  { x, y, radius }: typeof avatarData,
+) {
+  const { w, h } = levelBox;
+  const boxX = x + radius - (3 * w) / 4;
+  const boxY = y + radius - h;
+  ctx.fillStyle = c.mauve.hex;
+  ctx.fillRect(boxX, boxY, w, h);
+  drawText(
+    ctx,
+    level.toString(),
+    boxX + w / 2,
+    boxY + h / 2,
+    `800 ${18 * scale}px Nunito, sans-serif`,
+    c.base.hex,
+    "center",
+    "middle",
+  );
+}
+
+function drawText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  font: string,
+  color: string,
+  align: CanvasTextAlign = "left",
+  baseline: CanvasTextBaseline = "alphabetic",
+) {
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.textBaseline = baseline;
+  ctx.fillText(text, x, y);
+}
+
+function drawProgressBar(
+  ctx: CanvasRenderingContext2D,
+  progress: number,
+  xpInLevel: number,
+  xpNeeded: number,
+) {
+  const { x, y, w, h, r } = progressBar;
+  ctx.fillStyle = c.surface0.hex;
+  roundRect(ctx, x, y, w, h, r);
+  ctx.fill();
+
+  ctx.save();
+  roundRect(ctx, x, y, w, h, r);
+  ctx.clip();
+  ctx.fillStyle = c.green.hex;
+  ctx.fillRect(x, y, w * progress, h);
+  ctx.restore();
+
+  // xp text
+  const xpText = `${xpInLevel.toLocaleString()} / ${xpNeeded.toLocaleString()} XP`;
+  const textX = x + w - 12 * scale;
+  const textY = y + h / 2;
+  const font = `600 ${13 * scale}px Nunito, sans-serif`;
+
+  // draw text in bar color (filled part)
+  ctx.save();
+  roundRect(ctx, x, y, w * progress, h, r);
+  ctx.clip();
+  drawText(ctx, xpText, textX, textY, font, c.base.hex, "right", "middle");
+  ctx.restore();
+
+  // draw text in normal color (unfilled part)
+  ctx.save();
+  roundRect(ctx, x + w * progress, y, w * (1 - progress), h, r);
+  ctx.clip();
+  drawText(ctx, xpText, textX, textY, font, c.text.hex, "right", "middle");
+  ctx.restore();
 }
 
 function roundRect(
