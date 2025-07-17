@@ -62,27 +62,47 @@ const progressBar = {
   r: 9 * scale,
 };
 
-@Config({
-  name: "level",
-  description: "Check your current level",
-  idHints: ["1395199921052975185"],
-})
+@Config(
+  {
+    name: "level",
+    description: "Check your current level",
+    idHints: ["1395199921052975185"],
+  },
+  builder => {
+    builder.addUserOption(option =>
+      option
+        .setName("user")
+        .setDescription("The user to check the level of")
+        .setRequired(false),
+    );
+  },
+)
 export class Level extends ChatInput {
   override async chatInputRun(
     interaction: ChatInputCommandInteraction,
     _: ChatInputCommand.RunContext,
   ) {
-    const user = await this.container.db.user.findUnique({
-      where: { id: interaction.user.id },
+    const user = interaction.options.getUser("user") || interaction.user;
+
+    // don't allow bots
+    if (user.bot) {
+      return interaction.reply({
+        content: "bots don't have levels! please choose a person.",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
+    const member = interaction.guild?.members.cache.get(user.id)!;
+    const dbUser = await this.container.db.user.findUnique({
+      where: { id: user.id },
     });
 
     const canvas = new Canvas(500 * scale, 144 * scale);
     const ctx = canvas.getContext("2d");
     const avatar = await loadImage(
-      interaction.user.displayAvatarURL({ extension: "webp", size: 256 }),
+      user.displayAvatarURL({ extension: "webp", size: 256 }),
     );
-    const status =
-      (interaction.member as GuildMember).presence?.status || "offline";
+    const status = member.presence?.status || "offline";
     const colour = statusColours[status] || statusColours.offline;
 
     // background
@@ -111,13 +131,13 @@ export class Level extends ChatInput {
     drawAvatar(ctx, avatar);
 
     // level box
-    const level = calculateLevel(user?.xp ?? 0);
+    const level = calculateLevel(dbUser?.xp ?? 0);
     drawLevelBox(ctx, level, colour);
 
     // username
     drawText(
       ctx,
-      interaction.user.username,
+      user.username,
       avatarData.x + avatarData.radius * 2,
       20 * scale,
       `850 ${30 * scale}px Nunito, sans-serif`,
@@ -127,7 +147,7 @@ export class Level extends ChatInput {
     );
 
     // rank
-    const rank = await rankInServer(interaction.user);
+    const rank = await rankInServer(user);
     drawText(
       ctx,
       `Rank #${rank.toLocaleString()}`,
@@ -143,7 +163,7 @@ export class Level extends ChatInput {
     const nextLevel = level + 1;
     const xpForCurrent = xpForLevel(level);
     const xpForNext = xpForLevel(nextLevel);
-    const xpInLevel = (user?.xp ?? 0) - xpForCurrent;
+    const xpInLevel = (dbUser?.xp ?? 0) - xpForCurrent;
     const xpNeeded = xpForNext - xpForCurrent;
     const progress = Math.max(0, Math.min(1, xpInLevel / xpNeeded));
 
@@ -155,7 +175,7 @@ export class Level extends ChatInput {
       files: [
         {
           attachment: await canvas.toBuffer("webp"),
-          name: `${interaction.user.username}.webp`,
+          name: `${user.username}.webp`,
         },
       ],
     });
