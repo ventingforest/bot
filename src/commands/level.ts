@@ -4,7 +4,12 @@ import {
   type ChatInputCommandInteraction,
   type PresenceStatus,
 } from "discord.js";
-import { Canvas, FontLibrary, loadImage } from "skia-canvas";
+import {
+  Canvas,
+  FontLibrary,
+  loadImage,
+  type CanvasRenderingContext2D,
+} from "skia-canvas";
 import type { ChatInputCommand } from "@sapphire/framework";
 import { ChatInput, Config } from "$lib/command";
 import { flavors } from "@catppuccin/palette";
@@ -110,11 +115,16 @@ export class Level extends ChatInput {
     ctx.fillStyle = colours.mauve.hex;
     ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
 
+    const currentLevel = calculateLevel(user?.xp ?? 0);
     ctx.font = `800 ${18 * scale}px Nunito, sans-serif`;
     ctx.fillStyle = colours.base.hex;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("101", boxX + boxWidth / 2, boxY + boxHeight / 2);
+    ctx.fillText(
+      currentLevel.toString(),
+      boxX + boxWidth / 2,
+      boxY + boxHeight / 2,
+    );
 
     // username
     ctx.font = `850 ${30 * scale}px Nunito, sans-serif`;
@@ -126,6 +136,48 @@ export class Level extends ChatInput {
       avatarX + avatarRadius * 2,
       20 * scale,
     );
+
+    // progress bar
+    const progressBarX = avatarX + avatarRadius * 2;
+    const progressBarY = 86 * scale;
+    const progressBarWidth = 300 * scale;
+    const progressBarHeight = 18 * scale;
+    const progressBarRadius = progressBarHeight / 2;
+    const nextLevel = currentLevel + 1;
+    const xpForCurrent = 120 * currentLevel ** 2;
+    const xpForNext = 120 * nextLevel ** 2;
+    const xpInLevel = (user?.xp ?? 0) - xpForCurrent;
+    const xpNeeded = xpForNext - xpForCurrent;
+    const progress = Math.max(0, Math.min(1, xpInLevel / xpNeeded));
+
+    ctx.fillStyle = colours.surface0.hex;
+    roundRect(
+      ctx,
+      progressBarX,
+      progressBarY,
+      progressBarWidth,
+      progressBarHeight,
+      progressBarRadius,
+    );
+    ctx.fill();
+    ctx.save();
+    roundRect(
+      ctx,
+      progressBarX,
+      progressBarY,
+      progressBarWidth,
+      progressBarHeight,
+      progressBarRadius,
+    );
+    ctx.clip();
+    ctx.fillStyle = colours.green.hex;
+    ctx.fillRect(
+      progressBarX,
+      progressBarY,
+      progressBarWidth * progress,
+      progressBarHeight,
+    );
+    ctx.restore();
 
     // send
     await interaction.reply({
@@ -142,4 +194,29 @@ export class Level extends ChatInput {
 
 function calculateLevel(xp: number): number {
   return Math.floor(Math.sqrt(xp / 120));
+}
+
+function xpForLevel(level: number): number {
+  return Math.floor(120 * level * level);
+}
+
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
 }
