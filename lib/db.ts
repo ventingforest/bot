@@ -19,14 +19,6 @@ const prisma = new PrismaClient({
   ],
 });
 
-container.db = prisma;
-
-declare module "@sapphire/pieces" {
-  interface Container {
-    db: PrismaClient;
-  }
-}
-
 // log prisma events
 {
   const logger = getLogger("db");
@@ -35,12 +27,11 @@ declare module "@sapphire/pieces" {
   prisma.$on("error", ({ message }) => logger.error(message));
 }
 
-const { client, logger } = container;
-
 /**
  * Synchronises the database with the current state of the guild.
  */
 export async function synchroniseGuild() {
+  const { client, logger } = container;
   logger.info`Synchronising database with current guild state...`;
 
   const guild = await client.guilds.fetch(guildId);
@@ -70,4 +61,13 @@ export function synchroniseMember(
     update: { username, present },
     create: { id, username, present },
   });
+}
+
+container.db = prisma;
+export default prisma;
+
+declare module "@sapphire/pieces" {
+  interface Container {
+    db: PrismaClient;
+  }
 }
