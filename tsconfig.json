@@ -29,9 +29,9 @@
     // custom
     "baseUrl": ".",
     "paths": {
-      "$lib/*": ["lib/*"],
-      "$bot/*": ["src/lib/*"],
-      "$tools/*": ["tools/lib/*"]
+      "$shared/*": ["shared/*"],
+      "$lib/*": ["src/lib/*"],
+      "$prisma": ["prisma/generated"]
     }
   }
 }

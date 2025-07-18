@@ -1,5 +1,5 @@
 node_modules
 *.db*
 .env
-src/generated
+prisma/generated
 logs

@@ -8,7 +8,6 @@ import { getPrettyFormatter, prettyFormatter } from "@logtape/pretty";
 import type { GuildTextBasedChannel } from "discord.js";
 import { container } from "@sapphire/framework";
 import { getFileSink } from "@logtape/file";
-import { isProduction } from "$lib/data";
 import fs from "fs/promises";
 
 let logChannel: GuildTextBasedChannel;
@@ -22,6 +21,7 @@ const logFileSink = (name: string) =>
     formatter: getPrettyFormatter({ colors: false, align: false }),
   });
 
+const isProduction = process.env.NODE_ENV === "production";
 const isTool = (process.argv[1] || "").includes("tools");
 const logToDiscord = !isTool && isProduction && process.env.LOG_CHANNEL_ID;
 

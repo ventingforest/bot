@@ -1,7 +1,7 @@
 {
   "files.exclude": {
     "node_modules": true,
-    "src/generated": true,
+    "prisma/generated": true,
     "bun.lock": true,
     "logs": true
   }

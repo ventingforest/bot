@@ -1,37 +1,16 @@
 import type { GuildMember, PartialGuildMember } from "discord.js";
-import { PrismaClient } from "../src/generated/prisma";
 import { container } from "@sapphire/framework";
-import { getLogger } from "@logtape/logtape";
-import { guildId } from "lib/data";
+import type { PrismaClient } from "$prisma";
+import { guildId } from "./data";
+import prisma from "$shared/db";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "No database URL provided. Please set the DATABASE_URL environment variable.",
-  );
-}
-
-// connect to the database
-const prisma = new PrismaClient({
-  log: [
-    { level: "info", emit: "event" },
-    { level: "warn", emit: "event" },
-    { level: "error", emit: "event" },
-  ],
-});
-
-// log prisma events
-{
-  const logger = getLogger("db");
-  prisma.$on("info", ({ message }) => logger.info(message));
-  prisma.$on("warn", ({ message }) => logger.warn(message));
-  prisma.$on("error", ({ message }) => logger.error(message));
-}
+const { client, logger } = container;
+container.db = prisma;
 
 /**
  * Synchronises the database with the current state of the guild.
  */
 export async function synchroniseGuild() {
-  const { client, logger } = container;
   logger.info`Synchronising database with current guild state...`;
 
   const guild = await client.guilds.fetch(guildId);
@@ -62,9 +41,6 @@ export function synchroniseMember(
     create: { id, username, present },
   });
 }
-
-container.db = prisma;
-export default prisma;
 
 declare module "@sapphire/pieces" {
   interface Container {

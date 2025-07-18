@@ -12,9 +12,9 @@ import {
   type ChatInputCommandInteraction,
   type PresenceStatus,
 } from "discord.js";
-import { calculateLevel, rankInServer, xpForLevel } from "$bot/level";
+import { calculateLevel, rankInServer, xpForLevel } from "$lib/level";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { ChatInput, Config } from "$bot/command";
+import { ChatInput, Config } from "$lib/command";
 import { flavors } from "@catppuccin/palette";
 import node_modules from "node_modules-path";
 import path from "path";
@@ -71,7 +71,7 @@ const progressBar = {
     builder.addUserOption(option =>
       option
         .setName("user")
-        .setDescription("The user to check the level of")
+        .setDescription("the user to check the level of")
         .setRequired(false),
     );
   },

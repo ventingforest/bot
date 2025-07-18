@@ -1,7 +1,7 @@
 import { SapphireClient } from "@sapphire/framework";
 import { GatewayIntentBits } from "discord.js";
-import Logger from "$bot/logger";
-import token from "$lib/token";
+import token from "$shared/token";
+import Logger from "$lib/logger";
 
 const client = new SapphireClient({
   intents: [

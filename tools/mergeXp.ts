@@ -1,5 +1,5 @@
 import { hideBin } from "yargs/helpers";
-import prisma from "$lib/db";
+import prisma from "$shared/db";
 import yargs from "yargs";
 
 // collect args
