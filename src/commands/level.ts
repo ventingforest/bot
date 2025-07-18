@@ -8,14 +8,13 @@ import {
   type CanvasTextBaseline,
 } from "skia-canvas";
 import {
-  GuildMember,
   MessageFlags,
   type ChatInputCommandInteraction,
   type PresenceStatus,
 } from "discord.js";
-import { calculateLevel, rankInServer, xpForLevel } from "$lib/level";
+import { calculateLevel, rankInServer, xpForLevel } from "$bot/level";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { ChatInput, Config } from "$lib/command";
+import { ChatInput, Config } from "$bot/command";
 import { flavors } from "@catppuccin/palette";
 import node_modules from "node_modules-path";
 import path from "path";

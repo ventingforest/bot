@@ -1,8 +1,14 @@
 import type { GuildMember, PartialGuildMember } from "discord.js";
-import { PrismaClient } from "../generated/prisma";
+import { PrismaClient } from "../src/generated/prisma";
 import { container } from "@sapphire/framework";
 import { getLogger } from "@logtape/logtape";
-import { guildId } from "$lib/data";
+import { guildId } from "lib/data";
+
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    "No database URL provided. Please set the DATABASE_URL environment variable.",
+  );
+}
 
 // connect to the database
 const prisma = new PrismaClient({

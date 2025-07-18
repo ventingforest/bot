@@ -1,6 +1,5 @@
 node_modules
-*.db
-*.bak
+*.db*
 .env
 src/generated
 logs

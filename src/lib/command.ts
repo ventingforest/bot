@@ -5,7 +5,7 @@ import {
 } from "@sapphire/framework";
 import type { SlashCommandBuilder } from "discord.js";
 import { ApplyOptions } from "@sapphire/decorators";
-import { guildId } from "./data";
+import { guildId } from "$lib/data";
 
 type SlashCommandOptions = (builder: SlashCommandBuilder) => void;
 

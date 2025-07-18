@@ -1,7 +1,7 @@
-import { Listener, Events, Config } from "$lib/listener";
+import { Listener, Events, Config } from "$bot/listener";
 import type { GuildMember } from "discord.js";
-import { synchroniseMember } from "$lib/db";
-import { isProduction } from "$lib/data";
+import { synchroniseMember } from "lib/db";
+import { isProduction } from "lib/data";
 
 @Config(Events.GuildMemberAdd, {
   enabled: isProduction,

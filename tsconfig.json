@@ -29,7 +29,9 @@
     // custom
     "baseUrl": ".",
     "paths": {
-      "$lib/*": ["src/lib/*"]
+      "$lib/*": ["lib/*"],
+      "$bot/*": ["src/lib/*"],
+      "$tools/*": ["tools/lib/*"]
     }
   }
 }
