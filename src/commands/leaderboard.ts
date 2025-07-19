@@ -4,10 +4,12 @@ import {
   User,
   type ChatInputCommandInteraction,
 } from "discord.js";
+import { drawProgress, progressStats } from "$lib/level/canvas/progress";
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
-import { c, drawAvatar, drawText, scale } from "$lib/level/canvas";
 import type { ChatInputCommand } from "@sapphire/framework";
 import { calculateLevel, pageLength } from "$lib/level";
+import { c, drawText, scale } from "$lib/level/canvas";
+import { drawAvatar } from "$lib/level/canvas/avatar";
 import { ChatInput, Config } from "$lib/command";
 import type { User as DbUser } from "$prisma";
 
@@ -138,20 +140,32 @@ async function drawUser(
   // username
   const user = member instanceof GuildMember ? member.user : member;
   x += avatarRadius * 2;
+  const usernameY = y - avatarRadius / 2;
   drawText(
     ctx,
     user.username,
-    { x, y },
+    { x, y: usernameY },
     `850 ${8 * scale}px Nunito, sans-serif`,
   );
 
   // level
-  const level = calculateLevel(db.xp);
   drawText(
     ctx,
-    `Level ${level}`,
-    { x, y: y + (2 * avatarRadius) / 3 },
+    `Level ${calculateLevel(db.xp)}`,
+    { x, y: y + scale },
     `600 ${6 * scale}px Nunito, sans-serif`,
     c.subtext0.hex,
+  );
+
+  // progress bar
+  const stats = progressStats(db);
+  drawProgress(
+    ctx,
+    stats,
+    { x, y: y + avatarRadius / 3 },
+    canvasWidth - x - avatarRadius * 2,
+    avatarRadius / 2,
+    `${((stats.xpInLevel / stats.xpNeeded) * 100).toFixed(2)}%`,
+    4,
   );
 }

@@ -1,16 +1,10 @@
-import {
-  scale,
-  c,
-  drawAvatar,
-  type CircleData,
-  statusColours,
-  drawText,
-  type PositionalData,
-} from "$lib/level/canvas";
+import { scale, c, drawText, statusColours } from "$lib/level/canvas";
 import { MessageFlags, type ChatInputCommandInteraction } from "discord.js";
+import { drawProgress, progressStats } from "$lib/level/canvas/progress";
+import { drawAvatar, type CircleData } from "$lib/level/canvas/avatar";
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
-import { calculateLevel, rankInServer, xpForLevel } from "$lib/level";
 import type { ChatInputCommand } from "@sapphire/framework";
+import { calculateLevel, rankInServer } from "$lib/level";
 import { ChatInput, Config } from "$lib/command";
 
 const avatarData: CircleData = {
@@ -55,9 +49,9 @@ export class Level extends ChatInput {
     }
 
     const member = interaction.guild?.members.cache.get(user.id)!;
-    const dbUser = await this.container.db.user.findUnique({
+    const dbUser = (await this.container.db.user.findUnique({
       where: { id: user.id },
-    });
+    }))!;
 
     // create the canvas
     const canvas = new Canvas(500 * scale, 144 * scale);
@@ -81,7 +75,7 @@ export class Level extends ChatInput {
     await drawAvatar(ctx, member, avatarData);
 
     // level box
-    const level = calculateLevel(dbUser?.xp ?? 0);
+    const level = calculateLevel(dbUser.xp);
     drawLevelBox(ctx, level, colour);
 
     // username
@@ -108,14 +102,18 @@ export class Level extends ChatInput {
     );
 
     // progress bar
-    const nextLevel = level + 1;
-    const xpForCurrent = xpForLevel(level);
-    const xpForNext = xpForLevel(nextLevel);
-    const xpInLevel = (dbUser?.xp ?? 0) - xpForCurrent;
-    const xpNeeded = xpForNext - xpForCurrent;
-    const progress = Math.max(0, Math.min(1, xpInLevel / xpNeeded));
-
-    drawProgressBar(ctx, progress, xpInLevel, xpNeeded);
+    const stats = progressStats(dbUser);
+    drawProgress(
+      ctx,
+      stats,
+      {
+        x: avatarData.x + avatarData.radius * 2,
+        y: avatarData.y + avatarData.radius - levelBox.h,
+      },
+      300 * scale,
+      18 * scale,
+      `${stats.xpInLevel.toLocaleString()} / ${stats.xpNeeded.toLocaleString()} XP`,
+    );
 
     // send
     await interaction.reply({
@@ -150,68 +148,4 @@ function drawLevelBox(
     "center",
     "middle",
   );
-}
-
-function drawProgressBar(
-  ctx: CanvasRenderingContext2D,
-  progress: number,
-  xpInLevel: number,
-  xpNeeded: number,
-) {
-  const x = avatarData.x + avatarData.radius * 2;
-  const y = avatarData.y + avatarData.radius - levelBox.h; // keep in line with level box
-  const w = 300 * scale;
-  const h = 18 * scale;
-  const r = 9 * scale;
-
-  ctx.fillStyle = c.surface0.hex;
-  roundRect(ctx, x, y, w, h, r);
-  ctx.fill();
-
-  ctx.save();
-  roundRect(ctx, x, y, w, h, r);
-  ctx.clip();
-  ctx.fillStyle = c.green.hex;
-  ctx.fillRect(x, y, w * progress, h);
-  ctx.restore();
-
-  // xp text
-  const xpText = `${xpInLevel.toLocaleString()} / ${xpNeeded.toLocaleString()} XP`;
-  const textPos: PositionalData = { x: x + w - 12 * scale, y: y + h / 2 };
-  const font = `600 ${13 * scale}px Nunito, sans-serif`;
-
-  // draw text in bar color (filled part)
-  ctx.save();
-  roundRect(ctx, x, y, w * progress, h, r);
-  ctx.clip();
-  drawText(ctx, xpText, textPos, font, c.base.hex, "right", "middle");
-  ctx.restore();
-
-  // draw text in normal color (unfilled part)
-  ctx.save();
-  roundRect(ctx, x + w * progress, y, w * (1 - progress), h, r);
-  ctx.clip();
-  drawText(ctx, xpText, textPos, font, c.text.hex, "right", "middle");
-  ctx.restore();
-}
-
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number,
-) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.arcTo(x + w, y, x + w, y + r, r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-  ctx.lineTo(x + r, y + h);
-  ctx.arcTo(x, y + h, x, y + h - r, r);
-  ctx.lineTo(x, y + r);
-  ctx.arcTo(x, y, x + r, y, r);
-  ctx.closePath();
 }
