@@ -5,12 +5,12 @@ import {
   type ChatInputCommandInteraction,
 } from "discord.js";
 import { drawProgress, progressStats } from "$lib/level/canvas/progress";
+import { calculateLevel, pageLength, rankInGuild } from "$lib/level";
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { calculateLevel, pageLength } from "$lib/level";
-import { c, drawText, scale } from "$lib/level/canvas";
 import { drawAvatar } from "$lib/level/canvas/avatar";
 import { ChatInput, Config } from "$lib/command";
+import { c, drawText } from "$lib/level/canvas";
 import type { User as DbUser } from "$prisma";
 
 @Config(
@@ -113,6 +113,7 @@ export class Leaderboard extends ChatInput {
   }
 }
 
+const scale = 4;
 const canvasWidth = 50 * pageLength * scale;
 
 const avatarRadius = canvasWidth / (pageLength * 4);
@@ -128,17 +129,44 @@ async function drawUser(
   db: DbUser,
   y: number,
 ) {
-  // avatar
+  const user = member instanceof GuildMember ? member.user : member;
   let x = avatarRadius * 2;
 
-  await drawAvatar(ctx, member, {
-    x,
-    y,
-    radius: avatarRadius,
-  });
+  // avatar
+  const rank = await rankInGuild(user);
+  let medalColour = undefined;
+
+  switch (rank) {
+    case 1:
+      medalColour = c.yellow.hex;
+      break;
+    case 2:
+      medalColour = c.subtext1.hex;
+      break;
+    case 3:
+      medalColour = c.peach.hex;
+      break;
+  }
+
+  await drawAvatar(
+    ctx,
+    member,
+    {
+      x,
+      y,
+      r: avatarRadius,
+      borderColour: medalColour,
+    },
+    {
+      text: `#${rank}`,
+      font: `700 ${5 * scale}px Nunito, sans-serif`,
+      w: 12 * scale,
+      h: 8 * scale,
+      bgColour: medalColour,
+    },
+  );
 
   // username
-  const user = member instanceof GuildMember ? member.user : member;
   x += avatarRadius * 2;
   const usernameY = y - avatarRadius / 2;
   drawText(
@@ -166,6 +194,6 @@ async function drawUser(
     canvasWidth - x - avatarRadius * 2,
     avatarRadius / 2,
     `${((stats.xpInLevel / stats.xpNeeded) * 100).toFixed(2)}%`,
-    4,
+    4 * scale,
   );
 }

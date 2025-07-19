@@ -1,22 +1,11 @@
-import { scale, c, drawText, statusColours } from "$lib/level/canvas";
 import { MessageFlags, type ChatInputCommandInteraction } from "discord.js";
 import { drawProgress, progressStats } from "$lib/level/canvas/progress";
-import { drawAvatar, type CircleData } from "$lib/level/canvas/avatar";
+import { drawAvatar, type AvatarData } from "$lib/level/canvas/avatar";
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
+import { c, drawText, statusColours } from "$lib/level/canvas";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { calculateLevel, rankInServer } from "$lib/level";
+import { calculateLevel, rankInGuild } from "$lib/level";
 import { ChatInput, Config } from "$lib/command";
-
-const avatarData: CircleData = {
-  x: 72 * scale,
-  y: 72 * scale,
-  radius: 48 * scale,
-};
-
-const levelBox = {
-  w: 40 * scale,
-  h: 24 * scale,
-};
 
 @Config(
   {
@@ -56,8 +45,6 @@ export class Level extends ChatInput {
     // create the canvas
     const canvas = new Canvas(500 * scale, 144 * scale);
     const ctx = canvas.getContext("2d");
-    const status = member.presence?.status || "offline";
-    const colour = statusColours[status] || statusColours.offline;
 
     // background with border
     ctx.fillStyle = c.mantle.hex;
@@ -72,17 +59,18 @@ export class Level extends ChatInput {
     );
 
     // avatar
-    await drawAvatar(ctx, member, avatarData);
-
-    // level box
     const level = calculateLevel(dbUser.xp);
-    drawLevelBox(ctx, level, colour);
+    await drawAvatar(ctx, member, avatarData, {
+      text: level.toString(),
+      font: `800 ${18 * scale}px Nunito, sans-serif`,
+      ...levelBox,
+    });
 
     // username
     drawText(
       ctx,
       user.username,
-      { x: avatarData.x + avatarData.radius * 2, y: 20 * scale },
+      { x: avatarData.x + avatarData.r * 2, y: 20 * scale },
       `850 ${30 * scale}px Nunito, sans-serif`,
       c.text.hex,
       "left",
@@ -90,11 +78,11 @@ export class Level extends ChatInput {
     );
 
     // rank
-    const rank = await rankInServer(user);
+    const rank = await rankInGuild(user);
     drawText(
       ctx,
       `Rank #${rank.toLocaleString()}`,
-      { x: avatarData.x + avatarData.radius * 2, y: 55 * scale },
+      { x: avatarData.x + avatarData.r * 2, y: 55 * scale },
       `600 ${14 * scale}px Nunito, sans-serif`,
       c.subtext0.hex,
       "left",
@@ -107,8 +95,8 @@ export class Level extends ChatInput {
       ctx,
       stats,
       {
-        x: avatarData.x + avatarData.radius * 2,
-        y: avatarData.y + avatarData.radius - levelBox.h,
+        x: avatarData.x + avatarData.r * 2,
+        y: avatarData.y + avatarData.r - levelBox.h,
       },
       300 * scale,
       18 * scale,
@@ -128,24 +116,15 @@ export class Level extends ChatInput {
   }
 }
 
-function drawLevelBox(
-  ctx: CanvasRenderingContext2D,
-  level: number,
-  colour: string,
-) {
-  const { x, y, radius } = avatarData;
-  const { w, h } = levelBox;
-  const boxX = x + radius - (3 * w) / 4;
-  const boxY = y + radius - h;
-  ctx.fillStyle = colour;
-  ctx.fillRect(boxX, boxY, w, h);
-  drawText(
-    ctx,
-    level.toString(),
-    { x: boxX + w / 2, y: boxY + h / 2 },
-    `800 ${18 * scale}px Nunito, sans-serif`,
-    c.base.hex,
-    "center",
-    "middle",
-  );
-}
+const scale = 3;
+
+const avatarData: AvatarData = {
+  x: 72 * scale,
+  y: 72 * scale,
+  r: 48 * scale,
+};
+
+const levelBox = {
+  w: 40 * scale,
+  h: 24 * scale,
+};

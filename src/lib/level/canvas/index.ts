@@ -20,11 +20,6 @@ FontLibrary.use("Nunito", [
   ),
 ]);
 
-/**
- * How much to scale canvas elements by.
- */
-export const scale = 3;
-
 export const {
   mocha: { colors: c },
 } = flavors;

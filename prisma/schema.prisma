@@ -13,4 +13,6 @@ model User {
   username String? @unique
   present  Boolean @default(false)
   xp       Int     @default(0)
+
+  @@index([present, xp])
 }

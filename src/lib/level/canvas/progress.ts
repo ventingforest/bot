@@ -1,6 +1,6 @@
 import type { CanvasRenderingContext2D } from "skia-canvas";
-import { c, drawText, scale, type PositionalData } from ".";
 import { calculateLevel, xpForLevel } from "$lib/level";
+import { c, drawText, type PositionalData } from ".";
 import type { User } from "$prisma";
 
 export interface ProgressStats {
@@ -41,7 +41,7 @@ export function drawProgress(
   ctx.restore();
 
   // text
-  const textPos: PositionalData = { x: x + w - inset * scale, y: y + h / 2 };
+  const textPos: PositionalData = { x: x + w - inset, y: y + h / 2 };
   const font = `600 ${Math.max(h - 5, 10)}px Nunito, sans-serif`;
 
   ctx.save();
