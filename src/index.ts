@@ -1,5 +1,6 @@
 import { SapphireClient } from "@sapphire/framework";
-import { GatewayIntentBits } from "discord.js";
+import { GatewayIntentBits, REST } from "discord.js";
+import { guildId } from "$lib/data";
 import token from "$shared/token";
 import Logger from "$lib/logger";
 

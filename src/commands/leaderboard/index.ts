@@ -9,42 +9,42 @@ import {
 } from "discord.js";
 import { container, type ChatInputCommand } from "@sapphire/framework";
 import type { Props } from "$interactions/leaderboard";
-import { ChatInput, Config } from "$command";
+import { Command, Config } from "$command";
 import { getPrettyPage } from "./_pretty";
 import { pageLength } from "$lib/level";
 import { getTextPage } from "./_text";
 
-@Config(
-  {
+@Config({
+  slash: {
     name: "leaderboard",
     description: "view the server leaderboard",
-    idHints: ["1395903756121542799"],
+    idHints: ["1396170991633301535"],
+    options: builder => {
+      builder
+        .addNumberOption(option =>
+          option
+            .setName("page")
+            .setDescription("the page of the leaderboard to start at")
+            .setMinValue(1),
+        )
+        .addBooleanOption(option =>
+          option
+            .setName("current")
+            .setDescription(
+              "only show users that are currently members of the server",
+            ),
+        )
+        .addBooleanOption(option =>
+          option
+            .setName("text")
+            .setDescription(
+              "use a text-only leaderboard instead of the graphical one",
+            ),
+        );
+    },
   },
-  builder => {
-    builder
-      .addNumberOption(option =>
-        option
-          .setName("page")
-          .setDescription("the page of the leaderboard to start at")
-          .setMinValue(1),
-      )
-      .addBooleanOption(option =>
-        option
-          .setName("current")
-          .setDescription(
-            "only show users that are currently members of the server",
-          ),
-      )
-      .addBooleanOption(option =>
-        option
-          .setName("text")
-          .setDescription(
-            "use a text-only leaderboard instead of the graphical one",
-          ),
-      );
-  },
-)
-export class Leaderboard extends ChatInput {
+})
+export class Leaderboard extends Command {
   override async chatInputRun(
     interaction: ChatInputCommandInteraction,
     _: ChatInputCommand.RunContext,

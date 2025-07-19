@@ -1,14 +1,16 @@
 import { type ChatInputCommandInteraction, MessageFlags } from "discord.js";
 import { isMessageInstance } from "@sapphire/discord.js-utilities";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { ChatInput, Config } from "$command";
+import { Command, Config } from "$command";
 
 @Config({
-  name: "ping",
-  description: "check response times",
-  idHints: ["1395199919865856110"],
+  slash: {
+    name: "ping",
+    description: "check response times",
+    idHints: ["1396170990228213781"],
+  },
 })
-export class Ping extends ChatInput {
+export class Ping extends Command {
   override async chatInputRun(
     interaction: ChatInputCommandInteraction,
     _: ChatInputCommand.RunContext,
