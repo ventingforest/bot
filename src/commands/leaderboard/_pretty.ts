@@ -101,7 +101,7 @@ async function drawUser(
     {
       text: `#${rank}`,
       font: `700 ${5 * scale}px Nunito, sans-serif`,
-      w: 12 * scale,
+      w: 16 * scale,
       h: 8 * scale,
       bgColour: medalColour,
     },

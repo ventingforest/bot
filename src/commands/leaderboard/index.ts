@@ -103,21 +103,36 @@ export async function getPage(
 
   // buttons for pagination
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    // first page
+    new ButtonBuilder()
+      .setCustomId(`lb_jmp_1_${current}${pretty ? "_pretty" : ""}`)
+      .setEmoji("⏮️")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page === 1),
+    // previous page
     new ButtonBuilder()
       .setCustomId(`lb_go_${page - 1}_${current}${pretty ? "_pretty" : ""}`)
       .setEmoji("◀️")
-      .setStyle(ButtonStyle.Primary)
+      .setStyle(ButtonStyle.Secondary)
       .setDisabled(page <= 1),
+    // current page
     new ButtonBuilder()
       .setCustomId("lb_current")
       .setLabel(`Page ${page} of ${maxPage}`)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(true),
+    // next page
     new ButtonBuilder()
       .setCustomId(`lb_go_${page + 1}_${current}${pretty ? "_pretty" : ""}`)
       .setEmoji("▶️")
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(page === maxPage),
+    // last page
+    new ButtonBuilder()
+      .setCustomId(`lb_jmp_${maxPage}_${current}${pretty ? "_pretty" : ""}`)
+      .setEmoji("⏭️")
       .setStyle(ButtonStyle.Primary)
-      .setDisabled(page >= maxPage),
+      .setDisabled(page === maxPage),
   );
 
   return { components: [row], ...content };
