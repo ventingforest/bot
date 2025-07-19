@@ -1,5 +1,5 @@
 import type { GuildMember, PartialGuildMember } from "discord.js";
-import { Listener, Events, Config } from "$lib/listener";
+import { Listener, Events, Config } from "$listener";
 import { synchroniseMember } from "$lib/db";
 import { isProduction } from "$lib/data";
 

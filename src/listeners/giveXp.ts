@@ -1,5 +1,5 @@
 import type { OmitPartialGroupDMChannel, Message } from "discord.js";
-import { Events, Listener, Config } from "$lib/listener";
+import { Events, Listener, Config } from "$listener";
 import { isProduction, xp } from "$lib/data";
 
 @Config(Events.MessageCreate)

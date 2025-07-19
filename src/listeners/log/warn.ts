@@ -1,4 +1,4 @@
-import { Events, Listener, Config } from "$lib/listener";
+import { Events, Listener, Config } from "$listener";
 import { getLogger } from "@logtape/logtape";
 
 const logger = getLogger("api");

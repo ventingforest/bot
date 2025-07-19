@@ -1,5 +1,5 @@
-import { Events, Listener, Config } from "$lib/listener";
 import { ActivityType, type Client } from "discord.js";
+import { Events, Listener, Config } from "$listener";
 import { synchroniseGuild } from "$lib/db";
 import { isProduction } from "$lib/data";
 

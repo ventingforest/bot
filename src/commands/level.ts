@@ -5,7 +5,7 @@ import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
 import { c, drawText, statusColours } from "$lib/level/canvas";
 import type { ChatInputCommand } from "@sapphire/framework";
 import { calculateLevel, rankInGuild } from "$lib/level";
-import { ChatInput, Config } from "$lib/command";
+import { ChatInput, Config } from "$command";
 
 @Config(
   {
@@ -78,7 +78,7 @@ export class Level extends ChatInput {
     );
 
     // rank
-    const rank = await rankInGuild(user);
+    const rank = await rankInGuild(user.id);
     drawText(
       ctx,
       `Rank #${rank.toLocaleString()}`,
