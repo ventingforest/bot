@@ -1,13 +1,19 @@
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   GuildMember,
   MessageFlags,
   User,
   type ChatInputCommandInteraction,
+  type Interaction,
+  type InteractionReplyOptions,
+  type InteractionUpdateOptions,
 } from "discord.js";
 import { drawProgress, progressStats } from "$lib/level/canvas/progress";
+import { container, type ChatInputCommand } from "@sapphire/framework";
 import { calculateLevel, pageLength, rankInGuild } from "$lib/level";
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
-import type { ChatInputCommand } from "@sapphire/framework";
 import { drawAvatar } from "$lib/level/canvas/avatar";
 import { ChatInput, Config } from "$lib/command";
 import { c, drawText } from "$lib/level/canvas";
@@ -41,21 +47,12 @@ export class Leaderboard extends ChatInput {
     interaction: ChatInputCommandInteraction,
     _: ChatInputCommand.RunContext,
   ) {
-    // todo: buttons for next/previous page
-
     // parse options
     const page = interaction.options.getNumber("page") ?? 1;
-    const where =
-      (interaction.options.getBoolean("current") ?? true)
-        ? { present: true }
-        : undefined;
+    const current = interaction.options.getBoolean("current") ?? true;
 
-    // count total users for pagination
-    const totalUsers = await this.container.db.user.count({
-      where,
-    });
-    const maxPage = Math.max(1, Math.ceil(totalUsers / pageLength));
-
+    // make sure the requested page is valid
+    const maxPage = await findMaxPage(current);
     if (page < 1 || page > maxPage) {
       await interaction.reply({
         content: `Page ${page} does not exist. Please choose a page between 1 and ${maxPage}.`,
@@ -64,53 +61,89 @@ export class Leaderboard extends ChatInput {
       return;
     }
 
-    // fetch the users that appear on the page
-    const userRows = await this.container.db.user.findMany({
-      where,
-      orderBy: { xp: "desc" },
-      skip: (page - 1) * pageLength,
-      take: pageLength,
-    });
-
-    // create the canvas
-    const canvas = new Canvas(canvasWidth, canvasHeight);
-    const ctx = canvas.getContext("2d");
-    let y = userHeight;
-
-    // background
-    ctx.fillStyle = c.base.hex;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    for (const db of userRows) {
-      if (db.present) {
-        await drawUser(
-          ctx,
-          await interaction.guild?.members.fetch(db.id)!,
-          db,
-          y,
-        );
-      } else {
-        await drawUser(
-          ctx,
-          await this.container.client.users.fetch(db.id),
-          db,
-          y,
-        );
-      }
-      y += dy;
-    }
-
     // send
     await interaction.reply({
+      ...(await getPage(interaction, current, page, maxPage)),
       flags: MessageFlags.Ephemeral,
-      files: [
-        {
-          attachment: await canvas.toBuffer("webp"),
-          name: `page-${page}.webp`,
-        },
-      ],
     });
   }
+}
+
+async function findMaxPage(current: boolean): Promise<number> {
+  const totalUsers = await container.db.user.count({
+    where: current ? { present: true } : undefined,
+  });
+  return Math.max(1, Math.ceil(totalUsers / pageLength));
+}
+
+export async function getPage(
+  interaction: Interaction,
+  current: boolean,
+  page: number,
+  maxPage?: number,
+) {
+  maxPage = maxPage ?? (await findMaxPage(current));
+
+  // fetch the users that appear on the page
+  const rows = await container.db.user.findMany({
+    where: current ? { present: true } : undefined,
+    orderBy: { xp: "desc" },
+    skip: (page - 1) * pageLength,
+    take: pageLength,
+  });
+
+  // create the canvas
+  const canvas = new Canvas(canvasWidth, canvasHeight);
+  const ctx = canvas.getContext("2d");
+  let y = userHeight;
+
+  // background
+  ctx.fillStyle = c.base.hex;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // users
+  for (const db of rows) {
+    if (db.present) {
+      await drawUser(
+        ctx,
+        await interaction.guild?.members.fetch(db.id)!,
+        db,
+        y,
+      );
+    } else {
+      await drawUser(ctx, await container.client.users.fetch(db.id), db, y);
+    }
+    y += dy;
+  }
+
+  // buttons for pagination
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`lb_go_${page - 1}_${current}`)
+      .setEmoji("◀️")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page <= 1),
+    new ButtonBuilder()
+      .setCustomId("lb_current")
+      .setLabel(`Page ${page} of ${maxPage}`)
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId(`lb_go_${page + 1}_${current}`)
+      .setEmoji("▶️")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page >= maxPage),
+  );
+
+  return {
+    files: [
+      {
+        attachment: await canvas.toBuffer("webp"),
+        name: `page-${page}.webp`,
+      },
+    ],
+    components: [row],
+  };
 }
 
 const scale = 4;
