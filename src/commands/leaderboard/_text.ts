@@ -1,18 +1,16 @@
 import { progressStats } from "$lib/level/canvas/progress";
 import type { InteractionUpdateOptions } from "discord.js";
 import { calculateLevel, rankInGuild } from "$lib/level";
-import type { Props } from "$interactions/leaderboard";
 import type { User as DbUser } from "$prisma";
 
 export async function getTextPage(
-  { current, page }: Props,
-  maxPage: number,
-  users: DbUser[],
+  allUsers: DbUser[],
+  pageUsers: DbUser[],
 ): Promise<InteractionUpdateOptions> {
   let lines: string[] = [];
 
-  for (const user of users) {
-    const rank = await rankInGuild(user.id, current);
+  for (const user of pageUsers) {
+    const rank = rankInGuild(allUsers, user.id);
     const username = user.username ?? "Unknown";
     const level = calculateLevel(user.xp);
     const stats = progressStats(user);
@@ -33,12 +31,7 @@ export async function getTextPage(
     );
   }
 
-  const content = [
-    `**Leaderboard — Page ${page} of ${maxPage}**\n`,
-    ...lines,
-  ].join("\n");
-
   return {
-    content,
+    content: lines.join("\n"),
   };
 }

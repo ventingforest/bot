@@ -38,9 +38,10 @@ export class Level extends ChatInput {
     }
 
     const member = interaction.guild?.members.cache.get(user.id)!;
-    const dbUser = (await this.container.db.user.findUnique({
-      where: { id: user.id },
-    }))!;
+    const users = await this.container.db.user.findMany({
+      where: { present: true },
+    });
+    const row = users.find(u => u.id === user.id)!;
 
     // create the canvas
     const canvas = new Canvas(500 * scale, 144 * scale);
@@ -59,7 +60,7 @@ export class Level extends ChatInput {
     );
 
     // avatar
-    const level = calculateLevel(dbUser.xp);
+    const level = calculateLevel(row.xp);
     await drawAvatar(ctx, member, avatarData, {
       text: level.toString(),
       font: `800 ${18 * scale}px Nunito, sans-serif`,
@@ -78,7 +79,7 @@ export class Level extends ChatInput {
     );
 
     // rank
-    const rank = await rankInGuild(user.id);
+    const rank = rankInGuild(users, user.id);
     drawText(
       ctx,
       `Rank #${rank.toLocaleString()}`,
@@ -90,7 +91,7 @@ export class Level extends ChatInput {
     );
 
     // progress bar
-    const stats = progressStats(dbUser);
+    const stats = progressStats(row);
     drawProgress(
       ctx,
       stats,

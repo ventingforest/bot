@@ -7,7 +7,6 @@ import {
 import { drawProgress, progressStats } from "$lib/level/canvas/progress";
 import { calculateLevel, pageLength, rankInGuild } from "$lib/level";
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
-import type { Props } from "$interactions/leaderboard";
 import { drawAvatar } from "$lib/level/canvas/avatar";
 import { container } from "@sapphire/framework";
 import { c, drawText } from "$lib/level/canvas";
@@ -25,9 +24,9 @@ const dy = userHeight;
 
 export async function getPrettyPage(
   interaction: Interaction,
-  { current, pretty, page }: Props,
-  maxPage: number,
-  users: DbUser[],
+  page: number,
+  allUsers: DbUser[],
+  pageUsers: DbUser[],
 ): Promise<InteractionUpdateOptions> {
   // create the canvas
   const canvas = new Canvas(canvasWidth, canvasHeight);
@@ -39,14 +38,14 @@ export async function getPrettyPage(
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // users
-  for (const db of users) {
+  for (const db of pageUsers) {
     if (db.present) {
       await drawUser(
         ctx,
         await interaction.guild?.members.fetch(db.id)!,
         db,
         y,
-        current,
+        allUsers,
       );
     } else {
       await drawUser(
@@ -54,7 +53,7 @@ export async function getPrettyPage(
         await container.client.users.fetch(db.id),
         db,
         y,
-        current,
+        allUsers,
       );
     }
     y += dy;
@@ -75,19 +74,19 @@ async function drawUser(
   member: GuildMember | User,
   db: DbUser,
   y: number,
-  present: boolean,
+  users: DbUser[],
 ) {
   const user = member instanceof GuildMember ? member.user : member;
   let x = avatarRadius * 2;
 
   // avatar
-  const rank = await rankInGuild(user.id, present);
+  const rank = rankInGuild(users, user.id);
 
-  let medalColour: string | undefined;
-  if (rank === 1) medalColour = c.yellow.hex;
-  else if (rank === 2) medalColour = c.subtext1.hex;
-  else if (rank === 3) medalColour = c.peach.hex;
-  else medalColour = undefined;
+  let borderColour: string;
+  if (rank === 1) borderColour = c.yellow.hex;
+  else if (rank === 2) borderColour = c.subtext1.hex;
+  else if (rank === 3) borderColour = c.peach.hex;
+  else borderColour = c.mauve.hex;
 
   await drawAvatar(
     ctx,
@@ -96,14 +95,14 @@ async function drawUser(
       x,
       y,
       r: avatarRadius,
-      borderColour: medalColour,
+      borderColour,
     },
     {
       text: `#${rank}`,
       font: `700 ${5 * scale}px Nunito, sans-serif`,
       w: 16 * scale,
       h: 8 * scale,
-      bgColour: medalColour,
+      bgColour: borderColour,
     },
   );
 

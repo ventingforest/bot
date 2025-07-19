@@ -56,9 +56,12 @@ export class Leaderboard extends ChatInput {
 
     // make sure the requested page is valid
     const props: Props = { current, pretty, page };
-    const maxPage = await findMaxPage(
-      props.current,
-      pretty ? pageLength.pretty : pageLength.text,
+    const totalUsers = await container.db.user.count({
+      where: current ? { present: true } : undefined,
+    });
+    const maxPage = Math.max(
+      1,
+      Math.ceil(totalUsers / (pretty ? pageLength.pretty : pageLength.text)),
     );
     if (page < 1 || page > maxPage) {
       await interaction.reply({
@@ -70,7 +73,7 @@ export class Leaderboard extends ChatInput {
 
     // send
     await interaction.reply({
-      ...(await getPage(interaction, props, maxPage)),
+      ...(await getPage(interaction, props)),
       flags: MessageFlags.Ephemeral,
     });
   }
@@ -79,26 +82,24 @@ export class Leaderboard extends ChatInput {
 export async function getPage(
   interaction: Interaction,
   props: Props,
-  maxPage?: number,
 ): Promise<Omit<InteractionUpdateOptions, "content">> {
   // fetch data
   const { page, current, pretty } = props;
   const length = pretty ? pageLength.pretty : pageLength.text;
-  const users = await container.db.user.findMany({
+  const allUsers = await container.db.user.findMany({
     where: current ? { present: true } : undefined,
     orderBy: { xp: "desc" },
-    skip: (page - 1) * length,
-    take: length,
   });
-  maxPage = maxPage || (await findMaxPage(current, length));
+  const pageUsers = allUsers.slice((page - 1) * length, page * length);
+  const maxPage = Math.max(1, Math.ceil(allUsers.length / length));
 
   // generate page
   let content: InteractionUpdateOptions;
 
   if (pretty) {
-    content = await getPrettyPage(interaction, props, maxPage, users);
+    content = await getPrettyPage(interaction, page, allUsers, pageUsers);
   } else {
-    content = await getTextPage(props, maxPage, users);
+    content = await getTextPage(allUsers, pageUsers);
   }
 
   // buttons for pagination
@@ -136,14 +137,4 @@ export async function getPage(
   );
 
   return { components: [row], ...content };
-}
-
-async function findMaxPage(
-  current: boolean,
-  pageLength: number,
-): Promise<number> {
-  const totalUsers = await container.db.user.count({
-    where: current ? { present: true } : undefined,
-  });
-  return Math.max(1, Math.ceil(totalUsers / pageLength));
 }

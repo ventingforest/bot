@@ -1,4 +1,5 @@
 import { container } from "@sapphire/framework";
+import type { User } from "$prisma";
 
 /**
  * How many users to show on a page of the leaderboard.
@@ -16,13 +17,7 @@ export function xpForLevel(level: number) {
   return 120 * level * level;
 }
 
-export async function rankInGuild(
-  id: string,
-  current?: boolean,
-): Promise<number> {
-  const users = await container.db.user.findMany({
-    where: current ? { present: true } : undefined,
-  });
+export function rankInGuild(users: User[], id: string) {
   const sortedUsers = users.sort((a, b) => (b.xp ?? 0) - (a.xp ?? 0));
   return sortedUsers.findIndex(u => u.id === id) + 1;
 }
