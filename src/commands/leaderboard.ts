@@ -5,11 +5,11 @@ import {
   type ChatInputCommandInteraction,
 } from "discord.js";
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
+import { c, drawAvatar, drawText, scale } from "$lib/level/canvas";
 import type { ChatInputCommand } from "@sapphire/framework";
-import { c, drawAvatar, scale } from "$lib/level/canvas";
+import { calculateLevel, pageLength } from "$lib/level";
 import { ChatInput, Config } from "$lib/command";
 import type { User as DbUser } from "$prisma";
-import { pageLength } from "$lib/level";
 
 @Config(
   {
@@ -76,7 +76,7 @@ export class Leaderboard extends ChatInput {
     let y = userHeight;
 
     // background
-    ctx.fillStyle = c.mantle.hex;
+    ctx.fillStyle = c.base.hex;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (const db of userRows) {
@@ -123,12 +123,35 @@ const dy = userHeight;
 async function drawUser(
   ctx: CanvasRenderingContext2D,
   member: GuildMember | User,
-  user: DbUser,
+  db: DbUser,
   y: number,
 ) {
+  // avatar
+  let x = avatarRadius * 2;
+
   await drawAvatar(ctx, member, {
-    x: avatarRadius * 2,
+    x,
     y,
     radius: avatarRadius,
   });
+
+  // username
+  const user = member instanceof GuildMember ? member.user : member;
+  x += avatarRadius * 2;
+  drawText(
+    ctx,
+    user.username,
+    { x, y },
+    `850 ${8 * scale}px Nunito, sans-serif`,
+  );
+
+  // level
+  const level = calculateLevel(db.xp);
+  drawText(
+    ctx,
+    `Level ${level}`,
+    { x, y: y + (2 * avatarRadius) / 3 },
+    `600 ${6 * scale}px Nunito, sans-serif`,
+    c.subtext0.hex,
+  );
 }

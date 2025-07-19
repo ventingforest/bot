@@ -1,23 +1,14 @@
 import {
-  Canvas,
-  Image,
-  loadImage,
-  type CanvasRenderingContext2D,
-  type CanvasTextAlign,
-  type CanvasTextBaseline,
-} from "skia-canvas";
-import {
-  MessageFlags,
-  type ChatInputCommandInteraction,
-  type PresenceStatus,
-} from "discord.js";
-import {
   scale,
   c,
   drawAvatar,
   type CircleData,
   statusColours,
+  drawText,
+  type PositionalData,
 } from "$lib/level/canvas";
+import { MessageFlags, type ChatInputCommandInteraction } from "discord.js";
+import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
 import { calculateLevel, rankInServer, xpForLevel } from "$lib/level";
 import type { ChatInputCommand } from "@sapphire/framework";
 import { ChatInput, Config } from "$lib/command";
@@ -74,7 +65,7 @@ export class Level extends ChatInput {
     const status = member.presence?.status || "offline";
     const colour = statusColours[status] || statusColours.offline;
 
-    // background
+    // background with border
     ctx.fillStyle = c.mantle.hex;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = c.base.hex;
@@ -97,8 +88,7 @@ export class Level extends ChatInput {
     drawText(
       ctx,
       user.username,
-      avatarData.x + avatarData.radius * 2,
-      20 * scale,
+      { x: avatarData.x + avatarData.radius * 2, y: 20 * scale },
       `850 ${30 * scale}px Nunito, sans-serif`,
       c.text.hex,
       "left",
@@ -110,8 +100,7 @@ export class Level extends ChatInput {
     drawText(
       ctx,
       `Rank #${rank.toLocaleString()}`,
-      avatarData.x + avatarData.radius * 2,
-      55 * scale,
+      { x: avatarData.x + avatarData.radius * 2, y: 55 * scale },
       `600 ${14 * scale}px Nunito, sans-serif`,
       c.subtext0.hex,
       "left",
@@ -155,30 +144,12 @@ function drawLevelBox(
   drawText(
     ctx,
     level.toString(),
-    boxX + w / 2,
-    boxY + h / 2,
+    { x: boxX + w / 2, y: boxY + h / 2 },
     `800 ${18 * scale}px Nunito, sans-serif`,
     c.base.hex,
     "center",
     "middle",
   );
-}
-
-function drawText(
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  x: number,
-  y: number,
-  font: string,
-  color: string,
-  align: CanvasTextAlign = "left",
-  baseline: CanvasTextBaseline = "alphabetic",
-) {
-  ctx.font = font;
-  ctx.fillStyle = color;
-  ctx.textAlign = align;
-  ctx.textBaseline = baseline;
-  ctx.fillText(text, x, y);
 }
 
 function drawProgressBar(
@@ -206,22 +177,21 @@ function drawProgressBar(
 
   // xp text
   const xpText = `${xpInLevel.toLocaleString()} / ${xpNeeded.toLocaleString()} XP`;
-  const textX = x + w - 12 * scale;
-  const textY = y + h / 2;
+  const textPos: PositionalData = { x: x + w - 12 * scale, y: y + h / 2 };
   const font = `600 ${13 * scale}px Nunito, sans-serif`;
 
   // draw text in bar color (filled part)
   ctx.save();
   roundRect(ctx, x, y, w * progress, h, r);
   ctx.clip();
-  drawText(ctx, xpText, textX, textY, font, c.base.hex, "right", "middle");
+  drawText(ctx, xpText, textPos, font, c.base.hex, "right", "middle");
   ctx.restore();
 
   // draw text in normal color (unfilled part)
   ctx.save();
   roundRect(ctx, x + w * progress, y, w * (1 - progress), h, r);
   ctx.clip();
-  drawText(ctx, xpText, textX, textY, font, c.text.hex, "right", "middle");
+  drawText(ctx, xpText, textPos, font, c.text.hex, "right", "middle");
   ctx.restore();
 }
 

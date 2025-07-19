@@ -2,6 +2,8 @@ import {
   FontLibrary,
   loadImage,
   type CanvasRenderingContext2D,
+  type CanvasTextAlign,
+  type CanvasTextBaseline,
 } from "skia-canvas";
 import { GuildMember, type PresenceStatus, type User } from "discord.js";
 import { flavors } from "@catppuccin/palette";
@@ -40,11 +42,17 @@ export const statusColours: Record<PresenceStatus, string> = {
 };
 
 /**
- * Stores information about a circle.
+ * Stores information about a position.
  */
-export interface CircleData {
+export interface PositionalData {
   x: number;
   y: number;
+}
+
+/**
+ * Stores information about a circle.
+ */
+export interface CircleData extends PositionalData {
   radius: number;
 }
 
@@ -93,4 +101,20 @@ export async function drawAvatar(
     radius * 2,
   );
   ctx.restore();
+}
+
+export function drawText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  { x, y }: PositionalData,
+  font: string,
+  color: string = c.text.hex,
+  align: CanvasTextAlign = "left",
+  baseline: CanvasTextBaseline = "alphabetic",
+) {
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.textBaseline = baseline;
+  ctx.fillText(text, x, y);
 }
