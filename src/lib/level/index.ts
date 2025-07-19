@@ -1,6 +1,11 @@
 import { container } from "@sapphire/framework";
 import type { User } from "discord.js";
 
+/**
+ * How many users to show on a page of the leaderboard.
+ */
+export const pageLength = 5;
+
 export function calculateLevel(xp: number) {
   return Math.floor(Math.sqrt(xp / 120));
 }

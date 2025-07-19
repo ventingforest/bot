@@ -1,6 +1,5 @@
 import {
   Canvas,
-  FontLibrary,
   Image,
   loadImage,
   type CanvasRenderingContext2D,
@@ -12,53 +11,26 @@ import {
   type ChatInputCommandInteraction,
   type PresenceStatus,
 } from "discord.js";
+import {
+  scale,
+  c,
+  drawAvatar,
+  type CircleData,
+  statusColours,
+} from "$lib/level/canvas";
 import { calculateLevel, rankInServer, xpForLevel } from "$lib/level";
 import type { ChatInputCommand } from "@sapphire/framework";
 import { ChatInput, Config } from "$lib/command";
-import { flavors } from "@catppuccin/palette";
-import node_modules from "node_modules-path";
-import path from "path";
 
-const scale = 3;
-const {
-  mocha: { colors: c },
-} = flavors;
-
-FontLibrary.use("Nunito", [
-  path.join(
-    node_modules(),
-    "@fontsource-variable",
-    "nunito",
-    "files",
-    "nunito-latin-wght-normal.woff2",
-  ),
-]);
-
-const statusColours: Record<PresenceStatus, string> = {
-  online: c.green.hex,
-  idle: c.yellow.hex,
-  dnd: c.red.hex,
-  offline: c.overlay0.hex,
-  invisible: c.overlay0.hex,
-};
-
-const avatarData = {
+const avatarData: CircleData = {
   x: 72 * scale,
   y: 72 * scale,
   radius: 48 * scale,
-  border: 6 * scale,
 };
 
 const levelBox = {
   w: 40 * scale,
   h: 24 * scale,
-};
-
-const progressBar = {
-  x: avatarData.x + avatarData.radius * 2,
-  w: 300 * scale,
-  h: 18 * scale,
-  r: 9 * scale,
 };
 
 @Config(
@@ -96,11 +68,9 @@ export class Level extends ChatInput {
       where: { id: user.id },
     });
 
+    // create the canvas
     const canvas = new Canvas(500 * scale, 144 * scale);
     const ctx = canvas.getContext("2d");
-    const avatar = await loadImage(
-      user.displayAvatarURL({ extension: "webp", size: 256 }),
-    );
     const status = member.presence?.status || "offline";
     const colour = statusColours[status] || statusColours.offline;
 
@@ -116,18 +86,8 @@ export class Level extends ChatInput {
       canvas.height - border * 2,
     );
 
-    // avatar border
-    drawCircle(
-      ctx,
-      avatarData.x,
-      avatarData.y,
-      avatarData.radius + avatarData.border / 2,
-      colour,
-      avatarData.border,
-    );
-
     // avatar
-    drawAvatar(ctx, avatar);
+    await drawAvatar(ctx, member, avatarData);
 
     // level box
     const level = calculateLevel(dbUser?.xp ?? 0);
@@ -181,33 +141,6 @@ export class Level extends ChatInput {
   }
 }
 
-function drawCircle(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  radius: number,
-  color: string,
-  lineWidth: number,
-) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lineWidth;
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawAvatar(ctx: CanvasRenderingContext2D, avatar: Image) {
-  const { x, y, radius } = avatarData;
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2);
-  ctx.clip();
-  ctx.drawImage(avatar, x - radius, y - radius, radius * 2, radius * 2);
-  ctx.restore();
-}
-
 function drawLevelBox(
   ctx: CanvasRenderingContext2D,
   level: number,
@@ -254,8 +187,12 @@ function drawProgressBar(
   xpInLevel: number,
   xpNeeded: number,
 ) {
-  const { x, w, h, r } = progressBar;
+  const x = avatarData.x + avatarData.radius * 2;
   const y = avatarData.y + avatarData.radius - levelBox.h; // keep in line with level box
+  const w = 300 * scale;
+  const h = 18 * scale;
+  const r = 9 * scale;
+
   ctx.fillStyle = c.surface0.hex;
   roundRect(ctx, x, y, w, h, r);
   ctx.fill();

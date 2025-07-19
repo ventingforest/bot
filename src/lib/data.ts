@@ -29,10 +29,3 @@ export const xp = {
    */
   charsPerPoint: 20,
 };
-
-export const levels = {
-  /**
-   * How many users to show on a page of the leaderboard.
-   */
-  pageLength: 10,
-};

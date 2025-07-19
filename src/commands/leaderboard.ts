@@ -1,11 +1,15 @@
 import {
+  GuildMember,
   MessageFlags,
-  type AutocompleteInteraction,
+  User,
   type ChatInputCommandInteraction,
 } from "discord.js";
+import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
 import type { ChatInputCommand } from "@sapphire/framework";
+import { c, drawAvatar, scale } from "$lib/level/canvas";
 import { ChatInput, Config } from "$lib/command";
-import { levels } from "$lib/data";
+import type { User as DbUser } from "$prisma";
+import { pageLength } from "$lib/level";
 
 @Config(
   {
@@ -48,7 +52,7 @@ export class Leaderboard extends ChatInput {
     const totalUsers = await this.container.db.user.count({
       where,
     });
-    const maxPage = Math.max(1, Math.ceil(totalUsers / levels.pageLength));
+    const maxPage = Math.max(1, Math.ceil(totalUsers / pageLength));
 
     if (page < 1 || page > maxPage) {
       await interaction.reply({
@@ -59,12 +63,72 @@ export class Leaderboard extends ChatInput {
     }
 
     // fetch the users that appear on the page
-    const users = await this.container.db.user.findMany({
+    const userRows = await this.container.db.user.findMany({
       where,
       orderBy: { xp: "desc" },
-      skip: (page - 1) * levels.pageLength,
-      take: levels.pageLength,
+      skip: (page - 1) * pageLength,
+      take: pageLength,
     });
-    console.log(users);
+
+    // create the canvas
+    const canvas = new Canvas(canvasWidth, canvasHeight);
+    const ctx = canvas.getContext("2d");
+    let y = userHeight;
+
+    // background
+    ctx.fillStyle = c.mantle.hex;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (const db of userRows) {
+      if (db.present) {
+        await drawUser(
+          ctx,
+          await interaction.guild?.members.fetch(db.id)!,
+          db,
+          y,
+        );
+      } else {
+        await drawUser(
+          ctx,
+          await this.container.client.users.fetch(db.id),
+          db,
+          y,
+        );
+      }
+      y += dy;
+    }
+
+    // send
+    await interaction.reply({
+      flags: MessageFlags.Ephemeral,
+      files: [
+        {
+          attachment: await canvas.toBuffer("webp"),
+          name: `page-${page}.webp`,
+        },
+      ],
+    });
   }
+}
+
+const canvasWidth = 50 * pageLength * scale;
+
+const avatarRadius = canvasWidth / (pageLength * 4);
+const userSpacing = avatarRadius / 2;
+const userHeight = avatarRadius * 2 + userSpacing + avatarRadius / 8;
+
+const canvasHeight = userHeight * (pageLength + 1);
+const dy = userHeight;
+
+async function drawUser(
+  ctx: CanvasRenderingContext2D,
+  member: GuildMember | User,
+  user: DbUser,
+  y: number,
+) {
+  await drawAvatar(ctx, member, {
+    x: avatarRadius * 2,
+    y,
+    radius: avatarRadius,
+  });
 }
