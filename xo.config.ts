@@ -1,4 +1,4 @@
-/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import type { FlatXoConfig } from "xo";
 

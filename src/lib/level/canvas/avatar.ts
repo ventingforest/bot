@@ -5,6 +5,7 @@ import {
 	drawText,
 	statusColours,
 	type CircleData,
+	type FontData,
 	type PositionalData,
 	type SizeData,
 } from "$lib/level/canvas";
@@ -15,7 +16,7 @@ export type AvatarOptions = {
 
 type AvatarBoxOptions = {
 	text: string;
-	font: string;
+	font: FontData;
 	bgColour?: string;
 } & SizeData;
 

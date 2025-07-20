@@ -112,7 +112,10 @@ async function drawUser(
 		},
 		{
 			bgColour: borderColour,
-			font: `700 ${5 * scale}px Nunito, sans-serif`,
+			font: {
+				size: 5 * scale,
+				weight: 700,
+			},
 			height: 8 * scale,
 			text: `#${rank}`,
 			width: 16 * scale,
@@ -123,7 +126,10 @@ async function drawUser(
 	x += avatarRadius * 2;
 	const usernameY = y - avatarRadius / 2;
 	drawText(ctx, {
-		font: `850 ${8 * scale}px Nunito, sans-serif`,
+		font: {
+			size: 8 * scale,
+			weight: 850,
+		},
 		text: user.username,
 		x,
 		y: usernameY,
@@ -132,7 +138,10 @@ async function drawUser(
 	// level
 	drawText(ctx, {
 		colour: c.subtext0.hex,
-		font: `600 ${6 * scale}px Nunito, sans-serif`,
+		font: {
+			size: 6 * scale,
+			weight: 600,
+		},
 		text: `Level ${calculateLevel(userDb.xp)}`,
 		x,
 		y: y + scale,

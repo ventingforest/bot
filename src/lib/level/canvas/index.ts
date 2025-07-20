@@ -51,11 +51,16 @@ export type CircleData = {
 
 export type TextOptions = {
 	text: string;
-	font: string;
+	font: FontData;
 	colour?: string;
 	align?: CanvasTextAlign;
 	baseline?: CanvasTextBaseline;
 } & PositionalData;
+
+export type FontData = {
+	size: number;
+	weight?: number;
+};
 
 export function drawText(
 	ctx: CanvasRenderingContext2D,
@@ -69,7 +74,7 @@ export function drawText(
 		baseline = "alphabetic",
 	}: TextOptions,
 ) {
-	ctx.font = font;
+	ctx.font = `${font.weight ?? "normal"} ${font.size}px Nunito, sans-serif`;
 	ctx.fillStyle = colour;
 	ctx.textAlign = align;
 	ctx.textBaseline = baseline;

@@ -103,7 +103,10 @@ async function respond(
 	// avatar
 	const level = calculateLevel(row.xp);
 	await drawAvatar(ctx, member, avatarCircle, {
-		font: `800 ${18 * scale}px Nunito, sans-serif`,
+		font: {
+			size: 18 * scale,
+			weight: 800,
+		},
 		text: level.toString(),
 		...avatarBox,
 	});
@@ -111,7 +114,10 @@ async function respond(
 	// username
 	drawText(ctx, {
 		baseline: "top",
-		font: `850 ${30 * scale}px Nunito, sans-serif`,
+		font: {
+			size: 30 * scale,
+			weight: 850,
+		},
 		text: user.username,
 		x: avatarCircle.x + avatarCircle.radius * 2,
 		y: 20 * scale,
@@ -122,7 +128,10 @@ async function respond(
 	drawText(ctx, {
 		baseline: "top",
 		colour: c.subtext0.hex,
-		font: `600 ${14 * scale}px Nunito, sans-serif`,
+		font: {
+			size: 14 * scale,
+			weight: 600,
+		},
 		text: `Rank #${rank.toLocaleString()}`,
 		x: avatarCircle.x + avatarCircle.radius * 2,
 		y: 55 * scale,

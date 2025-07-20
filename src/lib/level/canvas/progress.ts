@@ -54,7 +54,10 @@ export function drawProgress(
 	const textOptions: TextOptions = {
 		align: "right",
 		baseline: "middle",
-		font: `600 ${Math.max(height - 5, 10)}px Nunito, sans-serif`,
+		font: {
+			size: Math.max(height - 5, 10),
+			weight: 600,
+		},
 		text,
 		x: x + width - textInset,
 		y: y + height / 2,
