@@ -4,5 +4,12 @@
     "prisma/generated": true,
     "bun.lock": true,
     "logs": true
-  }
+  },
+
+  "editor.formatOnSave": true,
+	"xo.enable": true,
+	"xo.format.enable": true,
+  "[typescript]": {
+		"editor.defaultFormatter": "samverschueren.linter-xo"
+	}
 }

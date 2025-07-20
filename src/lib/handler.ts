@@ -1,24 +1,25 @@
 import {
-  InteractionHandler,
-  type InteractionHandlerTypes,
+	type InteractionHandler,
+	type InteractionHandlerTypes,
 } from "@sapphire/framework";
 import { ApplyOptions } from "@sapphire/decorators";
 
 export {
-  InteractionHandlerTypes,
-  InteractionHandler,
-  type Option,
+	InteractionHandlerTypes,
+	InteractionHandler,
+	type Option,
 } from "@sapphire/framework";
 
-export function Config(
-  type: InteractionHandlerTypes,
-  options: Omit<
-    InteractionHandler.Options,
-    "interactionHandlerType" | "ids"
-  > = {},
+export function config(
+	type: InteractionHandlerTypes,
+	options: Omit<
+		InteractionHandler.Options,
+		"interactionHandlerType" | "ids"
+	> = {},
 ) {
-  return ApplyOptions<InteractionHandler.Options>({
-    interactionHandlerType: type,
-    ...options,
-  });
+	// eslint-disable-next-line new-cap
+	return ApplyOptions<InteractionHandler.Options>({
+		interactionHandlerType: type,
+		...options,
+	});
 }

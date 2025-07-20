@@ -1,11 +1,11 @@
-import { Events, Listener, Config } from "$listener";
 import { getLogger } from "@logtape/logtape";
+import { Events, Listener, config } from "$listener";
 
 const logger = getLogger("api");
 
-@Config(Events.Error)
+@config(Events.Error)
 export class ErrorListener extends Listener<typeof Events.Error> {
-  override run(error: Error) {
-    logger.error(error.message, { stack: error.stack });
-  }
+	override run(error: Error) {
+		logger.error(error.message, { stack: error.stack });
+	}
 }

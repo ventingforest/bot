@@ -1,11 +1,11 @@
-import { Events, Listener, Config } from "$listener";
 import { getLogger } from "@logtape/logtape";
+import { Events, Listener, config } from "$listener";
 
 const logger = getLogger("api");
 
-@Config(Events.Warn)
+@config(Events.Warn)
 export class Warn extends Listener<typeof Events.Warn> {
-  override run(message: string) {
-    logger.warn(message);
-  }
+	override run(message: string) {
+		logger.warn(message);
+	}
 }

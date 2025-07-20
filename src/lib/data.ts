@@ -9,23 +9,22 @@ export const isProduction = process.env.NODE_ENV === "production";
 export const guildId = "435894444101861408";
 
 export const xp = {
-  /**
-   * The cooldown period in milliseconds before a user can receive XP for sending another message.
-   */
-  cooldown: 1000 * 10, // 10 seconds
+	/**
+	 * The number of characters in a message required to receive 1 XP.
+	 */
+	charsPerPoint: 20,
+	/**
+	 * The cooldown period in milliseconds before a user can receive XP for sending another message.
+	 */
+	cooldown: 1000 * 10, // 10 seconds
 
-  /**
-   * The minimum amount of XP a user can receive for a message.
-   */
-  minimum: 5,
+	/**
+	 * The maximum amount of XP a user can receive for a message.
+	 */
+	maximum: 10,
 
-  /**
-   * The maximum amount of XP a user can receive for a message.
-   */
-  maximum: 10,
-
-  /**
-   * The number of characters in a message required to receive 1 XP.
-   */
-  charsPerPoint: 20,
+	/**
+	 * The minimum amount of XP a user can receive for a message.
+	 */
+	minimum: 5,
 };

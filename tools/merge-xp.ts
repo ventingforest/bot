@@ -1,21 +1,20 @@
 import { hideBin } from "yargs/helpers";
-import prisma from "$shared/db";
 import yargs from "yargs";
+import prisma from "$shared/db";
 
 // collect args
 let {
-  _: [toId, fromId], // reversed order
+	_: [toId, fromId], // reversed order
 } = yargs(hideBin(process.argv))
-  .usage("Usage: $0 <to> <from>") // update usage
-  .number("to")
-  .number("from")
-  .demandCommand(2, "You must provide both <to> and <from> user IDs.")
-  .help()
-  .parseSync();
+	.usage("Usage: $0 <to> <from>") // update usage
+	.number("to")
+	.number("from")
+	.demandCommand(2, "You must provide both <to> and <from> user IDs.")
+	.help()
+	.parseSync();
 
 if (!toId || !fromId) {
-  console.error("Error: Both <to> and <from> user IDs are required.");
-  process.exit(1);
+	throw new Error("Error: Both <to> and <from> user IDs are required.");
 }
 
 toId = toId.toString();
@@ -23,7 +22,7 @@ fromId = fromId.toString();
 
 // fetch data
 const users = await prisma.user.findMany({
-  where: { id: { in: [toId, fromId] } },
+	where: { id: { in: [toId, fromId] } },
 });
 const toUser = users.find(u => u.id === toId)!;
 const fromUser = users.find(u => u.id === fromId)!;
@@ -31,8 +30,8 @@ const fromUser = users.find(u => u.id === fromId)!;
 // new xp
 const xp = fromUser.xp + toUser.xp;
 await prisma.user.update({
-  where: { id: toId },
-  data: { xp },
+	data: { xp },
+	where: { id: toId },
 });
 
 // delete fromUser
