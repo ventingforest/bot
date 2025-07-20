@@ -2,10 +2,9 @@
 import { container } from "@sapphire/framework";
 import type { GuildMember, PartialGuildMember } from "discord.js";
 
+import { guildId } from "$lib/data";
 import type { PrismaClient } from "$prisma";
 import prisma from "$shared/db";
-
-import { guildId } from "./data";
 
 const { client, logger } = container;
 container.db = prisma;

@@ -7,8 +7,9 @@ import {
 } from "discord.js";
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
 
+import type { PagePosition } from "$commands/leaderboard";
 import { calculateLevel, pageLength, rankInGuild } from "$lib/level";
-import { c, drawText } from "$lib/level/canvas";
+import { c, drawText, type FontData, getFont } from "$lib/level/canvas";
 import { drawAvatar } from "$lib/level/canvas/avatar";
 import { drawProgress, progressStats } from "$lib/level/canvas/progress";
 import type { User as DbUser } from "$prisma";
@@ -27,7 +28,7 @@ export async function getPrettyPage<
 	U extends Pick<DbUser, "id" | "present" | "xp">,
 >(
 	interaction: Interaction,
-	page: number,
+	{ page, maxPage }: PagePosition,
 	allUsers: U[],
 	pageUsers: U[],
 ): Promise<InteractionUpdateOptions> {
@@ -38,6 +39,19 @@ export async function getPrettyPage<
 	// background
 	ctx.fillStyle = c.base.hex;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	// page number
+	const pageFont: FontData = { size: 5 * scale, weight: 700 };
+	ctx.font = getFont(pageFont);
+	const pageText = `Page ${page}/${maxPage}`;
+	const pageSize = ctx.measureText(pageText);
+	drawText(ctx, {
+		colour: c.subtext0.hex,
+		font: pageFont,
+		text: pageText,
+		x: canvasWidth - pageSize.width - 4 * scale,
+		y: canvasHeight - 4 * scale,
+	});
 
 	// users
 	const drawPromises = pageUsers.map(async ({ present, id, xp }, i) => {

@@ -10,11 +10,10 @@ import {
 } from "discord.js";
 
 import { Command, config } from "$command";
+import { getPrettyPage } from "$commands/leaderboard/_pretty";
+import { getTextPage } from "$commands/leaderboard/_text";
 import type { Props } from "$interactions/leaderboard";
 import { pageLength } from "$lib/level";
-
-import { getPrettyPage } from "./_pretty";
-import { getTextPage } from "./_text";
 
 @config({
 	slash: {
@@ -31,7 +30,7 @@ import { getTextPage } from "./_text";
 				)
 				.addBooleanOption(option =>
 					option
-						.setName("current")
+						.setName("present")
 						.setDescription(
 							"only show users that are currently members of the server",
 						),
@@ -53,13 +52,13 @@ export class Leaderboard extends Command {
 	) {
 		// parse options
 		const page = interaction.options.getNumber("page") ?? 1;
-		const current = interaction.options.getBoolean("current") ?? true;
+		const present = interaction.options.getBoolean("present") ?? true;
 		const pretty = !interaction.options.getBoolean("text");
 
 		// make sure the requested page is valid
-		const props: Props = { current, page, pretty };
+		const props: Props = { page, present, pretty };
 		const totalUsers = await container.db.user.count({
-			where: current ? { present: true } : undefined,
+			where: present ? { present: true } : undefined,
 		});
 		const maxPage = Math.max(
 			1,
@@ -81,55 +80,73 @@ export class Leaderboard extends Command {
 	}
 }
 
+function makeId(
+	prefix: string,
+	page: number,
+	{ present, pretty }: Props,
+): string {
+	return `lb_${prefix}_${page}_${present}${pretty ? "_pretty" : ""}`;
+}
+
+export type PagePosition = {
+	page: number;
+	maxPage: number;
+};
+
 export async function getPage(
 	interaction: Interaction,
 	props: Props,
 ): Promise<Omit<InteractionUpdateOptions, "content">> {
 	// fetch data
-	const { page, current, pretty } = props;
+	const { page, present, pretty } = props;
 	const length = pretty ? pageLength.pretty : pageLength.text;
 	const allUsers = await container.db.user.findMany({
 		orderBy: { xp: "desc" },
 		select: { id: true, present: true, xp: true },
-		where: current ? { present: true } : undefined,
+		where: present ? { present: true } : undefined,
 	});
 	const pageUsers = allUsers.slice((page - 1) * length, page * length);
 	const maxPage = Math.max(1, Math.ceil(allUsers.length / length));
 
+	// find which page the user is on
+	const userIndex = allUsers.findIndex(u => u.id === interaction.user.id);
+	const userPage = Math.floor(userIndex / length) + 1;
+
 	// generate page
 	const content = await (pretty
-		? getPrettyPage(interaction, page, allUsers, pageUsers)
-		: getTextPage(allUsers, pageUsers));
+		? getPrettyPage(interaction, { maxPage, page }, allUsers, pageUsers)
+		: getTextPage(interaction, { maxPage, page }, allUsers, pageUsers));
 
 	// buttons for pagination
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 		// first page
 		new ButtonBuilder()
-			.setCustomId(`lb_jmp_1_${current}${pretty ? "_pretty" : ""}`)
+			.setCustomId(makeId("jmp", 1, props))
 			.setEmoji("⏮️")
 			.setStyle(ButtonStyle.Primary)
 			.setDisabled(page === 1),
 		// previous page
 		new ButtonBuilder()
-			.setCustomId(`lb_go_${page - 1}_${current}${pretty ? "_pretty" : ""}`)
+			.setCustomId(makeId("go", page - 1, props))
 			.setEmoji("◀️")
 			.setStyle(ButtonStyle.Secondary)
 			.setDisabled(page <= 1),
-		// current page
+
+		// jump to user's page
 		new ButtonBuilder()
-			.setCustomId("lb_current")
-			.setLabel(`Page ${page} of ${maxPage}`)
-			.setStyle(ButtonStyle.Secondary)
-			.setDisabled(true),
+			.setCustomId(makeId("usr", userPage, props))
+			.setEmoji("👤")
+			.setStyle(ButtonStyle.Success)
+			.setDisabled(userPage === page || userIndex < 0),
 		// next page
 		new ButtonBuilder()
-			.setCustomId(`lb_go_${page + 1}_${current}${pretty ? "_pretty" : ""}`)
+			.setCustomId(makeId("go", page + 1, props))
 			.setEmoji("▶️")
 			.setStyle(ButtonStyle.Secondary)
 			.setDisabled(page === maxPage),
 		// last page
 		new ButtonBuilder()
-			.setCustomId(`lb_jmp_${maxPage}_${current}${pretty ? "_pretty" : ""}`)
+			.setCustomId(makeId("jmp", maxPage, props))
 			.setEmoji("⏭️")
 			.setStyle(ButtonStyle.Primary)
 			.setDisabled(page === maxPage),

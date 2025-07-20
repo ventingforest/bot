@@ -1,7 +1,6 @@
 import type { CanvasRenderingContext2D } from "skia-canvas";
 
 import { calculateLevel, xpForLevel } from "$lib/level";
-
 import {
 	c,
 	type CircleData,
@@ -9,7 +8,7 @@ import {
 	type PositionalData,
 	type SizeData,
 	type TextOptions,
-} from ".";
+} from "$lib/level/canvas";
 
 type ProgressStats = {
 	xpInLevel: number;

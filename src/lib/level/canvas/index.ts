@@ -26,7 +26,7 @@ export const {
 } = flavors;
 
 /**
- * Colors for different presence statuses.
+ * Colours for different presence statuses.
  */
 export const statusColours: Record<PresenceStatus, string> = {
 	dnd: c.red.hex,
@@ -63,6 +63,10 @@ export type FontData = {
 	weight?: number;
 };
 
+export function getFont(font: FontData): string {
+	return `${font.weight ?? "normal"} ${font.size}px Nunito, sans-serif`;
+}
+
 export function drawText(
 	ctx: CanvasRenderingContext2D,
 	{
@@ -75,7 +79,7 @@ export function drawText(
 		baseline = "alphabetic",
 	}: TextOptions,
 ) {
-	ctx.font = `${font.weight ?? "normal"} ${font.size}px Nunito, sans-serif`;
+	ctx.font = getFont(font);
 	ctx.fillStyle = colour;
 	ctx.textAlign = align;
 	ctx.textBaseline = baseline;

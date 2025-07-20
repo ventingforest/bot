@@ -10,21 +10,23 @@ import {
 
 export type Props = {
 	page: number;
-	current: boolean;
+	present: boolean;
 	pretty: boolean;
 };
 
 @config(InteractionHandlerTypes.Button)
 export class Leaderboard extends InteractionHandler {
 	override parse(interaction: ButtonInteraction): Option<Props> {
-		const match = /lb_(go|jmp)_(\d+)_(true|false)(_pretty)?/.exec(
+		console.log(interaction.customId);
+		const match = /lb_(go|jmp|usr)_(\d+)_(true|false)(_pretty)?/.exec(
 			interaction.customId,
 		);
 		if (!match) return this.none();
 		const page = Number(match[2]);
-		const current = match[3] === "true";
-		const pretty = Boolean(match[3]);
-		return this.some({ current, page, pretty });
+		const present = match[3] === "true";
+		const pretty = Boolean(match[4]);
+		console.log(match);
+		return this.some({ page, present, pretty });
 	}
 
 	override async run(interaction: ButtonInteraction, props: Props) {

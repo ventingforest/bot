@@ -1,16 +1,19 @@
 import { container } from "@sapphire/framework";
-import type { InteractionUpdateOptions } from "discord.js";
+import type { Interaction, InteractionUpdateOptions } from "discord.js";
 
+import type { PagePosition } from "$commands/leaderboard";
 import { calculateLevel, rankInGuild } from "$lib/level";
 import { progressStats } from "$lib/level/canvas/progress";
 import type { User as DbUser } from "$prisma";
 
 export async function getTextPage<U extends Pick<DbUser, "id" | "xp">>(
+	interaction: Interaction,
+	{ page, maxPage }: PagePosition,
 	allUsers: U[],
 	pageUsers: U[],
 ): Promise<InteractionUpdateOptions> {
-	const lines: string[] = [];
-	const users = allUsers.map(async ({ id }) =>
+	const lines = [`**Page ${page}/${maxPage}**\n`];
+	const users = pageUsers.map(async ({ id }) =>
 		container.client.users.fetch(id),
 	);
 	const resolvedUsers = await Promise.all(users);
@@ -22,6 +25,7 @@ export async function getTextPage<U extends Pick<DbUser, "id" | "xp">>(
 		const level = calculateLevel(xp);
 		const stats = progressStats(xp);
 		const progress = ((stats.xpInLevel / stats.xpNeeded) * 100).toFixed(1);
+		const isUser = id === interaction.user.id;
 
 		let medal: string;
 		switch (rank) {
@@ -50,7 +54,7 @@ export async function getTextPage<U extends Pick<DbUser, "id" | "xp">>(
 		const bar = "█".repeat(filled) + "░".repeat(barLength - filled);
 
 		lines.push(
-			`${medal} **${username}** — Level ${level}\n[${bar}] ${progress}%\n`,
+			`${medal} **${username}** — Level ${level}${isUser ? " 👤" : ""}\n[${bar}] ${progress}%\n`,
 		);
 	}
 
