@@ -1,6 +1,7 @@
-import type { OmitPartialGroupDMChannel, Message } from "discord.js";
-import { Events, Listener, config } from "$listener";
+import type { Message, OmitPartialGroupDMChannel } from "discord.js";
+
 import { isProduction, xp } from "$lib/data";
+import { config, Events, Listener } from "$listener";
 
 @config(Events.MessageCreate)
 export class GiveXp extends Listener<typeof Events.MessageCreate> {

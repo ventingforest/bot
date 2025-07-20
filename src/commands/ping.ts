@@ -1,6 +1,7 @@
-import { type ChatInputCommandInteraction, MessageFlags } from "discord.js";
 import { isMessageInstance } from "@sapphire/discord.js-utilities";
 import type { ChatInputCommand } from "@sapphire/framework";
+import { type ChatInputCommandInteraction, MessageFlags } from "discord.js";
+
 import { Command, config } from "$command";
 
 @config({

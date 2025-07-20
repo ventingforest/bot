@@ -1,20 +1,21 @@
 import {
+	type ChatInputCommand,
+	container,
+	type ContextMenuCommand,
+} from "@sapphire/framework";
+import {
+	type ChatInputCommandInteraction,
 	type ContextMenuCommandInteraction,
 	MessageFlags,
 	type User,
-	type ChatInputCommandInteraction,
 } from "discord.js";
-import {
-	container,
-	type ChatInputCommand,
-	type ContextMenuCommand,
-} from "@sapphire/framework";
 import { Canvas } from "skia-canvas";
-import { drawProgress, progressStats } from "$lib/level/canvas/progress";
-import { drawAvatar, type AvatarOptions } from "$lib/level/canvas/avatar";
-import { calculateLevel, rankInGuild } from "$lib/level";
-import { c, drawText, type CircleData, type SizeData } from "$lib/level/canvas";
+
 import { Command, config } from "$command";
+import { calculateLevel, rankInGuild } from "$lib/level";
+import { c, type CircleData, drawText, type SizeData } from "$lib/level/canvas";
+import { drawAvatar } from "$lib/level/canvas/avatar";
+import { drawProgress, progressStats } from "$lib/level/canvas/progress";
 
 @config({
 	contextMenu: {
@@ -80,9 +81,10 @@ async function respond(
 
 	// fetch the user from the database
 	const users = await container.db.user.findMany({
+		select: { id: true, xp: true },
 		where: { present: true },
 	});
-	const row = users.find(u => u.id === user.id)!;
+	const userDb = users.find(u => u.id === user.id)!;
 
 	// create the canvas
 	const canvas = new Canvas(500 * scale, 144 * scale);
@@ -101,7 +103,7 @@ async function respond(
 	);
 
 	// avatar
-	const level = calculateLevel(row.xp);
+	const level = calculateLevel(userDb.xp);
 	await drawAvatar(ctx, member, avatarCircle, {
 		font: {
 			size: 18 * scale,
@@ -138,7 +140,7 @@ async function respond(
 	});
 
 	// progress bar
-	const stats = progressStats(row);
+	const stats = progressStats(userDb.xp);
 	drawProgress(ctx, stats, {
 		height: 18 * scale,
 		text: `${stats.xpInLevel.toLocaleString()} / ${stats.xpNeeded.toLocaleString()} XP`,

@@ -1,13 +1,14 @@
-import { loadImage, type CanvasRenderingContext2D } from "skia-canvas";
-import { type User, GuildMember } from "discord.js";
+import { GuildMember, type User } from "discord.js";
+import { type CanvasRenderingContext2D, loadImage } from "skia-canvas";
+
 import {
 	c,
-	drawText,
-	statusColours,
 	type CircleData,
+	drawText,
 	type FontData,
 	type PositionalData,
 	type SizeData,
+	statusColours,
 } from "$lib/level/canvas";
 
 export type AvatarOptions = {

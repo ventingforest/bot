@@ -1,4 +1,5 @@
 import { getLogger } from "@logtape/logtape";
+
 import { PrismaClient } from "$prisma";
 
 if (!process.env.DATABASE_URL) {

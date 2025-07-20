@@ -1,5 +1,6 @@
-import { hideBin } from "yargs/helpers";
 import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
+
 import prisma from "$shared/db";
 
 // collect args
@@ -22,6 +23,7 @@ fromId = fromId.toString();
 
 // fetch data
 const users = await prisma.user.findMany({
+	select: { id: true, xp: true },
 	where: { id: { in: [toId, fromId] } },
 });
 const toUser = users.find(u => u.id === toId)!;

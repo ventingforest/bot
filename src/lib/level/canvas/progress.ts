@@ -1,23 +1,24 @@
 import type { CanvasRenderingContext2D } from "skia-canvas";
+
+import { calculateLevel, xpForLevel } from "$lib/level";
+
 import {
 	c,
-	drawText,
 	type CircleData,
+	drawText,
 	type PositionalData,
 	type SizeData,
 	type TextOptions,
 } from ".";
-import { calculateLevel, xpForLevel } from "$lib/level";
-import type { User } from "$prisma";
 
 type ProgressStats = {
 	xpInLevel: number;
 	xpNeeded: number;
 };
 
-export function progressStats(user: User): ProgressStats {
-	const level = calculateLevel(user.xp);
-	const xpInLevel = user.xp - xpForLevel(level);
+export function progressStats(xp: number): ProgressStats {
+	const level = calculateLevel(xp);
+	const xpInLevel = xp - xpForLevel(level);
 	const xpNeeded = xpForLevel(level + 1) - xpForLevel(level);
 	return { xpInLevel, xpNeeded };
 }

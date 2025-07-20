@@ -1,18 +1,20 @@
+import { type ChatInputCommand, container } from "@sapphire/framework";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
-	MessageFlags,
 	type ChatInputCommandInteraction,
 	type Interaction,
 	type InteractionUpdateOptions,
+	MessageFlags,
 } from "discord.js";
-import { container, type ChatInputCommand } from "@sapphire/framework";
+
+import { Command, config } from "$command";
+import type { Props } from "$interactions/leaderboard";
+import { pageLength } from "$lib/level";
+
 import { getPrettyPage } from "./_pretty";
 import { getTextPage } from "./_text";
-import type { Props } from "$interactions/leaderboard";
-import { Command, config } from "$command";
-import { pageLength } from "$lib/level";
 
 @config({
 	slash: {
@@ -88,6 +90,7 @@ export async function getPage(
 	const length = pretty ? pageLength.pretty : pageLength.text;
 	const allUsers = await container.db.user.findMany({
 		orderBy: { xp: "desc" },
+		select: { id: true, present: true, xp: true },
 		where: current ? { present: true } : undefined,
 	});
 	const pageUsers = allUsers.slice((page - 1) * length, page * length);

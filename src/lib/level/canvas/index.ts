@@ -1,13 +1,14 @@
 import path from "node:path";
+
+import { flavors } from "@catppuccin/palette";
+import type { PresenceStatus } from "discord.js";
+import node_modules from "node_modules-path";
 import {
-	FontLibrary,
 	type CanvasRenderingContext2D,
 	type CanvasTextAlign,
 	type CanvasTextBaseline,
+	FontLibrary,
 } from "skia-canvas";
-import type { PresenceStatus } from "discord.js";
-import { flavors } from "@catppuccin/palette";
-import node_modules from "node_modules-path";
 
 // register the Nunito font
 FontLibrary.use("Nunito", [

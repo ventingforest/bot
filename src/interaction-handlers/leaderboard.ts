@@ -1,11 +1,12 @@
 import { type ButtonInteraction } from "discord.js";
+
+import { getPage } from "$commands/leaderboard";
 import {
 	config,
 	InteractionHandler,
 	InteractionHandlerTypes,
 	type Option,
 } from "$interaction";
-import { getPage } from "$commands/leaderboard";
 
 export type Props = {
 	page: number;

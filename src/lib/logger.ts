@@ -1,4 +1,5 @@
-import { LogLevel, type ILogger } from "@sapphire/framework";
+import { type ILogger, LogLevel } from "@sapphire/framework";
+
 import logger from "$shared/logger";
 
 /**

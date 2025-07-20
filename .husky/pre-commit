@@ -1,2 +1,3 @@
 bun run --silent lint --quiet
+bun run --silent fmt --log-level silent
 git add .

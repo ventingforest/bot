@@ -1,12 +1,12 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import {
 	type InteractionHandler,
 	type InteractionHandlerTypes,
 } from "@sapphire/framework";
-import { ApplyOptions } from "@sapphire/decorators";
 
 export {
-	InteractionHandlerTypes,
 	InteractionHandler,
+	InteractionHandlerTypes,
 	type Option,
 } from "@sapphire/framework";
 

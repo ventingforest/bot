@@ -1,7 +1,8 @@
 import { ActivityType, type Client } from "discord.js";
-import { Events, Listener, config } from "$listener";
-import { synchroniseGuild } from "$lib/db";
+
 import { isProduction } from "$lib/data";
+import { synchroniseGuild } from "$lib/db";
+import { config, Events, Listener } from "$listener";
 
 @config(Events.ClientReady, {
 	once: true,

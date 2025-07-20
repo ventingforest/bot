@@ -1,4 +1,6 @@
 import fs from "node:fs/promises";
+
+import { getFileSink } from "@logtape/file";
 import {
 	configure,
 	fromAsyncSink,
@@ -6,9 +8,8 @@ import {
 	getLogger,
 } from "@logtape/logtape";
 import { getPrettyFormatter, prettyFormatter } from "@logtape/pretty";
-import type { GuildTextBasedChannel } from "discord.js";
 import { container } from "@sapphire/framework";
-import { getFileSink } from "@logtape/file";
+import type { GuildTextBasedChannel } from "discord.js";
 
 let logChannel: GuildTextBasedChannel;
 

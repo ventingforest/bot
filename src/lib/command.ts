@@ -1,10 +1,11 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import {
 	type ApplicationCommandRegistry,
 	type Args,
 	Command as SapphireCommand,
 } from "@sapphire/framework";
 import { ApplicationCommandType, type SlashCommandBuilder } from "discord.js";
-import { ApplyOptions } from "@sapphire/decorators";
+
 import { guildId } from "$lib/data";
 
 type SlashCommandOptions = (builder: SlashCommandBuilder) => void;

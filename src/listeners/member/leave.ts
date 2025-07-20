@@ -1,7 +1,8 @@
 import type { GuildMember, PartialGuildMember } from "discord.js";
-import { Listener, Events, config } from "$listener";
-import { synchroniseMember } from "$lib/db";
+
 import { isProduction } from "$lib/data";
+import { synchroniseMember } from "$lib/db";
+import { config, Events, Listener } from "$listener";
 
 @config(Events.GuildMemberRemove, {
 	enabled: isProduction,

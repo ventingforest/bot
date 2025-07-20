@@ -1,48 +1,51 @@
 {
-  "name": "bot",
-  "module": "src/index.ts",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "start": "bun run src/index.ts",
-    "dev": "bun --watch src/ --watch lib/ src/index.ts",
-    "lint": "xo tools src shared --fix",
-    "prepare": "husky",
-    "prisma": "prisma"
-  },
-  "dependencies": {
-    "@catppuccin/palette": "^1.7.1",
-    "@fontsource-variable/nunito": "^5.2.6",
-    "@logtape/file": "^1.0.4",
-    "@logtape/logtape": "^1.0.4",
-    "@logtape/pretty": "^1.0.4",
-    "@prisma/client": "^6.11.1",
-    "@sapphire/decorators": "^6.2.0",
-    "@sapphire/discord.js-utilities": "^7.3.3",
-    "@sapphire/framework": "^5.3.6",
-    "discord.js": "^14.21.0",
-    "lru-cache": "^11.1.0",
-    "node_modules-path": "^2.1.0",
-    "skia-canvas": "^2.0.2"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/yargs": "^17.0.33",
-    "eslint-plugin-sort-keys": "^2.3.5",
-    "husky": "^9.1.7",
-    "prettier": "^3.6.2",
-    "prettier-plugin-prisma": "^5.0.0",
-    "prisma": "^6.11.1",
-    "xo": "^1.2.1",
-    "yargs": "^18.0.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "trustedDependencies": [
-    "@prisma/client",
-    "@prisma/engines",
-    "prisma",
-    "skia-canvas"
-  ]
+	"name": "bot",
+	"module": "src/index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"start": "bun run src/index.ts",
+		"dev": "bun --watch src/ --watch lib/ src/index.ts",
+		"lint": "xo --fix",
+		"fmt": "prettier --write .",
+		"prepare": "husky",
+		"prisma": "prisma"
+	},
+	"dependencies": {
+		"@catppuccin/palette": "^1.7.1",
+		"@fontsource-variable/nunito": "^5.2.6",
+		"@logtape/file": "^1.0.4",
+		"@logtape/logtape": "^1.0.4",
+		"@logtape/pretty": "^1.0.4",
+		"@prisma/client": "^6.11.1",
+		"@sapphire/decorators": "^6.2.0",
+		"@sapphire/discord.js-utilities": "^7.3.3",
+		"@sapphire/framework": "^5.3.6",
+		"discord.js": "^14.21.0",
+		"node_modules-path": "^2.1.0",
+		"skia-canvas": "^2.0.2"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/yargs": "^17.0.33",
+		"eslint-plugin-prisma": "^1.0.1",
+		"eslint-plugin-simple-import-sort": "^12.1.1",
+		"eslint-plugin-sort-keys": "^2.3.5",
+		"eslint-plugin-unused-imports": "^4.1.4",
+		"husky": "^9.1.7",
+		"prettier": "^3.6.2",
+		"prettier-plugin-prisma": "^5.0.0",
+		"prisma": "^6.11.1",
+		"xo": "^1.2.1",
+		"yargs": "^18.0.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"trustedDependencies": [
+		"@prisma/client",
+		"@prisma/engines",
+		"prisma",
+		"skia-canvas"
+	]
 }

@@ -1,5 +1,6 @@
 import { getLogger } from "@logtape/logtape";
-import { Events, Listener, config } from "$listener";
+
+import { config, Events, Listener } from "$listener";
 
 const logger = getLogger("api");
 

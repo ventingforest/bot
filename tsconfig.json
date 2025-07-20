@@ -1,45 +1,45 @@
 {
-  "compilerOptions": {
-    // environment setup & latest features
-    "lib": ["ESNext"],
-    "target": "ESNext",
-    "module": "Preserve",
-    "moduleDetection": "force",
-    "jsx": "react-jsx",
-    "allowJs": true,
+	"compilerOptions": {
+		// environment setup & latest features
+		"lib": ["ESNext"],
+		"target": "ESNext",
+		"module": "Preserve",
+		"moduleDetection": "force",
+		"jsx": "react-jsx",
+		"allowJs": true,
 
-    // bundler mode
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
+		// bundler mode
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"noEmit": true,
 
-    // best practices
-    "strict": true,
-    "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
+		// best practices
+		"strict": true,
+		"skipLibCheck": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
 
-    // some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
+		// some stricter flags (disabled by default)
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"noPropertyAccessFromIndexSignature": false,
 
-    // custom
-    "baseUrl": ".",
-    "paths": {
-      "$shared/*": ["shared/*"],
-      "$lib/*": ["src/lib/*"],
+		// custom
+		"baseUrl": ".",
+		"paths": {
+			"$shared/*": ["shared/*"],
+			"$lib/*": ["src/lib/*"],
 
-      "$command": ["src/lib/command"],
-      "$commands/*": ["src/commands/*"],
-      "$interaction": ["src/lib/handler"],
-      "$interactions/*": ["src/interaction-handlers/*"],
-      "$listener": ["src/lib/listener"],
-      "$listeners/*": ["src/listeners/*"],
+			"$command": ["src/lib/command"],
+			"$commands/*": ["src/commands/*"],
+			"$interaction": ["src/lib/handler"],
+			"$interactions/*": ["src/interaction-handlers/*"],
+			"$listener": ["src/lib/listener"],
+			"$listeners/*": ["src/listeners/*"],
 
-      "$prisma": ["prisma/generated"]
-    }
-  }
+			"$prisma": ["prisma/generated"]
+		}
+	}
 }

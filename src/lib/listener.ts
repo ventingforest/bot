@@ -1,5 +1,5 @@
-import type { Events, Listener } from "@sapphire/framework";
 import { ApplyOptions } from "@sapphire/decorators";
+import type { Events, Listener } from "@sapphire/framework";
 
 export { Events, Listener } from "@sapphire/framework";
 

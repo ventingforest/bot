@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/promise-function-async */
-import type { GuildMember, PartialGuildMember } from "discord.js";
 import { container } from "@sapphire/framework";
-import { guildId } from "./data";
+import type { GuildMember, PartialGuildMember } from "discord.js";
+
 import type { PrismaClient } from "$prisma";
 import prisma from "$shared/db";
+
+import { guildId } from "./data";
 
 const { client, logger } = container;
 container.db = prisma;

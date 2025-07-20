@@ -1,15 +1,18 @@
 {
-  "files.exclude": {
-    "node_modules": true,
-    "prisma/generated": true,
-    "bun.lock": true,
-    "logs": true
-  },
+	"files.exclude": {
+		"node_modules": true,
+		"prisma/generated": true,
+		"bun.lock": true,
+		"logs": true
+	},
 
-  "editor.formatOnSave": true,
+	"editor.formatOnSave": true,
 	"xo.enable": true,
 	"xo.format.enable": true,
-  "[typescript]": {
+	"[typescript]": {
+		"editor.defaultFormatter": "samverschueren.linter-xo"
+	},
+	"[prisma]": {
 		"editor.defaultFormatter": "samverschueren.linter-xo"
 	}
 }
