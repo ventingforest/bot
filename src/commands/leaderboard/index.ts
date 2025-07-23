@@ -8,11 +8,11 @@ import {
 	type InteractionUpdateOptions,
 	MessageFlags,
 } from "discord.js";
+import type { Props } from "src/interactions/leaderboard";
 
-import { Command, config } from "$command";
+import { Command, config, load } from "$command";
 import { getPrettyPage } from "$commands/leaderboard/_pretty";
 import { getTextPage } from "$commands/leaderboard/_text";
-import type { Props } from "$interactions/leaderboard";
 import { pageLength } from "$lib/level";
 
 @config({
@@ -45,7 +45,7 @@ import { pageLength } from "$lib/level";
 		},
 	},
 })
-export default class Leaderboard extends Command {
+class Leaderboard extends Command {
 	override async chatInputRun(
 		interaction: ChatInputCommandInteraction,
 		_: ChatInputCommand.RunContext,
@@ -79,6 +79,8 @@ export default class Leaderboard extends Command {
 		});
 	}
 }
+
+await load(Leaderboard);
 
 function makeId(
 	prefix: string,

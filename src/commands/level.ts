@@ -11,7 +11,7 @@ import {
 } from "discord.js";
 import { Canvas } from "skia-canvas";
 
-import { Command, config } from "$command";
+import { Command, config, load } from "$command";
 import { calculateLevel, rankInGuild } from "$lib/level";
 import { c, type CircleData, drawText, type SizeData } from "$lib/level/canvas";
 import { drawAvatar } from "$lib/level/canvas/avatar";
@@ -36,7 +36,7 @@ import { drawProgress, progressStats } from "$lib/level/canvas/progress";
 		},
 	},
 })
-export default class Level extends Command {
+class Level extends Command {
 	override async chatInputRun(
 		interaction: ChatInputCommandInteraction,
 		_: ChatInputCommand.RunContext,
@@ -57,6 +57,8 @@ export default class Level extends Command {
 		);
 	}
 }
+
+await load(Level);
 
 async function respond(
 	interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction,

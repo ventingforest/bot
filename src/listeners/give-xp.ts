@@ -1,10 +1,10 @@
 import type { Message, OmitPartialGroupDMChannel } from "discord.js";
 
 import { isProduction, xp } from "$lib/data";
-import { config, Events, Listener } from "$listener";
+import { config, Events, Listener, load } from "$listener";
 
 @config(Events.MessageCreate)
-export default class GiveXp extends Listener<typeof Events.MessageCreate> {
+class GiveXp extends Listener<typeof Events.MessageCreate> {
 	override async run(message: OmitPartialGroupDMChannel<Message>) {
 		if (message.author.bot) return; // ignore bot messages
 		if (!message.guild) return; // ensure it's a guild message
@@ -23,6 +23,8 @@ export default class GiveXp extends Listener<typeof Events.MessageCreate> {
 		}
 	}
 }
+
+await load(GiveXp);
 
 // keeps the last time a user sent a message
 const lastTime = new Map<string, number>();

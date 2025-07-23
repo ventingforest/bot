@@ -5,8 +5,9 @@ import {
 	config,
 	InteractionHandler,
 	InteractionHandlerTypes,
+	load,
 	type Option,
-} from "$interaction";
+} from "$lib/interaction";
 
 export type Props = {
 	page: number;
@@ -15,7 +16,7 @@ export type Props = {
 };
 
 @config(InteractionHandlerTypes.Button)
-export default class Leaderboard extends InteractionHandler {
+class Leaderboard extends InteractionHandler {
 	override parse(interaction: ButtonInteraction): Option<Props> {
 		console.log(interaction.customId);
 		const match = /lb_(go|jmp|usr)_(\d+)_(true|false)(_pretty)?/.exec(
@@ -33,3 +34,5 @@ export default class Leaderboard extends InteractionHandler {
 		await interaction.update(await getPage(interaction, props));
 	}
 }
+
+await load(Leaderboard);

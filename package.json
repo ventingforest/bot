@@ -5,6 +5,7 @@
 	"private": true,
 	"scripts": {
 		"start": "bun run src/index.ts",
+		"compile": "bun build --compile --outfile bot src/index.ts",
 		"dev": "bun --watch src/ --watch lib/ src/index.ts",
 		"lint": "xo --fix",
 		"fmt": "prettier --write .",
@@ -22,6 +23,7 @@
 		"@sapphire/decorators": "^6.2.0",
 		"@sapphire/discord.js-utilities": "^7.3.3",
 		"@sapphire/framework": "^5.3.6",
+		"@sapphire/utilities": "^3.18.2",
 		"discord.js": "^14.21.0",
 		"node_modules-path": "^2.1.0",
 		"skia-canvas": "^2.0.2"
@@ -30,7 +32,6 @@
 		"@sapphire/cli": "^1.9.3",
 		"@types/bun": "latest",
 		"@types/yargs": "^17.0.33",
-		"eslint-plugin-prisma": "^1.0.1",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
 		"eslint-plugin-sort-keys": "^2.3.5",
 		"eslint-plugin-unused-imports": "^4.1.4",

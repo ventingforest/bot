@@ -13,7 +13,7 @@ import { Command, config } from "$command";
 		name: "",
 	},
 })
-export default class {{name}} extends Command {
+class {{name}} extends Command {
 	override async chatInputRun(
 		interaction: ChatInputCommandInteraction,
 		_: ChatInputCommand.RunContext,

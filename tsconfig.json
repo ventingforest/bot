@@ -34,8 +34,8 @@
 
 			"$command": ["src/lib/command"],
 			"$commands/*": ["src/commands/*"],
-			"$interaction": ["src/lib/handler"],
-			"$interactions/*": ["src/interaction-handlers/*"],
+			"$interaction": ["src/lib/interaction"],
+			"$interactions/*": ["src/interactions/*"],
 			"$listener": ["src/lib/listener"],
 			"$listeners/*": ["src/listeners/*"],
 

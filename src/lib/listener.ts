@@ -1,6 +1,8 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import type { Events, Listener } from "@sapphire/framework";
 
+import makeLoad from "./load";
+
 export { Events, Listener } from "@sapphire/framework";
 
 /**
@@ -16,3 +18,8 @@ export function config<E extends (typeof Events)[keyof typeof Events]>(
 		...options,
 	});
 }
+
+/**
+ * Load a {@link Listener} piece.
+ */
+export const load = makeLoad("listeners");

@@ -4,6 +4,8 @@ import {
 	type InteractionHandlerTypes,
 } from "@sapphire/framework";
 
+import makeLoad from "./load";
+
 export {
 	InteractionHandler,
 	InteractionHandlerTypes,
@@ -23,3 +25,8 @@ export function config(
 		...options,
 	});
 }
+
+/**
+ * Load an {@link InteractionHandler} piece.
+ */
+export const load = makeLoad("interaction-handlers");

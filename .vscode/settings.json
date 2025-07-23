@@ -3,7 +3,8 @@
 		"node_modules": true,
 		"prisma/generated": true,
 		"bun.lock": true,
-		"logs": true
+		"logs": true,
+		"**/_load.ts": true
 	},
 
 	"editor.formatOnSave": true,

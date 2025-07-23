@@ -8,12 +8,19 @@ import { ApplicationCommandType, type SlashCommandBuilder } from "discord.js";
 
 import { guildId } from "$lib/data";
 
+import makeLoad from "./load";
+
 type SlashCommandOptions = (builder: SlashCommandBuilder) => void;
 
 export function config(options: Command.Options) {
 	// eslint-disable-next-line new-cap
 	return ApplyOptions<Command.Options>(options);
 }
+
+/**
+ * Load a {@link Command} piece.
+ */
+export const load = makeLoad("commands");
 
 export class Command extends SapphireCommand<Args, Command.Options> {
 	override registerApplicationCommands(registry: ApplicationCommandRegistry) {
