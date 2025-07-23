@@ -15,7 +15,7 @@ export type Props = {
 };
 
 @config(InteractionHandlerTypes.Button)
-export class Leaderboard extends InteractionHandler {
+export default class Leaderboard extends InteractionHandler {
 	override parse(interaction: ButtonInteraction): Option<Props> {
 		console.log(interaction.customId);
 		const match = /lb_(go|jmp|usr)_(\d+)_(true|false)(_pretty)?/.exec(

@@ -39,7 +39,7 @@
 			"$listener": ["src/lib/listener"],
 			"$listeners/*": ["src/listeners/*"],
 
-			"$prisma": ["prisma/generated"]
+			"$prisma": ["prisma/generated/client"]
 		}
 	}
 }

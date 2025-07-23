@@ -7,7 +7,7 @@ import { config, Events, Listener } from "$listener";
 @config(Events.GuildMemberAdd, {
 	enabled: isProduction,
 })
-export class MemberJoin extends Listener<typeof Events.GuildMemberAdd> {
+export default class MemberJoin extends Listener<typeof Events.GuildMemberAdd> {
 	override async run(member: GuildMember) {
 		if (member.user.bot) return;
 		await synchroniseMember(member);

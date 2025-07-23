@@ -11,7 +11,7 @@ import { Command, config } from "$command";
 		name: "ping",
 	},
 })
-export class Ping extends Command {
+export default class Ping extends Command {
 	override async chatInputRun(
 		interaction: ChatInputCommandInteraction,
 		_: ChatInputCommand.RunContext,

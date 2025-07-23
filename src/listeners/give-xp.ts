@@ -4,7 +4,7 @@ import { isProduction, xp } from "$lib/data";
 import { config, Events, Listener } from "$listener";
 
 @config(Events.MessageCreate)
-export class GiveXp extends Listener<typeof Events.MessageCreate> {
+export default class GiveXp extends Listener<typeof Events.MessageCreate> {
 	override async run(message: OmitPartialGroupDMChannel<Message>) {
 		if (message.author.bot) return; // ignore bot messages
 		if (!message.guild) return; // ensure it's a guild message

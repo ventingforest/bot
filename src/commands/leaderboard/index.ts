@@ -45,7 +45,7 @@ import { pageLength } from "$lib/level";
 		},
 	},
 })
-export class Leaderboard extends Command {
+export default class Leaderboard extends Command {
 	override async chatInputRun(
 		interaction: ChatInputCommandInteraction,
 		_: ChatInputCommand.RunContext,

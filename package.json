@@ -9,7 +9,8 @@
 		"lint": "xo --fix",
 		"fmt": "prettier --write .",
 		"prepare": "husky",
-		"prisma": "prisma"
+		"prisma": "prisma",
+		"sapphire": "sapphire"
 	},
 	"dependencies": {
 		"@catppuccin/palette": "^1.7.1",
@@ -26,6 +27,7 @@
 		"skia-canvas": "^2.0.2"
 	},
 	"devDependencies": {
+		"@sapphire/cli": "^1.9.3",
 		"@types/bun": "latest",
 		"@types/yargs": "^17.0.33",
 		"eslint-plugin-prisma": "^1.0.1",

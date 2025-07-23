@@ -7,7 +7,7 @@ import { config, Events, Listener } from "$listener";
 @config(Events.ClientReady, {
 	once: true,
 })
-export class Ready extends Listener<typeof Events.ClientReady> {
+export default class Ready extends Listener<typeof Events.ClientReady> {
 	override async run(client: Client<true>) {
 		client.user.setActivity("over you :]", { type: ActivityType.Watching });
 		this.container.logger.info(`Logged in as ${client.user?.tag}`);

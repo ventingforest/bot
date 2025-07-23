@@ -1,0 +1,23 @@
+{
+    "category": "commands"
+}
+---
+import type { ChatInputCommand } from "@sapphire/framework";
+import { type ChatInputCommandInteraction } from "discord.js";
+
+import { Command, config } from "$command";
+
+@config({
+	slash: {
+		description: "",
+		name: "",
+	},
+})
+export default class {{name}} extends Command {
+	override async chatInputRun(
+		interaction: ChatInputCommandInteraction,
+		_: ChatInputCommand.RunContext,
+	) {
+        return interaction.reply("hello world!");
+	}
+}

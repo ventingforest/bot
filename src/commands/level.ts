@@ -36,7 +36,7 @@ import { drawProgress, progressStats } from "$lib/level/canvas/progress";
 		},
 	},
 })
-export class Level extends Command {
+export default class Level extends Command {
 	override async chatInputRun(
 		interaction: ChatInputCommandInteraction,
 		_: ChatInputCommand.RunContext,
