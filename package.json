@@ -4,9 +4,9 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"start": "bun run src/index.ts",
+		"start": "bun sapphire gl >/dev/null 2>&1 && bun run src/index.ts",
 		"compile": "bun build --compile --outfile bot src/index.ts",
-		"dev": "bun --watch src/ --watch lib/ src/index.ts",
+		"dev": "chokidar 'src/**/*.ts' 'shared/**/*.ts' -i 'src/**/_load.ts' --silent --initial -c 'bun run start'",
 		"lint": "xo --fix",
 		"fmt": "prettier --write .",
 		"prepare": "husky",
@@ -30,8 +30,9 @@
 	},
 	"devDependencies": {
 		"@sapphire/cli": "^1.9.3",
-		"@types/bun": "latest",
+		"@types/bun": "^1.2.14",
 		"@types/yargs": "^17.0.33",
+		"chokidar-cli": "^3.0.0",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
 		"eslint-plugin-sort-keys": "^2.3.5",
 		"eslint-plugin-unused-imports": "^4.1.4",
