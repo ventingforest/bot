@@ -7,10 +7,13 @@ import {
 import { ApplicationCommandType, type SlashCommandBuilder } from "discord.js";
 
 import { guildId } from "$lib/data";
-import makeLoad from "$lib/load";
+import { makeLoad } from "$lib/internal";
 
 type SlashCommandOptions = (builder: SlashCommandBuilder) => void;
 
+/**
+ * Configure a {@link Command} piece.
+ */
 export function config(options: Command.Options) {
 	// eslint-disable-next-line new-cap
 	return ApplyOptions<Command.Options>(options);

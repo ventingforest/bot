@@ -1,10 +1,6 @@
-import { ApplyOptions } from "@sapphire/decorators";
-import {
-	type InteractionHandler,
-	type InteractionHandlerTypes,
-} from "@sapphire/framework";
+import { type InteractionHandler } from "@sapphire/framework";
 
-import makeLoad from "$lib/load";
+import { makeConfig, makeLoad } from "./internal";
 
 export {
 	InteractionHandler,
@@ -12,19 +8,12 @@ export {
 	type Option,
 } from "@sapphire/framework";
 
-export function config(
-	type: InteractionHandlerTypes,
-	options: Omit<
-		InteractionHandler.Options,
-		"interactionHandlerType" | "ids"
-	> = {},
-) {
-	// eslint-disable-next-line new-cap
-	return ApplyOptions<InteractionHandler.Options>({
-		interactionHandlerType: type,
-		...options,
-	});
-}
+/**
+ * Configure a {@link InteractionHandler} piece.
+ */
+export const config = makeConfig<InteractionHandler.Options>(
+	"interactionHandlerType",
+);
 
 /**
  * Load an {@link InteractionHandler} piece.
