@@ -8,14 +8,6 @@ export const isProduction = process.env.NODE_ENV === "production";
  */
 export const guildId = "435894444101861408";
 
-/**
- * Anonymous venting configuration.
- */
-// todo: production data
-export const anon = {
-	channelId: isProduction ? undefined : "1397637713980817520",
-};
-
 export const xp = {
 	/**
 	 * The number of characters in a message required to receive 1 XP.

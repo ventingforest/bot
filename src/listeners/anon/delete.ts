@@ -4,7 +4,7 @@ import {
 	type PartialMessage,
 } from "discord.js";
 
-import { anon } from "$lib/data";
+import { channelId } from "$lib/anon";
 import { config, Events, Listener, load } from "$listener";
 
 @config(Events.MessageDelete)
@@ -13,7 +13,7 @@ class Delete extends Listener<typeof Events.MessageDelete> {
 		message: OmitPartialGroupDMChannel<Message | PartialMessage>,
 	) {
 		if (!message.webhookId) return; // only listen to webhook messages
-		if (message.channelId !== anon.channelId) return; // only handle messages in the anonymous vent channel
+		if (message.channelId !== channelId) return; // only handle messages in the anonymous vent channel
 
 		await this.container.db.anonVent.delete({ where: { message: message.id } });
 	}
