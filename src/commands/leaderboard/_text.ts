@@ -3,7 +3,7 @@ import type { Interaction, InteractionUpdateOptions } from "discord.js";
 
 import type { PagePosition } from "$commands/leaderboard";
 import { calculateLevel, rankInGuild } from "$lib/level";
-import { progressStats } from "$lib/level/canvas/progress";
+import { progressStats } from "$lib/level/canvas";
 import type { User as DbUser } from "$prisma";
 
 export async function getTextPage<U extends Pick<DbUser, "id" | "xp">>(

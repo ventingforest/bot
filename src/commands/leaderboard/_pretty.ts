@@ -9,9 +9,15 @@ import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
 
 import type { PagePosition } from "$commands/leaderboard";
 import { calculateLevel, pageLength, rankInGuild } from "$lib/level";
-import { c, drawText, type FontData, getFont } from "$lib/level/canvas";
-import { drawAvatar } from "$lib/level/canvas/avatar";
-import { drawProgress, progressStats } from "$lib/level/canvas/progress";
+import {
+	c,
+	drawAvatar,
+	drawProgress,
+	drawText,
+	type FontData,
+	getFont,
+	progressStats,
+} from "$lib/level/canvas";
 import type { User as DbUser } from "$prisma";
 
 const scale = 4;

@@ -13,9 +13,15 @@ import { Canvas } from "skia-canvas";
 
 import { Command, config, load } from "$command";
 import { calculateLevel, rankInGuild } from "$lib/level";
-import { c, type CircleData, drawText, type SizeData } from "$lib/level/canvas";
-import { drawAvatar } from "$lib/level/canvas/avatar";
-import { drawProgress, progressStats } from "$lib/level/canvas/progress";
+import {
+	c,
+	type CircleData,
+	drawAvatar,
+	drawProgress,
+	drawText,
+	progressStats,
+	type SizeData,
+} from "$lib/level/canvas";
 
 @config({
 	contextMenu: {

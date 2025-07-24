@@ -10,6 +10,9 @@ import {
 	FontLibrary,
 } from "skia-canvas";
 
+export * from "./avatar";
+export * from "./progress";
+
 // register the Nunito font
 FontLibrary.use("Nunito", [
 	path.join(
