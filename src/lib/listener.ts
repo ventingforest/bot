@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import type { Events, Listener } from "@sapphire/framework";
 
-import makeLoad from "./load";
+import makeLoad from "$lib/load";
 
 export { Events, Listener } from "@sapphire/framework";
 

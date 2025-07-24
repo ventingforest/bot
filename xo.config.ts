@@ -13,6 +13,7 @@ export default [
 			"capitalized-comments": "off",
 			"import-x/extensions": "off",
 			"n/prefer-global/process": ["error", "always"],
+			"no-warning-comments": "off",
 		},
 	},
 	// custom plugins

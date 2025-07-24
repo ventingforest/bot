@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/promise-function-async */
+
 import { container } from "@sapphire/framework";
 import type { GuildMember, PartialGuildMember } from "discord.js";
 
@@ -17,7 +19,7 @@ export async function synchroniseGuild() {
 	const guild = await client.guilds.fetch(guildId);
 	const fetchedMembers = await guild.members.fetch();
 	const members = [...fetchedMembers.values()];
-	const memberUpdates = members.map(async member => synchroniseMember(member));
+	const memberUpdates = members.map(member => synchroniseMember(member));
 	const notPresent = prisma.user.updateMany({
 		data: { present: false },
 		where: { id: { notIn: members.map(m => m.user.id) } },
@@ -31,7 +33,7 @@ export async function synchroniseGuild() {
 /**
  * Synchronises a member's data in the database.
  */
-export async function synchroniseMember(
+export function synchroniseMember(
 	{ user: { id, username } }: GuildMember | PartialGuildMember,
 	present = true,
 ) {

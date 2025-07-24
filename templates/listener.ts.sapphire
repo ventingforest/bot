@@ -1,0 +1,12 @@
+{
+    "category": "listeners"
+}
+---
+import { config, Events, Listener, load } from "$listener";
+
+@config(Events.ClientReady)
+class {{name}} extends Listener<typeof Events.ClientReady> {
+    override
+}
+
+await load({{name}});

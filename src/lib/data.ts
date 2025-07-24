@@ -4,9 +4,17 @@
 export const isProduction = process.env.NODE_ENV === "production";
 
 /**
- * The ID of the guild the bot is in.
+ * The ID of the guild the bot operates in.
  */
 export const guildId = "435894444101861408";
+
+/**
+ * Anonymous venting configuration.
+ */
+// todo: production data
+export const anon = {
+	channelId: isProduction ? undefined : "1397637713980817520",
+};
 
 export const xp = {
 	/**

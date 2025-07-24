@@ -17,3 +17,8 @@ model User {
 
   @@index([present, xp])
 }
+
+model AnonVent {
+  message String @id
+  user    String
+}

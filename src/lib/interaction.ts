@@ -4,7 +4,7 @@ import {
 	type InteractionHandlerTypes,
 } from "@sapphire/framework";
 
-import makeLoad from "./load";
+import makeLoad from "$lib/load";
 
 export {
 	InteractionHandler,

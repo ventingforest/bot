@@ -5,7 +5,7 @@
 import type { ChatInputCommand } from "@sapphire/framework";
 import { type ChatInputCommandInteraction } from "discord.js";
 
-import { Command, config } from "$command";
+import { Command, config, load } from "$command";
 
 @config({
 	slash: {
@@ -21,3 +21,5 @@ class {{name}} extends Command {
         return interaction.reply("hello world!");
 	}
 }
+
+await load({{name}});

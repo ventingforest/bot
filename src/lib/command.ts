@@ -7,8 +7,7 @@ import {
 import { ApplicationCommandType, type SlashCommandBuilder } from "discord.js";
 
 import { guildId } from "$lib/data";
-
-import makeLoad from "./load";
+import makeLoad from "$lib/load";
 
 type SlashCommandOptions = (builder: SlashCommandBuilder) => void;
 
