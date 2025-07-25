@@ -12,7 +12,7 @@ import {
 import { Canvas } from "skia-canvas";
 
 import { Command, config, load } from "$command";
-import { calculateLevel, rankInGuild } from "$lib/level";
+import { calculateLevel, rankInGuild, roleForXp } from "$lib/level";
 import {
 	c,
 	type CircleData,
@@ -135,6 +135,7 @@ async function respond(
 
 	// rank
 	const rank = rankInGuild(users, user.id);
+	const levelRole = await roleForXp(userDb.xp);
 	drawText(ctx, {
 		baseline: "top",
 		colour: c.subtext0.hex,
@@ -142,7 +143,7 @@ async function respond(
 			size: 14 * scale,
 			weight: 600,
 		},
-		text: `Rank #${rank.toLocaleString()}`,
+		text: `Rank #${rank.toLocaleString()} | ${levelRole?.name}`,
 		x: avatarCircle.x + avatarCircle.radius * 2,
 		y: 55 * scale,
 	});

@@ -8,7 +8,8 @@ import {
 import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
 
 import type { PagePosition } from "$commands/leaderboard";
-import { calculateLevel, pageLength, rankInGuild } from "$lib/level";
+import { levelConf } from "$lib/data";
+import { calculateLevel, rankInGuild } from "$lib/level";
 import {
 	c,
 	drawAvatar,
@@ -20,6 +21,7 @@ import {
 } from "$lib/level/canvas";
 import type { User as DbUser } from "$prisma";
 
+const { pageLength } = levelConf;
 const scale = 4;
 const canvasWidth = 50 * pageLength.pretty * scale;
 

@@ -13,7 +13,9 @@ import type { Props } from "src/interactions/leaderboard";
 import { Command, config, load } from "$command";
 import { getPrettyPage } from "$commands/leaderboard/_pretty";
 import { getTextPage } from "$commands/leaderboard/_text";
-import { pageLength } from "$lib/level";
+import { levelConf } from "$lib/data";
+
+const { pageLength } = levelConf;
 
 @config({
 	slash: {

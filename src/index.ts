@@ -8,7 +8,7 @@ import {
 	type GuildTextBasedChannel,
 } from "discord.js";
 
-import { anon } from "$lib/data";
+import { anonConf } from "$lib/data";
 import Logger from "$lib/logger";
 import token from "$shared/token";
 
@@ -35,7 +35,7 @@ await client.login(token);
 
 // cache anon vent messages
 const anonVent = (await client.channels.fetch(
-	anon.channelId,
+	anonConf.channelId,
 )) as GuildTextBasedChannel;
 let lastId: string | undefined;
 let fetched = 0;

@@ -7,7 +7,7 @@ import {
 	type User,
 } from "discord.js";
 
-import { anon, guildId, staff } from "$lib/data";
+import { anonConf, guildId, staff } from "$lib/data";
 import { config, Events, Listener, load } from "$listener";
 
 @config(Events.MessageReactionAdd)
@@ -17,7 +17,7 @@ class Query extends Listener<typeof Events.MessageReactionAdd> {
 		user: User | PartialUser,
 		_: MessageReactionEventDetails,
 	) {
-		if (reaction.emoji.name !== anon.queryReaction) return; // only handle specific reaction
+		if (reaction.emoji.name !== anonConf.queryReaction) return; // only handle specific reaction
 		if (reaction.message.guildId !== guildId) return; // only handle reactions in the guild
 		const guild = await this.container.client.guilds.fetch(guildId);
 		const member = await guild.members.fetch(user.id);

@@ -9,7 +9,7 @@ import {
 } from "discord.js";
 import { animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 
-import { anon } from "$lib/data";
+import { anonConf } from "$lib/data";
 import { config, Events, Listener, load } from "$listener";
 
 // user id -> session
@@ -22,7 +22,7 @@ const messageQueue: Array<OmitPartialGroupDMChannel<Message>> = [];
 class Create extends Listener<typeof Events.MessageCreate> {
 	override async run(message: OmitPartialGroupDMChannel<Message>) {
 		if (message.author.bot || message.webhookId) return; // only listen to users
-		if (message.channelId !== anon.channelId) return; // only handle messages in the anonymous vent channel
+		if (message.channelId !== anonConf.channelId) return; // only handle messages in the anonymous vent channel
 		await message.delete(); // delete the message to keep it anonymous
 		await processMessage(message, await fetchWebhooks());
 	}
@@ -32,7 +32,7 @@ await load(Create);
 
 async function fetchWebhooks() {
 	const channel = (await container.client.channels.fetch(
-		anon.channelId,
+		anonConf.channelId,
 	)) as TextChannel;
 	return channel.fetchWebhooks();
 }
@@ -49,7 +49,7 @@ async function processMessage(
 	let session = sessions.get(message.author.id);
 	const now = Date.now();
 
-	if (!session || now - session.lastActive > anon.sessionTimeout) {
+	if (!session || now - session.lastActive > anonConf.sessionTimeout) {
 		const assigned = new Set([...sessions.values()].map(s => s.webhookId));
 
 		const webhookId = [...webhooks.keys()].find(id => !assigned.has(id));
@@ -89,7 +89,7 @@ setInterval(async () => {
 	// periodic cleanup
 	const now = Date.now();
 	for (const [userId, { lastActive }] of sessions.entries()) {
-		if (now - lastActive > anon.sessionTimeout) {
+		if (now - lastActive > anonConf.sessionTimeout) {
 			sessions.delete(userId);
 		}
 	}

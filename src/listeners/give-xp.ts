@@ -1,6 +1,6 @@
 import type { Message, OmitPartialGroupDMChannel } from "discord.js";
 
-import { isProduction, xp } from "$lib/data";
+import { isProduction, levelConf } from "$lib/data";
 import { config, Events, Listener, load } from "$listener";
 
 @config(Events.MessageCreate)
@@ -36,13 +36,13 @@ function computeXp({
 }: Message): number {
 	const last = lastTime.get(id) ?? 0;
 
-	if (time - last < xp.cooldown) {
+	if (time - last < levelConf.cooldown) {
 		// within cooldown period, no XP
 		return 0;
 	}
 
 	lastTime.set(id, time);
 
-	const points = Math.floor(length / xp.charsPerPoint);
-	return Math.min(xp.minimum + points, xp.maximum);
+	const points = Math.floor(length / levelConf.charsPerPoint);
+	return Math.min(levelConf.minimum + points, levelConf.maximum);
 }
