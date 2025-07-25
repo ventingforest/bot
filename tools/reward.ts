@@ -2,7 +2,7 @@ import { GatewayIntentBits } from "discord.js";
 
 import { guildId } from "$shared/data";
 import prisma from "$shared/db";
-import { levelForXp, levelRewards, rewardForLevel } from "$shared/level";
+import { getLevelRole, levelForXp, levelRoles } from "$shared/level";
 import createClient from "$tools/client";
 
 const client = await createClient({
@@ -18,10 +18,11 @@ client.once("ready", async () => {
 
 	// cache all role names for logging
 	const roleNameCache = new Map<string, string>();
-	const roleFetchPromises = levelRewards.map(async reward => {
+	const roleFetchPromises = levelRoles.map(async roleInfo => {
 		const role =
-			guild.roles.cache.get(reward.id) ?? (await guild.roles.fetch(reward.id));
-		if (role) roleNameCache.set(reward.id, role.name);
+			guild.roles.cache.get(roleInfo.id) ??
+			(await guild.roles.fetch(roleInfo.id));
+		if (role) roleNameCache.set(roleInfo.id, role.name);
 	});
 	await Promise.all(roleFetchPromises);
 
@@ -29,17 +30,15 @@ client.once("ready", async () => {
 		members.map(async member => {
 			const user = db.find(u => u.id === member.user.id);
 			const level = levelForXp(user?.xp ?? 0);
-			const correctRoleId = rewardForLevel(level);
+			const correctRoleId = getLevelRole(level);
 			const promises = [];
 
 			// remove old level roles
 			let removedId: string | undefined;
-			for (const reward of levelRewards) {
-				if (reward.id !== correctRoleId && member.roles.cache.has(reward.id)) {
-					removedId = reward.id;
-					promises.push(
-						member.roles.remove(reward.id, "remove old level role"),
-					);
+			for (const role of levelRoles) {
+				if (role.id !== correctRoleId && member.roles.cache.has(role.id)) {
+					removedId = role.id;
+					promises.push(member.roles.remove(role.id, "remove old level role"));
 				}
 			}
 

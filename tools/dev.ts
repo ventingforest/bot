@@ -3,6 +3,7 @@ import { type ChildProcess, spawn } from "node:child_process";
 import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
 import { prettyFormatter } from "@logtape/pretty";
 import { watch } from "chokidar";
+import { onExit } from "signal-exit";
 
 await configure({
 	loggers: [
@@ -31,13 +32,18 @@ const watcher = watch(["src", "shared"], {
 
 let bun: ChildProcess | undefined;
 
-function startBun() {
-	// kill the previous bun process if it exists
-	if (bun) {
+function killBun() {
+	if (bun && !bun.killed) {
+		logger.info("killing previous bun process");
 		bun.kill();
 	}
 
-	// start bun
+	bun = undefined;
+}
+
+function startBun() {
+	killBun();
+	logger.info("starting bun process");
 	bun = spawn("bun", ["run", "--silent", "start"], { stdio: "inherit" });
 	bun.on("exit", code => {
 		if (code) logger.error(`bun exited with code ${code}`);
@@ -46,8 +52,9 @@ function startBun() {
 }
 
 watcher.on("change", path => {
-	logger.info(path);
+	logger.info(`file changed: ${path}`);
 	startBun();
 });
 
 startBun();
+onExit(killBun);

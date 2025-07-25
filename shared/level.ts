@@ -3,24 +3,24 @@ export function levelForXp(xp: number): number {
 }
 
 /**
- * Returns the role ID of the highest level reward that is less than or equal to the given level.
+ * Returns the role ID for a given level.
  */
-export function rewardForLevel(level: number): string {
-	let bestId = "0";
-	for (const reward of levelRewards) {
-		if (level >= reward.level) bestId = reward.id;
+export function getLevelRole(level: number): string {
+	let rankId = "";
+	for (const reward of levelRoles) {
+		if (level >= reward.level) rankId = reward.id;
 		else break;
 	}
 
-	return bestId;
+	return rankId;
 }
 
-type LevelReward = { level: number; id: string };
+type LevelRole = { level: number; id: string };
 
 /**
  * IDs of roles that are awarded based on XP levels.
  */
-export const levelRewards: LevelReward[] = [
+export const levelRoles: LevelRole[] = [
 	{ id: "441943660016173058", level: 0 }, // elf
 	{ id: "466738306881814536", level: 2 }, // goblin
 	{ id: "441944499149602816", level: 4 }, // gnome

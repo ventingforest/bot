@@ -12,7 +12,12 @@ import {
 import { Canvas } from "skia-canvas";
 
 import { Command, config, load } from "$command";
-import { levelForXp, rankInGuild, rewardForLevel } from "$lib/level";
+import {
+	getLevelRole,
+	levelForXp,
+	nextLevelRole,
+	rankInGuild,
+} from "$lib/level";
 import {
 	c,
 	type CircleData,
@@ -128,14 +133,14 @@ async function respond(
 			size: 30 * scale,
 			weight: 850,
 		},
-		text: user.username,
+		text: member.nickname ?? user.username,
 		x: avatarCircle.x + avatarCircle.radius * 2,
 		y: 20 * scale,
 	});
 
 	// rank
 	const rank = rankInGuild(users, user.id);
-	const levelRoleId = rewardForLevel(levelForXp(userDb.xp));
+	const levelRoleId = getLevelRole(levelForXp(userDb.xp));
 	const levelRole = interaction.guild?.roles.cache.get(levelRoleId);
 	drawText(ctx, {
 		baseline: "top",
@@ -160,7 +165,10 @@ async function respond(
 	});
 
 	// send
+	const nextRoleInfo = nextLevelRole(userDb.xp);
+	const nextRole = await interaction.guild?.roles.fetch(nextRoleInfo.id);
 	await interaction.reply({
+		content: `${user.toString()}, you are **${nextRoleInfo.xpAway.toLocaleString()} XP** away from **${nextRole?.name}**!`,
 		files: [
 			{
 				attachment: await canvas.toBuffer("webp"),

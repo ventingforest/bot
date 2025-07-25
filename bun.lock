@@ -31,6 +31,7 @@
         "prettier": "^3.6.2",
         "prettier-plugin-prisma": "^5.0.0",
         "prisma": "^6.11.1",
+        "signal-exit": "^4.1.0",
         "xo": "^1.2.1",
         "yargs": "^18.0.0",
       },

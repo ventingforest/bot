@@ -86,5 +86,40 @@ export function drawText(
 	ctx.fillStyle = colour;
 	ctx.textAlign = align;
 	ctx.textBaseline = baseline;
-	ctx.fillText(text, x, y);
+
+	let maxWidth: number;
+	switch (align) {
+		case "right":
+		case "end": {
+			maxWidth = x;
+			break;
+		}
+
+		case "center": {
+			maxWidth = Math.min(x, ctx.canvas.width - x) * 2;
+			break;
+		}
+
+		case "left":
+		case "start": {
+			maxWidth = ctx.canvas.width - x;
+			break;
+		}
+	}
+
+	let displayText = text;
+
+	// measure and truncate if needed
+	if (ctx.measureText(text).width > maxWidth) {
+		while (
+			displayText.length > 0 &&
+			ctx.measureText(displayText + "…").width > maxWidth
+		) {
+			displayText = displayText.slice(0, -1);
+		}
+
+		displayText += "…";
+	}
+
+	ctx.fillText(displayText, x, y);
 }

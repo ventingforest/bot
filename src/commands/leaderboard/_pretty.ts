@@ -99,7 +99,7 @@ async function drawUser(
 	ctx: CanvasRenderingContext2D,
 	{ member, y, xp, allUsers }: DrawUserOptions,
 ) {
-	const user = getUserFromMember(member);
+	const user = await getUserFromMember(member);
 	let x = avatarRadius * 2;
 
 	// avatar

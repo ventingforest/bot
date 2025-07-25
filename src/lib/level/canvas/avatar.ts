@@ -27,7 +27,7 @@ type AvatarBoxOptions = {
 
 export async function getUserFromMember(
 	member: GuildMember | APIInteractionGuildMember | User,
-): User {
+): Promise<User> {
 	let user: User;
 	if (
 		(member instanceof GuildMember ||
@@ -53,7 +53,7 @@ export async function drawAvatar(
 	const borderWidth = radius / 8;
 	const border: AvatarOptions = { radius: radius + borderWidth / 2, x, y };
 
-	const user = getUserFromMember(member);
+	const user = await getUserFromMember(member);
 	const avatar = await loadImage(
 		user.displayAvatarURL({ extension: "webp", size: 128 }),
 	);

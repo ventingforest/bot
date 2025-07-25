@@ -4,7 +4,7 @@ import { hideBin } from "yargs/helpers";
 
 import { guildId } from "$shared/data";
 import prisma from "$shared/db";
-import { levelForXp, levelRewards, rewardForLevel } from "$shared/level";
+import { getLevelRole, levelForXp, levelRoles } from "$shared/level";
 import createClient from "$tools/client";
 
 // collect args
@@ -52,20 +52,18 @@ client.once("ready", async () => {
 	const guild = await client.guilds.fetch(guildId);
 	const fromMember = await guild.members.fetch(fromId);
 	const toMember = await guild.members.fetch(toId);
-	const fromRoleId = rewardForLevel(0);
-	const toRoleId = rewardForLevel(levelForXp(xp));
+	const fromRoleId = getLevelRole(0);
+	const toRoleId = getLevelRole(levelForXp(xp));
 	const promises = [];
 
-	for (const reward of levelRewards) {
+	for (const level of levelRoles) {
 		// remove old level roles
-		if (fromMember.roles.cache.has(reward.id) && reward.id !== fromRoleId) {
-			promises.push(
-				fromMember.roles.remove(reward.id, "remove old level role"),
-			);
+		if (fromMember.roles.cache.has(level.id) && level.id !== fromRoleId) {
+			promises.push(fromMember.roles.remove(level.id, "remove old level role"));
 		}
 
-		if (toMember.roles.cache.has(reward.id) && reward.id !== toRoleId) {
-			promises.push(toMember.roles.remove(reward.id, "remove old level role"));
+		if (toMember.roles.cache.has(level.id) && level.id !== toRoleId) {
+			promises.push(toMember.roles.remove(level.id, "remove old level role"));
 		}
 	}
 
