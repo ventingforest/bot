@@ -3,6 +3,7 @@
 ## todo
 
 - oop leaderboard formatter
+- n xp away from next role
 
 ## development
 

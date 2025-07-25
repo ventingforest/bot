@@ -11,6 +11,8 @@ class MemberJoin extends Listener<typeof Events.GuildMemberAdd> {
 	override async run(member: GuildMember) {
 		if (member.user.bot) return;
 		await synchroniseMember(member);
+
+		// todo: level role assignment
 	}
 }
 

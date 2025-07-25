@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/promise-function-async */
 
+import { getLogger } from "@logtape/logtape";
 import { container } from "@sapphire/framework";
 import type { GuildMember, PartialGuildMember } from "discord.js";
 
@@ -9,6 +10,20 @@ import prisma from "$shared/db";
 
 const { client, logger } = container;
 container.db = prisma;
+
+// log prisma events
+{
+	const logger = getLogger("db");
+	prisma.$on("info", ({ message }) => {
+		logger.info(message);
+	});
+	prisma.$on("warn", ({ message }) => {
+		logger.warn(message);
+	});
+	prisma.$on("error", ({ message }) => {
+		logger.error(message);
+	});
+}
 
 /**
  * Synchronises the database with the current state of the guild.

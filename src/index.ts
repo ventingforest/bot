@@ -8,9 +8,8 @@ import {
 	type GuildTextBasedChannel,
 } from "discord.js";
 
-import { anonConf } from "$lib/data";
+import { anonConf, token } from "$lib/data";
 import Logger from "$lib/logger";
-import token from "$shared/token";
 
 const client = new SapphireClient({
 	baseUserDirectory: null,

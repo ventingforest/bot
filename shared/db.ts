@@ -1,5 +1,3 @@
-import { getLogger } from "@logtape/logtape";
-
 import { PrismaClient } from "$prisma";
 
 if (!process.env.DATABASE_URL) {
@@ -16,19 +14,5 @@ const prisma = new PrismaClient({
 		{ emit: "event", level: "error" },
 	],
 });
-
-// log prisma events
-{
-	const logger = getLogger("db");
-	prisma.$on("info", ({ message }) => {
-		logger.info(message);
-	});
-	prisma.$on("warn", ({ message }) => {
-		logger.warn(message);
-	});
-	prisma.$on("error", ({ message }) => {
-		logger.error(message);
-	});
-}
 
 export default prisma;
