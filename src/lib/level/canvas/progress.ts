@@ -1,6 +1,6 @@
 import type { CanvasRenderingContext2D } from "skia-canvas";
 
-import { calculateLevel, xpForLevel } from "$lib/level";
+import { levelForXp, xpForLevel } from "$lib/level";
 import {
 	c,
 	type CircleData,
@@ -16,7 +16,7 @@ type ProgressStats = {
 };
 
 export function progressStats(xp: number): ProgressStats {
-	const level = calculateLevel(xp);
+	const level = levelForXp(xp);
 	const xpInLevel = xp - xpForLevel(level);
 	const xpNeeded = xpForLevel(level + 1) - xpForLevel(level);
 	return { xpInLevel, xpNeeded };

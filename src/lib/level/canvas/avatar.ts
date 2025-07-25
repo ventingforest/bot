@@ -1,4 +1,8 @@
-import { GuildMember, type User } from "discord.js";
+import {
+	type APIInteractionGuildMember,
+	GuildMember,
+	type User,
+} from "discord.js";
 import { type CanvasRenderingContext2D, loadImage } from "skia-canvas";
 
 import {
@@ -21,16 +25,35 @@ type AvatarBoxOptions = {
 	bgColour?: string;
 } & SizeData;
 
+export async function getUserFromMember(
+	member: GuildMember | APIInteractionGuildMember | User,
+): User {
+	let user: User;
+	if (
+		(member instanceof GuildMember ||
+			(typeof member === "object" &&
+				"user" in member &&
+				typeof member.user === "object")) &&
+		member.user
+	) {
+		user = member.user as User;
+	} else {
+		user = member as User;
+	}
+
+	return user;
+}
+
 export async function drawAvatar(
 	ctx: CanvasRenderingContext2D,
-	member: GuildMember | User,
+	member: GuildMember | APIInteractionGuildMember | User,
 	{ x, y, radius, borderColour }: AvatarOptions,
 	{ text, font, bgColour, width, height }: AvatarBoxOptions,
 ) {
 	const borderWidth = radius / 8;
 	const border: AvatarOptions = { radius: radius + borderWidth / 2, x, y };
 
-	const user = member instanceof GuildMember ? member.user : member;
+	const user = getUserFromMember(member);
 	const avatar = await loadImage(
 		user.displayAvatarURL({ extension: "webp", size: 128 }),
 	);

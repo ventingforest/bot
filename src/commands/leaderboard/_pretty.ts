@@ -1,6 +1,7 @@
 import { container } from "@sapphire/framework";
 import {
-	GuildMember,
+	type APIInteractionGuildMember,
+	type GuildMember,
 	type Interaction,
 	type InteractionUpdateOptions,
 	type User,
@@ -9,7 +10,7 @@ import { Canvas, type CanvasRenderingContext2D } from "skia-canvas";
 
 import type { PagePosition } from "$commands/leaderboard";
 import { levelConf } from "$lib/data";
-import { calculateLevel, rankInGuild } from "$lib/level";
+import { levelForXp, rankInGuild } from "$lib/level";
 import {
 	c,
 	drawAvatar,
@@ -17,6 +18,7 @@ import {
 	drawText,
 	type FontData,
 	getFont,
+	getUserFromMember,
 	progressStats,
 } from "$lib/level/canvas";
 import type { User as DbUser } from "$prisma";
@@ -66,9 +68,8 @@ export async function getPrettyPage<
 		const y = userHeight + dy * i;
 
 		if (present) {
-			const member = interaction.guild?.members.fetch(id);
-			if (!member) return; // skip if guild or member is missing
-			return drawUser(ctx, { allUsers, member: await member, xp, y });
+			if (!interaction.member) return; // skip if guild or member is missing
+			return drawUser(ctx, { allUsers, member: interaction.member, xp, y });
 		}
 
 		const user = await container.client.users.fetch(id);
@@ -88,7 +89,7 @@ export async function getPrettyPage<
 }
 
 type DrawUserOptions = {
-	member: GuildMember | User;
+	member: GuildMember | APIInteractionGuildMember | User;
 	y: number;
 	xp: number;
 	allUsers: Array<Pick<DbUser, "id" | "xp">>;
@@ -98,7 +99,7 @@ async function drawUser(
 	ctx: CanvasRenderingContext2D,
 	{ member, y, xp, allUsers }: DrawUserOptions,
 ) {
-	const user = member instanceof GuildMember ? member.user : member;
+	const user = getUserFromMember(member);
 	let x = avatarRadius * 2;
 
 	// avatar
@@ -167,7 +168,7 @@ async function drawUser(
 			size: 6 * scale,
 			weight: 600,
 		},
-		text: `Level ${calculateLevel(xp)}`,
+		text: `Level ${levelForXp(xp)}`,
 		x,
 		y: y + scale,
 	});

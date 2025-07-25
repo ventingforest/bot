@@ -1,6 +1,7 @@
 import type { Message, OmitPartialGroupDMChannel } from "discord.js";
 
 import { isProduction, levelConf } from "$lib/data";
+import { levelForXp, roleIdForLevel } from "$lib/level";
 import { config, Events, Listener, load } from "$listener";
 
 @config(Events.MessageCreate)
@@ -9,15 +10,33 @@ class GiveXp extends Listener<typeof Events.MessageCreate> {
 		if (message.author.bot) return; // ignore bot messages
 		if (!message.guild) return; // ensure it's a guild message
 
-		const xp = computeXp(message);
-		if (xp === 0) return; // no xp to give
+		// compute message xp
+		const messageXp = computeXp(message);
+		if (messageXp === 0) return; // no xp to give
 		this.container.logger.debug(
-			`giving ${xp} XP to ${message.author.username}`,
+			`giving ${messageXp} XP to ${message.author.username}`,
 		);
 
 		if (isProduction) {
+			// add it to the user's xp
+			const user = (await this.container.db.user.findUnique({
+				where: { id: message.author.id },
+			}))!;
+			const oldLevel = levelForXp(user.xp);
+			const newXp = user.xp + messageXp;
+			const newLevel = levelForXp(newXp);
+
+			// handle level up
+			if (newLevel > oldLevel) {
+				const oldRole = roleIdForLevel(oldLevel);
+				const newRole = roleIdForLevel(newLevel);
+				await message.member?.roles.add(newRole, "level up");
+				await message.member?.roles.remove(oldRole, "level up");
+			}
+
+			// write to database
 			await this.container.db.user.update({
-				data: { xp: { increment: xp } },
+				data: { xp: newXp },
 				where: { id: message.author.id },
 			});
 		}

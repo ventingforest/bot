@@ -1,10 +1,7 @@
-import { container } from "@sapphire/framework";
-import type { Role } from "discord.js";
-
-import { guildId, levelConf } from "$lib/data";
+import { levelConf } from "$lib/data";
 import type { User } from "$prisma";
 
-export function calculateLevel(xp: number): number {
+export function levelForXp(xp: number): number {
 	return Math.floor(Math.sqrt(xp / 120));
 }
 
@@ -20,16 +17,12 @@ export function rankInGuild(
 	return sortedUsers.findIndex(u => u.id === id) + 1;
 }
 
-export async function roleForXp(xp: number): Promise<Role | undefined> {
-	const level = calculateLevel(xp);
-	let bestId;
+export function roleIdForLevel(level: number): string {
+	let bestId = "0";
 	for (const reward of levelConf.rewards) {
 		if (level >= reward.level) bestId = reward.id;
 		else break;
 	}
 
-	if (!bestId) return undefined;
-	const guild = await container.client.guilds.fetch(guildId);
-	const role = await guild.roles.fetch(bestId);
-	return role ?? undefined;
+	return bestId;
 }
