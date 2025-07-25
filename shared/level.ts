@@ -2,7 +2,10 @@ export function levelForXp(xp: number): number {
 	return Math.floor(Math.sqrt(xp / 120));
 }
 
-export function roleIdForLevel(level: number): string {
+/**
+ * Returns the role ID of the highest level reward that is less than or equal to the given level.
+ */
+export function rewardForLevel(level: number): string {
 	let bestId = "0";
 	for (const reward of levelRewards) {
 		if (level >= reward.level) bestId = reward.id;

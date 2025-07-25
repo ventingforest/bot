@@ -1,7 +1,7 @@
 import type { Message, OmitPartialGroupDMChannel } from "discord.js";
 
 import { isProduction, levelConf } from "$lib/data";
-import { levelForXp, roleIdForLevel } from "$lib/level";
+import { levelForXp, rewardForLevel } from "$lib/level";
 import { config, Events, Listener, load } from "$listener";
 
 @config(Events.MessageCreate)
@@ -28,8 +28,8 @@ class GiveXp extends Listener<typeof Events.MessageCreate> {
 
 			// handle level up
 			if (newLevel > oldLevel) {
-				const oldRole = roleIdForLevel(oldLevel);
-				const newRole = roleIdForLevel(newLevel);
+				const oldRole = rewardForLevel(oldLevel);
+				const newRole = rewardForLevel(newLevel);
 				await message.member?.roles.add(newRole, "level up");
 				await message.member?.roles.remove(oldRole, "level up");
 			}

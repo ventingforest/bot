@@ -31,6 +31,7 @@
 		"paths": {
 			"$shared/*": ["shared/*"],
 			"$lib/*": ["src/lib/*"],
+			"$tools/*": ["tools/lib/*"],
 
 			"$command": ["src/lib/command"],
 			"$commands/*": ["src/commands/*"],

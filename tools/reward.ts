@@ -1,14 +1,13 @@
-import { Client, GatewayIntentBits } from "discord.js";
+import { GatewayIntentBits } from "discord.js";
 
-import { guildId, token } from "$shared/data";
+import { guildId } from "$shared/data";
 import prisma from "$shared/db";
-import { levelForXp, levelRewards, roleIdForLevel } from "$shared/level";
+import { levelForXp, levelRewards, rewardForLevel } from "$shared/level";
+import createClient from "$tools/client";
 
-const client = new Client({
+const client = await createClient({
 	intents: [GatewayIntentBits.GuildMembers, GatewayIntentBits.Guilds],
 });
-
-await client.login(token);
 
 client.once("ready", async () => {
 	const guild = await client.guilds.fetch(guildId);
@@ -30,7 +29,7 @@ client.once("ready", async () => {
 		members.map(async member => {
 			const user = db.find(u => u.id === member.user.id);
 			const level = levelForXp(user?.xp ?? 0);
-			const correctRoleId = roleIdForLevel(level);
+			const correctRoleId = rewardForLevel(level);
 			const promises = [];
 
 			// remove old level roles
