@@ -1,6 +1,6 @@
 import { type ILogger, LogLevel } from "@sapphire/framework";
 
-import logger from "$shared/logger";
+import logger from "$lib/logger/init";
 
 /**
  * {@link ILogger} for Sapphire that wraps the Logtape logger.

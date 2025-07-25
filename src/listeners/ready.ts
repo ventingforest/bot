@@ -14,6 +14,7 @@ class Ready extends Listener<typeof Events.ClientReady> {
 
 		if (isProduction) {
 			await synchroniseGuild();
+			this.container.logger.info("guild synchronisation complete");
 		}
 	}
 }
