@@ -1,5 +1,55 @@
+import type { GuildMember } from "discord.js";
+
+import prisma from "./db";
+
 export function levelForXp(xp: number): number {
 	return Math.floor(Math.sqrt(xp / 120));
+}
+
+/**
+ * Ensures the given member has the correct level role for their XP,
+ * removing any old level roles and adding the correct one if needed.
+ *
+ * @returns last role ID removed (if any) and the new role ID added.
+ */
+export async function ensureCorrectLevelRole(
+	member: GuildMember,
+	userXp?: number,
+): Promise<{ oldId?: string; newId: string }> {
+	// fetch user xp if not provided
+	if (!userXp) {
+		const user = await prisma.user.findUnique({
+			where: { id: member.user.id },
+		});
+		userXp = user?.xp;
+	}
+
+	const level = levelForXp(userXp ?? 0);
+	const newId = getLevelRole(level);
+	const promises = [];
+
+	// remove old level roles
+	let oldId: string | undefined;
+	let oldLevel = -1;
+	for (const role of levelRoles) {
+		if (role.id !== newId && member.roles.cache.has(role.id)) {
+			// track the highest level role being removed
+			if (role.level > oldLevel) {
+				oldId = role.id;
+				oldLevel = role.level;
+			}
+
+			promises.push(member.roles.remove(role.id, "remove old level role"));
+		}
+	}
+
+	// add new level role
+	if (newId && !member.roles.cache.has(newId)) {
+		promises.push(member.roles.add(newId, "add new level role"));
+	}
+
+	await Promise.all(promises);
+	return { newId, oldId };
 }
 
 /**

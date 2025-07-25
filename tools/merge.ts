@@ -4,7 +4,7 @@ import { hideBin } from "yargs/helpers";
 
 import { guildId } from "$shared/data";
 import prisma from "$shared/db";
-import { getLevelRole, levelForXp, levelRoles } from "$shared/level";
+import { ensureCorrectLevelRole } from "$shared/level";
 import createClient from "$tools/client";
 
 // collect args
@@ -52,30 +52,11 @@ client.once("ready", async () => {
 	const guild = await client.guilds.fetch(guildId);
 	const fromMember = await guild.members.fetch(fromId);
 	const toMember = await guild.members.fetch(toId);
-	const fromRoleId = getLevelRole(0);
-	const toRoleId = getLevelRole(levelForXp(xp));
-	const promises = [];
 
-	for (const level of levelRoles) {
-		// remove old level roles
-		if (fromMember.roles.cache.has(level.id) && level.id !== fromRoleId) {
-			promises.push(fromMember.roles.remove(level.id, "remove old level role"));
-		}
+	await Promise.all([
+		ensureCorrectLevelRole(fromMember, 0),
+		ensureCorrectLevelRole(toMember, xp),
+	]);
 
-		if (toMember.roles.cache.has(level.id) && level.id !== toRoleId) {
-			promises.push(toMember.roles.remove(level.id, "remove old level role"));
-		}
-	}
-
-	// add new level roles
-	if (fromRoleId && !fromMember.roles.cache.has(fromRoleId)) {
-		promises.push(fromMember.roles.add(fromRoleId, "add new level role"));
-	}
-
-	if (toRoleId && !toMember.roles.cache.has(toRoleId)) {
-		promises.push(toMember.roles.add(toRoleId, "add new level role"));
-	}
-
-	await Promise.all(promises);
 	await client.destroy();
 });

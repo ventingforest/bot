@@ -2,7 +2,7 @@ import { GatewayIntentBits } from "discord.js";
 
 import { guildId } from "$shared/data";
 import prisma from "$shared/db";
-import { getLevelRole, levelForXp, levelRoles } from "$shared/level";
+import { ensureCorrectLevelRole, levelRoles } from "$shared/level";
 import createClient from "$tools/client";
 
 const client = await createClient({
@@ -29,35 +29,17 @@ client.once("ready", async () => {
 	await Promise.all(
 		members.map(async member => {
 			const user = db.find(u => u.id === member.user.id);
-			const level = levelForXp(user?.xp ?? 0);
-			const correctRoleId = getLevelRole(level);
-			const promises = [];
-
-			// remove old level roles
-			let removedId: string | undefined;
-			for (const role of levelRoles) {
-				if (role.id !== correctRoleId && member.roles.cache.has(role.id)) {
-					removedId = role.id;
-					promises.push(member.roles.remove(role.id, "remove old level role"));
-				}
-			}
-
-			// add new level roles
-			if (correctRoleId && !member.roles.cache.has(correctRoleId)) {
-				promises.push(member.roles.add(correctRoleId, "add new level role"));
-			}
-
-			await Promise.all(promises);
-			const removedRoleName = removedId
-				? roleNameCache.get(removedId)
-				: undefined;
-			const correctRoleName = correctRoleId
-				? roleNameCache.get(correctRoleId)
-				: undefined;
-			if (removedRoleName)
+			const { oldId, newId } = await ensureCorrectLevelRole(
+				member,
+				user?.xp ?? 0,
+			);
+			if (oldId) {
+				const oldRoleName = roleNameCache.get(oldId);
+				const newRoleName = roleNameCache.get(newId);
 				console.log(
-					`${member.user.username}: ${removedRoleName} -> ${correctRoleName}`,
+					`${member.user.username} (${member.user.id}): ${oldRoleName} -> ${newRoleName}`,
 				);
+			}
 		}),
 	);
 
