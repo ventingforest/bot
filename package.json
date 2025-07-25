@@ -20,6 +20,7 @@
 		"@logtape/file": "^1.0.4",
 		"@logtape/logtape": "^1.0.4",
 		"@logtape/pretty": "^1.0.4",
+		"@multiavatar/multiavatar": "^1.0.7",
 		"@prisma/client": "^6.11.1",
 		"@sapphire/decorators": "^6.2.0",
 		"@sapphire/discord.js-utilities": "^7.3.3",
@@ -27,7 +28,8 @@
 		"@sapphire/utilities": "^3.18.2",
 		"discord.js": "^14.21.0",
 		"node_modules-path": "^2.1.0",
-		"skia-canvas": "^2.0.2"
+		"skia-canvas": "^2.0.2",
+		"unique-names-generator": "^4.7.1"
 	},
 	"devDependencies": {
 		"@sapphire/cli": "^1.9.3",
