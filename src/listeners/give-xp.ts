@@ -1,7 +1,7 @@
 import type { Message, OmitPartialGroupDMChannel } from "discord.js";
 
 import { isProduction, levelConf } from "$lib/data";
-import { getLevelRole, levelForXp } from "$lib/level";
+import { getLevelRole, getXpValue, levelForXp } from "$lib/level";
 import { config, Events, Listener, load } from "$listener";
 
 @config(Events.MessageCreate)
@@ -61,7 +61,5 @@ function computeXp({
 	}
 
 	lastTime.set(id, time);
-
-	const points = Math.floor(length / levelConf.charsPerPoint);
-	return Math.min(levelConf.minimum + points, levelConf.maximum);
+	return getXpValue(length);
 }

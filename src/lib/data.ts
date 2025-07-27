@@ -1,4 +1,3 @@
-import { xpCooldown } from "$shared/data";
 import env from "$shared/env";
 
 export * from "$shared/data";
@@ -32,23 +31,4 @@ export const anonConf = {
 	 * How long a session lasts before it is cleaned up.
 	 */
 	sessionTimeout: 1000 * 60 * 5, // 5 minutes
-};
-
-export const levelConf = {
-	/**
-	 * The number of characters in a message required to receive 1 XP.
-	 */
-	charsPerPoint: 20,
-	/**
-	 * The cooldown period in milliseconds before a user can receive XP for sending another message.
-	 */
-	cooldown: xpCooldown,
-	/**
-	 * The maximum amount of XP a user can receive for a message.
-	 */
-	maximum: 10,
-	/**
-	 * The minimum amount of XP a user can receive for a message.
-	 */
-	minimum: 5,
 };

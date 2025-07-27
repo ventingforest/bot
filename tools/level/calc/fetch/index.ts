@@ -1,29 +1,15 @@
-import { readFile, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { writeFile } from "node:fs/promises";
 
 import { getLogger } from "@logtape/logtape";
-import { decode, encode } from "@msgpack/msgpack";
+import { encode } from "@msgpack/msgpack";
 import Bottleneck from "bottleneck";
 import type { Collection, GuildTextBasedChannel, Message } from "discord.js";
 
-import { guildId, xpCooldown } from "$shared/data";
+import { guildId, levelConf } from "$shared/data";
 import configure from "$shared/logger";
 import createClient from "$tools/client";
 
-const messagePath = join(
-	dirname(fileURLToPath(import.meta.url)),
-	"..",
-	"messages.dat",
-);
-
-type MessageData = {
-	id: string;
-	authorId: string;
-	channelId: string;
-	time: number;
-	length: number;
-};
+import { type MessageData, messagePath, readFile } from "../lib";
 
 // read old messages and populate maps
 const lastTime = new Map<string, number>(); // author id: timestamp
@@ -32,8 +18,8 @@ const latestMessage = new Map<string, string>(); // channel id: message id
 const oldMessages: MessageData[] = [];
 
 try {
-	const file = await readFile(messagePath);
-	oldMessages.push(...((decode(file) ?? []) as MessageData[]));
+	const messages = await readFile();
+	oldMessages.push(...messages);
 
 	for (const { authorId, channelId, time, id } of oldMessages) {
 		lastTime.set(authorId, Math.max(lastTime.get(authorId) ?? 0, time));
@@ -74,8 +60,6 @@ async function fetchAllMessages(
 			),
 		);
 
-		console.log(fetched.size);
-
 		// strip down to relevant data
 		const messages: MessageData[] = [...fetched.values()].map(
 			({
@@ -108,7 +92,7 @@ async function fetchAllMessages(
 
 function shouldStoreMessage({ authorId, time }: MessageData): boolean {
 	const last = lastTime.get(authorId) ?? 0;
-	if (time - last < xpCooldown) {
+	if (time - last < levelConf.cooldown) {
 		// 10 second cooldown
 		return false;
 	}
@@ -121,7 +105,7 @@ await configure({
 	loggers: [
 		{
 			category: "calc",
-			lowestLevel: "info",
+			lowestLevel: "debug",
 			sinks: ["console"],
 		},
 	],
@@ -132,8 +116,7 @@ const client = await createClient();
 
 client.once("ready", async () => {
 	const guild = await client.guilds.fetch(guildId);
-	const allChannels = [await guild.channels.fetch("1399044495995310283")];
-	// const allChannels = await guild.channels.fetch();
+	const allChannels = await guild.channels.fetch();
 	const channels = allChannels
 		.filter(channel => channel?.isTextBased())
 		.map(channel => channel as GuildTextBasedChannel);

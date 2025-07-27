@@ -1,5 +1,6 @@
 import type { GuildMember } from "discord.js";
 
+import { levelConf } from "./data";
 import prisma from "./db";
 
 /**
@@ -64,6 +65,14 @@ export function getLevelRole(level: number): string {
 	}
 
 	return rankId;
+}
+
+/**
+ * Get a fair XP value based on the length of a message.
+ */
+export function getXpValue(length: number): number {
+	const points = Math.floor(length / levelConf.charsPerPoint);
+	return Math.min(levelConf.minimum + points, levelConf.maximum);
 }
 
 type LevelRole = { level: number; id: string };
