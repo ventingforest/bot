@@ -80,7 +80,7 @@ async function processMessage(
 	});
 
 	// store the identity of the user who sent the message
-	await container.db.anonVent.create({
+	await container.db.anon.create({
 		data: { message: newMessage.id, user: message.author.id },
 	});
 }

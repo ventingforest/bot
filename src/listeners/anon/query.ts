@@ -27,7 +27,7 @@ class Query extends Listener<typeof Events.MessageReactionAdd> {
 		await reaction.remove();
 
 		// lookup the message
-		const data = await this.container.db.anonVent.findUnique({
+		const data = await this.container.db.anon.findUnique({
 			where: { message: reaction.message.id },
 		});
 		if (!data) return; // no data found for this message

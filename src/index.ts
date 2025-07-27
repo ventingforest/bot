@@ -2,12 +2,9 @@
 import "./_load";
 
 import { SapphireClient } from "@sapphire/framework";
-import {
-	type FetchMessagesOptions,
-	GatewayIntentBits,
-	type GuildTextBasedChannel,
-} from "discord.js";
+import { GatewayIntentBits, type GuildTextBasedChannel } from "discord.js";
 
+import forceCacheChannel from "$lib/cache";
 import { anonConf } from "$lib/data";
 import Logger from "$lib/logger";
 import env from "$shared/env";
@@ -33,24 +30,8 @@ const client = new SapphireClient({
 
 await client.login(env.token);
 
-// cache anon vent messages
+// cache anon vent messages for query
 const anonVent = (await client.channels.fetch(
 	anonConf.channelId,
 )) as GuildTextBasedChannel;
-let lastId: string | undefined;
-let fetched = 0;
-
-const fetchBatch = async () => {
-	const options: FetchMessagesOptions = { limit: 100 };
-	if (lastId) options.before = lastId;
-	const messages = await anonVent.messages.fetch(options);
-	fetched = messages.size;
-	if (fetched > 0) {
-		lastId = messages.last()?.id;
-		if (fetched === 100) {
-			await fetchBatch();
-		}
-	}
-};
-
-await fetchBatch();
+await forceCacheChannel(anonVent);

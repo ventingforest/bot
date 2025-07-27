@@ -95,7 +95,7 @@ async function respond(
 	}
 
 	// find the member in the guild
-	const member = interaction.guild?.members.cache.get(user.id);
+	const member = await interaction.guild?.members.fetch(user.id);
 	if (!member) {
 		return interaction.reply({
 			content: "user not found in the server.",
@@ -174,7 +174,7 @@ export async function drawLevel<U extends Pick<UserData, "id" | "xp">>(
 	// rank
 	const rank = rankInGuild(users, user.id);
 	const levelRoleId = getLevelRole(levelForXp(user.xp));
-	const levelRole = guild.roles.cache.get(levelRoleId);
+	const levelRole = await guild.roles.fetch(levelRoleId);
 	drawText(ctx, {
 		baseline: "top",
 		colour: c.subtext0.hex,

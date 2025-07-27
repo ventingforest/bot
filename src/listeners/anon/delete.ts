@@ -14,7 +14,7 @@ class Delete extends Listener<typeof Events.MessageDelete> {
 	) {
 		if (!message.webhookId) return; // only listen to webhook messages
 		if (message.channelId !== anonConf.channelId) return; // only handle messages in the anonymous vent channel
-		await this.container.db.anonVent.delete({ where: { message: message.id } });
+		await this.container.db.anon.delete({ where: { message: message.id } });
 	}
 }
 
