@@ -1,9 +1,21 @@
+import { getLogger } from "@logtape/logtape";
 import { GatewayIntentBits } from "discord.js";
 
 import { guildId } from "$shared/data";
 import prisma from "$shared/db";
 import { ensureCorrectLevelRole, levelRoles } from "$shared/level";
+import configure from "$shared/logger";
 import createClient from "$tools/client";
+
+await configure({
+	loggers: [
+		{
+			category: "roles",
+			sinks: ["console"],
+		},
+	],
+});
+const logger = getLogger("roles");
 
 const client = await createClient({
 	intents: [GatewayIntentBits.GuildMembers, GatewayIntentBits.Guilds],
@@ -34,13 +46,12 @@ client.once("ready", async () => {
 		if (oldId) {
 			const oldRoleName = names.get(oldId);
 			const newRoleName = names.get(newId);
-			console.log(
+			logger.info(
 				`${member.user.username} (${member.user.id}): ${oldRoleName} -> ${newRoleName}`,
 			);
 		}
 	});
-	await Promise.all(updates);
 
-	console.log("done!");
+	await Promise.all(updates);
 	await client.destroy();
 });

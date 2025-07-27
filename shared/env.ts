@@ -2,7 +2,7 @@ import process from "node:process";
 
 import { z } from "zod";
 
-const rawEnv: Partial<z.infer<typeof schema>> = {
+const env: Partial<z.infer<typeof schema>> = {
 	database: process.env.DATABASE,
 	environment: process.env.NODE_ENV as z.infer<typeof schema>["environment"],
 	token: process.env.TOKEN,
@@ -13,18 +13,14 @@ const schema = z.object({
 	token: z.string(),
 });
 
-const env = schema.parse(rawEnv);
+const parsed = await schema.safeParseAsync(env);
 
-if (!env.database) {
+if (!parsed.success) {
+	const { issues } = parsed.error;
+	const vars = issues.map(({ path }) => path.join(".").toUpperCase());
 	throw new Error(
-		"No database URL provided. Please set the DATABASE environment variable.",
+		`Missing or invalid environment variable(s): ${vars.join(", ")}. Please check your .env file or environment variables.`,
 	);
 }
 
-if (!env.token) {
-	throw new Error(
-		"Missing bot token in environment variables. Please set the TOKEN variable.",
-	);
-}
-
-export default env;
+export default parsed.data;

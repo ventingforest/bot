@@ -1,17 +1,12 @@
 import fs from "node:fs/promises";
 
-import {
-	configure,
-	fromAsyncSink,
-	getConsoleSink,
-	getLogger,
-} from "@logtape/logtape";
-import { prettyFormatter } from "@logtape/pretty";
+import { fromAsyncSink, getLogger } from "@logtape/logtape";
 import { container } from "@sapphire/framework";
 import type { GuildTextBasedChannel } from "discord.js";
 
 import { isProduction } from "$lib/data";
 import getLogFile from "$lib/logger/file";
+import configure from "$shared/logger";
 
 // make sure the logs directory exists
 if (isProduction && !(await fs.exists("logs"))) await fs.mkdir("logs");
@@ -29,7 +24,7 @@ await configure({
 		},
 		{
 			category: "db",
-			lowestLevel: "info",
+			lowestLevel: "debug",
 			sinks: ["console", ...(isProduction ? ["dbFile"] : [])],
 		},
 		{
@@ -37,31 +32,23 @@ await configure({
 			lowestLevel: "debug",
 			sinks: ["console", ...(isProduction ? ["apiFile"] : [])],
 		},
-		{
-			category: ["logtape", "meta"],
-			lowestLevel: "warning",
-			sinks: ["console"],
-		},
 	],
-	sinks: {
-		console: getConsoleSink({
-			formatter: prettyFormatter,
-		}),
-		...(isProduction && {
-			discord: fromAsyncSink(async record => {
-				const fetchedChannel =
-					await container.client.channels.fetch(logChannelId);
-				logChannel ||= fetchedChannel as GuildTextBasedChannel;
+	sinks: isProduction
+		? {
+				apiFile: getLogFile("api"),
+				botFile: getLogFile("bot"),
+				dbFile: getLogFile("db"),
+				discord: fromAsyncSink(async record => {
+					const fetchedChannel =
+						await container.client.channels.fetch(logChannelId);
+					logChannel ||= fetchedChannel as GuildTextBasedChannel;
 
-				await logChannel.send(`**${record.level}**: ${String(record.message)}`);
-			}),
-		}),
-		...(isProduction && {
-			apiFile: getLogFile("api"),
-			botFile: getLogFile("bot"),
-			dbFile: getLogFile("db"),
-		}),
-	},
+					await logChannel.send(
+						`**${record.level}**: ${String(record.message)}`,
+					);
+				}),
+			}
+		: {},
 });
 
 const logger = getLogger("bot");

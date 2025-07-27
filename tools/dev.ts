@@ -1,9 +1,10 @@
 import { type ChildProcess, spawn } from "node:child_process";
 
-import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
-import { prettyFormatter } from "@logtape/pretty";
+import { getLogger } from "@logtape/logtape";
 import { watch } from "chokidar";
 import { onExit } from "signal-exit";
+
+import configure from "$shared/logger";
 
 await configure({
 	loggers: [
@@ -12,17 +13,7 @@ await configure({
 			lowestLevel: "info",
 			sinks: ["console"],
 		},
-		{
-			category: ["logtape", "meta"],
-			lowestLevel: "warning",
-			sinks: ["console"],
-		},
 	],
-	sinks: {
-		console: getConsoleSink({
-			formatter: prettyFormatter,
-		}),
-	},
 });
 
 const logger = getLogger("watch");

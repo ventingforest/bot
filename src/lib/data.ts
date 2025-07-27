@@ -1,3 +1,4 @@
+import { xpCooldown } from "$shared/data";
 import env from "$shared/env";
 
 export * from "$shared/data";
@@ -41,7 +42,7 @@ export const levelConf = {
 	/**
 	 * The cooldown period in milliseconds before a user can receive XP for sending another message.
 	 */
-	cooldown: 1000 * 10, // 10 seconds
+	cooldown: xpCooldown,
 	/**
 	 * The maximum amount of XP a user can receive for a message.
 	 */

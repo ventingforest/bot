@@ -5,3 +5,4 @@ prisma/generated
 logs
 **/_load.ts
 bot
+*.dat

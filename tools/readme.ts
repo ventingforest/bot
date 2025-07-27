@@ -20,10 +20,11 @@ const userId = "326767126406889473";
 
 client.on("ready", async () => {
 	const guild = await client.guilds.fetch(guildId);
-
-	// level
 	const member = await guild.members.fetch(userId);
 	const user = users.find(u => u.id === userId)!;
+
+	// level
+	console.log(user);
 	const levelData = await drawLevel(member, guild, user, users);
 	await writeFile("assets/level.webp", levelData);
 
