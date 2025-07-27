@@ -1,3 +1,5 @@
+import process from "node:process";
+
 import { PrismaClient } from "$prisma";
 
 if (!process.env.DATABASE_URL) {

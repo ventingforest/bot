@@ -1,3 +1,5 @@
+import process from "node:process";
+
 import { GatewayIntentBits } from "discord.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";

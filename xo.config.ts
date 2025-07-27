@@ -12,7 +12,6 @@ export default [
 			"@typescript-eslint/no-unsafe-return": "off",
 			"capitalized-comments": "off",
 			"import-x/extensions": "off",
-			"n/prefer-global/process": ["error", "always"],
 			"no-warning-comments": "off",
 		},
 	},

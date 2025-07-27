@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import { container } from "@sapphire/framework";
 import {
 	GuildMember,
@@ -33,8 +35,12 @@ const canvasHeight = userHeight * (pageLength + 1);
 
 export default class PrettyLeaderboard extends Leaderboard {
 	override pageLength = pageLength;
+	rendered = new Map<number, Uint8Array>();
 
 	override async render(page: number): Promise<InteractionUpdateOptions> {
+		// if the page has already been rendered, return it
+		if (this.rendered.has(page)) return this.payload(page);
+
 		// create the canvas
 		const canvas = new Canvas(canvasWidth, canvasHeight);
 		const ctx = canvas.getContext("2d");
@@ -72,12 +78,18 @@ export default class PrettyLeaderboard extends Leaderboard {
 
 		await Promise.all(drawPromises);
 
+		// respond
+		const buffer = await canvas.toBuffer("webp");
+		this.rendered.set(page, buffer);
+		return this.payload(page);
+	}
+
+	private payload(page: number): InteractionUpdateOptions {
 		return {
 			components: [this.getButtons(page)],
-			// todo: cache pages
 			files: [
 				{
-					attachment: await canvas.toBuffer("webp"),
+					attachment: Buffer.from(this.rendered.get(page)!),
 					name: `page-${page}.webp`,
 				},
 			],
