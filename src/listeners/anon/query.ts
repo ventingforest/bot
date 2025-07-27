@@ -19,7 +19,11 @@ class Query extends Listener<typeof Events.MessageReactionAdd> {
 	) {
 		if (reaction.emoji.name !== anonConf.queryReaction) return; // only handle specific reaction
 		if (reaction.message.guildId !== guildId) return; // only handle reactions in the guild
-		if (!reaction.message.member!.roles.cache.has(staff.roleId)) return; // ignore reactions from non-staff members
+
+		// ignore reactions from non-staff members
+		const guild = await this.container.client.guilds.fetch(guildId);
+		const member = await guild.members.fetch(user.id);
+		if (!member.roles.cache.has(staff.roleId)) return;
 		await reaction.remove();
 
 		// lookup the message
