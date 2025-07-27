@@ -1,6 +1,6 @@
 import { type ButtonInteraction } from "discord.js";
 
-import { getPage } from "$commands/leaderboard";
+import { activeLeaderboards } from "$commands/leaderboard";
 import {
 	config,
 	InteractionHandler,
@@ -9,29 +9,28 @@ import {
 	type Option,
 } from "$lib/interaction";
 
-export type Props = {
+type Props = {
+	interactionId: string;
 	page: number;
-	present: boolean;
-	pretty: boolean;
 };
 
 @config(InteractionHandlerTypes.Button)
 class Leaderboard extends InteractionHandler {
 	override parse(interaction: ButtonInteraction): Option<Props> {
-		console.log(interaction.customId);
-		const match = /lb_(go|jmp|usr)_(\d+)_(true|false)(_pretty)?/.exec(
-			interaction.customId,
-		);
+		const match = /lb_(\d+)_(go|jmp|usr)_(\d+)/.exec(interaction.customId);
 		if (!match) return this.none();
-		const page = Number(match[2]);
-		const present = match[3] === "true";
-		const pretty = Boolean(match[4]);
-		console.log(match);
-		return this.some({ page, present, pretty });
+		const interactionId = match[1]!;
+		const page = Number(match[3]);
+		return this.some({ interactionId, page });
 	}
 
-	override async run(interaction: ButtonInteraction, props: Props) {
-		await interaction.update(await getPage(interaction, props));
+	override async run(
+		interaction: ButtonInteraction,
+		{ interactionId, page }: Props,
+	) {
+		// await interaction.deferUpdate();
+		const leaderboard = activeLeaderboards.get(interactionId)!;
+		await interaction.update(await leaderboard.render(page));
 	}
 }
 

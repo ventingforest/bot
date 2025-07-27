@@ -20,7 +20,7 @@ export const anonConf = {
 	/**
 	 * The channel ID for the anonymous vent channel.
 	 */
-	channelId: isProduction ? "" : "1397637713980817520",
+	channelId: isProduction ? "1398297367752605826" : "1397637713980817520",
 	/**
 	 * The emoji used to query the author of an anonymous vent.
 	 */
@@ -48,11 +48,4 @@ export const levelConf = {
 	 * The minimum amount of XP a user can receive for a message.
 	 */
 	minimum: 5,
-	/**
-	 * How many users to show on a page of the leaderboard.
-	 */
-	pageLength: {
-		pretty: 5,
-		text: 10,
-	},
 };
