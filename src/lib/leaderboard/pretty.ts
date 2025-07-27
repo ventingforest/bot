@@ -36,10 +36,7 @@ export default class PrettyLeaderboard extends Leaderboard {
 	override pageLength = pageLength;
 	rendered = new Map<number, Uint8Array>();
 
-	override async render(page: number): Promise<InteractionUpdateOptions> {
-		// if the page has already been rendered, return it
-		if (this.rendered.has(page)) return this.payload(page);
-
+	public async draw(page: number): Promise<Uint8Array> {
 		// create the canvas
 		const canvas = new Canvas(canvasWidth, canvasHeight);
 		const ctx = canvas.getContext("2d");
@@ -68,17 +65,23 @@ export default class PrettyLeaderboard extends Leaderboard {
 				const rank = rankInGuild(this.users, id);
 
 				const member = await (present
-					? this.interaction.guild!.members.fetch(id)
+					? this.guild.members.fetch(id)
 					: container.client.users.fetch(id));
 				return drawUser(ctx, { member, rank, xp, y });
 			},
 		);
 
 		await Promise.all(drawPromises);
+		return canvas.toBuffer("webp");
+	}
+
+	override async render(page: number): Promise<InteractionUpdateOptions> {
+		// if the page has already been rendered, return it
+		if (this.rendered.has(page)) return this.payload(page);
 
 		// respond
-		const buffer = await canvas.toBuffer("webp");
-		this.rendered.set(page, buffer);
+		const data = await this.draw(page);
+		this.rendered.set(page, data);
 		return this.payload(page);
 	}
 

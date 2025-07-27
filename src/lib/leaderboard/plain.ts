@@ -23,7 +23,7 @@ export default class PlainLeaderboard extends Leaderboard {
 			const level = levelForXp(xp);
 			const stats = progressStats(xp);
 			const progress = ((stats.xpInLevel / stats.xpNeeded) * 100).toFixed(1);
-			const isUser = id === this.interaction.user.id;
+			const isUser = id === this.user.id;
 
 			let medal: string;
 			switch (rank) {

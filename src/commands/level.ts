@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import {
 	type ChatInputCommand,
 	container,
@@ -6,6 +8,8 @@ import {
 import {
 	type ChatInputCommandInteraction,
 	type ContextMenuCommandInteraction,
+	type Guild,
+	type GuildMember,
 	MessageFlags,
 	type User,
 } from "discord.js";
@@ -27,6 +31,7 @@ import {
 	progressStats,
 	type SizeData,
 } from "$lib/level/canvas";
+import { type User as UserData } from "$prisma";
 
 @config({
 	contextMenu: {
@@ -103,8 +108,30 @@ async function respond(
 		select: { id: true, xp: true },
 		where: { present: true },
 	});
-	const userDb = users.find(u => u.id === user.id)!;
+	const userData = users.find(u => u.id === user.id)!;
+	const data = await drawLevel(member, interaction.guild!, userData, users);
 
+	// send
+	const nextRoleInfo = nextLevelRole(userData.xp);
+	const nextRole = await interaction.guild?.roles.fetch(nextRoleInfo.id);
+	await interaction.reply({
+		content: `${user.toString()}, you are **${nextRoleInfo.xpAway.toLocaleString()} XP** away from **${nextRole?.name}**!`,
+		files: [
+			{
+				attachment: Buffer.from(data),
+				name: `${user.username}.webp`,
+			},
+		],
+		flags: MessageFlags.Ephemeral,
+	});
+}
+
+export async function drawLevel<U extends Pick<UserData, "id" | "xp">>(
+	member: GuildMember,
+	guild: Guild,
+	user: U,
+	users: U[],
+): Promise<Uint8Array> {
 	// create the canvas
 	const canvas = new Canvas(500 * scale, 144 * scale);
 	const ctx = canvas.getContext("2d");
@@ -122,7 +149,7 @@ async function respond(
 	);
 
 	// avatar
-	const level = levelForXp(userDb.xp);
+	const level = levelForXp(user.xp);
 	await drawAvatar(ctx, member, avatarCircle, {
 		font: {
 			size: 18 * scale,
@@ -139,15 +166,15 @@ async function respond(
 			size: 30 * scale,
 			weight: 850,
 		},
-		text: member.nickname ?? user.username,
+		text: member.nickname ?? member.user.username,
 		x: avatarCircle.x + avatarCircle.radius * 2,
 		y: 20 * scale,
 	});
 
 	// rank
 	const rank = rankInGuild(users, user.id);
-	const levelRoleId = getLevelRole(levelForXp(userDb.xp));
-	const levelRole = interaction.guild?.roles.cache.get(levelRoleId);
+	const levelRoleId = getLevelRole(levelForXp(user.xp));
+	const levelRole = guild.roles.cache.get(levelRoleId);
 	drawText(ctx, {
 		baseline: "top",
 		colour: c.subtext0.hex,
@@ -161,7 +188,7 @@ async function respond(
 	});
 
 	// progress bar
-	const stats = progressStats(userDb.xp);
+	const stats = progressStats(user.xp);
 	drawProgress(ctx, stats, {
 		height: 18 * scale,
 		text: `${stats.xpInLevel.toLocaleString()} / ${stats.xpNeeded.toLocaleString()} XP`,
@@ -170,19 +197,7 @@ async function respond(
 		y: avatarCircle.y + avatarCircle.radius - avatarBox.height,
 	});
 
-	// send
-	const nextRoleInfo = nextLevelRole(userDb.xp);
-	const nextRole = await interaction.guild?.roles.fetch(nextRoleInfo.id);
-	await interaction.reply({
-		content: `${user.toString()}, you are **${nextRoleInfo.xpAway.toLocaleString()} XP** away from **${nextRole?.name}**!`,
-		files: [
-			{
-				attachment: await canvas.toBuffer("webp"),
-				name: `${user.username}.webp`,
-			},
-		],
-		flags: MessageFlags.Ephemeral,
-	});
+	return canvas.toBuffer("webp");
 }
 
 const scale = 3;

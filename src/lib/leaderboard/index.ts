@@ -3,7 +3,9 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	type ChatInputCommandInteraction,
+	type Guild,
 	type InteractionUpdateOptions,
+	type User,
 } from "discord.js";
 
 import type { User as FullUser } from "$prisma";
@@ -19,11 +21,17 @@ export abstract class Leaderboard {
 	 */
 	abstract pageLength: number;
 
+	protected readonly user: User;
+	protected readonly guild: Guild;
+
 	constructor(
 		protected readonly users: UserData[],
-		protected readonly interaction: ChatInputCommandInteraction,
+		private readonly interaction: ChatInputCommandInteraction,
 		private readonly present: boolean,
-	) {}
+	) {
+		this.user = interaction.user;
+		this.guild = interaction.guild!;
+	}
 
 	/**
 	 * The total number of pages in the leaderboard.

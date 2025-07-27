@@ -1,3 +1,4 @@
 bun run --silent lint --quiet
 bun run --silent fmt --log-level silent
+bun run tools/readme.ts
 git add .
