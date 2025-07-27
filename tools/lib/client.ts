@@ -1,12 +1,12 @@
 import { Client, type ClientOptions } from "discord.js";
 
-import { token } from "$shared/data";
+import env from "$shared/env";
 
 export default async function createClient(
 	options?: ClientOptions,
 ): Promise<Client> {
 	const client = new Client(options ?? { intents: [] });
-	await client.login(token);
+	await client.login(env.token);
 
 	return client;
 }

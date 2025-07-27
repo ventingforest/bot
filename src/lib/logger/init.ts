@@ -1,45 +1,31 @@
 import fs from "node:fs/promises";
-import process from "node:process";
 
-import { getFileSink } from "@logtape/file";
 import {
 	configure,
 	fromAsyncSink,
 	getConsoleSink,
 	getLogger,
 } from "@logtape/logtape";
-import { getPrettyFormatter, prettyFormatter } from "@logtape/pretty";
+import { prettyFormatter } from "@logtape/pretty";
 import { container } from "@sapphire/framework";
 import type { GuildTextBasedChannel } from "discord.js";
 
-let logChannel: GuildTextBasedChannel;
-
-const logFileSink = (name: string) =>
-	getFileSink(`logs/${name}.log`, {
-		bufferSize: 8192,
-		flushInterval: 5000,
-		formatter: getPrettyFormatter({ align: false, colors: false }),
-		lazy: true,
-		nonBlocking: true,
-	});
-
-const isProduction = process.env.NODE_ENV === "production";
-const isTool = (process.argv[1] ?? "").includes("tools");
-const logToDiscord = !isTool && isProduction && process.env.LOG_CHANNEL_ID;
+import { isProduction } from "$lib/data";
+import getLogFile from "$lib/logger/file";
 
 // make sure the logs directory exists
 if (isProduction && !(await fs.exists("logs"))) await fs.mkdir("logs");
+
+// channel to log to
+const logChannelId = "1395188130348269648";
+let logChannel: GuildTextBasedChannel;
 
 await configure({
 	loggers: [
 		{
 			category: "bot",
 			lowestLevel: "debug",
-			sinks: [
-				"console",
-				...(isProduction ? ["botFile"] : []),
-				...(logToDiscord ? ["discord"] : []),
-			],
+			sinks: ["console", ...(isProduction ? ["botFile", "discord"] : [])],
 		},
 		{
 			category: "db",
@@ -61,19 +47,19 @@ await configure({
 		console: getConsoleSink({
 			formatter: prettyFormatter,
 		}),
-		...(logToDiscord && {
+		...(isProduction && {
 			discord: fromAsyncSink(async record => {
-				logChannel ||= (await container.client.channels.fetch(
-					process.env.LOG_CHANNEL_ID!,
-				)) as GuildTextBasedChannel;
+				const fetchedChannel =
+					await container.client.channels.fetch(logChannelId);
+				logChannel ||= fetchedChannel as GuildTextBasedChannel;
 
 				await logChannel.send(`**${record.level}**: ${String(record.message)}`);
 			}),
 		}),
 		...(isProduction && {
-			apiFile: logFileSink("api"),
-			botFile: logFileSink("bot"),
-			dbFile: logFileSink("db"),
+			apiFile: getLogFile("api"),
+			botFile: getLogFile("bot"),
+			dbFile: getLogFile("db"),
 		}),
 	},
 });

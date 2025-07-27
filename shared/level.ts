@@ -2,6 +2,9 @@ import type { GuildMember } from "discord.js";
 
 import prisma from "./db";
 
+/**
+ * Calculates the level for a given amount of XP.
+ */
 export function levelForXp(xp: number): number {
 	return Math.floor(Math.sqrt(xp / 120));
 }
@@ -9,8 +12,6 @@ export function levelForXp(xp: number): number {
 /**
  * Ensures the given member has the correct level role for their XP,
  * removing any old level roles and adding the correct one if needed.
- *
- * @returns last role ID removed (if any) and the new role ID added.
  */
 export async function ensureCorrectLevelRole(
 	member: GuildMember,

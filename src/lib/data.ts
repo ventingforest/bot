@@ -1,11 +1,11 @@
-import process from "node:process";
+import env from "$shared/env";
 
 export * from "$shared/data";
 
 /**
  * Is the bot running in production mode?
  */
-export const isProduction = process.env.NODE_ENV === "production";
+export const isProduction = env.environment === "production";
 
 export const staff = {
 	/**

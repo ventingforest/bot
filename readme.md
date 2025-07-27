@@ -18,4 +18,4 @@
 
 ### leaderboard
 
-<img src="assets/leaderboard.webp" width="400"/>
+<img src="assets/leaderboard.webp" width="600"/>

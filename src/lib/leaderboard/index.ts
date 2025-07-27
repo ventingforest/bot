@@ -42,14 +42,11 @@ export abstract class Leaderboard {
 
 	/**
 	 * Render a specific page of the leaderboard.
-	 * @param page The page number to render.
 	 */
 	abstract render(page: number): Promise<InteractionUpdateOptions>;
 
 	/**
 	 * Generate the buttons for the leaderboard page.
-	 * @param interaction The interaction that triggered the leaderboard.
-	 * @param page The current page number.
 	 */
 	protected getButtons(page: number): ActionRowBuilder<ButtonBuilder> {
 		const userIndex =
@@ -97,7 +94,6 @@ export abstract class Leaderboard {
 
 	/**
 	 * Get the users on a specific page.
-	 * @param page The page number to get users from.
 	 */
 	protected usersOnPage(page: number): UserData[] {
 		const start = (page - 1) * this.pageLength;

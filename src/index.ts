@@ -8,8 +8,9 @@ import {
 	type GuildTextBasedChannel,
 } from "discord.js";
 
-import { anonConf, token } from "$lib/data";
+import { anonConf } from "$lib/data";
 import Logger from "$lib/logger";
+import env from "$shared/env";
 
 const client = new SapphireClient({
 	baseUserDirectory: null,
@@ -30,7 +31,7 @@ const client = new SapphireClient({
 	},
 });
 
-await client.login(token);
+await client.login(env.token);
 
 // cache anon vent messages
 const anonVent = (await client.channels.fetch(

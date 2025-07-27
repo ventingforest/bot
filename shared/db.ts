@@ -1,12 +1,4 @@
-import process from "node:process";
-
 import { PrismaClient } from "$prisma";
-
-if (!process.env.DATABASE_URL) {
-	throw new Error(
-		"No database URL provided. Please set the DATABASE_URL environment variable.",
-	);
-}
 
 // connect to the database
 const prisma = new PrismaClient({
