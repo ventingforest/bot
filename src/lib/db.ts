@@ -8,7 +8,6 @@ import { guildId } from "$lib/data";
 import type { PrismaClient } from "$prisma";
 import prisma from "$shared/db";
 
-const { client, logger } = container;
 container.db = prisma;
 
 // log prisma events
@@ -29,9 +28,7 @@ container.db = prisma;
  * Synchronises the database with the current state of the guild.
  */
 export async function synchroniseGuild() {
-	logger.info(`Synchronising database with current guild state...`);
-
-	const guild = await client.guilds.fetch(guildId);
+	const guild = await container.client.guilds.fetch(guildId);
 	const fetchedMembers = await guild.members.fetch();
 	const members = [...fetchedMembers.values()];
 	const memberUpdates = members.map(member => synchroniseMember(member));
@@ -41,8 +38,6 @@ export async function synchroniseGuild() {
 	});
 
 	await prisma.$transaction([...memberUpdates, notPresent]);
-
-	logger.info(`Database synchronised!`);
 }
 
 /**

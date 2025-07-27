@@ -20,7 +20,6 @@ import {
 	getUserFromMember,
 	progressStats,
 } from "$lib/level/canvas";
-import { guildId } from "$shared/data";
 
 const scale = 4;
 const pageLength = 5;
@@ -63,14 +62,13 @@ export default class PrettyLeaderboard extends Leaderboard {
 		});
 
 		// users
-		const guild = await container.client.guilds.fetch(guildId);
 		const drawPromises = this.usersOnPage(page).map(
 			async ({ present, id, xp }, i) => {
 				const y = userHeight * (i + 1);
 				const rank = rankInGuild(this.users, id);
 
 				const member = await (present
-					? guild.members.fetch(id)
+					? this.interaction.guild!.members.fetch(id)
 					: container.client.users.fetch(id));
 				return drawUser(ctx, { member, rank, xp, y });
 			},

@@ -30,12 +30,18 @@ import {
 
 @config({
 	contextMenu: {
-		idHints: ["1396170994598674536"],
+		idHints: {
+			dev: "1398851572016087040",
+			prod: "1398852596256735312",
+		},
 		name: "View level",
 	},
 	slash: {
 		description: "Check your current level",
-		idHints: ["1396170993386389514"],
+		idHints: {
+			dev: "1398851572846297140",
+			prod: "1398852595027804262",
+		},
 		name: "level",
 		options(builder) {
 			builder.addUserOption(option =>

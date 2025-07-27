@@ -6,7 +6,7 @@ import {
 } from "@sapphire/framework";
 import { ApplicationCommandType, type SlashCommandBuilder } from "discord.js";
 
-import { guildId } from "$lib/data";
+import { guildId, isProduction } from "$lib/data";
 import { makeLoad } from "$lib/internal";
 
 type SlashCommandOptions = (builder: SlashCommandBuilder) => void;
@@ -42,7 +42,7 @@ export class Command extends SapphireCommand<Args, Command.Options> {
 						slash.options(command);
 					}
 				},
-				{ guildIds, idHints: slash.idHints },
+				{ guildIds, idHints: getHints(slash.idHints) },
 			);
 		}
 
@@ -53,17 +53,26 @@ export class Command extends SapphireCommand<Args, Command.Options> {
 						.setName(contextMenu.name)
 						.setType(ApplicationCommandType.User);
 				},
-				{ guildIds, idHints: contextMenu.idHints },
+				{ guildIds, idHints: getHints(contextMenu.idHints) },
 			);
 		}
 	}
+}
+
+type IdHints = {
+	dev: string;
+	prod?: string;
+};
+
+function getHints(hints: IdHints): string[] {
+	return isProduction ? (hints.prod ? [hints.prod] : []) : [hints.dev];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Command {
 	type SubOptions = {
 		name: string;
-		idHints?: string[];
+		idHints: IdHints;
 	};
 
 	export type Options = SapphireCommand.Options & {

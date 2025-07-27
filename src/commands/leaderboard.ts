@@ -12,7 +12,10 @@ export const activeLeaderboards = new Map<string, Leaderboard>();
 @config({
 	slash: {
 		description: "view the server leaderboard",
-		idHints: ["1396170991633301535"],
+		idHints: {
+			dev: "1398851570006753403",
+			prod: "435894444101861408",
+		},
 		name: "leaderboard",
 		options(builder) {
 			builder

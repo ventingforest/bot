@@ -7,7 +7,10 @@ import { Command, config, load } from "$command";
 @config({
 	slash: {
 		description: "check response times",
-		idHints: ["1396170990228213781"],
+		idHints: {
+			dev: "1398851571026231339",
+			prod: "1398852594268504084",
+		},
 		name: "ping",
 	},
 })
