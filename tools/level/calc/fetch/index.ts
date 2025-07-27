@@ -15,17 +15,12 @@ import { type MessageData, messagePath, readFile } from "../lib";
 const lastTime = new Map<string, number>(); // author id: timestamp
 const latestMessage = new Map<string, string>(); // channel id: message id
 
-const oldMessages: MessageData[] = [];
+const oldMessages: MessageData[] = await readFile();
 
-try {
-	const messages = await readFile();
-	oldMessages.push(...messages);
-
-	for (const { authorId, channelId, time, id } of oldMessages) {
-		lastTime.set(authorId, Math.max(lastTime.get(authorId) ?? 0, time));
-		latestMessage.set(channelId, id);
-	}
-} catch {}
+for (const { authorId, channelId, time, id } of oldMessages) {
+	lastTime.set(authorId, Math.max(lastTime.get(authorId) ?? 0, time));
+	latestMessage.set(channelId, id);
+}
 
 // global rate limit: 50 req/sec
 const globalLimiter = new Bottleneck({

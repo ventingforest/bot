@@ -18,6 +18,10 @@ export const messagePath = join(
 );
 
 export async function readFile(): Promise<MessageData[]> {
-	const file = await read(messagePath);
-	return (decode(file) ?? []) as MessageData[];
+	try {
+		const file = await read(messagePath);
+		return (decode(file) ?? []) as MessageData[];
+	} catch {
+		return [];
+	}
 }
